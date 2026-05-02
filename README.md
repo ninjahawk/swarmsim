@@ -9,9 +9,7 @@
 
 ## Overview
 
-This repository contains all code, data, and documentation for an independent summer research project exploring **computational simulations of natural complexity**. The project uses the textbook *Natural Complexity* as a foundation, implementing and investigating agent-based and cellular automaton models to develop a conceptual understanding of emergent behavior in complex systems.
-
-The research process emphasizes model specification, validation through limiting cases, systematic exploration of behavior, and clear written interpretation of results.
+This repository contains all code, data, and documentation for an independent summer research project on **computational simulations of natural complexity**. Topic TBD.
 
 ---
 
