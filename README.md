@@ -9,8 +9,7 @@
 
 ## Overview
 
-This repository contains all code, data, and documentation for an independent summer research project on **computational simulations of natural complexity**. Topic TBD.
-
+This repository contains all code, data, and documentation for an independent summer research project on **computational simulations of natural complexity**.
 ---
 
 ## Repository Structure
