@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Summer Research Logs</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; color: #202124; }
+
+  header {
+    background: #1a73e8;
+    color: white;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  header h1 { font-size: 20px; font-weight: 500; }
+  header span { font-size: 13px; opacity: 0.85; }
+
+  .tabs {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid #e0e0e0;
+    padding: 0 32px;
+  }
+  .tab {
+    padding: 14px 24px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: #5f6368;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s;
+  }
+  .tab:hover { color: #1a73e8; }
+  .tab.active { color: #1a73e8; border-bottom-color: #1a73e8; }
+
+  .panel { display: none; padding: 28px 32px; }
+  .panel.active { display: block; }
+
+  /* TIME LOG */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .toolbar h2 { font-size: 16px; font-weight: 600; color: #3c4043; }
+  .btn {
+    padding: 8px 20px;
+    background: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #1558b0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    font-size: 13px;
+  }
+  thead tr { background: #f1f3f4; }
+  th {
+    padding: 11px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #5f6368;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8f9fa; }
+  .hours-cell { font-variant-numeric: tabular-nums; color: #1a73e8; font-weight: 500; }
+  .date-cell { white-space: nowrap; color: #5f6368; font-size: 12px; }
+  tfoot tr { background: #f1f3f4; }
+  tfoot td {
+    font-weight: 600;
+    font-size: 12px;
+    color: #3c4043;
+    padding: 10px 16px;
+    border-top: 2px solid #e0e0e0;
+  }
+
+  /* RESEARCH LOG */
+  .day-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  .day-tab {
+    padding: 6px 14px;
+    background: white;
+    border: 1px solid #dadce0;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #5f6368;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .day-tab:hover { border-color: #1a73e8; color: #1a73e8; }
+  .day-tab.active { background: #e8f0fe; border-color: #1a73e8; color: #1a73e8; }
+
+  .day-entry { display: none; }
+  .day-entry.active { display: block; }
+
+  .doc-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    padding: 28px 36px;
+    max-width: 860px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .doc-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #202124;
+    margin-bottom: 6px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .doc-card .entry-body {
+    margin-top: 14px;
+    color: #3c4043;
+    white-space: pre-wrap;
+  }
+  .copy-doc-btn {
+    margin-top: 16px;
+    padding: 7px 16px;
+    background: white;
+    color: #1a73e8;
+    border: 1px solid #1a73e8;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .copy-doc-btn:hover { background: #e8f0fe; }
+
+  .no-entries {
+    color: #9aa0a6;
+    font-style: italic;
+    font-size: 14px;
+    padding: 40px 0;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Summer Research — PHY 351</h1>
+    <span>Computational Simulations of Natural Complexity</span>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('time')">Time Log</div>
+  <div class="tab" onclick="switchTab('research')">Research Log</div>
+</div>
+
+<!-- TIME LOG PANEL -->
+<div class="panel active" id="panel-time">
+  <div class="toolbar">
+    <h2>Work Sessions</h2>
+    <button class="btn" onclick="copyTimeLog()">Copy for Google Sheets</button>
+  </div>
+  <div class="day-tabs" id="timeDayTabs"></div>
+  <table id="timeTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Hours</th>
+        <th>Summary</th>
+      </tr>
+    </thead>
+    <tbody id="timeBody">
+      <tr data-date="2026-05-02">
+        <td class="date-cell">2026-05-02</td>
+        <td class="hours-cell">0.50</td>
+        <td>Set up project folder, GitHub repo, and logging workflow</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2" id="totalLabel">Total Hours</td>
+        <td id="totalHours">3.50</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<!-- RESEARCH LOG PANEL -->
+<div class="panel" id="panel-research">
+  <div class="toolbar">
+    <h2>Daily Research Entries</h2>
+    <button class="btn" onclick="copyResearchLog()">Copy for Google Docs</button>
+  </div>
+  <div class="doc-card" style="max-width:860px; margin-bottom:20px; padding:18px 36px;">
+    <div style="font-size:20px; font-weight:700; color:#202124; margin-bottom:2px;">PHY 351</div>
+    <div style="font-size:15px; font-weight:500; color:#3c4043; margin-bottom:2px;">Independent Summer Research</div>
+    <div style="font-size:14px; color:#5f6368;">Nathan Langley</div>
+  </div>
+  <div class="day-tabs" id="dayTabs"></div>
+  <div id="dayEntries">
+    <p class="no-entries">No research log entries yet.</p>
+  </div>
+</div>
+
+<script>
+  const researchHeader = `PHY 351\nIndependent Summer Research\nNathan Langley`;
+
+  const researchData = [
+    {
+      date: "2026-05-02",
+      body: "Read through the professor's project outline. Reviewed textbook chapter options. Set up project folder, GitHub repo, and logging workflow. Topic selection by Monday."
+    }
+  ];
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.tab:${tab === 'time' ? 'first-child' : 'last-child'}`).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  function buildResearchLog() {
+    const tabContainer = document.getElementById('dayTabs');
+    const entryContainer = document.getElementById('dayEntries');
+    if (researchData.length === 0) return;
+    tabContainer.innerHTML = '';
+    entryContainer.innerHTML = '';
+    researchData.forEach((entry, i) => {
+      const tab = document.createElement('div');
+      tab.className = 'day-tab' + (i === 0 ? ' active' : '');
+      tab.textContent = entry.date;
+      tab.onclick = () => selectDay(i);
+      tabContainer.appendChild(tab);
+      const card = document.createElement('div');
+      card.className = 'day-entry' + (i === 0 ? ' active' : '');
+      card.id = 'day-' + i;
+      card.innerHTML = `
+        <div class="doc-card">
+          <h3>${entry.date}</h3>
+          <div class="entry-body">${entry.body}</div>
+          <button class="copy-doc-btn" onclick="copyDay(${i})">Copy Entry</button>
+        </div>`;
+      entryContainer.appendChild(card);
+    });
+  }
+
+  function selectDay(i) {
+    document.querySelectorAll('.day-tab').forEach((t, j) => t.classList.toggle('active', i === j));
+    document.querySelectorAll('.day-entry').forEach((e, j) => e.classList.toggle('active', i === j));
+  }
+
+  let activeTimeFilter = 'all';
+
+  function buildTimeLog() {
+    const rows = document.querySelectorAll('#timeBody tr');
+    const dates = ['all', ...[...new Set([...rows].map(r => r.dataset.date))]];
+    const tabContainer = document.getElementById('timeDayTabs');
+    tabContainer.innerHTML = '';
+    dates.forEach(d => {
+      const tab = document.createElement('div');
+      tab.className = 'day-tab' + (d === 'all' ? ' active' : '');
+      tab.textContent = d === 'all' ? 'All' : d;
+      tab.dataset.date = d;
+      tab.onclick = () => filterTimeLog(d);
+      tabContainer.appendChild(tab);
+    });
+    updateTotals();
+  }
+
+  function filterTimeLog(date) {
+    activeTimeFilter = date;
+    document.querySelectorAll('#timeDayTabs .day-tab').forEach(t => t.classList.toggle('active', t.dataset.date === date));
+    const rows = document.querySelectorAll('#timeBody tr');
+    rows.forEach(r => r.style.display = (date === 'all' || r.dataset.date === date) ? '' : 'none');
+    document.getElementById('totalLabel').textContent = date === 'all' ? 'Total Hours' : `Total — ${date}`;
+    updateTotals();
+  }
+
+  function updateTotals() {
+    const rows = [...document.querySelectorAll('#timeBody tr')].filter(r => r.style.display !== 'none');
+    const total = rows.reduce((sum, r) => sum + parseFloat(r.cells[1].textContent), 0);
+    document.getElementById('totalHours').textContent = total.toFixed(2);
+  }
+
+  function copyTimeLog() {
+    if (activeTimeFilter === 'all') {
+      const table = document.getElementById('timeTable');
+      const range = document.createRange();
+      range.selectNode(table);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      alert('Full time log copied — paste into Google Sheets.');
+    } else {
+      const rows = [...document.querySelectorAll('#timeBody tr')].filter(r => r.style.display !== 'none');
+      const text = rows.map(r => [...r.cells].map(c => c.textContent.trim()).join('\t')).join('\n');
+      navigator.clipboard.writeText(text).then(() => alert(activeTimeFilter + ' copied — paste into Google Sheets.'));
+    }
+  }
+
+  function copyResearchLog() {
+    const entries = researchData.map(e => `${e.date}\n\n${e.body}`).join('\n\n---\n\n');
+    navigator.clipboard.writeText(researchHeader + '\n---\n\n' + entries).then(() => alert('Research log copied — paste into Google Docs.'));
+  }
+
+  function copyDay(i) {
+    const entry = researchData[i];
+    navigator.clipboard.writeText(`${entry.date}\n\n${entry.body}`)
+      .then(() => alert('Entry copied — paste into Google Docs.'));
+  }
+
+  buildTimeLog();
+  buildResearchLog();
+</script>
+
+</body>
+</html>
