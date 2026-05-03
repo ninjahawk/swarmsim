@@ -1,6 +1,5 @@
 # PHY 351 — Independent Summer Research
-
-**Student:** Nathan Langley   
+   
 **Course:** PHY 351 — Independent Study, Summer 2026
 
 ---
