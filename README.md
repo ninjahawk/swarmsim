@@ -28,9 +28,3 @@ This repository contains all code, data, and documentation for an independent su
 
 - **Language:** Python 3
 - **AI Assistance:** Claude (Anthropic) — used for code generation, debugging, and research guidance. All AI use is documented in the research log.
-
----
-
-## Contact
-
-Questions or access requests: [nlangley1868@gmail.com](mailto:nlangley1868@gmail.com)
