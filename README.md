@@ -1,6 +1,4 @@
 # PHY 351 — Independent Summer Research
-   
-**Course:** PHY 351 — Independent Study, Summer 2026
 
 ---
 
