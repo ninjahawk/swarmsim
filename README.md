@@ -1,8 +1,6 @@
 # PHY 351 — Independent Summer Research
 
-**Student:** Nathan Langley  
-**Instructor:** Prof. Ian Beatty  
-**Institution:** University of North Carolina at Greensboro  
+**Student:** Nathan Langley   
 **Course:** PHY 351 — Independent Study, Summer 2026
 
 ---
