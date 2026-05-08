@@ -203,6 +203,11 @@
         <td class="hours-cell">0.50</td>
         <td>Set up project folder, GitHub repo, and logging workflow</td>
       </tr>
+      <tr data-date="2026-05-08">
+        <td class="date-cell">2026-05-08</td>
+        <td class="hours-cell">1.50</td>
+        <td>Selected flocking (Chapter 10) as research topic; read chapter; built research plan; implemented baseline flocking simulation in Python</td>
+      </tr>
     </tbody>
     <tfoot>
       <tr>
@@ -237,6 +242,10 @@
     {
       date: "2026-05-02",
       body: "Read through the professor's project outline. Reviewed textbook chapter options. Set up project folder, GitHub repo, and logging workflow. Topic selection by Monday."
+    },
+    {
+      date: "2026-05-08",
+      body: "Selected flocking (Chapter 10 of Charbonneau) as research topic. Read the full chapter. The model places N agents on a periodic 2D unit square, each subject to four forces: short-range repulsion, velocity-aligning flocking force, self-propulsion toward a target speed, and random noise. Equations of motion integrated with forward Euler at dt=0.01.\n\nPlanned research arc: (1) implement baseline from textbook, (2) validate via limiting cases (pure repulsion, pure flocking, pure random), (3) characterize the solid/fluid phase transition with η, (4) map flock formation vs flocking amplitude α, (5) extend to predator-prey dynamics.\n\nImplemented the baseline simulation in Python (flocking.py): main loop, buffer function for periodic boundary ghosts, and force function. Ran smoke test — 350 agents settle near target speed v0=1.0 within 2000 iterations, order parameter ~0.58 already after 200 iterations showing flocking is forming.\n\nUsed Claude (AI) to help structure the research plan and write initial Python code. All decisions reviewed and accepted by me."
     }
   ];
 
