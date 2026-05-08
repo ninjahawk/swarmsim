@@ -152,51 +152,59 @@ print('\n' + '=' * 60)
 print('PHASE 4 -- PARAMETER SWEEPS')
 print('=' * 60)
 
-N_sw  = 100
-nit   = 2000
+N_sw    = 100
+nit     = 2000
+N_seeds = 5                        # runs per parameter value -- averages out stochastic noise
+all_seeds = list(range(N_seeds))
+
+def sweep_mean(run_params_list, n_frames=80):
+    """Run each params dict over all_seeds, return mean/std of (Phi, KE)."""
+    phis, kes = [], []
+    for p_sw in run_params_list:
+        for s in all_seeds:
+            phi, ke = final_metrics(run(p_sw, n_frames=n_frames, seed=s))
+            phis.append(phi); kes.append(ke)
+    n = len(all_seeds)
+    phi_arr = np.array(phis).reshape(-1, n)
+    ke_arr  = np.array(kes).reshape(-1, n)
+    return phi_arr.mean(1), phi_arr.std(1), ke_arr.mean(1), ke_arr.std(1)
 
 # ---- Sweep A: KE vs eta (repulsion+noise only, Exercise 2) -----------------
-print('\nSweep A: KE vs eta  (repulsion+noise, alpha=0, v0=0)')
+print('\nSweep A: KE vs eta  (repulsion+noise, alpha=0, v0=0)  [%d seeds]' % N_seeds)
 eta_A  = [0.5, 1.0, 2.0, 3.0, 5.0, 7.0, 10.0, 15.0, 20.0, 30.0]
-ke_A   = []
-for eta in eta_A:
-    pA = params(dict(N=N_sw, n_iter=nit, alpha=0., v0=0.,
-                     mu=10., eps=25., r0=0.05, ramp=float(eta)))
-    _, ke = final_metrics(run(pA, n_frames=80, seed=SEED))
-    ke_A.append(ke)
-    print(f'  eta={eta:5.1f}  KE={ke:.2f}')
+pA_list = [params(dict(N=N_sw, n_iter=nit, alpha=0., v0=0.,
+                       mu=10., eps=25., r0=0.05, ramp=float(eta))) for eta in eta_A]
+_, _, ke_A, ke_A_std = sweep_mean(pA_list)
+for eta, ke, std in zip(eta_A, ke_A, ke_A_std):
+    print(f'  eta={eta:5.1f}  KE={ke:.2f} +/- {std:.2f}')
 
 # ---- Sweep B: Phi vs alpha (flocking amplitude, Exercise 3) ----------------
-print('\nSweep B: Phi vs alpha  (flocking only, eps=0, v0=0, eta=0.1)')
+print('\nSweep B: Phi vs alpha  (flocking only, eps=0, v0=0, eta=0.1)  [%d seeds]' % N_seeds)
 alpha_B = [0., 0.05, 0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0]
-phi_B   = []
-for alpha in alpha_B:
-    pB = params(dict(N=N_sw, n_iter=nit, alpha=float(alpha),
-                     eps=0., v0=0., mu=10., ramp=0.1))
-    phi, _ = final_metrics(run(pB, n_frames=80, seed=SEED))
-    phi_B.append(phi)
-    print(f'  alpha={alpha:.2f}  Phi={phi:.3f}')
+pB_list = [params(dict(N=N_sw, n_iter=nit, alpha=float(a),
+                       eps=0., v0=0., mu=10., ramp=0.1)) for a in alpha_B]
+phi_B, phi_B_std, _, _ = sweep_mean(pB_list)
+for a, phi, std in zip(alpha_B, phi_B, phi_B_std):
+    print(f'  alpha={a:.2f}  Phi={phi:.3f} +/- {std:.3f}')
 
 # ---- Sweep C: Phi and KE vs eta (full model) --------------------------------
-print('\nSweep C: Phi and KE vs eta  (full model, all forces active)')
+print('\nSweep C: Phi and KE vs eta  (full model, all forces active)  [%d seeds]' % N_seeds)
 eta_C  = [0.1, 0.2, 0.5, 1.0, 2.0, 3.0, 5.0, 10.0, 20.0]
-phi_C  = []; ke_C = []
-for eta in eta_C:
-    pC = params(dict(N=N_sw, n_iter=nit, ramp=float(eta)))
-    phi, ke = final_metrics(run(pC, n_frames=80, seed=SEED))
-    phi_C.append(phi); ke_C.append(ke)
+pC_list = [params(dict(N=N_sw, n_iter=nit, ramp=float(eta))) for eta in eta_C]
+phi_C, phi_C_std, ke_C, ke_C_std = sweep_mean(pC_list)
+for eta, phi, ke in zip(eta_C, phi_C, ke_C):
     print(f'  eta={eta:5.1f}  Phi={phi:.3f}  KE={ke:.2f}')
 
 # ---- Plot all sweeps --------------------------------------------------------
 fig, axes = plt.subplots(1, 3, figsize=(14, 4))
 fig.suptitle(f'Parameter sweeps  (N={N_sw})', fontsize=11)
 
-axes[0].plot(eta_A, ke_A, 'o-', color='steelblue')
+axes[0].errorbar(eta_A, ke_A, yerr=ke_A_std, fmt='o-', color='steelblue', capsize=3)
 axes[0].set_xlabel('Noise amplitude eta')
 axes[0].set_ylabel('Steady-state KE')
 axes[0].set_title('Sweep A: KE vs eta\n(repulsion+noise only)\nSolid to fluid transition')
 
-axes[1].plot(alpha_B, phi_B, 's-', color='firebrick')
+axes[1].errorbar(alpha_B, phi_B, yerr=phi_B_std, fmt='s-', color='firebrick', capsize=3)
 axes[1].axhline(0.5, color='gray', ls='--', lw=0.8, label='Phi=0.5 threshold')
 axes[1].set_xlabel('Flocking amplitude alpha')
 axes[1].set_ylabel('Order parameter Phi')
@@ -204,12 +212,12 @@ axes[1].set_title('Sweep B: Phi vs alpha\n(flocking only, eta=0.1)\nMin alpha fo
 axes[1].set_ylim(0, 1); axes[1].legend(fontsize=8)
 
 ax2 = axes[2].twinx()
-l1, = axes[2].plot(eta_C, phi_C, 'o-', color='steelblue', label='Phi')
-l2, = ax2.plot(eta_C, ke_C, 's--', color='firebrick', label='KE')
+l1 = axes[2].errorbar(eta_C, phi_C, yerr=phi_C_std, fmt='o-', color='steelblue', capsize=3, label='Phi')
+l2 = ax2.errorbar(eta_C, ke_C, yerr=ke_C_std, fmt='s--', color='firebrick', capsize=3, label='KE')
 axes[2].set_xlabel('Noise amplitude eta')
 axes[2].set_ylabel('Order parameter Phi', color='steelblue')
 ax2.set_ylabel('Kinetic energy', color='firebrick')
-axes[2].set_title('Sweep C: Phi and KE vs eta\n(full model)')
+axes[2].set_title('Sweep C: Phi and KE vs eta\n(full model, %d seeds)' % N_seeds)
 axes[2].set_ylim(0, 1)
 axes[2].legend(handles=[l1, l2], loc='center right', fontsize=8)
 
