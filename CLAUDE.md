@@ -58,7 +58,29 @@ N agents on a periodic 2D unit square under four forces: repulsion, velocity ali
 ## Default Parameters
 N=350, r0=0.005, eps=0.1, rf=0.1, alpha=1.0, v0=1.0, mu=10.0, ramp=0.5, dt=0.01
 
+## Current Status (as of 2026-05-08)
+All research is complete. The full pipeline is done:
+- Simulation code written and validated (flocking.py)
+- Parameter sweeps and validation figures generated (analysis.py)
+- Phase transition finite-size scaling done (phase_transition.py)
+- Predator-prey extension with 4 experiments done (predator.py)
+- Flock geometry analysis done (geometry.py)
+- Multi-predator experiments done (multi_predator.py)
+- All 10 findings documented (findings.md)
+- Professional lab report written in Markdown (report_draft.md)
+- PDF version generated (report_draft.pdf via build_report.py)
+- Repo cleaned up: .gitignore excludes book PDFs, __pycache__, email
+- Everything committed and pushed to GitHub
+
+To regenerate the PDF after any changes to report_draft.md or figures:
+  python build_report.py
+
+## .gitignore
+Excludes: Natural Complexity Book/ (large PDFs), __pycache__/, *.pyc, Emails From Professor.txt
+These files still exist locally but are not tracked by git.
+
 ## Notes
 - All simulation code uses ASCII-only print statements (no Unicode) to avoid cp1252 errors on Windows
 - Repulsion force uses masked computation to avoid negative^1.5 RuntimeWarning
 - Buffer zone (ghost agents) handles periodic boundary forces; yb is indexed from 0, not N
+- report_draft.pdf maps: Fig1=validate_3_flocking_only.png, Fig2+3=phase4_sweeps.png, Fig4=phase_transition_scaling.png, Fig5=predator_2_coherence.png, Fig6=geometry_2_alpha_sweep.png, Fig7=multi_pred_3_summary.png
