@@ -1,0 +1,35 @@
+I'd suggest making a Google Sheets spreadsheet for your time log, one row per work session. Columns for date, hours spent, brief summary. Report hours in decimal (e.g., "3.25"), rounding to the nearest 15 minutes, for easy totaling. Okay to have more than one row with the same date if you have separate work sessions.
+
+Similarly, make a Google Doc for the research log. Pageless format. One tab per day, with the date in the tab. A running log of your ideas, activities, discoveries, difficulties, key results, etc. get recorded in the doc for that day's tab.
+
+This is an amazingly useful research habit to form. I did that for every day of my recent two-month fellowship. Having a searchable record (by AIs or humans!) of what you were thinking, decided, key parameter choices, etc. is really helpful to you. It also provides raw material for a final report. And, should anyone ever doubt your scientific integrity (in a different context, like real science work), you've got a time-stamped record to back you up.
+
+Share both with me right from the start. Since UNCG doesn't support Google apps any more, share with my personal account: ian@ianbeatty.com.
+
+I've got a proposal for you.
+
+This is a textbook on "natural complexity" that uses developing and exploring computational simulations as a way to learn about the topic:
+
+https://uncg.on.worldcat.org/oclc/980848243
+
+It's excellent, and in the past I've stolen some of the chapter topics for comp phys assignments.
+
+I was originally thinking of suggesting that you implement the model described in Chapter 6, "Forest Fires", explore its behavior, and then elaborate it and explore additional questions about the system, guided by both the end-of-chapter "problems" and your own curiosity.
+
+I still think that's a good idea, but it occurred to me that you may find other chapters to be interesting enough to explore too. The concepts do loosely build on each other, but only loosely, so I think you could jump around a bit if you're willing to do targeted reading for backfill.
+
+Since you can use an AI tool for code generation and debugging, I want the focus to be on the higher-level research process:
+
+specifying the model,validating that it's correctly implemented by checking limiting cases or other predictable outcomes,exploring the simulated system's behavior, investigating questions via multiple runs, and interpreting results to develop a conceptual understanding of how it behaves,thinking of additional questions that the results suggest,modifying or extending the code in order to explore those additional questions and answer them,writing up what you did and learned in a complete, precise, reproducible way, andbeing able to describe what the code does in various parts, and *why*.
+Rather than set a specific list of topics you have to get through, I'd prefer to agree on a general number of hours per week to work on it (only counting high-productivity, fully-focused, not-multitasking work), and say that whatever set of topic(s) and question(s) you get through in that time is just fine as long as you do it in good faith.
+
+I expect you'll move pretty quickly with the help of AI — far faster than in "the old days" — but it's hard to predict just how fast, so this will avoid having to predict. And, it's flexible in that you can follow whatever trail of curiosity arises (first checking with me before significant topic changes, just to make sure we stay within reasonable scope).
+
+You'll be responsible for keeping a detailed time log (specific time intervals spent on the course, along with a brief statement what you were doing during each interval), a thorough research log chronicling your choices, development goals and accomplishments, research questions, experimental results, interpretations, thoughts, problems and solutions encountered along the way, etc. Also, at the end of each "topic" (however that makes sense), a report summarizing the system, model implementation, research activity, and findings. And also, keep all software in a GitHub repo that you share with me.
+
+You can use AI tools for all of these steps, with two restrictions:
+
+Document all AI tool use in your research log. (Not every prompt and response, just what general thing you were using what tool for.)You have to understand and own all the decisions along the way, including code architecture choices and research choices. If I ask you about some particular decision, "Claude recommended it" isn't sufficient. It's okay to get recommendations from an AI, but you have to get the reasons, consider alternatives, and decide whether to accept it.
+Take a look at the textbook (free online via our library, from that link) and see how this all sounds. Let me know.
+
+Also, as soon as your registration window opens, sign up for PHY 351 (CRN# 50884) this summer. It's got a capacity of 1, and apparently can't be designated as "by permission of instructor", so if you don't get in before someone else notices it and thinks it's fair game, I'll have to ask them to unregister… a pain for everyone.

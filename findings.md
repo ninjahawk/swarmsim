@@ -93,12 +93,44 @@ hypothesis. Note: N=200 slightly worse than N=100 (0.14 vs 0.11), possibly noise
 
 ---
 
+---
+
+## Finding 8: Solid-to-fluid transition is a crossover, not a phase transition
+**What:** Finite-size scaling across N=25,50,100,200 shows KE/N is essentially
+independent of N. Susceptibility chi = N*var(KE/N) rises monotonically, no peak.
+**Evidence:** phase_transition.py. All four N values give nearly identical KE/N curves.
+**Interpretation:** High compactness (C~0.78) traps agents -- each agent oscillates
+like an independent harmonic oscillator at its lattice site. A true phase transition
+would require chi to diverge at finite eta and scale as N^(gamma/nu). Neither observed.
+
+---
+
+## Finding 9: Flock elongates with predator pressure and with stronger alpha
+**What:** Aspect ratio AR increases with predator presence and flocking amplitude alpha.
+**Evidence:** geometry.py
+- No predator: AR=2.61 | With predator: AR=2.76
+- alpha=0.2: AR=2.09 | alpha=1.0: AR=2.94 | alpha=2.0: AR=7.27
+**Interpretation:** Strong velocity alignment forces agents into a tight stream.
+Under predator pressure the flock thins and elongates, consistent with the book's
+prediction of arched/thinning flocks.
+
+---
+
+## Finding 10: Multiple predators elongate the flock without breaking coherence
+**What:** With 1-4 predators, Phi stays near 0.975-0.991 throughout. AR increases
+from 2.83 (1 predator) to 7.91 (3 predators). Min predator-prey distance actually
+increases slightly from 0.093 to 0.106.
+**Evidence:** multi_predator.py, 8 seeds each.
+**Interpretation:** More predators stretch and thin the flock but don't destroy it.
+Counterintuitively, evasion distance increases with more predators -- pressure from
+multiple directions may force the flock into a harder-to-surround configuration.
+
+---
+
 ## Open Questions / Next Directions
-1. Is the solid-to-fluid transition (Finding 2) a true phase transition? Look for
-   diverging susceptibility or finite-size scaling.
-2. Does the evasion floor (Finding 6) depend on prey flocking amplitude alpha?
-   Predict: stronger flocking = better collective evasion response.
-3. Do arched/splitting flock shapes emerge as the book predicts? Need to characterize
-   flock geometry (radius of gyration, aspect ratio) not just Phi.
-4. What happens with multiple predators? Does the flock strategy change?
-5. Can we reproduce the book's Fig 10.6 vortex structure and study its stability?
+1. Why does evasion distance INCREASE with more predators? Counterintuitive.
+2. Does elongation under multiple predators represent a deliberate shape strategy,
+   or just the flock being geometrically pulled in multiple directions?
+3. What happens with coordinated predators that flock toward each other to herd prey?
+4. Extend phase transition to higher eta (>20) -- is there actually a susceptibility peak?
+5. How do findings change with different compactness C (vary N with fixed r0)?
