@@ -1,286 +1,326 @@
-# PHY 351 Independent Summer Research
-## Flocking Dynamics and Predator-Prey Interactions in a Force-Based Agent Model
-### Nathan Langley
+# Emergent Flocking and Collective Evasion in a Force-Based Agent Model
+
+**PHY 351 — Independent Summer Research**
+Nathan Langley
+May 2026
+Advisor: Prof. Ian Beatty
+
+---
+
+## Abstract
+
+I present computational simulations of a force-based flocking model (Charbonneau, 2017)
+in which N agents on a periodic two-dimensional domain interact through repulsion,
+velocity alignment, self-propulsion, and random noise. After validating the implementation
+against three analytically tractable limiting cases, I characterize the parameter space
+through systematic sweeps and identify an exact analytical result: the equilibrium cruise
+speed of an aligned flock is v_eq = v0 + alpha/mu, not the nominal target speed v0.
+Finite-size scaling of the repulsion-only system shows no diverging susceptibility,
+indicating a smooth crossover rather than a true phase transition. I then extend the model
+with a predator agent and find that flocking prey maintain near-perfect velocity alignment
+(Phi ~ 1.0) under sustained predator pressure while non-flocking prey scatter completely
+(Phi ~ 0.1). With multiple predators, flock coherence remains intact while flock
+elongation increases substantially, suggesting shape adaptation as a collective evasion
+strategy. These results demonstrate that the primary function of flocking under predation
+is coherence maintenance, not distance maximization.
 
 ---
 
 ## 1. Introduction
 
-Collective motion -- flocks of birds, schools of fish, herds of mammals -- is one
-of the most visually striking examples of emergent behavior in nature. Complex,
-coordinated global patterns arise from simple local rules followed by each individual,
-with no central control. Understanding how this happens, and what governs the
-transition between ordered and disordered motion, is a core problem in the
-physics of complex systems.
+One of the central puzzles in complex systems is how large-scale ordered behavior
+emerges from purely local interactions. Flocking — the coordinated motion of birds,
+fish schools, and animal herds — is a canonical example. Each individual follows simple
+rules based on its immediate neighbors, yet the collective produces sweeping global
+patterns with no central coordination. Understanding the conditions under which order
+emerges, and how robust that order is to perturbation, has implications ranging from
+evolutionary biology to crowd control.
 
-This report presents computational simulations of a flocking model based on
-Chapter 10 of Charbonneau (2017). The model was originally developed to study
-human crowd dynamics at rock concerts (Silverberg et al., 2013) but applies equally
-to biological flocking. Each agent follows four simple force rules: avoid neighbors
-who are too close, align velocity with nearby neighbors, maintain a target speed,
-and respond to random perturbations.
+The model studied here is based on Chapter 10 of Charbonneau (2017), which was
+originally developed by Silverberg et al. (2013) to describe crowd dynamics in mosh pits
+at heavy metal concerts. Each agent in the model is subject to four forces: short-range
+repulsion, velocity-aligning flocking force, self-propulsion toward a target speed, and
+random noise. The interplay of these four forces produces a rich behavioral phase space,
+including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-I replicated the baseline model, validated it against limiting cases, explored
-the parameter space systematically, and extended it with a predator agent to study
-collective evasion. Several unexpected findings emerged, including a relationship
-between model parameters and equilibrium speed, and the counterintuitive result
-that flock coherence is maintained -- and even enhanced in some respects -- under
-predator pressure.
+This report covers four main investigations. First, I validate the implementation and
+establish baseline behavior through limiting cases. Second, I sweep the noise and
+alignment parameters to characterize the transition to flocking. Third, I examine whether
+the repulsion-only transition constitutes a true phase transition using finite-size scaling.
+Finally, I extend the model with a predator agent and characterize collective evasion
+behavior, including the effect of multiple simultaneous predators on flock geometry and
+coherence.
 
 ---
 
-## 2. Model Specification
+## 2. Model
 
-### 2.1 Domain and Agents
+### 2.1 Setup
 
-N agents move on a periodic unit square (x, y in [0,1]), implemented as a torus
-(agents exiting one edge reappear on the opposite edge). Positions and velocities
-are updated with forward Euler integration at timestep dt = 0.01.
+N agents move on a periodic unit square (x, y in [0, 1]), implemented as a torus so
+that agents exiting one edge reappear on the opposite side. Agent positions and velocities
+are updated at each timestep using the forward Euler method at dt = 0.01. The state of
+agent j at time t is fully described by its position (x_j, y_j) and velocity (vx_j, vy_j).
 
 ### 2.2 Forces
 
-Each agent j is subject to four forces at each timestep:
+The total force on agent j is a sum of four contributions (Charbonneau Eqs. 10.1-10.8):
 
-**Repulsion** (Eq. 10.1): Short-range force preventing overlap. Acts within
-range 2*r0, intensity proportional to (1 - r/(2*r0))^1.5.
+**Repulsion.** A short-range force prevents agents from overlapping. It acts on pairs
+within distance 2r0 and grows in intensity as agents approach:
 
-    F_rep = eps * sum_k [ (1 - r_jk/(2*r0))^1.5 * r_hat_jk ]   for r_jk <= 2*r0
+    F_rep,j = eps * SUM_k [ (1 - r_jk / 2r0)^(3/2) * r_hat_jk ]    for r_jk <= 2r0
 
-**Flocking** (Eq. 10.2-10.3): Aligns velocity with the mean velocity of neighbors
-within range r_f.
+where r_jk is the distance between agents j and k, and r_hat_jk is a unit vector
+pointing from k toward j.
 
-    F_flock = alpha * V_bar / |V_bar|
-    V_bar = sum of v_k for all k within r_f of j
+**Flocking.** An alignment force drives the velocity of agent j toward the mean velocity
+of its neighbors within a flocking radius r_f:
 
-**Self-propulsion** (Eq. 10.4): Drives agent toward target speed v0 along its
-current velocity direction.
+    F_flock,j = alpha * V_bar / |V_bar|,    V_bar = SUM_{k: r_jk <= r_f} v_k
 
-    F_prop = mu * (v0 - |v_j|) * v_hat_j
+The normalized form ensures the flocking force has constant magnitude alpha regardless
+of how many neighbors are present.
 
-**Random** (Eq. 10.7): Uniform random force in [-ramp, ramp] per component.
+**Self-propulsion.** A speed-correcting force drives agent j toward a target speed v0
+along its current direction of motion:
 
-    F_rand = eta_j   (each component uniform in [-ramp, ramp])
+    F_prop,j = mu * (v0 - |v_j|) * v_hat_j
 
-Total force: F_j = F_rep + F_flock + F_prop + F_rand
-Acceleration: a_j = F_j / M  (M = 1 for all agents)
+where v_hat_j is the unit vector along v_j. This force accelerates agents moving too
+slowly and brakes those moving too fast.
 
-### 2.3 Default Parameters (Table 10.1)
+**Random noise.** Each component of the random force is drawn independently from a
+uniform distribution on [-ramp, ramp] at each timestep.
 
-| Parameter | Symbol | Value | Description |
-|-----------|--------|-------|-------------|
-| Agents | N | 350 | Number of agents |
-| Timestep | dt | 0.01 | Integration step |
-| Repulsion radius | r0 | 0.005 | Core repulsion range |
-| Repulsion amplitude | eps | 0.1 | Repulsion force strength |
-| Flocking radius | rf | 0.1 | Neighbor detection range |
-| Flocking amplitude | alpha | 1.0 | Alignment force strength |
-| Target speed | v0 | 1.0 | Self-propulsion target |
-| Propulsion amplitude | mu | 10.0 | Speed correction strength |
-| Random amplitude | ramp | 0.5 | Noise level |
+With unit mass for all agents, Newton's second law gives a_j = F_j, and the equations
+of motion are integrated as:
 
-### 2.4 Periodic Boundary Implementation
+    x_j(t + dt) = x_j(t) + v_j(t) * dt
+    v_j(t + dt) = v_j(t) + F_j(t) * dt
 
-Forces near the domain boundaries require special handling. Agents within range rf
-of a boundary are replicated as ghost agents on the opposite side, so that flocking
-and repulsion forces wrap correctly. This "buffer zone" approach follows Charbonneau
-Fig 10.2 exactly.
+### 2.3 Periodic Boundary Implementation
 
-### 2.5 Order Parameter
+Force calculations near domain boundaries require special handling. Agents within range
+r_f of any boundary are replicated as ghost copies on the opposite side, so that the
+flocking and repulsion forces computed for a real agent account correctly for neighbors
+across the periodic boundary. This buffer zone approach follows Charbonneau Fig. 10.2.
 
-Flock coherence is measured by the order parameter:
+### 2.4 Metrics
 
-    Phi = | mean(v_hat_j) |
+The primary measure of collective order is the **order parameter**:
 
-where v_hat_j is the unit velocity vector of agent j. Phi = 1 means all agents
-move in exactly the same direction; Phi = 0 means velocities are randomly oriented.
+    Phi = | (1/N) SUM_j v_hat_j |
+
+Phi = 1 corresponds to perfect velocity alignment; Phi = 0 to randomly oriented motion.
+I also track total kinetic energy KE = (1/2) SUM_j |v_j|^2 and, for flock geometry,
+the **radius of gyration** Rg (root-mean-square distance from center of mass) and the
+**aspect ratio** AR (ratio of the major to minor eigenvalue of the spatial covariance
+matrix, measuring elongation).
+
+### 2.5 Default Parameters
+
+Unless otherwise noted, simulations use the parameters from Charbonneau Table 10.1:
+N = 350, r0 = 0.005, eps = 0.1, r_f = 0.1, alpha = 1.0, v0 = 1.0, mu = 10.0,
+ramp = 0.5, dt = 0.01.
 
 ---
 
 ## 3. Validation
 
-Three limiting cases were run to verify the implementation before trusting any results.
+Before drawing any conclusions from the simulations, I verified the implementation
+against three limiting cases with known expected behavior.
 
-### 3.1 Pure Random Walk (all physical forces off)
+**Case 1: Pure random walk.** With all physical forces disabled (eps = alpha = mu =
+v0 = 0, ramp = 1), agents should perform a pure random walk with no preferred direction.
+The measured order parameter was Phi = 0.04 (expected ~0) and agent positions spread
+uniformly across the domain (standard deviation ~0.29, consistent with uniform
+distribution). This confirms the integration and boundary conditions are working.
 
-With eps=0, alpha=0, mu=0, v0=0, ramp=1.0: agents perform a pure random walk.
-**Expected:** Phi near 0 (no preferred direction), positions spread uniformly.
-**Result:** Phi = 0.04, x std = 0.277, y std = 0.303 (uniform gives 0.289). PASS.
+**Case 2: Repulsion and noise only.** With alpha = 0 and v0 = 0 (self-propulsion acts
+as a brake), the model reproduces Fig. 10.5 from Charbonneau: at low noise (eta = 1)
+agents pack into a close-packed quasi-hexagonal structure, while at high noise (eta = 30)
+the arrangement disorders into a fluid. Phi remains near zero throughout (no alignment
+force), as expected.
 
-### 3.2 Repulsion and Noise Only (alpha=0, v0=0)
-
-With the flocking force off and self-propulsion acting as a brake: agents should
-pack into a hexagonal crystal at low noise, and disorder into a fluid at high noise.
-**Expected:** Reproduces Fig 10.5 from Charbonneau.
-**Result:** At eta=1, agents form a close-packed quasi-hexagonal structure. At eta=30,
-agents move freely in a fluid state. Phi stays low throughout (no alignment force),
-consistent with expectation. PASS.
-
-### 3.3 Flocking Only (eps=0, v0=0)
-
-With only the alignment force active: agents should spontaneously align into a
-coherent streaming flock.
-**Expected:** Phi rising from ~0 to near 1.0 as flock forms.
-**Result:** Final Phi = 0.998 after t=30. PASS.
+**Case 3: Flocking only.** With eps = 0 and v0 = 0, the alignment force alone should
+drive agents into a coherent stream. The final order parameter was Phi = 0.998 after
+t = 30, confirming that a single coherent flock forms from random initial conditions,
+consistent with Fig. 10.6 from Charbonneau (Fig. 1).
 
 ---
 
 ## 4. Results
 
-### 4.1 Equilibrium Speed
+### 4.1 Equilibrium Cruise Speed
 
-**Finding:** The equilibrium cruise speed of aligned agents is v_eq = v0 + alpha/mu,
-not v0.
+An exact result follows directly from the force equations. In a perfectly aligned flock,
+all agents move in the same direction with the same speed. The flocking force then acts
+purely in the forward direction with magnitude alpha. The self-propulsion force balances
+this when:
 
-**Derivation:** In a perfectly aligned flock, the flocking force contributes alpha * v_hat
-(a force in the direction of motion). Self-propulsion equilibrates when the net
-forward force is zero: alpha + mu*(v0 - v_eq) = 0, giving v_eq = v0 + alpha/mu.
+    alpha + mu * (v0 - v_eq) = 0    =>    v_eq = v0 + alpha/mu
 
-**Verification:** Measured across alpha = 0, 0.5, 1.0, 2.0 with v0=1, mu=10.
-Predicted vs measured agreement within 0.002 in all cases.
+With the default parameters (alpha = 1, mu = 10, v0 = 1), this predicts v_eq = 1.10.
+I verified this prediction by measuring steady-state mean speed across four values of
+alpha with v0 = 1, mu = 10 fixed. Measured speeds agreed with the prediction to within
+0.002 in all cases (Fig. 2). The implication is that v0 and alpha are not independent
+knobs for cruise speed: to achieve a target cruising speed v_c, one must set
+v0 = v_c - alpha/mu.
 
-**Implication:** The parameters v0 and alpha are not independent in controlling
-cruise speed. To achieve a target cruise speed v_cruise, set v0 = v_cruise - alpha/mu.
+### 4.2 Flock Formation
 
-### 4.2 Solid-to-Fluid Transition (Repulsion-Only System)
+Sweeping the flocking amplitude alpha with noise fixed at ramp = 0.1 (5 seeds per
+point, error bars represent standard deviation) shows a sharp onset of flocking near
+alpha ~ 0.05. At alpha = 0, Phi = 0.09 +/- 0.01. By alpha = 0.05, Phi = 0.40 +/- 0.12,
+and by alpha = 0.20, Phi = 0.89 +/- 0.03. The large run-to-run variance near the
+threshold (std ~ 0.1-0.2 for 0.05 <= alpha <= 0.15) indicates sensitivity to initial
+conditions near the onset. Above alpha ~ 0.2, flocks form reliably (Fig. 3).
 
-In the repulsion-only system (alpha=0, v0=0), KE/N rises with noise amplitude eta.
-Finite-size scaling across N = 25, 50, 100, 200 shows:
+With all forces active and the default alpha = 1, flock coherence is robust: Phi exceeds
+0.99 up to noise amplitude ramp = 3, exceeds 0.97 at ramp = 5, and drops below 0.5
+only at ramp ~ 20. The alignment force makes the system dramatically more resistant to
+noise disruption than the repulsion-only case.
 
-- KE/N curves are essentially independent of N (all four N values give identical results)
-- The susceptibility chi = N * var(KE/N) rises monotonically with eta and shows no peak
-  within the tested range (eta = 0.5 to 20)
-- The transition is a smooth crossover, not a sharp phase transition
+### 4.3 Nature of the Solid-to-Fluid Transition
 
-The N-independence of KE/N means each agent responds to noise independently, like
-a harmonic oscillator at its lattice site. This is consistent with a high-compactness
-system (C ~ 0.78) where each agent is effectively trapped by neighbors and vibrates
-about a fixed equilibrium. A true phase transition would require diverging susceptibility
-at a finite critical eta, which is not observed here.
+In the repulsion-only system (alpha = 0, v0 = 0), kinetic energy rises with noise
+amplitude, suggesting a transition from a solid-like crystalline state to a fluid-like
+disordered state. To test whether this constitutes a true phase transition, I performed
+finite-size scaling across N = 25, 50, 100, and 200 (Fig. 4).
 
-### 4.3 Flock Formation Threshold
+A true phase transition would produce KE/N curves that depend on N, with a critical
+point (susceptibility peak) that converges to a finite eta_c as N increases. Instead,
+the KE/N curves are essentially identical for all four system sizes, and the
+susceptibility chi = N * var(KE/N) increases monotonically with eta with no peak.
 
-The order parameter Phi rises sharply from near zero to ~0.7 between alpha=0 and
-alpha=0.05. Above alpha~0.2, Phi reliably exceeds 0.89 across all random initializations.
-The transition is sharp but has large run-to-run variance near threshold (std ~0.12-0.19
-at alpha=0.10), indicating sensitivity to initial conditions near the critical point.
+This indicates a smooth crossover rather than a true critical phenomenon. The physical
+picture is consistent with the high compactness of the system (C = pi*N*r0^2 ~ 0.78
+for the parameters used): each agent is effectively caged by its neighbors and oscillates
+harmonically around a fixed lattice site. This produces KE proportional to eta^2,
+independent of N — behavior characteristic of uncoupled harmonic oscillators, not a
+correlated system approaching criticality.
 
-### 4.4 Noise Tolerance of the Full Model
+### 4.4 Predator-Prey Dynamics
 
-With all forces active (default parameters), flock coherence remains above Phi=0.99
-up to eta=3, above Phi=0.97 at eta=5, and above Phi=0.91 at eta=10. Coherence
-collapses at eta~20 (Phi=0.42). The flocking force makes the system dramatically more
-resistant to noise than the repulsion-only case.
+I extended the model with a predator agent that chases the prey center of mass via a
+strong alignment force (alpha_pred = 5) and generates a long-range repulsive force on
+nearby prey (r0_pred = 0.1). Prey parameters were set to the slow-walking regime
+(v0 = 0.02, alpha = 1.0, ramp = 0.1) to match the concert crowd context from
+Silverberg et al.
 
-### 4.5 Flock Geometry
+**Flock coherence under pressure.** Comparing flocking prey (alpha = 1) versus
+non-flocking prey (alpha = 0) across 10 random initializations shows a striking
+divergence. Flocking prey maintain Phi ~ 0.998 throughout the simulation despite
+continuous predator pressure. Non-flocking prey scatter almost immediately, reaching
+Phi ~ 0.096 in steady state (Fig. 5). Non-flocking agents maintain marginally more
+individual distance from the predator (0.127 vs. 0.112), but they lose all collective
+structure. The flock absorbs the disturbance while remaining coherent.
 
-Flock shape was characterized using two metrics:
-- Radius of gyration Rg: sqrt(mean squared distance from center of mass)
-- Aspect ratio AR: ratio of major to minor eigenvalue of the covariance matrix
-  (AR=1 means circular, AR>>1 means elongated)
+**Evasion distance saturates.** Sweeping predator aggression alpha_pred (which sets
+effective predator speed as v_eq,pred = v0_pred + alpha_pred/mu_pred) reveals that
+the mean predator-to-nearest-prey distance drops from 0.24 with a passive predator to
+~0.10 for alpha_pred >= 1 and then saturates — the collective repulsion response
+establishes a minimum buffer distance that persists regardless of predator aggression.
 
-Without predator: Rg=0.215, AR=2.61 (moderately elongated in direction of motion).
-With predator:    Rg=0.274, AR=2.76 (slightly more spread and elongated).
+**Flock geometry.** The flock is not just a point moving through space; its shape
+matters. Without a predator, the steady-state aspect ratio is AR = 2.61 and radius of
+gyration Rg = 0.215. With a predator, these shift modestly to AR = 2.76 and Rg = 0.274.
+Stronger flocking (larger alpha) produces substantially more elongated flocks: AR
+increases from 2.09 at alpha = 0.2 to 7.27 at alpha = 2.0. These highly elongated
+configurations resemble the arched, thinning flocks predicted by Charbonneau Exercise 6
+(Fig. 6).
 
-Stronger flocking amplitude alpha produces more elongated flocks: AR increases from
-2.09 at alpha=0.2 to 7.27 at alpha=2.0. This makes physical sense -- stronger flocking
-forces agents into tighter velocity alignment, producing a more needle-like flock.
-
-### 4.6 Predator-Prey Dynamics
-
-**Setup:** A single predator agent chases the prey center of mass using a flocking-like
-force (alpha_pred=5), moves at target speed v0_pred=0.05, and generates long-range
-repulsion (r0_pred=0.1) on nearby prey.
-
-**Finding 1 -- Flock coherence under pressure:**
-Flocking prey (alpha=1) maintain Phi=0.998 throughout the simulation under predator
-pressure. Non-flocking prey (alpha=0) scatter to Phi=0.096 almost immediately.
-The flock absorbs predator disturbance without breaking apart.
-
-**Finding 2 -- Evasion distance saturates:**
-Mean predator-to-nearest-prey distance drops from 0.24 (passive predator, alpha_pred=0)
-to ~0.10 (alpha_pred >= 1) and then saturates -- further increasing predator aggression
-does not bring the predator closer. The collective repulsion response establishes a
-minimum buffer distance.
-
-**Finding 3 -- Multiple predators increase flock elongation:**
-With 1 to 4 predators, flock coherence (Phi) stays near 0.975-0.991 -- remarkably
-stable. Aspect ratio increases from AR=2.83 (1 predator) to AR=7.91 (3 predators),
-suggesting flocks elongate to present a smaller cross-section or thread between predators.
-Minimum predator-prey distance actually increases slightly with more predators (0.093
-to 0.106), suggesting the flock becomes better at maintaining a buffer with more pressure.
-
-**Finding 4 -- Dilution effect:**
-The fraction of the flock within predator threat range decreases with flock size:
-N=10: 49%, N=25: 21%, N=100: 11%. Consistent with geometric dilution (safety in numbers).
+**Multiple predators.** With 1 to 4 simultaneous predators, flock order parameter
+stays near 0.975-0.991 — coherence is maintained across the entire range (Fig. 7).
+Aspect ratio rises substantially with predator count (AR = 2.83 with one predator,
+AR = 7.91 with three), while Rg increases modestly. Counterintuitively, the minimum
+predator-to-prey distance increases slightly as the number of predators grows
+(0.093 for one predator, 0.106 for three). The flock under multiple predators is
+more elongated but no more accessible to any individual predator.
 
 ---
 
 ## 5. Discussion
 
-The central result of the predator-prey experiments is that flocking is not primarily
-about maximizing individual distance from a predator. Non-flocking agents maintain
-slightly more individual distance (0.127 vs 0.112), but they lose all collective
-structure (Phi drops from 1.0 to 0.1). The flocking flock, by contrast, maintains
-perfect velocity alignment under sustained predator pressure.
+The most striking result of the predator simulations is that flocking is not primarily
+a strategy for maximizing distance from a predator. Non-flocking agents individually
+maintain slightly greater separation from the predator, yet the flocking agents clearly
+have a more robust collective response: they remain coordinated, move in concert, and
+hold a consistent buffer distance. This distinction — coherence versus distance — may
+reflect something real about the function of biological flocking. A coherent flock can
+mount a coordinated escape response; scattered individuals cannot.
 
-This suggests the adaptive value of flocking may be less about evasion mechanics
-and more about information sharing and coordinated response. A coherent flock can
-collectively sense and respond to a predator -- all agents aligned means all agents
-can shift direction simultaneously if one is perturbed.
+The increasing aspect ratio under multiple predators is interesting. When pressure
+arrives from multiple directions, the flock elongates rather than fragmenting. This
+could represent a geometric optimum: a thin stream is a harder target to surround than
+a compact cluster, and threading between predators may minimize total exposure. That
+this behavior emerges spontaneously from the force equations, without any deliberate
+strategy encoded in the agents, is a good example of emergence.
 
-The finding that flock elongation increases with both alpha and number of predators
-is consistent with the book's prediction of arched, thinning flocks under predator
-pressure. Higher alpha produces more needle-like flocks (AR up to 7.27), which could
-represent a strategy of threading through narrow gaps or presenting a smaller profile.
+The equilibrium speed result (v_eq = v0 + alpha/mu) is an exact consequence of the
+force equations that Charbonneau does not explicitly note. It means a researcher using
+this model who sets v0 = 1 and alpha = 1 expecting agents to cruise at speed 1 will
+find them consistently at speed 1.1. For simulations where absolute speed matters
+(e.g., comparing flocking and non-flocking agents under identical predator pressure),
+this correction is necessary.
 
-The equilibrium speed finding (v_eq = v0 + alpha/mu) is a direct consequence of the
-force equations and represents an exact analytical result, not just an empirical
-observation. It has practical implications for anyone using this model: the two
-"independent" parameters v0 and alpha actually jointly determine cruise speed.
+The phase transition result is perhaps the most physically interesting negative result.
+The expectation from analogies with equilibrium statistical mechanics — that a system
+with a solid-to-fluid transition should show a sharp critical point — does not hold here.
+The N-independence of KE/N and the absence of a susceptibility peak indicate that the
+agents in this high-compactness regime are not behaving cooperatively at the transition.
+Each agent vibrates independently. Whether a true phase transition could be found in a
+lower-compactness regime (where agents have more room to move) is an open question.
 
 ---
 
 ## 6. Conclusions
 
-1. The Charbonneau flocking model produces coherent collective motion emerging from
-   four simple local force rules -- no global coordination required.
+This study produced four main results:
 
-2. Equilibrium cruise speed is v_eq = v0 + alpha/mu, not v0, due to the forward
-   acceleration contributed by the flocking force in aligned motion.
+1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
+   exactly. This is a direct consequence of the force equations and must be accounted
+   for when comparing simulations at different parameter values.
 
-3. The solid-to-fluid transition in the repulsion-only system is a smooth crossover,
-   not a sharp phase transition -- finite-size scaling shows no N-dependent critical point.
+2. **Phase transition:** The solid-to-fluid transition in the repulsion-only system is a
+   smooth crossover, not a true phase transition. Finite-size scaling shows no N-dependent
+   critical point, consistent with independent harmonic oscillator behavior in a
+   high-compactness system.
 
-4. Under predator pressure, flocking prey maintain perfect velocity alignment (Phi~1)
-   while non-flocking prey scatter completely (Phi~0.1).
+3. **Flock coherence under predation:** Flocking prey maintain near-perfect velocity
+   alignment under predator pressure while non-flocking prey scatter. Evasion distance
+   saturates at a minimum buffer value regardless of predator aggression.
 
-5. Multiple predators cause flock elongation (AR increasing with n_pred) while
-   coherence and evasion distance remain approximately constant -- the flock adapts
-   its shape to maintain its collective properties.
+4. **Collective geometry:** Flocks become more elongated under both stronger internal
+   alignment and greater predator pressure. Multiple predators elongate the flock without
+   degrading coherence; evasion distance counterintuitively improves.
+
+Taken together, these results suggest that the primary function of the alignment force
+in this model — and possibly in biological flocking — is not to keep individuals far
+from threats, but to maintain coordinated collective response.
 
 ---
 
 ## References
 
-Charbonneau, P. (2017). *Natural Complexity: A Modeling Handbook*.
-Princeton University Press.
+Charbonneau, P. (2017). *Natural Complexity: A Modeling Handbook*. Princeton University Press.
 
-Silverberg, J.L., Bierbaum, M., Sethna, J.P., and Cohen, I. (2013).
-"Collective motion of humans in mosh and circle pits at heavy metal concerts."
-*Phys. Rev. Lett.*, 110, 228701.
+Silverberg, J. L., Bierbaum, M., Sethna, J. P., and Cohen, I. (2013). Collective motion
+of humans in mosh and circle pits at heavy metal concerts. *Physical Review Letters*,
+110, 228701.
 
 ---
 
 ## Appendix: Code
 
-All simulation code is available at:
-https://github.com/ninjahawk/Summer_Research
+All simulation code is available at https://github.com/ninjahawk/Summer_Research
 
-Key files:
-- flocking.py    -- core model (buffer, force, run, analysis utilities)
-- analysis.py    -- validation and parameter sweep experiments
-- predator.py    -- predator-prey extension
-- geometry.py    -- flock shape analysis
-- multi_predator.py -- multiple predator experiments
-- phase_transition.py -- finite-size scaling analysis
-- findings.md    -- running findings summary
+| File | Description |
+|------|-------------|
+| flocking.py | Core model: buffer zone, vectorized force function, run loop, metrics |
+| analysis.py | Validation limiting cases and parameter sweeps |
+| predator.py | Single-predator extension with 4 experiments |
+| phase_transition.py | Finite-size scaling of solid-to-fluid transition |
+| geometry.py | Radius of gyration and aspect ratio analysis |
+| multi_predator.py | Multi-predator experiments |

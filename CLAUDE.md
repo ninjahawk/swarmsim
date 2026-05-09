@@ -10,6 +10,16 @@ Textbook: *Natural Complexity: A Modeling Handbook* by Paul Charbonneau (Princet
 - `logs.html` — open in Chrome to view/copy the time log and research log. This is the main interface for logging. Do not replace it with a different solution.
 - `README.md` — GitHub repo overview
 - `research_log.md` — placeholder, actual log data lives in `logs.html`
+- `flocking.py` — core simulation module: buffer zone, vectorized force function, run loop, metrics, animation
+- `analysis.py` — validation limiting cases and parameter sweeps
+- `predator.py` — single-predator extension with 4 experiments
+- `phase_transition.py` — finite-size scaling of solid-to-fluid transition
+- `geometry.py` — radius of gyration and aspect ratio analysis
+- `multi_predator.py` — multi-predator experiments
+- `findings.md` — running notes on all 10 findings
+- `report_draft.md` — main research report (Markdown source)
+- `build_report.py` — generates report_draft.pdf using reportlab
+- `figures/` — all output PNG figures from simulations
 
 ## GitHub
 Remote: https://github.com/ninjahawk/Summer_Research.git  
@@ -36,4 +46,19 @@ Header in research log: PHY 351 / Independent Summer Research / Nathan Langley �
 No API integration. Nathan copies from `logs.html` in Chrome and pastes manually into Google Sheets and Google Docs. Time log copies as a table (splits into columns on paste). Research log copies as plain text.
 
 ## Topic
-Not yet selected. Professor suggested Chapter 6 (Forest Fires) as default. Nathan is deciding by Monday 2026-05-05. Other options: Sandpiles, Traffic Jams, Epidemics, Flocking, Pattern Formation, Percolation, Aggregation.
+**Flocking** — Chapter 10 of Charbonneau (2017), originally by Silverberg et al. (2013) for crowd dynamics.
+N agents on a periodic 2D unit square under four forces: repulsion, velocity alignment, self-propulsion, random noise.
+
+## Key Findings
+1. Equilibrium cruise speed v_eq = v0 + alpha/mu (exact, not just v0)
+2. Solid-to-fluid transition is a smooth crossover (not a true phase transition) — finite-size scaling shows no diverging susceptibility
+3. Flocking prey maintain Phi~1.0 under predator pressure; non-flocking scatter to Phi~0.1
+4. Multiple predators elongate the flock (AR up to 7.9) but coherence stays near 0.98; evasion distance counterintuitively improves
+
+## Default Parameters
+N=350, r0=0.005, eps=0.1, rf=0.1, alpha=1.0, v0=1.0, mu=10.0, ramp=0.5, dt=0.01
+
+## Notes
+- All simulation code uses ASCII-only print statements (no Unicode) to avoid cp1252 errors on Windows
+- Repulsion force uses masked computation to avoid negative^1.5 RuntimeWarning
+- Buffer zone (ghost agents) handles periodic boundary forces; yb is indexed from 0, not N
