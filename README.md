@@ -10,7 +10,7 @@
 [![Course](https://img.shields.io/badge/PHY_351-UNCG-gold)](https://uncg.edu)
 [![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/ninjahawk/Summer_Research)
 
-**PHY 351 — Independent Summer Research &nbsp;|&nbsp; Nathan Langley &nbsp;|&nbsp; Advisor: Prof. Ian Beatty**
+**PHY 351 — Independent Summer Research &nbsp;|&nbsp; UNCG**
 
 A computational study of force-based flocking agents on a periodic 2D domain, extended with predator-prey dynamics. Based on Charbonneau (2017), Ch. 10.
 
@@ -145,7 +145,7 @@ Open `sim_demo.html` in a browser for a real-time interactive simulation with ad
 ## 🛠️ Tools
 
 - **Language:** Python 3 — numpy, matplotlib, reportlab
-- **AI assistance:** Claude (Anthropic) — code generation, debugging, research guidance. All AI use documented in research log; all decisions reviewed and owned by Nathan Langley.
+- **AI assistance:** Claude (Anthropic) — code generation, debugging, research guidance. All AI use documented in research log.
 
 ---
 

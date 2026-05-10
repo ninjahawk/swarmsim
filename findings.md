@@ -1,5 +1,5 @@
 # Findings — PHY 351 Flocking Research
-Nathan Langley | Started 2026-05-08
+Started 2026-05-08
 
 ---
 

@@ -2,8 +2,7 @@
 
 ## Project
 PHY 351 Independent Summer Research  
-Student: Nathan Langley  
-Professor: Ian Beatty (ian@ianbeatty.com)  
+Professor contact: ian@ianbeatty.com  
 Textbook: *Natural Complexity: A Modeling Handbook* by Paul Charbonneau (Princeton University Press, 2017)
 
 ## Long-Running Nature of This Project
@@ -44,15 +43,15 @@ All logging is done by editing `logs.html` directly:
 ## Log Format
 Time log hours are decimal rounded to nearest 0.25 (e.g. 30 min = 0.50).  
 Research log entries are plain text, concise, first person.  
-Header in research log: PHY 351 / Independent Summer Research / Nathan Langley — do not change.
+Header in research log: PHY 351 / Independent Summer Research — do not change.
 
 ## Rules from Professor
 - Document all AI use in the research log (general purpose, not every prompt)
-- Nathan must understand and own all decisions — "Claude recommended it" is not sufficient
+- The student must understand and own all decisions — "Claude recommended it" is not sufficient
 - Share time log with professor via Google Sheets (copy from logs.html), research log via Google Docs
 
 ## Google Sheets / Docs
-No API integration. Nathan copies from `logs.html` in Chrome and pastes manually into Google Sheets and Google Docs. Time log copies as a table (splits into columns on paste). Research log copies as plain text.
+No API integration. Logs are copied from `logs.html` in Chrome and pasted manually into Google Sheets and Google Docs. Time log copies as a table (splits into columns on paste). Research log copies as plain text.
 
 ## Topic
 **Flocking** — Chapter 10 of Charbonneau (2017), originally by Silverberg et al. (2013) for crowd dynamics.
