@@ -15,6 +15,11 @@ Thumbs.db
 *.swp
 *.swo
 
+# Report files (kept locally, not tracked in repo)
+report_draft.md
+report_draft.pdf
+build_report.py
+
 # Generated outputs (figures and PDF are reproducible; keep figures in repo for the report)
 # Uncomment to exclude figures if they get too large:
 # figures/
