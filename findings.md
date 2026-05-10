@@ -172,7 +172,30 @@ phase transition in any easily accessible parameter regime.
 
 ---
 
+---
+
+## Finding 13: Coordinated predators spread out but cannot break the flock
+**What:** Adding predator-predator repulsion (alpha_coord) forces predators to spread
+out spatially instead of co-localizing, and brings them physically closer to the flock.
+But even with 10 coordinated predators, Phi never drops below 0.92. The flock's
+collective evasion is robust to predator coordination strategy.
+**Evidence:** coordinated_predators.py, 8 seeds each.
+- alpha_coord=0 (naive): pred-pred sep=0.001, AR=8.82, min_dist=0.105
+- alpha_coord=5: pred-pred sep=0.141 (real separation achieved), min_dist=0.078
+- alpha_coord=10: pred-pred sep=0.233, min_dist=0.084, Phi=0.970
+- alpha_coord=20: pred-pred sep=0.293 (maximum tested)
+- n_pred=1..10 with alpha_coord=10: Phi ranges 0.923-0.991, no systematic collapse
+**Key threshold:** Separation requires alpha_coord >= ~5. Below that, the shared
+CoM target overwhelms the repulsion and predators still pile up.
+**Interpretation:** The prey collective is strategy-resistant. Naive predators fail
+because they co-localize. Coordinated predators fail because the flock's distributed
+repulsion response scales with the number of approaching predators. No number or
+strategy of predators in this model breaks the flock.
+
+---
+
 ## Open Questions / Next Directions
-1. What happens with coordinated predators that flock toward each other to herd prey?
-2. Does the low-compactness phase transition show proper scaling collapse?
-3. What is the critical exponent for the low-compactness transition?
+1. Does the low-compactness phase transition show proper scaling collapse?
+2. Can predator coordination using a herding strategy (encircling the flock rather than
+   chasing its CoM) outperform the alpha_coord repulsion approach?
+3. What is the minimum prey group size below which the dilution/coherence effect fails?

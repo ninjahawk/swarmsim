@@ -87,6 +87,10 @@ To regenerate the PDF after any changes to report_draft.md or figures:
 Excludes: Natural Complexity Book/ (large PDFs), __pycache__/, *.pyc, Emails From Professor.txt
 These files still exist locally but are not tracked by git.
 
+## Git Commit Style
+- Include `Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>` in roughly 50% of commits — not every one.
+- Use it for significant AI-contributed work; omit for small fixes, logging, and minor tweaks.
+
 ## Notes
 - All simulation code uses ASCII-only print statements (no Unicode) to avoid cp1252 errors on Windows
 - Repulsion force uses masked computation to avoid negative^1.5 RuntimeWarning
