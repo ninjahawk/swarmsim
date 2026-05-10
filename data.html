@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Summer Research — Raw Data</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8f9fa; color: #202124; }
+
+  header {
+    background: #188038;
+    color: white;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  header h1 { font-size: 20px; font-weight: 500; }
+  header span { font-size: 13px; opacity: 0.85; }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    background: white;
+    border-bottom: 2px solid #e0e0e0;
+    padding: 0 32px;
+    gap: 0;
+  }
+  .tab {
+    padding: 14px 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #5f6368;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    white-space: nowrap;
+  }
+  .tab:hover { color: #188038; }
+  .tab.active { color: #188038; border-bottom-color: #188038; }
+
+  .panel { display: none; padding: 28px 32px; }
+  .panel.active { display: block; }
+
+  .toolbar {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .toolbar-left h2 { font-size: 16px; font-weight: 600; color: #3c4043; }
+  .toolbar-left p  { font-size: 12px; color: #5f6368; margin-top: 4px; max-width: 640px; line-height: 1.5; }
+
+  .btn {
+    padding: 8px 20px;
+    background: #188038;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .btn:hover { background: #0d652d; }
+  .btn-outline {
+    background: white;
+    color: #188038;
+    border: 1px solid #188038;
+  }
+  .btn-outline:hover { background: #e6f4ea; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  thead tr { background: #f1f3f4; }
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #5f6368;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #f1f3f4;
+    font-variant-numeric: tabular-nums;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8f9fa; }
+  .num { color: #188038; font-weight: 500; }
+  .label-col { color: #3c4043; font-weight: 500; }
+  .note-col { color: #5f6368; font-size: 12px; }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #3c4043;
+    margin: 20px 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .section-title:first-of-type { margin-top: 0; }
+
+  .meta {
+    font-size: 12px;
+    color: #5f6368;
+    margin-bottom: 12px;
+    line-height: 1.6;
+  }
+  .meta strong { color: #3c4043; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Summer Research — Raw Data</h1>
+    <span>PHY 351 &nbsp;|&nbsp; Flocking Simulations &nbsp;|&nbsp; Nathan Langley</span>
+  </div>
+</header>
+
+<div class="tabs" id="tabBar"></div>
+
+<div id="panels"></div>
+
+<script>
+// =============================================================================
+// DATA STORE
+// Each entry in `experiments` defines one tab.
+// tables: array of { title, meta, cols, rows, notes }
+//   cols: array of column header strings
+//   rows: array of arrays (values); prefix a value with "!" to style as .num
+// =============================================================================
+const experiments = [
+
+  // --------------------------------------------------------------------------
+  {
+    id: "validation",
+    label: "Validation",
+    desc: "Three limiting cases confirming the implementation is correct (analysis.py).",
+    tables: [
+      {
+        title: "Limiting Case Results",
+        meta: "Default params unless noted. Single run each.",
+        cols: ["Case", "Condition", "Expected", "Measured", "Pass?"],
+        rows: [
+          ["Random walk",     "eps=alpha=mu=v0=0, ramp=1",   "Phi ~ 0",      "Phi = 0.04",  "PASS"],
+          ["Repulsion+noise", "alpha=0, v0=0, low eta=1",    "Crystal order, Phi~0", "Hex packing, Phi=0.00", "PASS"],
+          ["Repulsion+noise", "alpha=0, v0=0, high eta=30",  "Fluid, Phi~0", "Disordered, Phi=0.00",  "PASS"],
+          ["Flocking only",   "eps=0, v0=0, alpha=1",        "Phi ~ 1",      "Phi = 0.998", "PASS"],
+        ]
+      }
+    ]
+  },
+
+  // --------------------------------------------------------------------------
+  {
+    id: "eq_speed",
+    label: "Equil. Speed",
+    desc: "Finding 1: equilibrium cruise speed v_eq = v0 + alpha/mu (analysis.py, Sweep A).",
+    tables: [
+      {
+        title: "Predicted vs Measured Cruise Speed",
+        meta: "v0=1.0, mu=10.0. N=350, ramp=0.5, 5 seeds each.",
+        cols: ["alpha", "Predicted v_eq", "Measured v_eq", "Diff"],
+        rows: [
+          ["0.0", "1.000", "1.000", "0.000"],
+          ["0.5", "1.050", "1.049", "0.001"],
+          ["1.0", "1.100", "1.098", "0.002"],
+          ["2.0", "1.200", "1.199", "0.001"],
+        ]
+      }
+    ]
+  },
+
+  // --------------------------------------------------------------------------
+  {
+    id: "sweeps",
+    label: "Param Sweeps",
+    desc: "Findings 2–4: repulsion-only solid/fluid, flock formation threshold, noise robustness (analysis.py).",
+    tables: [
+      {
+        title: "Sweep A: Repulsion-only KE vs Noise (alpha=0, v0=0)",
+        meta: "N=350, eps=0.1, r0=0.005, 5 seeds each.",
+        cols: ["eta", "KE mean", "KE std"],
+        rows: [
+          ["0.5",  "0.00",  "0.00"],
+          ["3",    "0.16",  "0.02"],
+          ["10",   "1.74",  "0.09"],
+          ["30",   "15.89", "0.31"],
+        ]
+      },
+      {
+        title: "Sweep B: Flock Order Parameter vs Alpha (ramp=0.1)",
+        meta: "N=350, 5 seeds each.",
+        cols: ["alpha", "Phi mean", "Phi std"],
+        rows: [
+          ["0.00", "0.088", "0.010"],
+          ["0.05", "0.404", "0.120"],
+          ["0.10", "0.607", "0.190"],
+          ["0.20", "0.891", "0.030"],
+          ["0.50", "0.978", "0.005"],
+          ["1.00", "0.999", "0.001"],
+        ]
+      },
+      {
+        title: "Sweep C: Full Model Coherence vs Noise (alpha=1, all forces)",
+        meta: "N=350, 5 seeds each.",
+        cols: ["ramp (eta)", "Phi mean", "Phi std"],
+        rows: [
+          ["1",  "0.999", "0.001"],
+          ["3",  "0.997", "0.002"],
+          ["5",  "0.976", "0.010"],
+          ["10", "0.906", "0.030"],
+          ["20", "0.417", "0.080"],
+        ]
+      }
+    ]
+  },
+
+  // --------------------------------------------------------------------------
+  {
+    id: "phase",
+    label: "Phase Transition",
+    desc: "Finding 8: finite-size scaling of solid-to-fluid transition (phase_transition.py). Crossover, no true phase transition.",
+    tables: [
+      {
+        title: "KE/N and Susceptibility vs Eta (alpha=0, v0=0, eps=25, r0=0.05, 8 seeds)",
+        meta: "Fixed r0=0.05 (compactness varies with N). Susceptibility chi = N * var(KE/N).",
+        cols: ["N", "eta", "KE/N", "chi", "Eta_crit (chi peak)"],
+        rows: [
+          ["25",  "0.5",  "0.000", "0.000", ""],
+          ["25",  "5.0",  "0.004", "0.000", ""],
+          ["25",  "10.0", "0.018", "0.000", ""],
+          ["25",  "20.0", "0.071", "0.004", ">20 (no peak)"],
+          ["50",  "0.5",  "0.000", "0.000", ""],
+          ["50",  "5.0",  "0.004", "0.000", ""],
+          ["50",  "10.0", "0.018", "0.000", ""],
+          ["50",  "20.0", "0.071", "0.004", ">20 (no peak)"],
+          ["100", "0.5",  "0.000", "0.000", ""],
+          ["100", "5.0",  "0.004", "0.000", ""],
+          ["100", "10.0", "0.018", "0.000", ""],
+          ["100", "20.0", "0.071", "0.004", ">20 (no peak)"],
+          ["200", "0.5",  "0.000", "0.000", ""],
+          ["200", "5.0",  "0.004", "0.000", ""],
+          ["200", "10.0", "0.018", "0.000", ""],
+          ["200", "20.0", "0.071", "0.004", ">20 (no peak)"],
+        ]
+      }
+    ]
+  },
+
+  // --------------------------------------------------------------------------
+  {
+    id: "compactness",
+    label: "Compactness Phase",
+    desc: "Finding 12: fixed-compactness finite-size scaling (compactness_phase.py). Both C=0.78 and C=0.10 show crossover — no phase transition.",
+    tables: [
+      {
+        title: "C=0.78 (Dense/Caged): KE/N vs Eta — all N values overlap",
+        meta: "r0 scaled as sqrt(C/pi*N). 8 seeds per point. chi = N*var(KE/N). Peak always at eta=30 (top of sweep).",
+        cols: ["N", "r0", "eta=5 KE/N", "eta=10 KE/N", "eta=20 KE/N", "eta=30 KE/N", "chi_max (eta=30)"],
+        rows: [
+          ["25",  "0.0997", "0.0044", "0.0177", "0.0704", "0.1589", "0.0209"],
+          ["50",  "0.0705", "0.0044", "0.0175", "0.0705", "0.1598", "0.0232"],
+          ["100", "0.0498", "0.0044", "0.0174", "0.0707", "0.1582", "0.0281"],
+          ["200", "0.0352", "0.0044", "0.0176", "0.0700", "0.1571", "0.0238"],
+        ]
+      },
+      {
+        title: "C=0.10 (Dilute): KE/N vs Eta — same N-independent behavior",
+        meta: "r0 scaled as sqrt(C/pi*N). 8 seeds per point. No peak found — agents non-interacting (sparse).",
+        cols: ["N", "r0", "eta=5 KE/N", "eta=10 KE/N", "eta=20 KE/N", "eta=30 KE/N", "chi_max (eta=30)"],
+        rows: [
+          ["25",  "0.0357", "0.0045", "0.0179", "0.0710", "0.1612", "0.0238"],
+          ["50",  "0.0252", "0.0044", "0.0176", "0.0710", "0.1600", "0.0193"],
+          ["100", "0.0178", "0.0044", "0.0175", "0.0700", "0.1582", "0.0254"],
+          ["200", "0.0126", "0.0044", "0.0175", "0.0698", "0.1576", "0.0258"],
+        ]
+      }
+    ]
+  },
+
+  // --------------------------------------------------------------------------
+  {
+    id: "predator",
+    label: "Predator (Single)",
+    desc: "Findings 5–7: single predator experiments (predator.py).",
+    tables: [
+      {
+        title: "Exp 2: Flock vs Non-flock Prey Under Predator Pressure (10 seeds)",
+        meta: "Prey: N=100, v0=0.02, ramp=0.1. Predator: alpha_pred=5, r0_pred=0.1, eps_pred=2.",
+        cols: ["Condition", "Steady-state Phi", "Mean pred-nearest dist"],
+        rows: [
+          ["Flocking (alpha=1)",     "0.998", "0.112"],
+          ["Non-flocking (alpha=0)", "0.096", "0.127"],
+        ]
+      },
+      {
+        title: "Exp 3: Predator Aggression Sweep (8 seeds)",
+        meta: "Prey flocking, v0=0.02. Predator speed v_eq = v0_pred + alpha_pred/mu_pred.",
+        cols: ["alpha_pred", "Pred v_eq", "Prey Phi", "Pred-nearest dist"],
+        rows: [
+          ["0",  "0.05", "0.980", "0.240"],
+          ["1",  "0.15", "0.975", "0.103"],
+          ["3",  "0.35", "0.970", "0.100"],
+          ["5",  "0.55", "0.968", "0.099"],
+          ["10", "1.05", "0.965", "0.098"],
+          ["15", "1.55", "0.962", "0.098"],
+        ]
+      },
+      {
+        title: "Exp 4: Dilution Effect — Flock Size vs Fraction in Threat Range (5 seeds)",
+        meta: "Fraction of prey within predator threat radius r0_pred=0.1.",
+        cols: ["N", "Fraction in threat range"],
+        rows: [
+          ["10",  "0.49"],
+          ["25",  "0.21"],
+          ["50",  "0.19"],
+          ["100", "0.11"],
+          ["200", "0.14"],
+        ]
+      }
+    ]
+  },
+
+  // --------------------------------------------------------------------------
+  {
+    id: "geometry",
+    label: "Geometry",
+    desc: "Finding 9: flock shape (radius of gyration, aspect ratio) with and without predator (geometry.py).",
+    tables: [
+      {
+        title: "Exp 1: Geometry With vs Without Predator (10 seeds)",
+        meta: "N=100, v0=0.02, ramp=0.1, alpha=1.",
+        cols: ["Condition", "Rg", "Aspect Ratio (AR)", "Phi"],
+        rows: [
+          ["No predator",   "0.215", "2.61", "1.000"],
+          ["With predator", "0.273", "2.74", "0.998"],
+        ]
+      },
+      {
+        title: "Exp 2: AR vs Flocking Amplitude Alpha (8 seeds)",
+        meta: "With predator. Steady-state values (last 20% of frames).",
+        cols: ["alpha", "Rg", "AR", "Phi"],
+        rows: [
+          ["0.2", "0.299", "2.09", "0.958"],
+          ["0.5", "0.266", "2.08", "0.997"],
+          ["1.0", "0.251", "2.93", "0.989"],
+          ["2.0", "0.285", "7.31", "0.995"],
+        ]
+      }
+    ]
+  },
+
+  // --------------------------------------------------------------------------
+  {
+    id: "multipred",
+    label: "Multi-Predator",
+    desc: "Finding 10: 1–4 simultaneous predators (multi_predator.py). Coherence maintained; AR rises; evasion distance increases.",
+    tables: [
+      {
+        title: "Exp 1: Steady-State Metrics vs Number of Predators (8 seeds)",
+        meta: "N=100 prey, v0=0.02, alpha=1, ramp=0.1. Last 40% of frames.",
+        cols: ["n_pred", "Phi", "AR", "Rg", "Min pred-prey dist"],
+        rows: [
+          ["1", "0.976", "2.82", "0.253", "0.093"],
+          ["2", "0.935", "4.54", "0.288", "0.102"],
+          ["3", "0.986", "8.62", "0.283", "0.105"],
+          ["4", "0.974", "3.78", "0.290", "0.096"],
+        ]
+      }
+    ]
+  },
+
+  // --------------------------------------------------------------------------
+  {
+    id: "evasion",
+    label: "Evasion Diagnostic",
+    desc: "Finding 11: why evasion distance increases with more predators (evasion_analysis.py). Predators co-localize at CoM.",
+    tables: [
+      {
+        title: "Predator Co-localization and Flock Orientation (8 seeds)",
+        meta: "N=100 prey. Angular spread = circular std of predator angles around flock CoM. Orientation = angle between flock major axis and predator centroid direction (45 deg = random).",
+        cols: ["n_pred", "Pred-pred dist", "Angular spread (rad)", "Flock orient vs pred (deg)", "Min pred-prey dist"],
+        rows: [
+          ["1", "—",     "0.000", "43.6", "0.094"],
+          ["2", "0.001", "0.866", "43.1", "0.099"],
+          ["3", "0.001", "1.127", "45.8", "0.105"],
+          ["4", "0.001", "1.251", "43.3", "0.096"],
+        ],
+        notes: "Pred-pred dist ~0.001 (effectively zero) for all multi-predator runs: all predators pile up at the same CoM target. Flock orientation near 45 deg = no systematic orientation strategy."
+      }
+    ]
+  },
+
+];
+
+// =============================================================================
+// RENDER
+// =============================================================================
+function buildTabs() {
+  const bar = document.getElementById('tabBar');
+  experiments.forEach((exp, i) => {
+    const t = document.createElement('div');
+    t.className = 'tab' + (i === 0 ? ' active' : '');
+    t.textContent = exp.label;
+    t.onclick = () => switchTab(i);
+    bar.appendChild(t);
+  });
+}
+
+function buildPanels() {
+  const container = document.getElementById('panels');
+  experiments.forEach((exp, i) => {
+    const panel = document.createElement('div');
+    panel.className = 'panel' + (i === 0 ? ' active' : '');
+    panel.id = 'panel-' + i;
+
+    let html = `
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <h2>${exp.label}</h2>
+          <p>${exp.desc}</p>
+        </div>
+        <button class="btn" onclick="copyPanel(${i})">Copy for Google Sheets</button>
+      </div>`;
+
+    exp.tables.forEach(tbl => {
+      html += `<div class="section-title">${tbl.title}</div>`;
+      if (tbl.meta) html += `<div class="meta">${tbl.meta}</div>`;
+      html += `<table data-exp="${i}"><thead><tr>`;
+      tbl.cols.forEach(c => { html += `<th>${c}</th>`; });
+      html += `</tr></thead><tbody>`;
+      tbl.rows.forEach(row => {
+        html += '<tr>';
+        row.forEach((cell, ci) => {
+          const isNum = !isNaN(cell.replace('—','')) && cell !== '' && cell !== '—';
+          const cls = ci === 0 ? 'label-col' : (isNum ? 'num' : '');
+          html += `<td class="${cls}">${cell}</td>`;
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+      if (tbl.notes) html += `<div class="meta" style="margin-top:-16px;margin-bottom:24px;font-style:italic;">${tbl.notes}</div>`;
+    });
+
+    panel.innerHTML = html;
+    container.appendChild(panel);
+  });
+}
+
+function switchTab(i) {
+  document.querySelectorAll('.tab').forEach((t, j) => t.classList.toggle('active', i === j));
+  document.querySelectorAll('.panel').forEach((p, j) => p.classList.toggle('active', i === j));
+}
+
+function copyPanel(i) {
+  const exp = experiments[i];
+  let lines = [exp.label, exp.desc, ''];
+  exp.tables.forEach(tbl => {
+    lines.push(tbl.title);
+    if (tbl.meta) lines.push(tbl.meta);
+    lines.push(tbl.cols.join('\t'));
+    tbl.rows.forEach(row => lines.push(row.join('\t')));
+    if (tbl.notes) lines.push('Note: ' + tbl.notes);
+    lines.push('');
+  });
+  navigator.clipboard.writeText(lines.join('\n'))
+    .then(() => alert(exp.label + ' data copied — paste into Google Sheets.'));
+}
+
+buildTabs();
+buildPanels();
+</script>
+</body>
+</html>

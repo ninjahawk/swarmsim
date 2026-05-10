@@ -19,10 +19,11 @@ Finite-size scaling of the repulsion-only system shows no diverging susceptibili
 indicating a smooth crossover rather than a true phase transition. I then extend the model
 with a predator agent and find that flocking prey maintain near-perfect velocity alignment
 (Phi ~ 1.0) under sustained predator pressure while non-flocking prey scatter completely
-(Phi ~ 0.1). With multiple predators, flock coherence remains intact while flock
-elongation increases substantially, suggesting shape adaptation as a collective evasion
-strategy. These results demonstrate that the primary function of flocking under predation
-is coherence maintenance, not distance maximization.
+(Phi ~ 0.1). With multiple predators, flock coherence remains intact while flock elongation increases
+substantially. A follow-up diagnostic shows this elongation is driven by predator
+co-localization at the prey center of mass rather than a deliberate shape strategy.
+These results demonstrate that the primary function of flocking under predation is
+coherence maintenance, not distance maximization.
 
 ---
 
@@ -324,17 +325,21 @@ This study produced four main results:
    for when comparing simulations at different parameter values.
 
 2. **Phase transition:** The solid-to-fluid transition in the repulsion-only system is a
-   smooth crossover, not a true phase transition. Finite-size scaling shows no N-dependent
-   critical point, consistent with independent harmonic oscillator behavior in a
-   high-compactness system.
+   smooth crossover at all tested compactness values, not a true phase transition.
+   Fixed-compactness finite-size scaling shows that both the dense (caged) and dilute
+   (non-interacting) regimes produce N-independent KE/N and monotone susceptibility.
+   The absence of a critical point appears to be a general feature of this model.
 
 3. **Flock coherence under predation:** Flocking prey maintain near-perfect velocity
    alignment under predator pressure while non-flocking prey scatter. Evasion distance
    saturates at a minimum buffer value regardless of predator aggression.
 
-4. **Collective geometry:** Flocks become more elongated under both stronger internal
-   alignment and greater predator pressure. Multiple predators elongate the flock without
-   degrading coherence; evasion distance counterintuitively improves.
+4. **Collective geometry and predator co-localization:** Flocks become more elongated
+   under both stronger internal alignment and greater predator pressure. Crucially,
+   multiple predators using the same "chase CoM" rule converge to the same location
+   (measured separation ~0.001), producing combined repulsion that paradoxically
+   increases evasion distance. The elongation is real but its cause is force
+   concentration, not strategic shape adaptation.
 
 Taken together, these results suggest that the primary function of the alignment force
 in this model — and possibly in biological flocking — is not to keep individuals far
