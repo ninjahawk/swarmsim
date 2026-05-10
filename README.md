@@ -14,7 +14,7 @@
 
 A computational study of force-based flocking agents on a periodic 2D domain, extended with predator-prey dynamics. Based on Charbonneau (2017), Ch. 10.
 
-[**▶ Open Interactive Demo**](sim_demo.html) &nbsp;·&nbsp; [**📊 Raw Data**](data.html) &nbsp;·&nbsp; [**📋 Research Log**](logs.html)
+[**▶ Open Interactive Demo**](https://htmlpreview.github.io/?https://github.com/ninjahawk/Summer_Research/blob/main/sim_demo.html) &nbsp;·&nbsp; [**📊 Raw Data**](https://htmlpreview.github.io/?https://github.com/ninjahawk/Summer_Research/blob/main/data.html) &nbsp;·&nbsp; [**📋 Research Log**](https://htmlpreview.github.io/?https://github.com/ninjahawk/Summer_Research/blob/main/logs.html)
 
 </div>
 
