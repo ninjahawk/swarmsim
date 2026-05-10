@@ -8,13 +8,13 @@
 [![NumPy](https://img.shields.io/badge/NumPy-scientific_computing-013243?logo=numpy&logoColor=white)](https://numpy.org)
 [![Matplotlib](https://img.shields.io/badge/Matplotlib-visualization-11557c)](https://matplotlib.org)
 [![Course](https://img.shields.io/badge/PHY_351-UNCG-gold)](https://uncg.edu)
-[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/ninjahawk/Summer_Research)
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/ninjahawk/swarmsim)
 
 **PHY 351 — Independent Summer Research &nbsp;|&nbsp; UNCG**
 
 A computational study of force-based flocking agents on a periodic 2D domain, extended with predator-prey dynamics. Based on Charbonneau (2017), Ch. 10.
 
-[**▶ Open Interactive Demo**](https://htmlpreview.github.io/?https://github.com/ninjahawk/Summer_Research/blob/main/sim_demo.html) &nbsp;·&nbsp; [**📊 Raw Data**](https://htmlpreview.github.io/?https://github.com/ninjahawk/Summer_Research/blob/main/data.html) &nbsp;·&nbsp; [**📋 Research Log**](https://htmlpreview.github.io/?https://github.com/ninjahawk/Summer_Research/blob/main/logs.html)
+[**▶ Open Interactive Demo**](https://htmlpreview.github.io/?https://github.com/ninjahawk/swarmsim/blob/main/sim_demo.html) &nbsp;·&nbsp; [**📊 Raw Data**](https://htmlpreview.github.io/?https://github.com/ninjahawk/swarmsim/blob/main/data.html) &nbsp;·&nbsp; [**📋 Research Log**](https://htmlpreview.github.io/?https://github.com/ninjahawk/swarmsim/blob/main/logs.html)
 
 </div>
 
