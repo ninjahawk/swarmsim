@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flocking Simulation — Interactive Demo</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    color: #58a6ff;
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: #8b949e;
+    margin-bottom: 20px;
+  }
+
+  .layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  canvas {
+    border: 1px solid #21262d;
+    border-radius: 8px;
+    display: block;
+  }
+
+  .panel {
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .card {
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card h3 {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #8b949e;
+    margin-bottom: 12px;
+  }
+
+  .control { margin-bottom: 12px; }
+  .control:last-child { margin-bottom: 0; }
+  .control label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #c9d1d9;
+    margin-bottom: 5px;
+  }
+  .control label span {
+    color: #58a6ff;
+    font-variant-numeric: tabular-nums;
+    font-family: monospace;
+  }
+  input[type=range] {
+    width: 100%;
+    accent-color: #58a6ff;
+    cursor: pointer;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    background: #21262d;
+    color: #c9d1d9;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    margin-bottom: 6px;
+  }
+  .btn:last-child { margin-bottom: 0; }
+  .btn:hover { background: #30363d; border-color: #58a6ff; }
+  .btn.active { background: #0d419d; border-color: #58a6ff; color: white; }
+  .btn.danger { border-color: #f85149; color: #f85149; }
+  .btn.danger:hover { background: #2d1c1c; }
+  .btn.danger.active { background: #3d1c1c; border-color: #f85149; color: #f85149; }
+
+  .metric {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #8b949e;
+    padding: 4px 0;
+    border-bottom: 1px solid #21262d;
+  }
+  .metric:last-child { border-bottom: none; }
+  .metric .val {
+    color: #58a6ff;
+    font-family: monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .metric .val.hi { color: #3fb950; }
+  .metric .val.lo { color: #f85149; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #8b949e;
+  }
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .phi-bar-wrap {
+    height: 6px;
+    background: #21262d;
+    border-radius: 3px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+  .phi-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #f85149, #e3b341, #3fb950);
+    border-radius: 3px;
+    transition: width 0.1s;
+  }
+</style>
+</head>
+<body>
+
+<h1>Flocking Simulation</h1>
+<div class="subtitle">PHY 351 — Force-based agent model &nbsp;|&nbsp; Charbonneau (2017) Ch. 10</div>
+
+<div class="layout">
+  <canvas id="canvas" width="520" height="520"></canvas>
+
+  <div class="panel">
+
+    <div class="card">
+      <h3>Live Metrics</h3>
+      <div class="metric">
+        <span>Order parameter (Phi)</span>
+        <span class="val" id="mPhi">—</span>
+      </div>
+      <div class="phi-bar-wrap"><div class="phi-bar" id="phiBar" style="width:0%"></div></div>
+      <div style="margin-top:12px"></div>
+      <div class="metric">
+        <span>Mean speed</span>
+        <span class="val" id="mSpeed">—</span>
+      </div>
+      <div class="metric">
+        <span>Agents</span>
+        <span class="val" id="mN">—</span>
+      </div>
+      <div class="metric">
+        <span>Step</span>
+        <span class="val" id="mStep">0</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Forces</h3>
+      <div class="control">
+        <label>Alignment (alpha) <span id="lAlpha">1.50</span></label>
+        <input type="range" id="sAlpha" min="0" max="3" step="0.05" value="1.5">
+      </div>
+      <div class="control">
+        <label>Noise (ramp) <span id="lRamp">0.08</span></label>
+        <input type="range" id="sRamp" min="0" max="1" step="0.01" value="0.08">
+      </div>
+      <div class="control">
+        <label>Target speed (v0) <span id="lV0">0.02</span></label>
+        <input type="range" id="sV0" min="0.005" max="0.1" step="0.005" value="0.02">
+      </div>
+      <div class="control">
+        <label>Agents (N) <span id="lN">120</span></label>
+        <input type="range" id="sN" min="20" max="300" step="10" value="120">
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Predator</h3>
+      <button class="btn danger" id="btnPred" onclick="togglePredator()">Add Predator</button>
+      <button class="btn" id="btnReset" onclick="reset()">Reset Simulation</button>
+      <button class="btn" id="btnPause" onclick="togglePause()">Pause</button>
+    </div>
+
+    <div class="card">
+      <h3>Legend</h3>
+      <div class="legend">
+        <div class="legend-item">
+          <div class="legend-dot" style="background:hsl(0,80%,60%)"></div> heading 0°
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:hsl(90,80%,60%)"></div> 90°
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:hsl(180,80%,60%)"></div> 180°
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:hsl(270,80%,60%)"></div> 270°
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#f85149; width:10px; height:10px; border-radius:2px; transform:rotate(45deg)"></div> predator
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// =============================================================================
+// MODEL PARAMETERS
+// =============================================================================
+const PARAMS = {
+  r0:    0.005,
+  eps:   0.1,
+  rf:    0.1,
+  mu:    10.0,
+  dt:    0.012,
+};
+const PRED_P = {
+  r0_pred:   0.10,
+  eps_pred:  2.5,
+  alpha_pred: 6.0,
+  v0_pred:   0.05,
+  mu_pred:   10.0,
+  ramp_pred: 0.3,
+};
+
+// =============================================================================
+// STATE
+// =============================================================================
+let N = 120;
+let alpha = 1.5, ramp = 0.08, v0 = 0.02;
+let px, py, pvx, pvy;       // prey positions/velocities
+let predX, predY, predVx, predVy;
+let hasPredator = false;
+let paused = false;
+let step = 0;
+let animId;
+
+function initAgents() {
+  px  = new Float64Array(N);
+  py  = new Float64Array(N);
+  pvx = new Float64Array(N);
+  pvy = new Float64Array(N);
+  for (let i = 0; i < N; i++) {
+    px[i]  = Math.random();
+    py[i]  = Math.random();
+    const a = Math.random() * 2 * Math.PI;
+    pvx[i] = Math.cos(a) * v0;
+    pvy[i] = Math.sin(a) * v0;
+  }
+  predX = Math.random(); predY = Math.random();
+  predVx = 0.01; predVy = 0.01;
+  step = 0;
+}
+
+function reset() {
+  N = parseInt(document.getElementById('sN').value);
+  hasPredator = false;
+  document.getElementById('btnPred').classList.remove('active');
+  document.getElementById('btnPred').textContent = 'Add Predator';
+  initAgents();
+}
+
+function togglePredator() {
+  hasPredator = !hasPredator;
+  const btn = document.getElementById('btnPred');
+  btn.classList.toggle('active', hasPredator);
+  btn.textContent = hasPredator ? 'Remove Predator' : 'Add Predator';
+  if (hasPredator) {
+    predX = Math.random(); predY = Math.random();
+    predVx = 0.01; predVy = 0.01;
+  }
+}
+
+function togglePause() {
+  paused = !paused;
+  document.getElementById('btnPause').textContent = paused ? 'Resume' : 'Pause';
+  document.getElementById('btnPause').classList.toggle('active', paused);
+  if (!paused) loop();
+}
+
+// =============================================================================
+// PERIODIC DISTANCE
+// =============================================================================
+function pdist(ax, ay, bx, by) {
+  let dx = ax - bx, dy = ay - by;
+  dx -= Math.round(dx); dy -= Math.round(dy);
+  return [dx, dy, Math.sqrt(dx*dx + dy*dy)];
+}
+
+// =============================================================================
+// SIMULATION STEP
+// =============================================================================
+function simStep() {
+  const dt = PARAMS.dt;
+  const r0 = PARAMS.r0, eps = PARAMS.eps, rf = PARAMS.rf, mu = PARAMS.mu;
+  const fx = new Float64Array(N);
+  const fy = new Float64Array(N);
+
+  for (let j = 0; j < N; j++) {
+    let vxSum = 0, vySum = 0, nFlock = 0;
+
+    for (let k = 0; k < N; k++) {
+      if (k === j) continue;
+      const [dx, dy, d] = pdist(px[k], py[k], px[j], py[j]);
+      if (d === 0) continue;
+
+      // Repulsion
+      if (d <= 2 * r0) {
+        const fac = eps * Math.pow(1 - d / (2 * r0), 1.5) / d;
+        fx[j] -= fac * dx;
+        fy[j] -= fac * dy;
+      }
+
+      // Flocking accumulation
+      if (d <= rf) {
+        vxSum += pvx[k];
+        vySum += pvy[k];
+        nFlock++;
+      }
+    }
+
+    // Alignment force
+    if (nFlock > 0) {
+      const vmag = Math.sqrt(vxSum*vxSum + vySum*vySum);
+      if (vmag > 0) {
+        fx[j] += alpha * vxSum / vmag;
+        fy[j] += alpha * vySum / vmag;
+      }
+    }
+
+    // Self-propulsion
+    const sp = Math.sqrt(pvx[j]*pvx[j] + pvy[j]*pvy[j]);
+    if (sp > 0) {
+      fx[j] += mu * (v0 - sp) * pvx[j] / sp;
+      fy[j] += mu * (v0 - sp) * pvy[j] / sp;
+    }
+
+    // Random noise
+    fx[j] += ramp * (2 * Math.random() - 1);
+    fy[j] += ramp * (2 * Math.random() - 1);
+
+    // Predator repulsion
+    if (hasPredator) {
+      const [dx, dy, d] = pdist(predX, predY, px[j], py[j]);
+      if (d > 0 && d <= PRED_P.r0_pred) {
+        const s = PRED_P.eps_pred * Math.pow(1 - d / PRED_P.r0_pred, 1.5) / d;
+        fx[j] -= s * dx;
+        fy[j] -= s * dy;
+      }
+    }
+  }
+
+  // Integrate prey
+  for (let j = 0; j < N; j++) {
+    pvx[j] += fx[j] * dt;
+    pvy[j] += fy[j] * dt;
+    px[j] = (px[j] + pvx[j] * dt + 1) % 1;
+    py[j] = (py[j] + pvy[j] * dt + 1) % 1;
+  }
+
+  // Predator
+  if (hasPredator) {
+    let cx = 0, cy = 0, sw = 0;
+    // circular mean for CoM
+    let sinX = 0, cosX = 0, sinY = 0, cosY = 0;
+    for (let j = 0; j < N; j++) {
+      sinX += Math.sin(2*Math.PI*px[j]);
+      cosX += Math.cos(2*Math.PI*px[j]);
+      sinY += Math.sin(2*Math.PI*py[j]);
+      cosY += Math.cos(2*Math.PI*py[j]);
+    }
+    cx = ((Math.atan2(sinX/N, cosX/N) / (2*Math.PI)) + 1) % 1;
+    cy = ((Math.atan2(sinY/N, cosY/N) / (2*Math.PI)) + 1) % 1;
+
+    let tx = cx - predX; tx -= Math.round(tx);
+    let ty = cy - predY; ty -= Math.round(ty);
+    const dist = Math.sqrt(tx*tx + ty*ty);
+    if (dist > 0) { tx /= dist; ty /= dist; }
+
+    const sp = Math.sqrt(predVx*predVx + predVy*predVy);
+    let pfx = PRED_P.alpha_pred * tx + PRED_P.ramp_pred * (2*Math.random()-1);
+    let pfy = PRED_P.alpha_pred * ty + PRED_P.ramp_pred * (2*Math.random()-1);
+    if (sp > 0) {
+      pfx += PRED_P.mu_pred * (PRED_P.v0_pred - sp) * predVx / sp;
+      pfy += PRED_P.mu_pred * (PRED_P.v0_pred - sp) * predVy / sp;
+    }
+    predVx += pfx * dt;
+    predVy += pfy * dt;
+    predX = (predX + predVx * dt + 1) % 1;
+    predY = (predY + predVy * dt + 1) % 1;
+  }
+
+  step++;
+}
+
+// =============================================================================
+// METRICS
+// =============================================================================
+function computePhi() {
+  let sx = 0, sy = 0;
+  for (let j = 0; j < N; j++) {
+    const sp = Math.sqrt(pvx[j]*pvx[j] + pvy[j]*pvy[j]);
+    if (sp > 0) { sx += pvx[j]/sp; sy += pvy[j]/sp; }
+  }
+  return Math.sqrt(sx*sx + sy*sy) / N;
+}
+function computeMeanSpeed() {
+  let s = 0;
+  for (let j = 0; j < N; j++) s += Math.sqrt(pvx[j]*pvx[j] + pvy[j]*pvy[j]);
+  return s / N;
+}
+
+// =============================================================================
+// RENDER
+// =============================================================================
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+function hsvColor(angle) {
+  const h = ((angle * 180 / Math.PI) + 360) % 360;
+  return `hsl(${h.toFixed(0)},80%,62%)`;
+}
+
+function draw() {
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle grid
+  ctx.strokeStyle = '#161b22';
+  ctx.lineWidth = 0.5;
+  for (let i = 1; i < 4; i++) {
+    ctx.beginPath();
+    ctx.moveTo(i * W/4, 0); ctx.lineTo(i * W/4, H);
+    ctx.moveTo(0, i * H/4); ctx.lineTo(W, i * H/4);
+    ctx.stroke();
+  }
+
+  // Agents
+  const R = 3.5;
+  for (let j = 0; j < N; j++) {
+    const angle = Math.atan2(pvy[j], pvx[j]);
+    ctx.fillStyle = hsvColor(angle);
+    // Draw arrowhead
+    const cx = px[j] * W, cy = (1 - py[j]) * H;
+    const sp = Math.sqrt(pvx[j]*pvx[j] + pvy[j]*pvy[j]);
+    const ux = sp > 0 ? pvx[j]/sp : 1, uy = sp > 0 ? pvy[j]/sp : 0;
+    ctx.beginPath();
+    ctx.moveTo(cx + ux*R*1.4, cy - uy*R*1.4);
+    ctx.lineTo(cx - ux*R + uy*R*0.7, cy + uy*R + ux*R*0.7);
+    ctx.lineTo(cx - ux*R - uy*R*0.7, cy + uy*R - ux*R*0.7);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Predator
+  if (hasPredator) {
+    const cx = predX * W, cy = (1 - predY) * H;
+    // Glow
+    const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, 18);
+    grd.addColorStop(0, 'rgba(255,51,51,0.25)');
+    grd.addColorStop(1, 'rgba(255,51,51,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(cx, cy, 18, 0, 2*Math.PI); ctx.fill();
+
+    // Star
+    ctx.fillStyle = '#ff3333';
+    ctx.beginPath();
+    for (let i = 0; i < 10; i++) {
+      const r = i % 2 === 0 ? 9 : 4;
+      const a = (i * Math.PI / 5) - Math.PI/2;
+      if (i === 0) ctx.moveTo(cx + r*Math.cos(a), cy + r*Math.sin(a));
+      else ctx.lineTo(cx + r*Math.cos(a), cy + r*Math.sin(a));
+    }
+    ctx.closePath(); ctx.fill();
+  }
+}
+
+function updateUI() {
+  const phi = computePhi();
+  const sp  = computeMeanSpeed();
+  const phiEl = document.getElementById('mPhi');
+  phiEl.textContent = phi.toFixed(3);
+  phiEl.className = 'val ' + (phi > 0.7 ? 'hi' : phi < 0.3 ? 'lo' : '');
+  document.getElementById('phiBar').style.width = (phi * 100).toFixed(1) + '%';
+  document.getElementById('mSpeed').textContent = sp.toFixed(4);
+  document.getElementById('mN').textContent = N;
+  document.getElementById('mStep').textContent = step;
+}
+
+// =============================================================================
+// CONTROLS
+// =============================================================================
+function bindSlider(id, labelId, setter, fmt) {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    const v = parseFloat(el.value);
+    setter(v);
+    document.getElementById(labelId).textContent = fmt ? fmt(v) : v.toFixed(2);
+  });
+}
+bindSlider('sAlpha', 'lAlpha', v => { alpha = v; });
+bindSlider('sRamp',  'lRamp',  v => { ramp = v; });
+bindSlider('sV0',    'lV0',    v => { v0 = v; });
+bindSlider('sN',     'lN',     v => { N = parseInt(v); reset(); }, v => String(parseInt(v)));
+
+// =============================================================================
+// MAIN LOOP
+// =============================================================================
+const STEPS_PER_FRAME = 3;
+
+function loop() {
+  if (paused) return;
+  for (let i = 0; i < STEPS_PER_FRAME; i++) simStep();
+  draw();
+  updateUI();
+  animId = requestAnimationFrame(loop);
+}
+
+reset();
+loop();
+</script>
+</body>
+</html>
