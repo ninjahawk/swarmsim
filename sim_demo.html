@@ -41,7 +41,15 @@
     border: 1px solid #21262d;
     border-radius: 8px;
     display: block;
+    cursor: crosshair;
   }
+  .canvas-hint {
+    font-size: 11px;
+    color: #8b949e;
+    text-align: center;
+    margin-top: 6px;
+  }
+  .cursor-active { color: #f85149 !important; }
 
   .panel {
     width: 240px;
@@ -162,7 +170,10 @@
 <div class="subtitle">PHY 351 — Force-based agent model &nbsp;|&nbsp; Charbonneau (2017) Ch. 10</div>
 
 <div class="layout">
-  <canvas id="canvas" width="520" height="520"></canvas>
+  <div>
+    <canvas id="canvas" width="520" height="520"></canvas>
+    <div class="canvas-hint" id="canvasHint">move cursor over canvas to hunt the flock</div>
+  </div>
 
   <div class="panel">
 
@@ -185,6 +196,10 @@
       <div class="metric">
         <span>Step</span>
         <span class="val" id="mStep">0</span>
+      </div>
+      <div class="metric">
+        <span>Cursor dist</span>
+        <span class="val" id="mCursorDist">—</span>
       </div>
     </div>
 
@@ -210,9 +225,13 @@
 
     <div class="card">
       <h3>Predator</h3>
-      <button class="btn danger" id="btnPred" onclick="togglePredator()">Add Predator</button>
+      <button class="btn danger" id="btnPred" onclick="togglePredator()">Add AI Predator</button>
       <button class="btn" id="btnReset" onclick="reset()">Reset Simulation</button>
       <button class="btn" id="btnPause" onclick="togglePause()">Pause</button>
+      <div style="font-size:11px;color:#8b949e;margin-top:8px;line-height:1.5;">
+        Your cursor hunts the flock when hovering over the canvas.
+        AI predator chases center of mass independently.
+      </div>
     </div>
 
     <div class="card">
@@ -270,6 +289,9 @@ let hasPredator = false;
 let paused = false;
 let step = 0;
 let animId;
+
+// Cursor predator
+let cursorX = 0, cursorY = 0, cursorOnCanvas = false;
 
 function initAgents() {
   px  = new Float64Array(N);
@@ -375,9 +397,21 @@ function simStep() {
     fx[j] += ramp * (2 * Math.random() - 1);
     fy[j] += ramp * (2 * Math.random() - 1);
 
-    // Predator repulsion
+    // AI predator repulsion
     if (hasPredator) {
       const [dx, dy, d] = pdist(predX, predY, px[j], py[j]);
+      if (d > 0 && d <= PRED_P.r0_pred) {
+        const s = PRED_P.eps_pred * Math.pow(1 - d / PRED_P.r0_pred, 1.5) / d;
+        fx[j] -= s * dx;
+        fy[j] -= s * dy;
+      }
+    }
+
+    // Cursor predator repulsion
+    if (cursorOnCanvas) {
+      let dx = cursorX - px[j], dy = cursorY - py[j];
+      dx -= Math.round(dx); dy -= Math.round(dy);
+      const d = Math.sqrt(dx*dx + dy*dy);
       if (d > 0 && d <= PRED_P.r0_pred) {
         const s = PRED_P.eps_pred * Math.pow(1 - d / PRED_P.r0_pred, 1.5) / d;
         fx[j] -= s * dx;
@@ -489,18 +523,15 @@ function draw() {
     ctx.fill();
   }
 
-  // Predator
-  if (hasPredator) {
-    const cx = predX * W, cy = (1 - predY) * H;
-    // Glow
-    const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, 18);
-    grd.addColorStop(0, 'rgba(255,51,51,0.25)');
-    grd.addColorStop(1, 'rgba(255,51,51,0)');
+  // Draw a predator star at given canvas coords
+  function drawPredStar(cx, cy, color, glowColor) {
+    const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, 22);
+    grd.addColorStop(0, glowColor);
+    grd.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = grd;
-    ctx.beginPath(); ctx.arc(cx, cy, 18, 0, 2*Math.PI); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, cy, 22, 0, 2*Math.PI); ctx.fill();
 
-    // Star
-    ctx.fillStyle = '#ff3333';
+    ctx.fillStyle = color;
     ctx.beginPath();
     for (let i = 0; i < 10; i++) {
       const r = i % 2 === 0 ? 9 : 4;
@@ -510,6 +541,33 @@ function draw() {
     }
     ctx.closePath(); ctx.fill();
   }
+
+  // AI predator
+  if (hasPredator) {
+    drawPredStar(predX * W, (1 - predY) * H, '#ff3333', 'rgba(255,51,51,0.22)');
+  }
+
+  // Cursor predator
+  if (cursorOnCanvas) {
+    drawPredStar(cursorX * W, (1 - cursorY) * H, '#ff9500', 'rgba(255,149,0,0.22)');
+    // Threat radius ring
+    ctx.strokeStyle = 'rgba(255,149,0,0.18)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cursorX * W, (1 - cursorY) * H, PRED_P.r0_pred * W, 0, 2*Math.PI);
+    ctx.stroke();
+  }
+}
+
+function computeCursorDist() {
+  let minD = Infinity;
+  for (let j = 0; j < N; j++) {
+    let dx = cursorX - px[j], dy = cursorY - py[j];
+    dx -= Math.round(dx); dy -= Math.round(dy);
+    const d = Math.sqrt(dx*dx + dy*dy);
+    if (d < minD) minD = d;
+  }
+  return minD;
 }
 
 function updateUI() {
@@ -522,6 +580,22 @@ function updateUI() {
   document.getElementById('mSpeed').textContent = sp.toFixed(4);
   document.getElementById('mN').textContent = N;
   document.getElementById('mStep').textContent = step;
+
+  const distEl = document.getElementById('mCursorDist');
+  if (cursorOnCanvas) {
+    const d = computeCursorDist();
+    distEl.textContent = d.toFixed(3);
+    distEl.className = 'val cursor-active';
+  } else {
+    distEl.textContent = '—';
+    distEl.className = 'val';
+  }
+
+  const hint = document.getElementById('canvasHint');
+  hint.textContent = cursorOnCanvas
+    ? '🔴 hunting — watch the evasion buffer hold'
+    : 'move cursor over canvas to hunt the flock';
+  hint.style.color = cursorOnCanvas ? '#f85149' : '#8b949e';
 }
 
 // =============================================================================
@@ -539,6 +613,35 @@ bindSlider('sAlpha', 'lAlpha', v => { alpha = v; });
 bindSlider('sRamp',  'lRamp',  v => { ramp = v; });
 bindSlider('sV0',    'lV0',    v => { v0 = v; });
 bindSlider('sN',     'lN',     v => { N = parseInt(v); reset(); }, v => String(parseInt(v)));
+
+// =============================================================================
+// CURSOR / TOUCH TRACKING
+// =============================================================================
+function setCursorFromEvent(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = W / rect.width;
+  const scaleY = H / rect.height;
+  cursorX = (e.clientX - rect.left) * scaleX / W;
+  cursorY = 1 - (e.clientY - rect.top) * scaleY / H;
+  cursorOnCanvas = true;
+}
+
+canvas.addEventListener('mousemove', setCursorFromEvent);
+canvas.addEventListener('mouseenter', setCursorFromEvent);
+canvas.addEventListener('mouseleave', () => { cursorOnCanvas = false; });
+
+// Touch support
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  setCursorFromEvent({ clientX: touch.clientX, clientY: touch.clientY });
+}, { passive: false });
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const touch = e.touches[0];
+  setCursorFromEvent({ clientX: touch.clientX, clientY: touch.clientY });
+}, { passive: false });
+canvas.addEventListener('touchend', () => { cursorOnCanvas = false; });
 
 // =============================================================================
 // MAIN LOOP
