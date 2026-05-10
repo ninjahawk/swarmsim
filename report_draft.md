@@ -201,6 +201,26 @@ harmonically around a fixed lattice site. This produces KE proportional to eta^2
 independent of N — behavior characteristic of uncoupled harmonic oscillators, not a
 correlated system approaching criticality.
 
+**Fixed-compactness scaling.** The original finite-size scaling held r0 fixed, meaning
+compactness C = pi*N*r0^2 grew with N (C = 0.196 for N = 25 up to C = 1.57 for N = 200).
+To isolate the effect of compactness, I repeated the analysis holding C fixed by scaling
+r0 = sqrt(C/(pi*N)) for each N. Testing both C = 0.78 (dense) and C = 0.10 (dilute),
+the result in both cases is the same: KE/N curves are N-independent and the susceptibility
+chi = N * var(KE/N) increases monotonically to the top of the sweep (eta = 30) with no
+peak at finite eta. The KE/N values at the two compactness levels are also nearly
+identical to each other (Fig. 9).
+
+The crossover is therefore not an artifact of high compactness alone. In the dilute
+regime, agents barely interact (mean spacing exceeds repulsion range), so they behave
+as essentially independent random walkers; KE/N is set solely by the noise amplitude
+and is N-independent for the same reason as in the dense case — just via a different
+physical mechanism. Both extremes suppress cooperative behavior: too dense means
+agents are caged; too dilute means they never interact enough to form a solid. A genuine
+critical point would require an intermediate regime where a solid phase can form and
+agents can rearrange cooperatively. Whether such a regime exists in this model at
+compactness values between 0.10 and 0.78, or at noise amplitudes above eta = 30,
+remains an open question.
+
 ### 4.4 Predator-Prey Dynamics
 
 I extended the model with a predator agent that chases the prey center of mass via a
@@ -239,6 +259,23 @@ predator-to-prey distance increases slightly as the number of predators grows
 (0.093 for one predator, 0.106 for three). The flock under multiple predators is
 more elongated but no more accessible to any individual predator.
 
+**Why evasion distance increases with predator count.** To diagnose the counterintuitive
+evasion result, I measured the predator-predator separation and the orientation of the
+flock major axis relative to the predator centroid direction across 8 random initializations
+(evasion_analysis.py). The predator-predator mean distance was approximately 0.001 for
+all multi-predator runs — effectively zero. Because every predator independently targets
+the flock center of mass using the same rule, they all converge to the same location and
+pile up on top of one another. This co-localization means multiple predators do not
+approach from different directions; they compete for the same point. Flock orientation
+relative to the predator centroid was 43-46 degrees across all conditions — consistent
+with the 45-degree expectation for random alignment — confirming that the flock does not
+systematically orient its narrow or broad side toward the predator. The evasion distance
+improvement therefore arises mechanically: co-localized predators collectively apply
+repulsion from a single point, and this concentrated repulsion is stronger than what a
+single predator can produce, pushing the flock slightly farther away. This is a
+model-specific artifact of the naive "chase CoM" predator strategy: multiple independent
+pursuers using identical rules undermine each other rather than coordinating (Fig. 8).
+
 ---
 
 ## 5. Discussion
@@ -252,11 +289,12 @@ reflect something real about the function of biological flocking. A coherent flo
 mount a coordinated escape response; scattered individuals cannot.
 
 The increasing aspect ratio under multiple predators is interesting. When pressure
-arrives from multiple directions, the flock elongates rather than fragmenting. This
-could represent a geometric optimum: a thin stream is a harder target to surround than
-a compact cluster, and threading between predators may minimize total exposure. That
-this behavior emerges spontaneously from the force equations, without any deliberate
-strategy encoded in the agents, is a good example of emergence.
+arrives from multiple directions, the flock elongates rather than fragmenting. The
+diagnostic analysis (Section 4.4) shows this is not because predators actually approach
+from multiple directions — they converge to the same point — but rather because the
+stronger combined repulsion from co-localized predators drives a more intense elongation
+response. The elongated shape is a real emergent effect, but its cause is the
+concentration of force at one point, not a strategic response to multi-directional threat.
 
 The equilibrium speed result (v_eq = v0 + alpha/mu) is an exact consequence of the
 force equations that Charbonneau does not explicitly note. It means a researcher using
@@ -265,13 +303,15 @@ find them consistently at speed 1.1. For simulations where absolute speed matter
 (e.g., comparing flocking and non-flocking agents under identical predator pressure),
 this correction is necessary.
 
-The phase transition result is perhaps the most physically interesting negative result.
-The expectation from analogies with equilibrium statistical mechanics — that a system
-with a solid-to-fluid transition should show a sharp critical point — does not hold here.
-The N-independence of KE/N and the absence of a susceptibility peak indicate that the
-agents in this high-compactness regime are not behaving cooperatively at the transition.
-Each agent vibrates independently. Whether a true phase transition could be found in a
-lower-compactness regime (where agents have more room to move) is an open question.
+The phase transition result extends the original finding. Fixing compactness properly via
+r0 = sqrt(C/(pi*N)) and testing a dilute regime (C = 0.10) shows the same behavior as
+the dense regime: N-independent KE/N and monotone susceptibility with no finite-eta peak.
+The absence of a critical point is not a consequence of high compactness alone. Instead,
+both extremes fail for different reasons — too dense means caged oscillators, too dilute
+means non-interacting walkers. A true phase transition in this model, if it exists,
+would require an intermediate compactness where a solid phase can form and cooperative
+rearrangements are possible. The model's smooth crossover may be a general feature of
+this force-based formulation rather than a regime-specific artifact.
 
 ---
 
@@ -324,3 +364,5 @@ All simulation code is available at https://github.com/ninjahawk/Summer_Research
 | phase_transition.py | Finite-size scaling of solid-to-fluid transition |
 | geometry.py | Radius of gyration and aspect ratio analysis |
 | multi_predator.py | Multi-predator experiments |
+| evasion_analysis.py | Predator co-localization and evasion distance diagnostic |
+| compactness_phase.py | Fixed-compactness finite-size scaling across C=0.10 and C=0.78 |

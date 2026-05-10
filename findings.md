@@ -127,10 +127,52 @@ multiple directions may force the flock into a harder-to-surround configuration.
 
 ---
 
+## Finding 11: Evasion distance increases because predators co-localize at prey CoM
+**What:** With multiple predators, each one independently targets the flock center of mass.
+Because all predators follow the same rule, they converge to the same location
+(measured pred-pred distance ~0.001, essentially zero). This means more predators
+pile up at the same point rather than surrounding the flock.
+**Evidence:** evasion_analysis.py, 8 seeds each.
+- n_pred=1: min_pred_prey_dist=0.094
+- n_pred=2: pred-pred dist=0.001, min_pred_prey_dist=0.099
+- n_pred=3: pred-pred dist=0.001, min_pred_prey_dist=0.105
+- n_pred=4: pred-pred dist=0.001, min_pred_prey_dist=0.096
+- Flock orientation vs predator centroid: ~43-46 deg (consistent with random, ~45 deg expected)
+**Mechanism:** Co-localized predators exert combined repulsion from the same point.
+Multiple predators at the same location produce a stronger net repulsion on nearby prey
+than a single predator, pushing the flock farther away. The flock does NOT orient
+deliberately (45-degree angle = no systematic orientation strategy).
+**Implication:** The "chase CoM" predator strategy is self-undermining when used by
+multiple predators. They inadvertently cooperate by concentrating force at one point,
+and the flock benefits. Distributed predators approaching from different angles would be
+more effective -- but that requires coordination the model does not give them.
+
+---
+
+## Finding 12: Crossover persists across compactness -- no phase transition in this model
+**What:** When compactness is held fixed across N by scaling r0 = sqrt(C/(pi*N)),
+both dense (C=0.78) and dilute (C=0.10) regimes give essentially identical results:
+KE/N curves overlap for all N, susceptibility chi increases monotonically with eta,
+and the susceptibility peaks only at the top of the sweep (eta=30) -- not at a finite
+critical point. The crossover is not a property of the dense regime alone; it persists
+at all tested compactness values.
+**Evidence:** compactness_phase.py, 8 seeds per (N, eta) point.
+- C=0.78: chi_max at eta=30 for all N; KE/N identical across N=25-200
+- C=0.10: same behavior -- chi_max at eta=30, KE/N N-independent
+- KE/N values nearly identical between C=0.78 and C=0.10
+**Interpretation:** The absence of a critical point is not because agents are caged.
+At C=0.10 (dilute), agents barely interact (repulsion radius too small relative to
+inter-agent spacing), so they behave essentially as independent random walkers. KE/N
+is then set entirely by the noise amplitude, independent of N. Both extremes (too
+dense = caged, too dilute = non-interacting) produce N-independent KE/N and monotone
+susceptibility. A genuine critical point would likely require intermediate compactness
+where agents can form a solid and also rearrange cooperatively -- but even C=0.10 is
+too dilute for a solid phase. The repulsion-only model may simply not exhibit a true
+phase transition in any easily accessible parameter regime.
+
+---
+
 ## Open Questions / Next Directions
-1. Why does evasion distance INCREASE with more predators? Counterintuitive.
-2. Does elongation under multiple predators represent a deliberate shape strategy,
-   or just the flock being geometrically pulled in multiple directions?
-3. What happens with coordinated predators that flock toward each other to herd prey?
-4. Extend phase transition to higher eta (>20) -- is there actually a susceptibility peak?
-5. How do findings change with different compactness C (vary N with fixed r0)?
+1. What happens with coordinated predators that flock toward each other to herd prey?
+2. Does the low-compactness phase transition show proper scaling collapse?
+3. What is the critical exponent for the low-compactness transition?
