@@ -8,7 +8,7 @@
 [![NumPy](https://img.shields.io/badge/NumPy-scientific_computing-013243?logo=numpy&logoColor=white)](https://numpy.org)
 [![Matplotlib](https://img.shields.io/badge/Matplotlib-visualization-11557c)](https://matplotlib.org)
 [![Course](https://img.shields.io/badge/PHY_351-UNCG-gold)](https://uncg.edu)
-[![Status](https://img.shields.io/badge/status-complete-brightgreen)](https://github.com/ninjahawk/Summer_Research)
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/ninjahawk/Summer_Research)
 
 **PHY 351 — Independent Summer Research &nbsp;|&nbsp; Nathan Langley &nbsp;|&nbsp; Advisor: Prof. Ian Beatty**
 

@@ -6,6 +6,15 @@ Student: Nathan Langley
 Professor: Ian Beatty (ian@ianbeatty.com)  
 Textbook: *Natural Complexity: A Modeling Handbook* by Paul Charbonneau (Princeton University Press, 2017)
 
+## Long-Running Nature of This Project
+This is an entire summer-long research project, not a one-and-done task. The coursework
+(Chapter 10 flocking model) is a starting point, not the finish line. After the formal
+topic is exhausted, the work continues: new extensions, new questions, new experiments,
+deeper analysis. Each session builds on the last. When one thread closes, we find the
+next one to pull. Treat every conversation as a continuation of ongoing research, not a
+fresh isolated task. Always look at findings.md and the open questions before suggesting
+what to do next.
+
 ## Key Files
 - `logs.html` — open in Chrome to view/copy the time log and research log. This is the main interface for logging. Do not replace it with a different solution.
 - `README.md` — GitHub repo overview
