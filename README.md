@@ -104,6 +104,7 @@ With 1–4 predators, coherence stays near 0.975–0.991. Aspect ratio rises sub
 | 11 | Multiple predators co-localize at prey CoM — explains counterintuitive evasion result |
 | 12 | Crossover behavior is general across compactness values, not regime-specific |
 | 13 | Coordinated predators (with repulsion) spread out spatially but still cannot break the flock |
+| 14 | Encirclement (predators from equally spaced angles) achieves Phi ≈ 0.77 at n=6 — first strategy to substantially disrupt coherence |
 
 ---
 
@@ -120,6 +121,7 @@ With 1–4 predators, coherence stays near 0.975–0.991. Aspect ratio rises sub
 | `evasion_analysis.py` | Predator co-localization diagnostic |
 | `compactness_phase.py` | Fixed-compactness finite-size scaling |
 | `coordinated_predators.py` | Predator-predator repulsion — coordination strength sweep and flock-breaking threshold |
+| `encirclement.py` | Encirclement strategy — predators from equally spaced angles, radius sweep, flock-breaking threshold |
 | `make_demo.py` | Generates `figures/demo.gif` for this README |
 | `sim_demo.html` | Interactive browser simulation (open locally) |
 | `data.html` | Raw numerical data — open in browser, copy to Google Sheets |
@@ -139,6 +141,7 @@ python multi_predator.py    # multi-predator experiments
 python evasion_analysis.py  # evasion diagnostic
 python compactness_phase.py # fixed-compactness phase scaling
 python coordinated_predators.py # coordinated predator experiments
+python encirclement.py          # encirclement strategy experiments
 ```
 
 Open `sim_demo.html` in a browser for a real-time interactive simulation with adjustable parameters.

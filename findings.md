@@ -194,8 +194,32 @@ strategy of predators in this model breaks the flock.
 
 ---
 
+## Finding 14: Encirclement breaks coherence -- first strategy to substantially disrupt the flock
+**What:** Assigning each predator a fixed angular direction and targeting
+CoM + R_enc*(cos(theta_k), sin(theta_k)) forces them to approach from equally spaced angles.
+This is fundamentally different from both naive and coordinated strategies. At n_pred=6-8,
+Phi drops to ~0.77 -- the first substantial coherence reduction in all experiments.
+Naive and coordinated predators never dropped below 0.92.
+**Evidence:** encirclement.py, 8 seeds each.
+- Radius sweep (n_pred=3): R_enc=0.15 minimizes evasion distance (0.076) and Phi (0.953).
+  R_enc=0.00 is naive (sep=0.001); R_enc=0.15 achieves pred_sep=0.260.
+- vs naive (R_enc=0.15): n_pred=4 encircle Phi=0.909 vs naive 0.974.
+  Predators get significantly closer: dist 0.077 vs 0.096.
+- Flock-breaking threshold: n_pred=6 gives Phi=0.769 +/- 0.093, n_pred=8 gives 0.782 +/- 0.124.
+  Min pred-prey dist falls to 0.050 (vs 0.105 for naive multi-predator). Flock not fully
+  broken but substantially disrupted; high std suggests some seeds fragment.
+**Optimal radius:** R_enc ~ 0.15 (just inside the flock edge, Rg~0.25). Too small = still
+co-localizing. Too large (R_enc=0.25) = predators orbit the flock and evasion distance recovers.
+**Interpretation:** Multi-directional pressure from equally spaced angles creates competing
+repulsion vectors that cannot all be resolved by a single coherent escape direction. The alignment
+force resists but cannot fully compensate when predators approach from 6+ angles simultaneously.
+This is the first predator strategy in this model capable of meaningfully disrupting collective
+evasion, establishing that flock resilience is strategy-dependent, not absolute.
+
+---
+
 ## Open Questions / Next Directions
 1. Does the low-compactness phase transition show proper scaling collapse?
-2. Can predator coordination using a herding strategy (encircling the flock rather than
-   chasing its CoM) outperform the alpha_coord repulsion approach?
-3. What is the minimum prey group size below which the dilution/coherence effect fails?
+2. At what n_pred does encirclement fully fragment the flock (Phi < 0.5)? Does it scale
+   with flock size N, suggesting a predator-to-prey ratio threshold?
+3. What is the minimum prey group size below which collective evasion fails entirely?
