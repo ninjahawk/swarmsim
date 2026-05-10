@@ -471,18 +471,27 @@ function switchTab(i) {
 }
 
 function copyPanel(i) {
-  const exp = experiments[i];
-  let lines = [exp.label, exp.desc, ''];
-  exp.tables.forEach(tbl => {
-    lines.push(tbl.title);
-    if (tbl.meta) lines.push(tbl.meta);
-    lines.push(tbl.cols.join('\t'));
-    tbl.rows.forEach(row => lines.push(row.join('\t')));
-    if (tbl.notes) lines.push('Note: ' + tbl.notes);
-    lines.push('');
-  });
-  navigator.clipboard.writeText(lines.join('\n'))
-    .then(() => alert(exp.label + ' data copied — paste into Google Sheets.'));
+  const panel = document.getElementById('panel-' + i);
+  const tables = panel.querySelectorAll('table');
+  if (tables.length === 1) {
+    const range = document.createRange();
+    range.selectNode(tables[0]);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+  } else {
+    // multiple tables: copy all as tab-separated text, one blank line between
+    const lines = [];
+    tables.forEach(tbl => {
+      tbl.querySelectorAll('tr').forEach(row => {
+        lines.push([...row.cells].map(c => c.textContent.trim()).join('\t'));
+      });
+      lines.push('');
+    });
+    navigator.clipboard.writeText(lines.join('\n'));
+  }
+  alert(experiments[i].label + ' copied — paste into Google Sheets.');
 }
 
 buildTabs();
