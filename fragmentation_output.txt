@@ -1,0 +1,19 @@
+Exp 1: Fragmentation time series  (naive vs encirclement, n_pred=6, 8 seeds)
+  Steady-state (last 20%% of frames):
+  naive:  n_clusters=60.0  largest_frac=0.137  global_phi=0.997  largest_phi=1.000
+  encircle:  n_clusters=24.4  largest_frac=0.253  global_phi=0.718  largest_phi=0.997
+  --> figures/frag_1_timeseries.png
+
+Exp 2: Cluster stats vs n_pred  (encirclement, 8 seeds)
+  n_pred= 1  n_clusters=70.3  largest_frac=0.081  global_phi=1.000  largest_phi=1.000
+  n_pred= 2  n_clusters=58.3  largest_frac=0.166  global_phi=0.987  largest_phi=1.000
+  n_pred= 3  n_clusters=41.5  largest_frac=0.185  global_phi=0.983  largest_phi=0.999
+  n_pred= 4  n_clusters=31.0  largest_frac=0.228  global_phi=0.931  largest_phi=0.999
+  n_pred= 6  n_clusters=24.4  largest_frac=0.253  global_phi=0.718  largest_phi=0.997
+  n_pred= 8  n_clusters=18.8  largest_frac=0.252  global_phi=0.737  largest_phi=0.995
+  --> figures/frag_2_cluster_stats.png
+
+Exp 3: Snapshot gallery  (n_pred=6, encirclement, N=200, seed=3)
+  --> figures/frag_3_snapshots.png
+
+Fragmentation analysis complete.

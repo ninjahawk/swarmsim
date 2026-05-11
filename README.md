@@ -105,6 +105,8 @@ With 1–4 predators, coherence stays near 0.975–0.991. Aspect ratio rises sub
 | 12 | Crossover behavior is general across compactness values, not regime-specific |
 | 13 | Coordinated predators (with repulsion) spread out spatially but still cannot break the flock |
 | 14 | Encirclement (predators from equally spaced angles) achieves Phi ≈ 0.77 at n=6 — first strategy to substantially disrupt coherence |
+| 15 | Encirclement threshold doesn't scale with N — fixed ratio makes things worse; both N=100 and N=350 converge to Phi ≈ 0.67 at n=10 |
+| 16 | Phi=0.77 reflects flock division not dissolution — encirclement compresses agents into coherent sub-flocks escaping in different directions |
 
 ---
 
@@ -122,6 +124,10 @@ With 1–4 predators, coherence stays near 0.975–0.991. Aspect ratio rises sub
 | `compactness_phase.py` | Fixed-compactness finite-size scaling |
 | `coordinated_predators.py` | Predator-predator repulsion — coordination strength sweep and flock-breaking threshold |
 | `encirclement.py` | Encirclement strategy — predators from equally spaced angles, radius sweep, flock-breaking threshold |
+| `encirclement_scaling.py` | Encirclement threshold vs flock size N — fixed count, fixed ratio, and full n_pred sweep |
+| `fragmentation.py` | Flock fragmentation analysis — cluster detection, sub-flock coherence, snapshot gallery |
+| `panic.py` | Panic dynamics — fraction of erratic agents disrupting a calm flock |
+| `predator_sensing.py` | Limited predator sensing range — search/attack phases, hunting cycles |
 | `make_demo.py` | Generates `figures/demo.gif` for this README |
 | `sim_demo.html` | Interactive browser simulation (open locally) |
 | `data.html` | Raw numerical data — open in browser, copy to Google Sheets |
@@ -142,6 +148,10 @@ python evasion_analysis.py  # evasion diagnostic
 python compactness_phase.py # fixed-compactness phase scaling
 python coordinated_predators.py # coordinated predator experiments
 python encirclement.py          # encirclement strategy experiments
+python encirclement_scaling.py  # encirclement threshold vs flock size
+python fragmentation.py         # flock fragmentation and sub-cluster analysis
+python panic.py                 # panic dynamics
+python predator_sensing.py      # limited predator sensing
 ```
 
 Open `sim_demo.html` in a browser for a real-time interactive simulation with adjustable parameters.

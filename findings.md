@@ -218,8 +218,50 @@ evasion, establishing that flock resilience is strategy-dependent, not absolute.
 
 ---
 
+## Finding 15: Encirclement threshold does not scale with N -- convergence to a common floor
+**What:** Fixed n_pred=6 against varying N shows larger flocks are more resistant (Phi rises
+from 0.695 at N=50 to 0.903 at N=350). But fixed predator-to-prey ratio (6/350) applied
+to larger N makes things WORSE: at N=500 with n_pred=9, Phi=0.654 -- the lowest coherence
+in all experiments. Both N=100 and N=350 converge to Phi~0.67 at n_pred=10-12, suggesting
+a common disruption floor independent of flock size at sufficient predator density.
+**Evidence:** encirclement_scaling.py, 8 seeds each.
+- Fixed n_pred=6: N=50 Phi=0.695, N=100 Phi=0.769, N=200 Phi=0.833, N=350/500 Phi=0.90
+- Fixed ratio 6/350: N=500, n_pred=9 gives Phi=0.654 +/- 0.171 (worst result in project)
+- Full sweep N=100 vs N=350: both reach Phi~0.67-0.68 at n_pred=10
+**Interpretation:** The dilution effect protects against a fixed predator count (more agents
+share the evasion burden). But the ratio law fails -- more predators at fixed ratio are
+MORE effective for larger N because finer angular coverage (9 angles vs 6) is harder to
+escape. There is no simple scaling law: disruption depends nonlinearly on both N and n_pred.
+The convergence of N=100 and N=350 to the same Phi floor at n_pred=10 suggests the
+disruption is set by angular coverage (predators/360 degrees) rather than predators/prey.
+
+---
+
+## Finding 16: Encirclement divides the flock into coherent sub-flocks, not random walkers
+**What:** When global Phi drops to 0.77 under encirclement, the flock is NOT dissolving.
+Predators COMPRESS the flock spatially (fewer clusters: 60 naive vs 24 encircle) while
+SPLITTING it directionally (each sub-flock escapes in a different direction). Each
+sub-flock is internally coherent (largest_phi=0.997). The low global Phi reflects
+sub-flocks heading in different directions, not individual agent randomness.
+**Evidence:** fragmentation.py, 8 seeds, n_pred=6.
+- Naive: 60 clusters, largest_frac=0.137, global_phi=0.997, largest_phi=1.000
+  (many small groups all moving same direction -- spatially spread but directionally unified)
+- Encirclement: 24 clusters, largest_frac=0.253, global_phi=0.718, largest_phi=0.997
+  (fewer, larger groups moving in different escape directions)
+- As n_pred increases: n_clusters decreases (5->8 pred: 70->19) while largest_frac
+  grows (0.08->0.25), confirming spatial compression rather than dissolution.
+**Interpretation:** Encirclement succeeds by herding -- predators squeeze the flock from
+multiple directions, forcing it to split into sub-groups that escape toward the gaps between
+predators. Each sub-group remains a coherent mini-flock. This is flock DIVISION not flock
+DISSOLUTION. The mechanism is analogous to wolf-pack herding or dolphin bait-ball formation.
+This is biologically the most significant finding of the project.
+
+---
+
 ## Open Questions / Next Directions
 1. Does the low-compactness phase transition show proper scaling collapse?
-2. At what n_pred does encirclement fully fragment the flock (Phi < 0.5)? Does it scale
-   with flock size N, suggesting a predator-to-prey ratio threshold?
-3. What is the minimum prey group size below which collective evasion fails entirely?
+2. What is the minimum prey group size below which collective evasion fails entirely?
+3. Do the sub-flocks formed by encirclement eventually reunite, or do they permanently
+   diverge? (Requires long simulation after predators are removed)
+4. Panic dynamics (book Section 10.5): how does a fraction of erratic agents disrupt
+   an otherwise calm flock? How does this compare to predator disruption?

@@ -57,30 +57,54 @@ No API integration. Logs are copied from `logs.html` in Chrome and pasted manual
 **Flocking** — Chapter 10 of Charbonneau (2017), originally by Silverberg et al. (2013) for crowd dynamics.
 N agents on a periodic 2D unit square under four forces: repulsion, velocity alignment, self-propulsion, random noise.
 
-## Key Findings
+## Key Findings (16 total -- see findings.md for full details)
 1. Equilibrium cruise speed v_eq = v0 + alpha/mu (exact, not just v0)
-2. Solid-to-fluid transition is a smooth crossover (not a true phase transition) — finite-size scaling shows no diverging susceptibility
+2. Solid-to-fluid transition is a smooth crossover, not a true phase transition
 3. Flocking prey maintain Phi~1.0 under predator pressure; non-flocking scatter to Phi~0.1
-4. Multiple predators elongate the flock (AR up to 7.9) but coherence stays near 0.98; evasion distance counterintuitively improves
+4. Multiple naive predators co-localize at prey CoM -- self-undermining, counterintuitively helps flock
+5. Coordinated predators (pred-pred repulsion) spread out but still can't break flock (Phi > 0.92)
+6. Encirclement strategy (angular offset targets) achieves Phi=0.77 at n_pred=6 -- first real disruption
+7. Encirclement works by flock DIVISION: predators compress flock into coherent sub-flocks that scatter
+8. Disruption floor ~Phi=0.67 at n_pred=10 for both N=100 and N=350 -- angular coverage is the key variable
 
 ## Default Parameters
 N=350, r0=0.005, eps=0.1, rf=0.1, alpha=1.0, v0=1.0, mu=10.0, ramp=0.5, dt=0.01
 
-## Current Status (as of 2026-05-08)
-All research is complete. The full pipeline is done:
-- Simulation code written and validated (flocking.py)
-- Parameter sweeps and validation figures generated (analysis.py)
-- Phase transition finite-size scaling done (phase_transition.py)
-- Predator-prey extension with 4 experiments done (predator.py)
-- Flock geometry analysis done (geometry.py)
-- Multi-predator experiments done (multi_predator.py)
-- All 10 findings documented (findings.md)
-- Professional lab report written in Markdown (report_draft.md)
-- PDF version generated (report_draft.pdf via build_report.py)
-- Repo cleaned up: .gitignore excludes book PDFs, __pycache__, email
-- Everything committed and pushed to GitHub
+## Current Status (as of 2026-05-10)
+This is week 1 of a 2-month project. Core model and book exercises are complete.
+Active research thread: predator strategy hierarchy.
 
-To regenerate the PDF after any changes to report_draft.md or figures:
+### Completed
+- Core model + validation (flocking.py, analysis.py)
+- Phase transition finite-size scaling (phase_transition.py)
+- Fixed-compactness phase scaling (compactness_phase.py)
+- Single-predator extension, 4 experiments (predator.py)
+- Flock geometry -- Rg, AR (geometry.py)
+- Multi-predator -- naive CoM-chasing, 1-4 predators (multi_predator.py)
+- Evasion diagnostic -- predator co-localization mechanism (evasion_analysis.py)
+- Coordinated predators -- predator-predator repulsion (coordinated_predators.py)
+- Encirclement strategy -- angular offset targeting, radius sweep, threshold (encirclement.py)
+- Encirclement scaling -- fixed count vs fixed ratio vs full sweep across N (encirclement_scaling.py)
+- Fragmentation analysis -- sub-cluster detection, division vs dissolution (fragmentation.py)
+- 16 findings documented (findings.md)
+- Report draft written (report_draft.md, gitignored)
+
+### Ready to run (scripts written, not yet executed)
+- panic.py -- fraction of erratic agents in calm flock (book Section 10.5)
+- predator_sensing.py -- limited sensing radius, search/attack phases
+
+### Planned next
+- Minimum viable flock size (below what N does collective evasion fail?)
+- Literature search for novelty assessment
+- Active/passive segregation (book Section 10.4)
+
+### Key architectural note
+Scripts that import from other experiment scripts (multi_predator.py, encirclement.py, etc.)
+will re-run all experiments at import time -- those scripts have no __main__ guard.
+New scripts (fragmentation.py, panic.py, predator_sensing.py) are self-contained:
+they import only from flocking.py and predator.py to avoid this.
+
+To regenerate the PDF after any changes to report_draft.md:
   python build_report.py
 
 ## .gitignore

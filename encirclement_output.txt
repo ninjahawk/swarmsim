@@ -1,0 +1,71 @@
+C:\Users\jedin\Desktop\Summer Research\encirclement.py:215: RuntimeWarning: Mean of empty slice
+  sep=np.nanmean(sep_n))
+C:\Users\jedin\Desktop\Summer Research\encirclement.py:217: RuntimeWarning: Mean of empty slice
+  sep=np.nanmean(sep_e))
+Exp 1: Flock geometry -- with and without predator (10 seeds)
+  No predator:   Rg=0.215  AR=2.61  Phi=1.000
+  With predator: Rg=0.273  AR=2.74  Phi=0.998
+  --> figures/geometry_1_pred_vs_no.png
+
+Exp 2: Flock geometry vs flocking amplitude alpha  (8 seeds)
+  Steady-state values (last 20% of frames):
+    alpha=0.2  Rg=0.299  AR=2.09  Phi=0.958
+    alpha=0.5  Rg=0.266  AR=2.08  Phi=0.997
+    alpha=1.0  Rg=0.251  AR=2.93  Phi=0.989
+    alpha=2.0  Rg=0.285  AR=7.31  Phi=0.995
+  --> figures/geometry_2_alpha_sweep.png
+
+Exp 3: Snapshot sequence -- flock shape evolution with predator
+  --> figures/geometry_3_snapshots.png
+  --> figures/geometry_3_timeseries.png
+
+Geometry analysis complete.
+Exp 1: Flock response vs number of predators  (8 seeds)
+  n_pred=1  Phi=0.976  AR=2.82  Rg=0.253  min_pred_dist=0.093
+  n_pred=2  Phi=0.935  AR=4.54  Rg=0.288  min_pred_dist=0.102
+  n_pred=3  Phi=0.986  AR=8.62  Rg=0.283  min_pred_dist=0.105
+  n_pred=4  Phi=0.974  AR=3.78  Rg=0.290  min_pred_dist=0.096
+  --> figures/multi_pred_1_npred_sweep.png
+
+Exp 2: Snapshot sequences
+  --> figures/multi_pred_2_2pred_snapshots.png
+  --> figures/multi_pred_2_4pred_snapshots.png
+
+Exp 3: Steady-state summary
+  --> figures/multi_pred_3_summary.png
+
+Multi-predator analysis complete.
+Exp 1: Encirclement radius sweep  (n_pred=3, 8 seeds)
+  R_enc=0.00  Phi=0.989  AR=4.11  min_dist=0.099  pred_sep=0.001
+  R_enc=0.05  Phi=0.990  AR=3.46  min_dist=0.094  pred_sep=0.087
+  R_enc=0.10  Phi=0.988  AR=2.79  min_dist=0.084  pred_sep=0.173
+  R_enc=0.15  Phi=0.953  AR=3.21  min_dist=0.076  pred_sep=0.260
+  R_enc=0.20  Phi=0.986  AR=3.41  min_dist=0.091  pred_sep=0.346
+  R_enc=0.25  Phi=0.961  AR=5.79  min_dist=0.098  pred_sep=0.433
+  --> figures/encircle_1_radius_sweep.png
+
+Exp 2: Encirclement vs naive  (n_pred=1..4, R_enc=0.15, 8 seeds)
+  n_pred=1:
+    naive:  Phi=0.976  dist=0.093  sep=nan
+    encircle: Phi=1.000  dist=0.109  sep=nan
+  n_pred=2:
+    naive:  Phi=0.935  dist=0.102  sep=0.001
+    encircle: Phi=0.962  dist=0.090  sep=0.300
+  n_pred=3:
+    naive:  Phi=0.986  dist=0.105  sep=0.001
+    encircle: Phi=0.953  dist=0.076  sep=0.260
+  n_pred=4:
+    naive:  Phi=0.974  dist=0.096  sep=0.001
+    encircle: Phi=0.909  dist=0.077  sep=0.241
+  --> figures/encircle_2_naive_vs_enc.png
+
+Exp 3: Flock-breaking threshold  (encirclement, R_enc=0.15, 8 seeds)
+  n_pred= 1  Phi=1.000 +/- 0.000  dist=0.109
+  n_pred= 2  Phi=0.962 +/- 0.061  dist=0.090
+  n_pred= 3  Phi=0.953 +/- 0.051  dist=0.076
+  n_pred= 4  Phi=0.909 +/- 0.111  dist=0.077
+  n_pred= 6  Phi=0.769 +/- 0.093  dist=0.050
+  n_pred= 8  Phi=0.782 +/- 0.124  dist=0.051
+  --> figures/encircle_3_breaking_threshold.png
+
+Encirclement analysis complete.
