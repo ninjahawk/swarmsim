@@ -289,10 +289,33 @@ This is biologically the most significant finding of the project.
 
 ---
 
+## Finding 17: No phase transition at any intermediate compactness -- crossover is universal
+<img src="./figures/compactness_search_chi.png" width="480"/>
+
+**What:** Sweeping compactness C = 0.15, 0.20, 0.30, 0.40, 0.50, 0.60 with finite-size
+scaling at N = 25, 50, 100, 200 finds no true phase transition at any density. In every
+case, susceptibility chi = N*Var(KE/N) peaks at eta=30 (the top of the sweep) and the
+chi_peak value is essentially identical across N (all ~0.022-0.025). No diverging peak,
+no N-dependence, no critical point anywhere in the accessible compactness range.
+**Evidence:** compactness_search.py, 8 seeds. Chi-peak summary:
+All 24 (C, N) combinations peak at eta=30 with chi_peak in [0.021, 0.025].
+KE/N curves are N-independent at every C, indistinguishable from the C=0.10 and C=0.78
+results of Finding 12.
+**Interpretation:** The crossover is a universal property of this model's repulsion force,
+not a feature of an extreme density regime. The repulsion potential (1 - d/2r0)^1.5 is
+soft -- it smoothly decays to zero at contact. Real melting transitions require hard-core
+exclusion to produce the diverging spatial correlations of a critical point. This model's
+repulsion was designed for crowd dynamics and simply does not have the right microscopic
+physics to produce a true phase transition at any accessible compactness.
+**Implication:** The professor's suggested intermediate regime does not exist in this model.
+Finding a true phase transition would require either a harder repulsion (e.g., r^{-12}
+Lennard-Jones) or a different model class entirely.
+
+---
+
 ## Open Questions / Next Directions
-1. Does the low-compactness phase transition show proper scaling collapse?
-2. What is the minimum prey group size below which collective evasion fails entirely?
-3. Do the sub-flocks formed by encirclement eventually reunite, or do they permanently
+1. What is the minimum prey group size below which collective evasion fails entirely?
+2. Do the sub-flocks formed by encirclement eventually reunite, or do they permanently
    diverge? (Requires long simulation after predators are removed)
-4. Panic dynamics (book Section 10.5): how does a fraction of erratic agents disrupt
+3. Panic dynamics (book Section 10.5): how does a fraction of erratic agents disrupt
    an otherwise calm flock? How does this compare to predator disruption?
