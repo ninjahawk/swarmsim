@@ -27,6 +27,7 @@ what to do next.
 - `findings.md` — running notes on all 10 findings
 - `report_draft.md` — main research report (Markdown source)
 - `build_report.py` — generates report_draft.pdf using reportlab
+- `model.py` — **OOP foundation for all new experiments**: `Flock` and `Predator` classes, `flock.evolve()`, `simulate()` helper
 - `figures/` — all output PNG figures from simulations
 
 ## GitHub
@@ -94,15 +95,16 @@ Active research thread: predator strategy hierarchy.
 - predator_sensing.py -- limited sensing radius, search/attack phases
 
 ### Planned next
+- Intermediate compactness phase search (prof Q2: find cooperative regime between caged and non-interacting)
 - Minimum viable flock size (below what N does collective evasion fail?)
 - Literature search for novelty assessment
 - Active/passive segregation (book Section 10.4)
 
 ### Key architectural note
-Scripts that import from other experiment scripts (multi_predator.py, encirclement.py, etc.)
-will re-run all experiments at import time -- those scripts have no __main__ guard.
-New scripts (fragmentation.py, panic.py, predator_sensing.py) are self-contained:
-they import only from flocking.py and predator.py to avoid this.
+All **new** experiments import from `model.py` (Flock, Predator classes).
+Old scripts (predator.py, multi_predator.py, encirclement.py, etc.) remain intact but should
+not be imported by new code -- they have no __main__ guard and re-run on import.
+`model.py` is self-contained and safe to import.
 
 To regenerate the PDF after any changes to report_draft.md:
   python build_report.py

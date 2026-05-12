@@ -19,6 +19,8 @@ Order parameter: Phi = |mean(v_hat)|, ranges 0 (random) to 1 (perfect alignment)
 ---
 
 ## Finding 1: Equilibrium speed is v_eq = v0 + alpha/mu
+<img src="./figures/validate_3_flocking_only.png" width="480"/>
+
 **What:** Agents don't cruise at v0 -- they cruise at v_eq = v0 + alpha/mu.
 **Why:** When the flock aligns, the flocking force always pushes agents forward
 at magnitude alpha. Self-propulsion equilibrates at a higher speed to compensate.
@@ -30,6 +32,8 @@ To target a specific cruise speed v_cruise, set v0 = v_cruise - alpha/mu.
 ---
 
 ## Finding 2: Solid-to-fluid phase transition in repulsion-only system
+<img src="./figures/validate_2_repulsion_noise.png" width="480"/>
+
 **What:** With only repulsion and noise (alpha=0, v0=0), KE rises continuously with noise
 amplitude eta. Transition appears continuous (not abrupt) across eta ~ 1-10.
 **Evidence:** Sweep A in analysis.py, 5 seeds each with error bars.
@@ -41,6 +45,8 @@ diverging susceptibility or correlation length to answer.
 ---
 
 ## Finding 3: Low threshold for flock formation
+<img src="./figures/phase4_sweeps.png" width="480"/>
+
 **What:** Flock forms (Phi > 0.5) at very small flocking amplitude alpha -- around alpha ~ 0.05-0.1.
 **Evidence:** Sweep B in analysis.py, 5 seeds each.
 alpha=0: Phi=0.088 | alpha=0.05: Phi=0.404 | alpha=0.10: Phi=0.607 | alpha=0.20: Phi=0.891
@@ -60,6 +66,8 @@ The flocking force makes the system much more resistant to noise disruption.
 ---
 
 ## Finding 5: Flocking maintains coherence under predator pressure
+<img src="./figures/predator_2_coherence.png" width="480"/>
+
 **What:** Under predator pressure, flocking prey maintain Phi~1.0 throughout the simulation.
 Non-flocking prey (alpha=0) scatter to Phi~0.1 almost immediately.
 **Evidence:** Exp 2 in predator.py, 10 seeds each.
@@ -72,6 +80,8 @@ no collective structure. Flocking sacrifices some individual distance for group 
 ---
 
 ## Finding 6: Flock coherence robust to predator aggression
+<img src="./figures/predator_3_aggression_sweep.png" width="480"/>
+
 **What:** Prey flock Phi stays near 0.95-0.98 across all tested predator aggression levels
 (alpha_pred = 0 to 15, effective speeds 0.05 to 1.55). Flock does not break apart.
 **Evidence:** Exp 3 in predator.py, 8 seeds each.
@@ -84,6 +94,8 @@ to maintain a fixed buffer distance even against a very aggressive predator.
 ---
 
 ## Finding 7: Dilution effect -- larger flocks expose smaller fractions
+<img src="./figures/predator_4_size_sweep.png" width="480"/>
+
 **What:** The fraction of the flock within predator threat range decreases with flock size.
 **Evidence:** Exp 4 in predator.py, 5 seeds each.
 N=10: fraction~0.49 | N=25: ~0.21 | N=50: ~0.19 | N=100: ~0.11 | N=200: ~0.14
@@ -96,6 +108,8 @@ hypothesis. Note: N=200 slightly worse than N=100 (0.14 vs 0.11), possibly noise
 ---
 
 ## Finding 8: Solid-to-fluid transition is a crossover, not a phase transition
+<img src="./figures/phase_transition_scaling.png" width="480"/>
+
 **What:** Finite-size scaling across N=25,50,100,200 shows KE/N is essentially
 independent of N. Susceptibility chi = N*var(KE/N) rises monotonically, no peak.
 **Evidence:** phase_transition.py. All four N values give nearly identical KE/N curves.
@@ -106,6 +120,8 @@ would require chi to diverge at finite eta and scale as N^(gamma/nu). Neither ob
 ---
 
 ## Finding 9: Flock elongates with predator pressure and with stronger alpha
+<img src="./figures/geometry_2_alpha_sweep.png" width="480"/>
+
 **What:** Aspect ratio AR increases with predator presence and flocking amplitude alpha.
 **Evidence:** geometry.py
 - No predator: AR=2.61 | With predator: AR=2.76
@@ -117,6 +133,8 @@ prediction of arched/thinning flocks.
 ---
 
 ## Finding 10: Multiple predators elongate the flock without breaking coherence
+<img src="./figures/multi_pred_3_summary.png" width="480"/>
+
 **What:** With 1-4 predators, Phi stays near 0.975-0.991 throughout. AR increases
 from 2.83 (1 predator) to 7.91 (3 predators). Min predator-prey distance actually
 increases slightly from 0.093 to 0.106.
@@ -128,6 +146,8 @@ multiple directions may force the flock into a harder-to-surround configuration.
 ---
 
 ## Finding 11: Evasion distance increases because predators co-localize at prey CoM
+<img src="./figures/evasion_diagnostic.png" width="480"/>
+
 **What:** With multiple predators, each one independently targets the flock center of mass.
 Because all predators follow the same rule, they converge to the same location
 (measured pred-pred distance ~0.001, essentially zero). This means more predators
@@ -150,6 +170,8 @@ more effective -- but that requires coordination the model does not give them.
 ---
 
 ## Finding 12: Crossover persists across compactness -- no phase transition in this model
+<img src="./figures/compactness_phase.png" width="480"/>
+
 **What:** When compactness is held fixed across N by scaling r0 = sqrt(C/(pi*N)),
 both dense (C=0.78) and dilute (C=0.10) regimes give essentially identical results:
 KE/N curves overlap for all N, susceptibility chi increases monotonically with eta,
@@ -175,6 +197,8 @@ phase transition in any easily accessible parameter regime.
 ---
 
 ## Finding 13: Coordinated predators spread out but cannot break the flock
+<img src="./figures/coord_3_breaking_threshold.png" width="480"/>
+
 **What:** Adding predator-predator repulsion (alpha_coord) forces predators to spread
 out spatially instead of co-localizing, and brings them physically closer to the flock.
 But even with 10 coordinated predators, Phi never drops below 0.92. The flock's
@@ -195,6 +219,8 @@ strategy of predators in this model breaks the flock.
 ---
 
 ## Finding 14: Encirclement breaks coherence -- first strategy to substantially disrupt the flock
+<img src="./figures/encircle_3_breaking_threshold.png" width="480"/>
+
 **What:** Assigning each predator a fixed angular direction and targeting
 CoM + R_enc*(cos(theta_k), sin(theta_k)) forces them to approach from equally spaced angles.
 This is fundamentally different from both naive and coordinated strategies. At n_pred=6-8,
@@ -219,6 +245,8 @@ evasion, establishing that flock resilience is strategy-dependent, not absolute.
 ---
 
 ## Finding 15: Encirclement threshold does not scale with N -- convergence to a common floor
+<img src="./figures/encircle_scaling.png" width="480"/>
+
 **What:** Fixed n_pred=6 against varying N shows larger flocks are more resistant (Phi rises
 from 0.695 at N=50 to 0.903 at N=350). But fixed predator-to-prey ratio (6/350) applied
 to larger N makes things WORSE: at N=500 with n_pred=9, Phi=0.654 -- the lowest coherence
@@ -238,6 +266,9 @@ disruption is set by angular coverage (predators/360 degrees) rather than predat
 ---
 
 ## Finding 16: Encirclement divides the flock into coherent sub-flocks, not random walkers
+<img src="./figures/frag_3_snapshots.png" width="480"/>
+<img src="./figures/frag_2_cluster_stats.png" width="480"/>
+
 **What:** When global Phi drops to 0.77 under encirclement, the flock is NOT dissolving.
 Predators COMPRESS the flock spatially (fewer clusters: 60 naive vs 24 encircle) while
 SPLITTING it directionally (each sub-flock escapes in a different direction). Each
