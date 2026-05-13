@@ -18,8 +18,7 @@ Thumbs.db
 *.swp
 *.swo
 
-# Report files (kept locally, not tracked in repo)
-report_draft.md
+# Report files
 report_draft.pdf
 build_report.py
 

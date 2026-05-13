@@ -233,6 +233,11 @@
         <td class="hours-cell">2.50</td>
         <td>Responded to professor feedback. (1) Added figure image links to findings.md for all 16 findings using HTML img tags. (2) Created model.py: OOP foundation with Flock and Predator classes and flock.evolve() method. Encirclement and coordination strategies are parameterized on the Predator class; all new experiments will import from here. Smoke-tested both a plain flock and 3 encircling predators. (3) Intermediate compactness phase search (compactness_search.py, 8 seeds): swept C = 0.15-0.60 with FSS at N=25-200. Result: no phase transition at any compactness -- chi peaks at eta=30 (sweep boundary) for all 24 (C,N) combinations, N-independent. Crossover is universal. Soft repulsion force is the reason; hard-core potential would be needed. Added Finding 17.</td>
       </tr>
+      <tr data-date="2026-05-13">
+        <td class="date-cell">2026-05-13</td>
+        <td class="hours-cell">1.00</td>
+        <td>Responded to second round of professor feedback. Rewrote README: added Architecture section explaining model.py OOP foundation (Flock/Predator classes, flock.evolve()), grouped repository table by investigation stage with logical progression, added Finding 17 to findings table, added predator strategy hierarchy to results section. Un-ignored report_draft.md so draft report is now visible on GitHub. Added compactness_search.py to repository table. Next: run panic.py (book Section 10.5) and predator_sensing.py.</td>
+      </tr>
     </tbody>
     <tfoot>
       <tr>
@@ -291,6 +296,10 @@
     {
       date: "2026-05-11",
       body: "Responded to professor feedback email.\n\nCode architecture: Created model.py, an object-oriented foundation for all future experiments. Flock class holds prey state and physics; Predator class is configurable with strategy ('naive' or 'encircle'), coord_alpha for predator-predator repulsion, and angle/enc_radius for encirclement. flock.evolve(predators=[...]) advances one timestep and updates predators in place. simulate() helper runs a full experiment and returns phi and distance timeseries. Smoke-tested both a plain flock (phi=0.889 after 500 steps, settling) and 3 encircling predators (phi=0.902). All old scripts (predator.py, encirclement.py, etc.) remain intact -- they import only from flocking.py and are not broken by this change. New experiments will import from model.py.\n\nfindings.md: added HTML image links to relevant figures for all 16 findings.\n\nIntermediate compactness search (compactness_search.py, 8 seeds): swept C = 0.15, 0.20, 0.30, 0.40, 0.50, 0.60 with finite-size scaling at N = 25, 50, 100, 200 and noise sweep eta = 0.5-30. Result: no phase transition at any compactness. All 24 (C, N) combinations show chi peaking at eta=30 (top of sweep) with chi_peak ~0.022-0.025, N-independent. The crossover is a universal feature of this model, not tied to any density regime. Interpretation: the repulsion force (1-d/2r0)^1.5 is too soft to produce the diverging spatial correlations needed for a true phase transition. Hard-core repulsion (Lennard-Jones) would be required. Finding 17 added.\n\nUsed Claude (AI) for code writing and architectural design. Scientific decisions and interpretations are my own."
+    },
+    {
+      date: "2026-05-13",
+      body: "Responded to second round of professor feedback.\n\nREADME rewrite: added Architecture section explaining the two-layer codebase structure. model.py (OOP layer) provides Flock and Predator classes and flock.evolve(); all new experiments import from it. Legacy scripts (predator.py, multi_predator.py, encirclement.py, etc.) use the procedural flocking.py core and are kept intact for reproducibility. Reorganized the repository table into groups: Core, Legacy Experiments, New Experiments, Supporting Files. Added an Investigation Progression table mapping each research question to its scripts in logical order. Updated findings table to include Finding 17 and added predator strategy hierarchy results section.\n\nUn-ignored report_draft.md so the draft report is now tracked in git and visible on GitHub for the professor to review.\n\nNext experiments planned: panic.py (erratic-agent fraction sweep, book Section 10.5) and predator_sensing.py (limited sensing radius, search/attack phases). Both scripts are written and ready to run.\n\nUsed Claude (AI) for code writing and documentation. Scientific decisions are my own."
     }
   ];
 
