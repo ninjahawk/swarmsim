@@ -249,7 +249,7 @@ for n_pred, rlbl, r_sense, enc in compare:
         phi_ss.append(phi_series(f)[-50:].mean())
         d = dist_series(f)[-50:]
         dist_ss.append(np.nanmean(d))
-    key = (n_pred, rlbl, enc)
+    key = (n_pred, rlbl, r_sense, enc)
     res3[key] = dict(phi=np.mean(phi_ss), phi_std=np.std(phi_ss),
                      dist=np.nanmean(dist_ss))
     print('  n_pred=%d  r_sense=%s  enc=%s  Phi=%.3f +/- %.3f  dist=%.3f' % (

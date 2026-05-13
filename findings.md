@@ -313,9 +313,68 @@ Lennard-Jones) or a different model class entirely.
 
 ---
 
+## Finding 18: Panic does not propagate -- calm agents stay coherent even at 20% panic fraction
+<img src="./figures/panic_1_sweep.png" width="480"/>
+<img src="./figures/panic_2_snapshots.png" width="480"/>
+
+**What:** When a fraction f of agents are replaced by panicked agents (weak flocking alpha=0.1,
+high noise ramp=10.0), the global order parameter drops smoothly: Phi=1.000 at f=0% down to
+Phi=0.853 at f=20%. But the calm-agent-only order parameter stays at 0.999 throughout.
+Panic does not propagate into the calm sub-flock.
+**Evidence:** panic.py, 8 seeds each.
+- f=0%:  Global Phi=1.000, Calm Phi=1.000
+- f=1%:  Global Phi=0.991, Calm Phi=1.000
+- f=5%:  Global Phi=0.958, Calm Phi=0.999
+- f=10%: Global Phi=0.922, Calm Phi=0.999
+- f=20%: Global Phi=0.853, Calm Phi=0.999
+**Mechanism:** The global Phi drop is pure dilution: incoherent panicked agents are included
+in the order parameter average, dragging it down. The calm agents form a coherent flock that
+effectively ignores panicked neighbors. The flocking force is strong enough that calm agents
+maintain alignment even with 20% erratic neighbors.
+**Direction:** Flock heading shows no systematic deflection across panic fractions (~-9 to -13 deg,
+essentially noise around the f=0 baseline). Panicked agents do not steer the flock.
+**Comparison with predator strategies:** A single predator achieves Phi~0.995 (essentially no
+disruption). Even f=20% panic achieves only Phi=0.853 -- and with calm_Phi=0.999 this represents
+dilution, not genuine flock disruption. Encirclement with n_pred=6 achieves Phi=0.769 with the
+flock actually dividing (calm agents are disrupted). External predator pressure is more disruptive
+than internal panic at any tested fraction.
+**Implication:** The book section "Why You Should Never Panic" implies panic is dangerous to the
+collective. In this model, the opposite is observed: the flock is immune to internal panic because
+the alignment force dominates. The book result may depend on panic propagation via local contagion
+(agents near panicked agents becoming panicked themselves), which this model does not implement.
+
+---
+
+## Finding 19: Predator sensing threshold at r_sense ~ flock radius; limited sensing slightly worsens encirclement
+<img src="./figures/sensing_1_summary.png" width="480"/>
+<img src="./figures/sensing_2_cycles.png" width="480"/>
+
+**What:** A predator with sensing radius r_sense can only lock on to the flock when the nearest
+prey is within r_sense; otherwise it executes a slow random walk. There is a sharp transition in
+lock-on fraction near r_sense ~ 0.10-0.15 (approximately equal to flock radius Rg ~ 0.10-0.15).
+Above r_sense=0.20 the predator always finds the flock and the result is identical to perfect sensing.
+**Evidence:** predator_sensing.py, 8 seeds, single predator.
+- r_sense=0.05: lock_frac=0.12, Phi=0.990 -- predator rarely finds flock; dist=0.035 (close when it does)
+- r_sense=0.10: lock_frac=0.77, Phi=0.972 +/- 0.037 -- transition regime; highest variance
+- r_sense=0.15: lock_frac=0.97, Phi=0.995 -- nearly equivalent to perfect sensing
+- r_sense>=0.20: lock_frac=1.00, Phi=0.995 -- identical to inf sensing
+**Multi-predator:** Limited sensing (r=0.20) vs perfect sensing makes essentially no difference
+for naive predators (n=1,3). For encirclement (n=6), limited sensing gives Phi=0.788 vs 0.853
+for perfect sensing -- limited sensing slightly WORSENS the outcome for the flock.
+**Mechanism for encirclement result:** When a locked-on encircling predator loses the flock and
+re-enters search mode, it drifts randomly and may re-approach from a non-assigned angle. This adds
+unpredictable multi-directional pressure on top of the structured encirclement pattern, increasing
+disruption variability (std=0.126 vs 0.087 for perfect sensing). Some seeds fragment badly.
+**Implication:** The biologically "realistic" sensing limitation does not help the flock -- it
+leaves the single-predator result unchanged and slightly increases vulnerability to coordinated
+strategies. The critical parameter is whether r_sense exceeds the flock's spatial footprint.
+
+---
+
 ## Open Questions / Next Directions
 1. What is the minimum prey group size below which collective evasion fails entirely?
 2. Do the sub-flocks formed by encirclement eventually reunite, or do they permanently
    diverge? (Requires long simulation after predators are removed)
-3. Panic dynamics (book Section 10.5): how does a fraction of erratic agents disrupt
-   an otherwise calm flock? How does this compare to predator disruption?
+3. Panic propagation: this model has no contagion mechanism. Adding one (agents near
+   panicked agents become panicked) would test whether the book's "Why You Should Never Panic"
+   result depends on social contagion.
