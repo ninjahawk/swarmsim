@@ -794,6 +794,45 @@ A predator strategy that wraps the flock at half its radius is universal.
 
 ---
 
+## Finding 32: Long-time encirclement produces an intermittent merge/split steady state
+<img src="./figures/long_encircle_1.png" width="480"/>
+
+**What:** Running the encirclement protocol (n_pred=10, R_enc=0.15) for 30000 timesteps
+(300 time units, 10x longer than typical short-time experiments) reveals that the
+flock does NOT settle into a frozen fragmented configuration.  Instead, Phi oscillates
+strongly throughout the run: mean Phi=0.751 +/- 0.061 across seeds, but the TEMPORAL
+standard deviation within a single seed is 0.21 (excursions from Phi~0.4 to Phi~0.95).
+Cluster count and largest cluster fraction oscillate similarly.  Sub-flocks
+continuously merge and re-split.
+**Evidence:** long_encirclement.py, 4 seeds, slow prey, last 1/3 of each run (t > 200):
+- Phi:          mean = 0.751   across-seed std = 0.061   temporal-std-per-seed ~ 0.21
+- n_clusters:   mean = 4.80
+- largest_frac: mean = 0.455
+- The temporal std exceeding the seed-to-seed std indicates fluctuations within each
+  run dominate over baseline differences between runs -- the dynamics are intrinsically
+  intermittent, not in a quiet steady state.
+**Mechanism:** When the flock briefly aligns into a single coherent group (Phi -> 0.9),
+the predators all chase one CoM target offset by their respective angles and apply
+maximally-multi-directional pressure.  This is the strongest disruption, so the flock
+quickly fragments.  Once fragmented (Phi -> 0.5), each predator preferentially follows
+one sub-flock (whichever is nearest its angular target), reducing the multi-directional
+pressure on any single sub-flock.  Without that pressure, the dominant sub-flock can
+re-assemble or absorb others, raising Phi.  The cycle repeats: alignment provokes
+maximum predation, fragmentation releases it.  The system explores both configurations
+indefinitely.
+**Comparison with the short-time (4000-step) result:** Finding 16 reported Phi=0.72
+for the same setup at short times.  This long-time result confirms the time-averaged
+value is similar (0.75), but reveals it hides large temporal swings that would be
+invisible in a steady-state-only analysis.
+**Implication:** The flock-under-encirclement is a dynamical system with attractor
+dynamics that include intermittent re-merging events.  No stable sub-flock identity
+exists; agents move between sub-flocks as the configuration evolves.  From a
+biological perspective: encirclement does not "permanently break" the flock even
+during sustained predation, but it does prevent the flock from settling into a
+quiet aligned state.  The collective is repeatedly being reshuffled.
+
+---
+
 ## Open Questions / Next Directions
 1. Sub-threshold (SIS) hybrid: with gamma chosen so contagion alone fizzles, can
    encirclement push it back over the epidemic threshold?  (Spatial compression should
