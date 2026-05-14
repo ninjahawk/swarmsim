@@ -646,6 +646,42 @@ diagnostic for segregation is local purity, not bulk position relative to headin
 
 ---
 
+## Finding 28: Encirclement floor rises at very large N -- Finding 15's "common floor" is N-dependent
+<img src="./figures/large_N_1_summary.png" width="480"/>
+
+**What:** Finding 15 conjectured that the encirclement-induced Phi floor at ~0.67
+(observed for N=100 and N=350 at n_pred=10) was set by angular coverage and should be
+N-independent.  Extending the test to N=700 and N=1000 partially refutes this: the
+floor rises with N.  At n_pred=10: Phi=0.667 (N=350), 0.700 (N=700), 0.740 (N=1000).
+At n_pred=14: Phi=0.637 (N=350), 0.727 (N=700), 0.790 (N=1000).  The encirclement
+strategy is LESS effective against larger flocks at fixed angular coverage.
+**Evidence:** large_N_encirclement.py, 4 seeds, slow prey, R_enc=0.15.
+- N=350,  n_pred=6:  Phi=0.902 +/- 0.043   n_pred=10: 0.667 +/- 0.106   n_pred=14: 0.637 +/- 0.128
+- N=700,  n_pred=6:  Phi=0.863 +/- 0.076   n_pred=10: 0.700 +/- 0.150   n_pred=14: 0.727 +/- 0.113
+- N=1000, n_pred=6:  Phi=0.849 +/- 0.119   n_pred=10: 0.740 +/- 0.080   n_pred=14: 0.790 +/- 0.132
+- Evasion distance flat across N at n_pred=6 (~0.056); at n_pred=10 the predator gets
+  closer for smaller N (mind=0.034 at N=350 vs 0.039 at N=1000); at n_pred=14, mind
+  actually INCREASES with N (0.028 -> 0.047).
+**Mechanism:** The encirclement targets are placed at R_enc=0.15 from the flock CoM.
+For small N, this radius is comparable to the flock's own radius of gyration (Rg ~
+0.10-0.15 at N=350); the predators occupy positions near the flock edge where they can
+exert real pressure on the boundary.  At N=1000, the flock is broader -- Rg grows --
+and R_enc=0.15 places the predators INSIDE the flock or close to its CoM, where their
+repulsion is partially absorbed by surrounding prey.  The encirclement geometry stops
+matching the flock geometry, and the angular pressure becomes less effective.  This is
+a real geometric effect: encirclement requires R_enc ~ Rg to disrupt, and Rg grows
+with N.
+**Implication:** A predator strategy that worked at intermediate flock sizes does not
+automatically scale up.  For a large flock, the encirclement radius would have to be
+scaled up too -- but doing so positions the predators outside the flock's repulsion
+range and they revert to ineffective orbiting (Section 4.6 radius sweep).  Real
+predators facing very large prey aggregations may need to switch strategies entirely
+(e.g., partition the flock into sub-groups before encircling) rather than scale a
+single tactic.  The Finding 15 angular-coverage hypothesis is therefore correct
+within a window of N, but not universal.
+
+---
+
 ## Open Questions / Next Directions
 1. Sub-threshold (SIS) hybrid: with gamma chosen so contagion alone fizzles, can
    encirclement push it back over the epidemic threshold?  (Spatial compression should
