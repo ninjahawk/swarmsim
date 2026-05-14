@@ -468,6 +468,46 @@ agents do not segregate into leading and trailing layers. To obtain spatial segr
 in this model would likely require asymmetric alpha values between groups, not v0
 contrast alone.
 
+A follow-up experiment (segregation_alpha.py) confirms this. Replacing v0 contrast with
+alpha (alignment-strength) contrast produces real spatial segregation — but in a form
+the along-heading index still misses. A local-purity diagnostic, defined as the
+fraction of an agent's rf-neighbors that share its type, rises from 0.50 (random, no
+contrast) to 0.73 at maximum contrast. The snapshot at alpha_passive=0 shows tight
+clusters of high-alpha agents amid scattered low-alpha particles. The segregation is
+isotropic in the flock frame, not preferentially at the leading or trailing edge.
+Charbonneau's segregation result is therefore recovered, conditional on asymmetric
+alignment fidelity rather than asymmetric speed, and the appropriate diagnostic is
+local same-type purity rather than bulk position relative to heading.
+
+### 4.13 Refinements: Sub-Threshold Coupling and Large-N Scaling
+
+Two further experiments refine results from earlier sections.
+
+The hybrid SIS experiment (hybrid_sis.py) tests whether encirclement can push a
+contained SIS contagion over its critical threshold by raising the local contact count.
+At beta = 1.0, gamma = 3.0 (beta/gamma = 0.33, well below the Section 4.11 threshold),
+contagion alone fizzles: panic peaks at f_max = 0.13 and dies out, f_ss = 0. Adding 6
+encircling predators triples the local contact count (k from 8.9 to 30.2) and doubles
+the panic peak (f_max = 0.27), but the outbreak still dies out. The mechanism is
+confirmed — compression raises effective beta — but the amplification is bounded:
+well-subcritical contagion is not rescued by external mechanical pressure alone. The
+combined-stressor Phi (0.73) is measurably worse than encirclement alone (0.86), so the
+transient outbreak adds non-negligible kinematic disruption even when it eventually
+collapses.
+
+The large-N encirclement experiment (large_N_encirclement.py) tests whether the
+Section 4.6 conjecture that the Phi ~ 0.67 floor at n_pred = 10 is N-independent
+holds at very large flock sizes. At N = 350, 700, 1000 with R_enc = 0.15 held fixed,
+the floor at n_pred = 10 rises with N: Phi = 0.667 (N = 350), 0.700 (N = 700),
+0.740 (N = 1000). At n_pred = 14: 0.637, 0.727, 0.790. The encirclement strategy
+becomes less effective at large N because R_enc was calibrated to N = 350's flock
+radius Rg ~ 0.15; at N = 1000 the flock is broader and R_enc = 0.15 places the
+predators inside the flock rather than at its boundary, where their repulsion is
+absorbed by surrounding prey. The encirclement geometry must match the flock geometry
+to disrupt — angular coverage alone is insufficient. A predator strategy that works
+at intermediate flock sizes does not scale up to large prey aggregations without
+re-calibration.
+
 ---
 
 ## 5. Discussion
