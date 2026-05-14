@@ -610,6 +610,42 @@ free win; the contagion must already be near-supercritical for compression to ma
 
 ---
 
+## Finding 27: Alpha-contrast populations segregate via local clustering, not heading-axis separation
+<img src="./figures/segregation_alpha_1_summary.png" width="480"/>
+
+**What:** Replacing the v0 contrast of Finding 24 with alpha (alignment-strength)
+contrast produces real spatial segregation -- but it manifests as local same-type
+clustering, not as a front/back split along the heading direction.  The along-heading
+segregation index stays near zero (consistent with v0-contrast Finding 24), so a naive
+metric would miss the effect.  But the local-purity diagnostic (fraction of an agent's
+rf-neighbors that share its type) rises monotonically with alpha contrast.
+**Evidence:** segregation_alpha.py, 5 seeds, f_active=0.5.
+- alpha_p=1.0 (no contrast):   purity_active=0.500, purity_passive=0.497  (baseline = 0.5)
+- alpha_p=0.5:                 purity_active=0.556, purity_passive=0.549
+- alpha_p=0.3:                 purity_active=0.550, purity_passive=0.542
+- alpha_p=0.1:                 purity_active=0.630, purity_passive=0.598
+- alpha_p=0.0:                 purity_active=0.732, purity_passive=0.684
+  - Phi=0.513 -- the "flock" has effectively dissolved at alpha_p=0 because half the
+    agents have no alignment force at all.
+- Along-heading segregation index stays at 0 +/- 0.10 across the entire sweep.
+**Mechanism:** Active agents have a strong alignment force pulling them toward their
+neighbors' velocity; this preferentially binds active-active pairs which move
+similarly.  Passive agents either don't align (alpha_p=0) or align weakly, so they
+drift more independently.  The active sub-population coheres into local clusters that
+exclude passive agents -- visible directly in the alpha_p=0 snapshot as compact red
+clumps amid scattered blue particles.  Crucially, this clustering is isotropic in the
+flock frame -- the clusters can form anywhere, not preferentially at the leading edge.
+**Comparison with Finding 24:** v0 contrast alone produces NO segregation because the
+alignment force homogenises group speed.  alpha contrast DOES produce segregation
+because it creates differential binding strength.  The book's Section 10.4 segregation
+result is recovered, conditional on asymmetric ALIGNMENT (not asymmetric speed).
+**Implication:** In real biological flocks, segregation may indicate differential
+alignment fidelity between individuals (e.g., different sensory acuity, different
+attention to neighbors) rather than differential locomotion capability.  The proper
+diagnostic for segregation is local purity, not bulk position relative to heading.
+
+---
+
 ## Open Questions / Next Directions
 1. Sub-threshold (SIS) hybrid: with gamma chosen so contagion alone fizzles, can
    encirclement push it back over the epidemic threshold?  (Spatial compression should
