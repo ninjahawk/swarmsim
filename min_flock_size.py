@@ -33,7 +33,9 @@ N_VALS   = [3, 5, 8, 12, 18, 25, 40, 60, 100]
 
 def run(N, predators_factory, seed):
     np.random.seed(seed)
-    flock = Flock(seed=seed, N=N)
+    # Slow-prey regime so the v0=0.05 predators can actually pursue
+    # (matches encirclement.py / Findings 5-16).
+    flock = Flock(seed=seed, N=N, v0=0.02, ramp=0.1)
     preds = predators_factory()
 
     phi_ts = []; mind_ts = []; capture_ts = []

@@ -28,3 +28,4 @@ build_report.py
 
 # Simulation console logs
 figures/*_log.txt
+*_run.log

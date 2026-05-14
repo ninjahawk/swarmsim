@@ -405,11 +405,82 @@ beta_c. In the no-recovery limit, any contact-mediated panic is fatal to the flo
 
 ---
 
+## Finding 21: Minimum viable flock size -- coherence threshold at N~18-25
+<img src="./figures/min_size_1_summary.png" width="480"/>
+
+**What:** Sweeping N from 3 to 100 (8 seeds each) shows that flock coherence builds
+smoothly with N rather than at a sharp threshold.  In the no-predator control:
+Phi=0.49 at N=3, 0.69 at N=8, 0.81 at N=12, 0.96 at N=40, 0.99 at N=100.  Phi
+crosses 0.9 between N=18 and N=25.  Below N=12 the flock is unreliable
+(std=0.13-0.20 across seeds).  Predator pressure (single naive, or two opposed
+encirclers) does not substantially shift this threshold.  In fact, at the
+smallest sizes (N=3-8), a predator can briefly RAISE Phi by pushing the group
+into a forced alignment.  Capture frequency (predator within 2*r0 of any prey)
+stays below 10% at all tested sizes.
+**Evidence:** min_flock_size.py with slow prey (v0=0.02, ramp=0.1) so the
+v0=0.05 predator can actually pursue (matches Findings 5-16 regime).
+- N=3:   Phi(none)=0.49, Phi(naive)=0.63, Phi(encircle2)=0.73
+- N=8:   Phi(none)=0.69, Phi(naive)=0.49, Phi(encircle2)=0.61
+- N=18:  Phi(none)=0.84, Phi(naive)=0.87, Phi(encircle2)=0.92
+- N=40:  Phi(none)=0.96, Phi(naive)=0.91, Phi(encircle2)=0.95
+- N=100: Phi(none)=0.99, Phi(naive)=0.94, Phi(encircle2)=0.94
+- Evasion distance falls monotonically with N for both predator conditions
+  (encircle2 always closer than naive); capture frac ~0 throughout.
+**Interpretation:** Flock formation is collective: each agent's alignment
+contribution to its neighbors needs a critical mass of mutually visible peers
+within rf=0.1.  Below N~12 the spatial density (in a 1x1 domain) is too sparse
+for the flocking force to dominate noise.  Between N=12 and N=25 the system
+crosses over from noise-dominated to alignment-dominated.  Above N~25 the
+group reliably flocks.
+**Implication:** The "safety in numbers" hypothesis already established by
+Finding 7 has a lower limit: below the coherence threshold, prey have neither
+collective evasion nor individual escape distance (mind drops more sharply at
+small N).  Real prey species near the coherence threshold should be most
+vulnerable to predation in this model -- but the absolute capture rate in this
+simulation is too small to test.
+
+---
+
+## Finding 22: Encirclement-induced fragmentation is fully transient -- sub-flocks reunite within ~10 time units of predator removal
+<img src="./figures/reunion_1_timeseries.png" width="480"/>
+
+**What:** Finding 16 showed encirclement divides the flock into coherent
+sub-flocks.  This experiment runs a 3-phase simulation -- 1500 steps no
+predator (warm-up), 4000 steps with 10 encircling predators (attack), 6500
+steps no predator (recovery) -- and tracks Phi, cluster count, and largest
+cluster fraction.  All 6 seeds recover fully.  Mean recovery time to Phi=0.95
+is 10.3 time units (about 1030 steps), much shorter than the 4000-step attack
+that caused the disruption.  Final Phi=1.000 +/- 0.001 -- better than the
+pre-attack Phi=0.975, because by the end of the recovery window the flock
+has had time to fully settle.
+**Evidence:** reunion.py, 6 seeds, slow prey (v0=0.02), n_pred=10, R_enc=0.15.
+- Pre-attack:    Phi=0.975, n_clusters=1.2, largest_frac=0.989
+- During attack: Phi=0.716, n_clusters=4.5, largest_frac=0.413
+                 (genuine fragmentation: largest fragment is 41% of flock)
+- Post-attack:   Phi=1.000, n_clusters=1.0, largest_frac=0.993
+- Recovery times (Phi -> 0.95):  [9.0, 4.5, 10.0, 16.0, 6.0, 16.5] time units;
+  6/6 seeds recovered.
+**Mechanism:** Predator removal eliminates the multi-directional pressure that
+was holding sub-flocks apart.  Each sub-flock's local Phi was already ~1.0
+during the attack (Finding 16), so each is internally consistent and moving
+with a definite heading.  On the periodic 1x1 domain, sub-flocks heading in
+different directions inevitably re-encounter each other, and at any meeting
+the flocking force (within rf=0.1) re-aligns them.  Reunion is rapid because
+sub-flocks are already aligned internally and only need their headings to
+agree.
+**Implication:** Encirclement causes DIVISION not DISSOLUTION (Finding 16);
+this experiment confirms it causes only TRANSIENT division.  The flock's
+topological state is preserved: as soon as the stressor is removed, the
+group reconstitutes.  This is qualitatively different from contagious panic
+(Finding 20), which would NOT spontaneously reverse on predator removal --
+panicked agents stay panicked.  Predation and contagion produce different
+classes of damage to the collective: predation is reversible, contagion is
+absorbing.
+
+---
+
 ## Open Questions / Next Directions
-1. What is the minimum prey group size below which collective evasion fails entirely?
-2. Do the sub-flocks formed by encirclement eventually reunite, or do they permanently
-   diverge? (Requires long simulation after predators are removed)
-3. SIS contagion with recovery rate gamma -- does a true epidemic threshold beta_c emerge?
+1. SIS contagion with recovery rate gamma -- does a true epidemic threshold beta_c emerge?
    Does the flock's alignment force act as an effective "recovery" (panicked agents return
    to calm when surrounded by aligned calm neighbors)?
 4. Hybrid stressors: contagious panic plus encircling predators -- does the calm collapse

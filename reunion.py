@@ -36,9 +36,12 @@ os.makedirs('figures', exist_ok=True)
 N_SEEDS = 6
 
 # Phase timings (in steps)
+# Use n_pred=10 (Finding 8 floor) and a longer attack to force genuine
+# fragmentation before testing reunion.
+N_PRED   = 10
 N_WARMUP = 1500
-N_ATTACK = 3500   # 2000 steps of attack
-N_TOTAL  = 10000  # 6500 steps of recovery (much longer than attack)
+N_ATTACK = 5500   # 4000 steps of attack
+N_TOTAL  = 12000  # 6500 steps of recovery
 
 
 def find_clusters(px, py, rf):
@@ -72,7 +75,9 @@ def find_clusters(px, py, rf):
 def run_one(seed):
     """Run one reunion experiment.  Returns dict of timeseries."""
     np.random.seed(seed)
-    flock = Flock(seed=seed, N=350)
+    # Use the predator-regime prey defaults (matches encirclement.py / Finding 14-16):
+    # slow prey (v0=0.02) so the v0=0.05 predator can actually pursue.
+    flock = Flock(seed=seed, N=350, v0=0.02, ramp=0.1)
     preds = []
     record_every = 50
 
@@ -80,8 +85,8 @@ def run_one(seed):
     for step in range(N_TOTAL):
         # Phase transitions
         if step == N_WARMUP:
-            preds = [Predator(strategy='encircle', angle=k*60.0, enc_radius=0.15)
-                     for k in range(6)]
+            preds = [Predator(strategy='encircle', angle=k*360.0/N_PRED, enc_radius=0.15)
+                     for k in range(N_PRED)]
         elif step == N_ATTACK:
             preds = []  # remove predators
 
@@ -101,8 +106,8 @@ def run_one(seed):
     )
 
 
-print('Reunion experiment: 6 encircling predators applied steps %d..%d, removed for steps %d..%d'
-      % (N_WARMUP, N_ATTACK, N_ATTACK, N_TOTAL))
+print('Reunion experiment: %d encircling predators applied steps %d..%d, removed for steps %d..%d'
+      % (N_PRED, N_WARMUP, N_ATTACK, N_ATTACK, N_TOTAL))
 print('  (%d seeds)' % N_SEEDS)
 
 runs = []
