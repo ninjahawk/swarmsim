@@ -576,6 +576,40 @@ problem) via a single dimensionless ratio beta/gamma.
 
 ---
 
+## Finding 26: Encirclement amplifies but does not tip sub-threshold contagion -- partial coupling
+<img src="./figures/hybrid_sis_1_summary.png" width="480"/>
+
+**What:** At a sub-threshold SIS point (beta=1.0, gamma=3.0; beta/gamma=0.33, well below
+the Finding 25 threshold), contagion alone fizzles -- panic peaks at f_max=0.13 then
+dies out, leaving f_ss=0 and Phi=1.0.  Adding 6 encircling predators DOUBLES the panic
+peak (f_max=0.27) but does NOT push the outbreak over threshold: f_ss=0.000 in the
+combined condition too.  The mechanism is the local contact count <k>: encirclement
+compresses the flock so that <k> rises from 8.9 to 30.2 (3.4x).  Effective contagion
+strength beta*<k> rises with it, but at beta/gamma=0.33 the amplification is
+insufficient to flip the dynamics.  Meanwhile, the COMBINED flock Phi is worse (0.73)
+than encirclement alone (0.86) -- the transient outbreak adds non-negligible kinematic
+disruption beyond what encirclement alone produces.
+**Evidence:** hybrid_sis.py, 6 seeds, slow prey, beta=1, gamma=3.
+- none:     Phi=1.000  f_max=0.000  <k>=8.89
+- sis_only: Phi=1.000  f_max=0.134  <k>=8.10  (fizzles)
+- encircle: Phi=0.864  f_max=0.000  <k>=30.21  (no contagion present)
+- both:     Phi=0.729  f_max=0.269  <k>=32.60  (peak doubled, but still dies out)
+**Comparison with Finding 23:** In Finding 23 the contagion was SUPERCRITICAL (SI / no
+recovery) and dominated everything.  Here it is SUBCRITICAL and even amplified by
+encirclement-induced compression, it still dies out.  The two findings bracket the
+behaviour: contagion above its critical strength dominates; below threshold, even
+strong external amplification cannot rescue the outbreak.  There is no easy way to push
+a contained contagion over its tipping point through external mechanical pressure alone.
+**Implication:** This is good news for collectives facing both stressors: as long as
+the recovery rate exceeds the bare contact rate by a comfortable margin (here 3x), the
+flock can absorb external disruption without triggering a contagious panic.  The
+mapping beta_eff = beta * <k> via local-density modulation is real but mild -- a 3-4x
+amplification of <k> by encirclement is not enough to bridge a factor-of-3 gap between
+beta/gamma and 1.  For an attacker, this means coupling two attack modes is not a
+free win; the contagion must already be near-supercritical for compression to matter.
+
+---
+
 ## Open Questions / Next Directions
 1. Sub-threshold (SIS) hybrid: with gamma chosen so contagion alone fizzles, can
    encirclement push it back over the epidemic threshold?  (Spatial compression should
