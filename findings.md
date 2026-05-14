@@ -371,10 +371,48 @@ strategies. The critical parameter is whether r_sense exceeds the flock's spatia
 
 ---
 
+## Finding 20: Panic contagion saturates the flock at any non-zero rate -- there is no epidemic threshold
+<img src="./figures/contagion_1_sweep.png" width="480"/>
+<img src="./figures/contagion_3_snapshots.png" width="480"/>
+
+**What:** Adding a contagion mechanism (calm agents become panicked at rate beta per panicked
+neighbor within r_cont=0.05, no recovery) fundamentally changes Finding 18. With contagion off
+(beta=0), the population stays at f_inf=0.011 (just the seed). With ANY non-zero contagion rate
+tested -- even beta=0.5 -- the entire population panics: f_inf=1.000 (zero variance across all
+6 seeds). The calm sub-flock that Finding 18 found to be immune now disappears entirely,
+because every calm agent eventually flips. Global Phi collapses from 0.993 (beta=0) to 0.168
+(beta=0.5) and saturates near 0.10 for beta >= 2.
+**Evidence:** panic_contagion.py, 6 seeds, f0=1%, N=350, n_iter=4000.
+- beta=0.0:  f_inf=0.011, Phi=0.993, calm_Phi=1.000 (matches Finding 18)
+- beta=0.5:  f_inf=1.000, Phi=0.168, t_half=3.6 time units
+- beta=2.0:  f_inf=1.000, Phi=0.100, t_half=1.2 time units
+- beta=20.0: f_inf=1.000, Phi=0.109, t_half=0.4 time units
+- Seed-size sensitivity at beta=2.0 (f0=0.5%..10%): always f_inf=1.000 regardless of f0
+**Mechanism:** This is an SI (susceptible -> infected, no recovery) process on a spatially
+mixed population. With N=350 agents in [0,1]^2 and r_cont=0.05, each agent's neighborhood
+contains ~3 agents on average; once a few panic, every calm agent quickly meets a panicked
+neighbor. The absorbing-state structure (panic cannot be undone) plus mixing motion guarantees
+the outbreak completes, regardless of beta. beta only sets the speed: t_half scales roughly
+as 1/beta. There is no critical beta_c in this formulation.
+**Contrast with Finding 18:** Finding 18 said the flock is "immune to internal panic" -- but
+that conclusion was an artifact of treating panic as a fixed label. Once contagion exists,
+the alignment force cannot save the flock because the population pool of calm agents is
+drained. The book's "Why You Should Never Panic" claim is recovered: panic is dangerous to
+the collective IF and ONLY IF it propagates through contact.
+**Implication:** A more refined model (SIS with recovery rate gamma, or a panic-suppression
+mechanism analogous to immune memory) would be required to find a true epidemic threshold
+beta_c. In the no-recovery limit, any contact-mediated panic is fatal to the flock.
+
+---
+
 ## Open Questions / Next Directions
 1. What is the minimum prey group size below which collective evasion fails entirely?
 2. Do the sub-flocks formed by encirclement eventually reunite, or do they permanently
    diverge? (Requires long simulation after predators are removed)
-3. Panic propagation: this model has no contagion mechanism. Adding one (agents near
-   panicked agents become panicked) would test whether the book's "Why You Should Never Panic"
-   result depends on social contagion.
+3. SIS contagion with recovery rate gamma -- does a true epidemic threshold beta_c emerge?
+   Does the flock's alignment force act as an effective "recovery" (panicked agents return
+   to calm when surrounded by aligned calm neighbors)?
+4. Hybrid stressors: contagious panic plus encircling predators -- does the calm collapse
+   accelerate, or does the alignment force partly compete with contagion?
+5. Active/passive segregation (book Section 10.4) -- mixed populations with different
+   intrinsic speeds.
