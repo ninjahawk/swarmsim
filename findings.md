@@ -720,6 +720,44 @@ near-critical-coupling picture.
 
 ---
 
+## Finding 30: Herd-immunity threshold in the flock is ~2x larger than mean-field predicts
+<img src="./figures/herd_immunity_1.png" width="480"/>
+
+**What:** At supercritical SIS (beta=2.5, gamma=2.0; bare R0=beta/gamma=1.25), a
+sub-population of "immune" agents that never become panicked can quench the outbreak.
+Mean-field SIS theory predicts the herd-immunity threshold p_c = 1 - 1/R0 = 0.20.
+Measured threshold in the flock model (defined as p_immune at which f_ss drops below
+0.1) is p_c ~ 0.46 -- more than twice the mean-field prediction.
+**Evidence:** herd_immunity.py, 5 seeds, slow prey.
+- p_immune=0.00: f_ss=0.586
+- p_immune=0.20: f_ss=0.401  (mean-field threshold; still well above 0.1)
+- p_immune=0.30: f_ss=0.301
+- p_immune=0.40: f_ss=0.189
+- p_immune=0.46: f_ss ~ 0.10  (interpolated empirical threshold)
+- p_immune=0.50: f_ss=0.050
+- p_immune=0.60: f_ss=0.019
+**Mechanism:** Mean-field herd-immunity assumes a well-mixed population where every
+contact has the same chance of being with an immune agent.  In the flock, contacts
+are spatially structured: panicked sub-clusters move together so their members
+contact mostly each other.  The effective <k> seen by a susceptible agent in a
+panicked cluster is much higher than the average over the whole population, so the
+immunity per cluster has to be higher to break the chain.  Spatial correlation
+inflates the required threshold.
+**Comparison with classical epidemic theory:** This effect is well-known in spatial
+SIR/SIS models -- random vaccination is less effective than targeted vaccination.
+The flock model recovers the qualitative result.  Quantitatively, p_c_measured /
+p_c_mean_field = 2.3, which is large but not unprecedented for spatially clustered
+contact networks.
+**Implication:** For real biological collectives or human crowds, the fraction of
+"calm anchors" needed to suppress contagion-driven panic is larger than naive
+calculations suggest.  This is also a confirmation that the flock is NOT a well-mixed
+population at the contagion length scale (r_cont=0.05 << flock radius Rg~0.15).
+Spatial structure matters for both the encirclement results (Findings 16, 28) and the
+contagion results (Findings 25, 30) -- the same locality that lets sub-flocks be
+internally coherent also makes them vulnerable to contagion clusters.
+
+---
+
 ## Open Questions / Next Directions
 1. Sub-threshold (SIS) hybrid: with gamma chosen so contagion alone fizzles, can
    encirclement push it back over the epidemic threshold?  (Spatial compression should
