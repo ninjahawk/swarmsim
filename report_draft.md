@@ -508,6 +508,45 @@ to disrupt — angular coverage alone is insufficient. A predator strategy that 
 at intermediate flock sizes does not scale up to large prey aggregations without
 re-calibration.
 
+### 4.14 Near-Critical Coupling and Universal Encirclement Scaling
+
+Three further experiments tighten the quantitative results above.
+
+To directly measure the threshold shift hypothesised in Section 4.13, a sweep of beta
+at fixed gamma=2.0 was repeated with and without 6 encircling predators
+(critical_shift.py). The threshold beta_c (where f_ss crosses 0.5) was beta_c=1.93
+without encirclement, 1.85 with — a leftward shift of 0.077, about 4% of the bare
+value. The shift is largest just below threshold: at beta=1.5, f_ss rises from 0.34
+(no encirclement) to 0.43 (with). Above threshold the two curves converge. The
+modest size of the shift, despite a tripling of the local contact count under
+encirclement (Section 4.13), is explained by redundancy: compressed sub-flocks have
+panicked agents mostly surrounded by other panicked agents, so the new contacts are
+not new infections. Encirclement is therefore a near-critical amplifier rather than
+a general one; it can tip a contagion that is already close to its threshold but
+cannot bridge a large gap.
+
+A separate sweep tests the flock's resilience to immune sub-populations
+(herd_immunity.py). At supercritical SIS (beta=2.5, gamma=2.0; R0=1.25), mean-field
+theory predicts a herd-immunity threshold p_c = 1 - 1/R0 = 0.20. The measured
+threshold in the flock model is p_c ~ 0.46, more than twice the mean-field value.
+The cause is spatial clustering: panicked sub-clusters move together so their members
+predominantly contact each other, inflating the effective local contact count within
+clusters. Random immunity is then less effective than targeted immunity at breaking
+transmission chains. This is a known feature of spatial epidemic models, and the
+flock model reproduces it.
+
+Finally, the apparent N-dependence of the encirclement floor (Section 4.13) is
+resolved by sweeping R_enc at both N=350 and N=1000 (renc_scaling.py). When plotted
+against R_enc / Rg the two Phi curves collapse: both show optimal disruption at
+R_enc / Rg ~ 0.5, with Phi_min = 0.67 (N=350) and 0.73 (N=1000). The previous
+N-dependence was almost entirely an R_enc / Rg mismatch — R_enc was tuned to
+N=350's flock radius and was undersized for N=1000. With proper rescaling
+encirclement is size-invariant. The strategy that wraps the flock at half its
+radius works universally. The optimum at R_enc / Rg ~ 0.5 places each predator
+within the bulk of the flock but not at the center, where it can push prey on all
+sides toward neighboring predators — the kinematic geometry that drives the flock
+division of Section 4.6.
+
 ---
 
 ## 5. Discussion
