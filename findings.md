@@ -833,6 +833,49 @@ quiet aligned state.  The collective is repeatedly being reshuffled.
 
 ---
 
+## Finding 33: Incomplete encirclement is mostly less disruptive, and the flock doesn't escape through the gap
+<img src="./figures/gap_encirclement_1.png" width="480"/>
+
+**What:** Starting from full 6-predator encirclement (n_total=6, 60-degree slots) and
+removing predators one at a time produces non-monotone disruption.  Phi=0.92 at full
+encirclement (with 6 predators), dips to 0.83-0.87 with 5 active predators, then RISES
+back to 0.91-0.96 with 3-4 active predators.  The flock's center-of-mass drift
+direction has no preferred alignment with the gap direction (mean angle differences
+70-110 degrees from gap), so the flock does not steer toward the open side.
+**Evidence:** encirclement_gap.py, 5 seeds, R_enc=0.15.
+- n_active=6 (full):                          Phi=0.918 +/- 0.038, drift=0.34
+- n_active=5 contiguous gap (one 60-deg open): Phi=0.833 +/- 0.041, drift=0.24
+- n_active=5 distributed gap (irregular spacing): Phi=0.873 +/- 0.090, drift=0.42
+- n_active=4 contiguous:                      Phi=0.963 +/- 0.029, drift=0.47
+- n_active=4 distributed:                     Phi=0.908 +/- 0.042
+- n_active=3 contiguous:                      Phi=0.955 +/- 0.035
+- n_active=3 distributed:                     Phi=0.903 +/- 0.063
+- Drift direction angle from gap direction: 70-110 degrees (essentially uncorrelated
+  with gap orientation)
+**Mechanism for non-monotonic Phi:** Removing one predator from a balanced 6-symmetric
+configuration creates an asymmetry that the remaining 5 predators continuously chase --
+the flock CoM shifts toward the gap, the 5 predators re-encircle the new CoM, but the
+asymmetric pressure keeps the flock from settling.  This is more disruptive than the
+balanced 6-fold pattern.  Removing 2-3 predators eliminates the asymmetry: 3-4
+remaining predators at large spacing produce weaker multi-directional pressure, and the
+flock partially recovers (Phi up to 0.96).  Contiguous gaps tend to be more disruptive
+than distributed gaps with the same n_active because they preserve more local
+multi-angle pressure on one side.
+**Why no steering toward the gap:** The flocking force depends only on neighbor
+velocities, not on absolute predator positions.  Agents do not perceive "where the
+gap is" -- they only feel local repulsion from nearby predators and alignment with
+local neighbors.  The CoM drifts toward the gap initially because the gap-side prey
+feel no repulsion, but the predators continuously update their targets, so the
+asymmetric pressure persists indefinitely.  There is no global escape route detection.
+**Implication:** Biological "encirclement" by wolf packs leaves gaps for tactical
+reasons (avoid friendly fire, allow some prey to scatter for easier individual pursuit)
+rather than because gaps necessarily reduce flock disruption.  In this model, full
+symmetric encirclement is paradoxically less disruptive than a near-full encirclement
+with a single asymmetric gap.  A "near-perfect" trap may be the worst case for the
+flock.
+
+---
+
 ## Open Questions / Next Directions
 1. Sub-threshold (SIS) hybrid: with gamma chosen so contagion alone fizzles, can
    encirclement push it back over the epidemic threshold?  (Spatial compression should
