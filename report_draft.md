@@ -417,7 +417,56 @@ panic.py was an artifact of treating panic as a fixed label: once the pool of ca
 agents can be drained, it always is. The book's claim that panic is collectively
 dangerous is recovered, but only conditional on contact-mediated propagation. Whether
 a true epidemic threshold beta_c exists in an SIS model with recovery (calm <-> panic)
-is an open question for future work.
+is addressed below.
+
+### 4.11 SIS Contagion and the Epidemic Threshold
+
+Adding a recovery rate gamma (panicked agents return to calm with rate gamma per unit
+time) restores the classical SIS phase structure (contagion_sis.py). A 2D sweep over
+(beta, gamma) reveals a clean threshold along the diagonal beta = gamma. Below this
+line, the seed outbreak dies out and the flock stays at Phi = 1.0. Above the line, an
+endemic steady state emerges and the flock degrades smoothly with beta/gamma. At beta =
+2, varying gamma from 0.1 to 10 takes the system from f_ss = 0.978 (outbreak persists,
+Phi = 0.20) all the way down to f_ss = 0.000 (recovery wins, Phi = 1.0). The crossover
+between gamma = 2 and gamma = 5 is sharp.
+
+The location of the threshold beta_c ~ gamma is consistent with the standard mean-field
+SIS prediction beta_c * <k> = gamma when the effective local contact count is <k> ~ 1.
+For a uniform-density flock at N = 350 with r_cont = 0.05, the geometric estimate
+gives <k> = pi * r_cont^2 * N ~ 2.7, but the flock is a spatially extended structure
+whose effective contact rate at the contagion scale is closer to one.
+
+This result reframes Finding 4.10. The SI claim that "any contagion is fatal" was
+specifically a no-recovery limit (gamma = 0). With any finite recovery rate, the flock
+can in principle contain a panic outbreak provided the contagion rate is below the
+recovery rate. The flock's own alignment force may play the role of an effective gamma
+in a fully physical model: panicked agents re-entering a coherent neighborhood feel
+the alignment force pulling them toward the local mean velocity, which corresponds to
+a return-to-calm process. In this sense, the kinematic flock-disruption problem maps
+onto the classical contact-process problem of epidemiology via a single dimensionless
+ratio beta/gamma.
+
+### 4.12 Hybrid Stressors and Active/Passive Mixing
+
+Two additional experiments tested how the various disruption mechanisms compose.
+
+In the hybrid-stressor experiment (hybrid_stressors.py), I ran four conditions side-by-
+side: no stressor, encirclement only, contagion only, and both. The encirclement-only
+condition gave Phi = 0.71 (matching the Section 4.6 result). Contagion-only gave Phi =
+0.05. Combined, Phi = 0.05 — identical to contagion alone. Encirclement adds nothing
+because the population is fully panicked before encirclement-induced fragmentation
+matures. The two disruption modes do not compose in the supercritical contagion regime:
+the absorbing process simply wins.
+
+In the segregation experiment (segregation.py), I tested whether mixed-speed populations
+spatially segregate. With f_active = 0.5 and v0 contrast ranging from 0 (no contrast) to
+0.9 (active 10x faster than passive), the segregation index — defined as the
+along-heading position difference between groups in Rg units — stays at 0 +/- 0.05 in
+every case. The alignment force homogenises group speed: an aligned flock with mixed
+self-propulsion targets cruises at a population-weighted compromise speed, so individual
+agents do not segregate into leading and trailing layers. To obtain spatial segregation
+in this model would likely require asymmetric alpha values between groups, not v0
+contrast alone.
 
 ---
 
