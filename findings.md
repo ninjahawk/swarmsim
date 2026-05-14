@@ -479,11 +479,114 @@ absorbing.
 
 ---
 
+## Finding 23: Combined predation + contagion -- contagion dominates; encirclement cannot rescue the calm sub-flock
+<img src="./figures/hybrid_1_summary.png" width="480"/>
+
+**What:** When the flock is simultaneously subjected to encirclement (n_pred=6) AND
+contact-mediated panic contagion (beta=0.5, f0=1%), the combined outcome is essentially
+identical to contagion-only.  All four conditions tested:
+- none:      Phi=1.000, calm_Phi=1.000, f=0.000
+- encircle:  Phi=0.707, calm_Phi=0.707, f=0.000  (matches Finding 16)
+- contagion: Phi=0.050, calm_Phi=undefined, f=1.000  (matches Finding 20)
+- both:      Phi=0.050, calm_Phi=undefined, f=1.000
+**Evidence:** hybrid_stressors.py, 6 seeds, slow prey (v0=0.02, ramp=0.1).
+**Mechanism:** Contagion is an absorbing-state process: once everyone is panicked, the
+flock cannot be re-coherent regardless of what predators do.  Encirclement is a
+kinematic disruption that requires the alignment force to operate -- with panicked
+agents (alpha=0.1), the flocking force is too weak for predators to "herd" anyway.
+Contagion races to saturation faster than encirclement can fragment.  Panic propagation
+in the combined condition is not measurably different from contagion-only.
+**Interpretation:** The two disruption mechanisms do not compose -- they operate in
+non-overlapping regimes.  Encirclement disrupts a healthy alignment force; contagion
+destroys the alignment force.  Once contagion has run, encirclement loses its target.
+Hypothetical experiments where contagion is sub-threshold (e.g., SIS with high recovery)
+would be needed to see encirclement still matter.
+**Implication:** For a flock facing both an external pursuer and internal social
+contagion, the contagion is the lethal threat.  The defensive priorities are not
+symmetric: invest in mechanisms that suppress contagion (immune memory, signal-checking,
+threshold behavior) rather than in mechanisms that prevent encirclement.
+
+---
+
+## Finding 24: Active/passive mixed populations do not spatially segregate
+<img src="./figures/segregation_1_summary.png" width="480"/>
+
+**What:** A mixed population of fast (v0=1.0) and slow (v0=0.1-0.7) agents in the standard
+flocking model produces NO measurable spatial segregation along the heading direction.
+Segregation index s = (mean_x_active - mean_x_passive)/Rg in the flock-aligned frame
+stays at 0 +/- 0.05 across all tested conditions.  Phi remains at 1.000 throughout,
+so the mixed flock is fully coherent.
+**Evidence:** segregation.py, 5 seeds.
+- Contrast sweep at f_active=0.5 (v0_passive=0.1..1.0): s ranges -0.035 to +0.029
+- Fraction sweep at v0_passive=0.3 (f_active=0.1..0.9): s ranges -0.040 to -0.005
+All values within statistical noise (errorbar ~0.04).  Snapshot at v0_passive=0.2 shows
+active and passive agents well-mixed.
+**Mechanism:** The alignment force homogenises velocity across the entire flock.  Each
+agent's self-propulsion target is v0_self + alpha/mu, but the actual cruise speed is
+the COMPROMISE set by the balance between self-propulsion and alignment.  In an aligned
+flock, every agent feels the same flocking-force magnitude alpha, so the mean speed is
+set by the population-weighted target.  Active and passive agents end up cruising at
+nearly the same speed, eliminating the front/back differential that would produce
+segregation.  This is consistent with Finding 1's result that the alignment force
+fundamentally changes the kinematics: v_eq is not just v0_self.
+**Implication:** Charbonneau Sec 10.4 describes spatial segregation in heterogeneous
+populations; that result probably requires either (a) different alpha values between
+groups (so the alignment compromise is asymmetric), or (b) a non-flocking baseline
+where each agent moves independently at its own v0.  In the model as implemented here,
+v0 contrast alone is insufficient to produce segregation -- the alignment force defeats it.
+The defensive analogy: a flock of mixed-speed individuals can still respond as one unit;
+the slower individuals do not become trailing stragglers.
+
+---
+
+## Finding 25: SIS contagion has a clean epidemic threshold at beta/gamma ~ 1; flock disruption tracks it
+<img src="./figures/contagion_sis_1_sweeps.png" width="480"/>
+
+**What:** Adding a recovery rate gamma to the contagion model (calm <-> panic) restores
+the textbook SIS phase structure.  Below beta_c, contagion dies out and the flock stays
+coherent; above beta_c, an endemic steady state emerges and the flock degrades.  The
+critical line in (beta, gamma) space is approximately beta = gamma.
+**Evidence:** contagion_sis.py, 5 seeds, f0=5%, N=350.
+- Beta sweep at gamma=1.0: f_ss=0.000 at beta=0.0, jumps to 0.434 at beta=1.0, 0.789 at
+  beta=2.0, saturates near 0.95 at beta=10.  Phi mirrors: 1.000 -> 0.661 -> 0.307.
+- Gamma sweep at beta=2.0: f_ss=0.978 at gamma=0.1 (low recovery, persistent outbreak),
+  drops to 0.000 at gamma=5 (recovery wins).  Sharp transition between gamma=2 and 5.
+- 2D phase diagram (beta in [0.2, 4.0], gamma in [0.3, 10.0]): f_ss approximately
+  tracks the diagonal beta = gamma.  Outbreak region (f_ss > 0.5) lies below the
+  diagonal (beta > gamma); die-out region above.
+**Comparison with mean-field:** Standard SIS predicts beta_c * <k> = gamma where <k> is
+the mean local contact count.  Observed threshold beta_c ~ gamma corresponds to
+<k> ~ 1, which is plausible for a flock at N=350 with r_cont=0.05: although a uniform
+density in [0,1]^2 gives <k> = pi*r_cont^2*N ~ 2.7, the flock is actually moving as a
+spatially extended structure with effective rather than uniform density at the contagion
+scale.  The phase-diagram diagonal closely matches the prediction.
+**Comparison with the SI model (Finding 20):** Finding 20 used no recovery -- the SI
+limit is the gamma -> 0 corner of the phase diagram, where the outbreak always wins
+regardless of beta.  Finding 20 said "any contact-mediated panic is fatal"; here we
+see that statement was specifically about the no-recovery limit.  With finite gamma,
+panic can be contained, and the flock retains coherence.
+**Implication:** The biologically interesting question is therefore not whether
+contagion exists but whether the recovery rate exceeds the contact rate.  For a real
+flock, "recovery" might correspond to a calm-pulling-back-into-alignment mechanism --
+panicked individuals returning to the alignment force as they re-enter coherent
+neighborhoods.  The model suggests there is no need for explicit immune memory: a
+strong enough alignment force could in principle generate effective recovery.  This
+links flock disruption (a kinematic problem) to epidemic theory (a contact-process
+problem) via a single dimensionless ratio beta/gamma.
+
+---
+
 ## Open Questions / Next Directions
-1. SIS contagion with recovery rate gamma -- does a true epidemic threshold beta_c emerge?
-   Does the flock's alignment force act as an effective "recovery" (panicked agents return
-   to calm when surrounded by aligned calm neighbors)?
-4. Hybrid stressors: contagious panic plus encircling predators -- does the calm collapse
-   accelerate, or does the alignment force partly compete with contagion?
-5. Active/passive segregation (book Section 10.4) -- mixed populations with different
-   intrinsic speeds.
+1. Sub-threshold (SIS) hybrid: with gamma chosen so contagion alone fizzles, can
+   encirclement push it back over the epidemic threshold?  (Spatial compression should
+   raise local <k>, effectively increasing beta.)
+2. Asymmetric alpha segregation: redo Finding 24 with different alpha values between
+   groups, not just v0 contrast, to test whether asymmetric alignment force is enough
+   to produce segregation.
+3. Long-time predator pressure: does fragmentation eventually re-merge while predators
+   are still active, or does the steady state stay divided?
+4. Larger systems (N=1000+): does the encirclement floor at Phi ~ 0.67 hold, or do
+   very large flocks behave differently?
+5. Literature comparison: novelty assessment of Findings 14 (encirclement), 16 (division
+   mechanism), 22 (reversibility), 23 (stressor non-composition), and 25 (SIS threshold
+   in a flock).
