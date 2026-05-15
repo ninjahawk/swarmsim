@@ -1364,3 +1364,53 @@ confirming the 3D model is deterministic and well-behaved.
 **Implication:** The force-based flocking model generalizes cleanly to 3D.  The core
 analytical result (v_eq = v0 + alpha/mu) is universal.  The 3D transition region is at
 higher ramp than the first 10-step sweep covers; extended noise sweep is the natural next step.
+
+---
+
+## Finding 42: 3D noise crossover is smooth like 2D -- chi_peak drifts up with N; 3D less noise-robust than 2D
+<img src="./figures/flocking3d_noise_1.png" width="640"/>
+
+**What:** Finding 41 showed 3D flocking is coherent to ramp=10 but the crossover lies at
+ramp>>10.  This experiment (flocking3d_noise.py) runs an extended noise sweep (ramp=0.5-30)
+for 3D at N=100, 200, 350 and 2D N=350 (matched neighbor count), measuring Phi and
+chi = N * Var_seeds(Phi) for finite-size scaling.
+**Evidence:** flocking3d_noise.py, N_SEEDS=8, N_ITER=4000, ramp=0.5-30.
+3D results:
+  N=100: chi_peak=0.1139 at ramp=15.0 | Phi(ramp=0.5)=0.9993 | Phi(ramp=20)=0.2205
+  N=200: chi_peak=0.0970 at ramp=20.0 | Phi(ramp=0.5)=0.9995 | Phi(ramp=20)=0.3300
+  N=350: chi_peak=0.1951 at ramp=25.0 | Phi(ramp=0.5)=0.9995 | Phi(ramp=20)=0.4197
+2D N=350 (matched neighbor count: rf=0.1, r0=0.005):
+  chi_peak=0.7683 at ramp=30.0 | Phi(ramp=0.5)=0.9997 | Phi(ramp=20)=0.6017
+**Key result 1 -- 3D crossover at ramp~15-25; 2D crossover at ramp>30:**
+In 3D, Phi transitions from ~0.999 (ramp=0.5) to 0.22-0.42 (ramp=20, N-dependent).
+The 2D model is far more noise-robust: Phi=0.60 at ramp=20, and chi_peak is still at the
+top of the sweep (ramp=30), indicating the 2D crossover lies beyond ramp=30.  The 3D model
+is less noise-robust because the additional noise degree of freedom (3rd component) increases
+total perturbation magnitude relative to alignment strength.
+**Key result 2 -- chi_peak shifts UP with N (smooth crossover, not phase transition):**
+For a true phase transition, chi_peak grows with N AND the peak location converges to a
+finite ramp_c as N->inf.  Here, the peak location INCREASES with N:
+  N=100: ramp_c=15  |  N=200: ramp_c=20  |  N=350: ramp_c=25
+This is the signature of a smooth crossover: larger systems maintain coherence to higher noise
+because the alignment force averages over more neighbors, shifting the crossover upward.
+chi_peak values are non-monotonic (0.1139, 0.0970, 0.1951), not systematically diverging.
+**Key result 3 -- same qualitative behavior in 2D and 3D:**
+Both 2D and 3D show smooth noise-driven crossovers in this model family, consistent with
+the non-equilibrium driving mechanism (no FDT) identified in F38.  The 3D crossover simply
+occurs at lower ramp because 3 noise components > 2.
+**Implication:** The 3D force-based flocking model has the same qualitative phase behavior
+as 2D: a smooth crossover, not a true phase transition.  The 3D crossover region is
+ramp~15-25 for N=100-350 (vs ramp>30 for 2D).  The v_eq result (F41), smooth crossover (F42),
+and finite-size behavior are consistent between 2D and 3D.
+
+---
+
+## Open Questions / Next Directions
+1. 3D flocking (F41, F42): COMPLETE.
+   - F41: v_eq=v0+alpha/mu exact in 3D; basic noise sweep
+   - F42: smooth crossover at ramp~15-25; chi_peak drifts up with N; same as 2D qualitatively
+2. 3D predator strategies (F43, NOT YET STARTED):
+   Does encirclement work in 3D?  Is R_enc/Rg~0.5 universal ratio still valid?
+   Script: flocking3d_predator.py -- 3D dynamics + n_pred=1,3,6 encircling predators
+3. Further 3D experiments: phase transition in 3D (hard repulsion Langevin), segregation in 3D
+
