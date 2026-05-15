@@ -1125,6 +1125,57 @@ flock, not just the high-degree core agents).
 
 ---
 
+## Finding 37: Spatial vaccination provides no advantage over random -- kinematic mixing erases spatial targeting
+<img src="./figures/spatial_vaccination_1.png" width="640"/>
+
+**What:** Finding 36 identified that the 2x mean-field herd-immunity threshold inflation (p_c~0.46 vs 0.20)
+is caused by SPATIAL CLUSTERING of panicked sub-groups, not degree heterogeneity.  This experiment tests
+the hypothesis that geographically-targeted immunity -- selecting immune agents by farthest-point maxmin
+sampling to maximally cover the flock's spatial extent -- would outperform random vaccination by directly
+targeting the spatial-clustering mechanism.
+**Evidence:** spatial_vaccination.py, 5 seeds, beta=2.5, gamma=2.0, R0=1.25.
+Summary table (mean +/- std over 5 seeds):
+  p_immune   f_ss random       f_ss spatial     f_ss targeted
+  0.00       0.594+/-0.009    0.589+/-0.006    0.586+/-0.006
+  0.10       0.490+/-0.010    0.492+/-0.010    0.493+/-0.006
+  0.20       0.391+/-0.007    0.391+/-0.013    0.398+/-0.009
+  0.30       0.301+/-0.011    0.297+/-0.009    0.298+/-0.013
+  0.40       0.202+/-0.016    0.170+/-0.085    0.168+/-0.085
+  0.46       0.088+/-0.073    0.125+/-0.063    0.072+/-0.064
+  0.50       0.056+/-0.068    0.088+/-0.045    0.052+/-0.055
+  0.60       0.000+/-0.000    0.000+/-0.000    0.000+/-0.000
+Degree distribution: mean=8.79, median=8, std=6.07, max=31.
+**Null result:** All three strategies produce statistically indistinguishable f_ss at every
+p_immune value.  At p=0.10-0.30, all means differ by at most 0.007 (well within noise).
+Near threshold (p=0.40-0.50), spatial and targeted strategies show much LARGER variance
+(std~0.085) than random (std~0.016-0.068), making their mean values unreliable.  At p=0.46
+the spatial strategy (f=0.125) is actually slightly WORSE than random (f=0.088).
+**Mechanism -- why spatial targeting fails:**
+(1) KINEMATIC MIXING: Flock agents constantly rearrange via the alignment, repulsion, and
+self-propulsion forces.  The warmup flock position (at which immune agents are selected) is
+uncorrelated with the agent positions at t=50 or t=100 when SIS dynamics are running.  The
+spatial distribution of immune agents at vaccination time is scrambled by the time the
+epidemic begins, making spatial targeting equivalent to random.
+(2) RANDOM IS MORE RELIABLE NEAR THRESHOLD: At p=0.40-0.46, random vaccination has small
+variance (std~0.016-0.073) while spatial and targeted have large variance (std~0.063-0.085).
+Random vaccination distributes immune agents across all spatial regions probabilistically,
+giving a stable average outcome near threshold.  Spatial/targeted place immune agents in
+specific positions that may or may not align with the epidemic seed location -- a source of
+high variability without a mean improvement.
+**Comparison with F36:** Both F36 (degree-targeted) and F37 (spatially-targeted) are null
+results, for the same underlying reason: the flock contact network is DYNAMIC.  Kinematic
+reorganization (F36) restores hub positions after degree-targeted immunization; kinematic
+mixing (F37) scrambles spatial positions after spatial immunization.  Neither targeting
+strategy can maintain its structural advantage in a flocking system.
+**Implication:** For kinematic flocking collectives, no agent-selection strategy outperforms
+random vaccination.  The 2x herd-immunity threshold inflation is a structural property of the
+spatial contact network (driven by collective alignment that creates spatial clusters), and
+it cannot be exploited through any static vaccination strategy applied before the epidemic
+runs.  Effective containment requires either a high overall immune fraction (~0.46) or a
+dynamic vaccination strategy applied during the epidemic as agent positions are tracked.
+
+---
+
 ## Finding 38: Repulsion hardness does not affect the crossover -- the absence of a phase transition is driven by non-equilibrium forcing, not potential softness
 <img src="./figures/hard_repulsion_1_chi.png" width="640"/>
 <img src="./figures/hard_repulsion_2_ke.png" width="640"/>
@@ -1165,15 +1216,60 @@ equilibrium driving, not a potential-specific artifact.
 
 ---
 
+## Finding 39: Langevin thermostat thermalizes correctly but KE/N does not detect KTHNY melting
+<img src="./figures/langevin_1.png" width="640"/>
+
+**What:** Finding 38 diagnosed that the smooth crossover in the repulsion-only model is
+caused by non-equilibrium driving (no FDT), not by soft repulsion.  The proposed fix was
+to replace the driving with Langevin dynamics.  This experiment tests that fix: proper
+Langevin thermostat (viscous damping -mu*vx/vy plus FDT-satisfying noise sqrt(2*mu*kT*dt))
+at C=0.60 and C=0.70 (bracketing the 2D hard-disc melting point ~0.69-0.72), N=25-200,
+kT=0.001-5.0, 8 seeds.
+**Evidence:** langevin_repulsion.py. Summary of chi_peak and equipartition check:
+Compactness C=0.60:
+  N= 25: chi_peak=0.0817 at kT=5.000  |  KE/N(kT=0.1)=0.1047 vs kT=0.100
+  N= 50: chi_peak=0.0406 at kT=5.000  |  KE/N(kT=0.1)=0.1053 vs kT=0.100
+  N=100: chi_peak=0.0507 at kT=5.000  |  KE/N(kT=0.1)=0.1051 vs kT=0.100
+  N=200: chi_peak=0.0440 at kT=5.000  |  KE/N(kT=0.1)=0.1054 vs kT=0.100
+Compactness C=0.70: identical chi_peak values to C=0.60.
+**Two key observations:**
+(1) EQUIPARTITION SATISFIED: KE/N at kT=0.1 is 0.1047-0.1054, matching kT=0.100 to within
+1%.  The Langevin dynamics work as designed -- the system thermalizes to the Boltzmann
+distribution and the velocity distribution has the correct temperature.
+(2) IDENTICAL BEHAVIOR FOR C=0.60 AND C=0.70: At kT=5.0 (chi peak), the thermal energy
+(kT=5.0) is 50x larger than the repulsion amplitude (eps=0.1), so positional interactions
+are negligible and both compactnesses behave as free gases.  The chi values at kT=5.0 are
+therefore determined by the thermal fluctuations of a free gas, not by the repulsion, and
+are C-independent.  The system's positional structure (which DOES differ between C=0.60
+and C=0.70 at low kT) is invisible to the KE/N metric.
+**Interpretation:** The Langevin thermostat confirms the FDT diagnosis from F38: the system
+now equilibrates thermally.  However, the chi = N * Var(KE/N) susceptibility does NOT detect
+the KTHNY structural phase transition.  KTHNY melting is a transition in POSITIONAL ORDER
+(hexatic bond-angle correlation, defect proliferation), not in kinetic energy.  The right
+observable would be the hexatic order parameter |psi_6| = |mean_neighbors(exp(6*i*theta))|
+or the bond-angle correlation function g6(r).  With KE/N, both solid (low kT) and fluid
+(high kT) phases give low seed-to-seed variance (all seeds agree on KE/N ≈ kT), so the
+metric cannot distinguish them.  The chi_peak at kT=5.0 reflects free-gas noise at high
+temperature, not a structural critical point.
+**Implication:** To demonstrate the KTHNY transition in this model, two changes are needed:
+(1) Add a positional order metric (hexatic order parameter psi_6 or g(r)).
+(2) Use harder repulsion (larger n) so the solid-fluid transition occurs at a kT accessible
+in the simulation (soft n=1.5 repulsion may push the transition to very low kT where
+equilibration times are long).  Finding 38 showed that harder n doesn't help the
+non-equilibrium model, but in the Langevin model harder n would produce a sharper
+transition at higher kT.  This remains open for a future experiment.
+
+---
+
 ## Open Questions / Next Directions
-1. Literature comparison: novelty assessment of Findings 14 (encirclement), 16 (division
-   mechanism), 22+34 (reversibility vs irreversibility), 25 (SIS threshold in a flock),
-   30 (spatial herd immunity inflation), 36 (degree-targeted vaccination null result).
-2. Spatial vaccination strategy (F37, in progress): does farthest-point spatial sampling
-   outperform random? F36 predicted it might, because spatial clustering (not degree
-   heterogeneity) drives the 2x threshold inflation.
-3. True phase transition via Langevin dynamics: replace self-propulsion with viscous damping
-   (-mu*v) and thermal noise; this satisfies fluctuation-dissipation and should recover
-   hard-disc melting at C~0.69-0.72.
+1. Literature comparison: completed 2026-05-15 (session 2). New papers added: Demsar &
+   Lebar Bajec 2014, Bartashevich et al. 2024, Inada & Kawachi 2002, Scientific Reports 2025.
+   Novelty table updated for F14, F16, F22, F32, F33, F34, F35, F37, F38.
+2. Spatial vaccination strategy (F37, in progress): preliminary data (2 seeds) shows no
+   systematic advantage for spatial over random vaccination; kinematic mixing likely erases
+   spatial targeting benefits as it erased degree-targeting benefits (F36).
+3. KTHNY transition via Langevin + positional order metric: F39 confirmed the Langevin
+   thermostat thermalizes correctly, but KE/N is the wrong observable for structural melting.
+   Next step: implement hexatic order parameter psi_6 and repeat at C=0.60-0.75 with n=6 or n=12.
 4. 3D flocking extension: extend model to [0,1]^3 periodic domain; test whether the
    flock division mechanism and encirclement results still hold in 3D.

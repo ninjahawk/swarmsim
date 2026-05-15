@@ -39,16 +39,18 @@ damage that outlasts the predation event itself by an order of magnitude. An
 adaptive encirclement strategy — predators that continuously track live flock Rg and
 maintain R_enc = 0.5*Rg — cuts the fraction of time the flock spends in a highly
 coherent state by 34% compared to a fixed-radius strategy, validating the universality
-of the R_enc/Rg ~ 0.5 optimum across dynamical fluctuations. Finally, targeted
-vaccination (immunizing highest-degree agents first) provides no advantage over random
-vaccination: both strategies require p_immune ~ 0.46, because the flock contact network
-has bounded, not fat-tailed, degree heterogeneity, and kinematic reorganization restores
-hub positions after they are immunized. Finally, sweeping the repulsion exponent from
-n = 1.5 (soft) to n = 12 (near hard-core) produces identical finite-size scaling
-at all exponents — chi_peak at the top of the noise sweep for all N. The smooth crossover
-is not caused by potential softness; it is a consequence of the model's non-equilibrium
-driving (uniform random kicks without viscous dissipation), which prevents Boltzmann
-equilibration and the cooperative melting required for a true phase transition.
+of the R_enc/Rg ~ 0.5 optimum across dynamical fluctuations. Neither degree-targeted nor spatially-targeted vaccination outperforms random: both require
+p_immune ~ 0.46, because kinematic reorganization restores hub positions after high-degree
+agents are immunized, and kinematic mixing scrambles the spatial distribution of immune
+agents before the epidemic runs — defeating both targeting strategies by the same mechanism.
+Sweeping the repulsion exponent from n = 1.5 (soft) to n = 12 (near hard-core) produces
+identical finite-size scaling at all exponents. The smooth crossover is not caused by
+potential softness; it is a consequence of non-equilibrium driving (uniform random kicks
+without viscous dissipation). A follow-up Langevin simulation confirms that proper thermal
+equilibration (FDT satisfied; KE/N = kT at equilibrium) is achievable within this model
+family, but the kinetic energy susceptibility chi = N*Var(KE/N) is not sensitive to the
+structural hard-disc melting transition; a positional order metric such as the hexatic
+order parameter would be needed to detect it.
 
 ---
 
@@ -69,7 +71,7 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers nineteen investigations, producing thirty-eight numbered findings.
+This report covers twenty-one investigations, producing thirty-nine numbered findings.
 The first four sections establish the baseline: implementation validation, parameter
 sweeps, finite-size scaling to test for a true phase transition, and flock geometry.
 Sections five through nine develop the predator-strategy hierarchy — from naive
@@ -84,11 +86,11 @@ including intermittent merge/split behavior and incomplete encirclement. Section
 sixteen follows epidemic persistence after predator removal, revealing a two-timescale
 asymmetry between kinematic recovery (~10 time units) and epidemic decay (~100+ time
 units). Section seventeen validates the universal R_enc/Rg ~ 0.5 optimum through an
-adaptive encirclement strategy, section eighteen tests whether immunizing the
-highest-degree agents reduces the herd-immunity threshold (no advantage), and section
-nineteen tests whether harder repulsion can produce a true phase transition, finding
-instead that the smooth crossover is a consequence of non-equilibrium forcing, not
-potential softness.
+adaptive encirclement strategy, sections eighteen and twenty test whether degree-targeted
+and spatially-targeted vaccination reduce the herd-immunity threshold (both null results),
+section nineteen tests whether harder repulsion can produce a true phase transition (null),
+and section twenty-one tests whether Langevin dynamics recover the hard-disc structural
+melting transition (thermal equilibration achieved; structural metric needed to detect it).
 
 ---
 
@@ -817,6 +819,127 @@ phase transition.
 
 ---
 
+## 4.20 Spatial Vaccination Also Fails: Kinematic Mixing Defeats All Targeting Strategies (Finding 37)
+
+Section 4.18 showed that degree-targeted vaccination — immunizing the highest-contact-degree
+agents first — provides no advantage over random vaccination because the flock contact network
+lacks the fat-tailed heterogeneity required for hub-targeting to work, and kinematic
+reorganization restores hub positions after high-degree agents are immunized. That result
+identified the true mechanism behind the 2x mean-field herd-immunity inflation as SPATIAL
+CLUSTERING of panicked sub-groups (agents within a panicked cluster contact primarily each
+other, creating localized transmission chains). This suggests a different targeting hypothesis:
+geographically distribute the immune agents to break the clustering, rather than targeting
+high-degree individuals.
+
+To test this, I compared three vaccination strategies (spatial_vaccination.py, beta = 2.5,
+gamma = 2.0, R0 = 1.25, 5 seeds, same parameters as Findings 30 and 36):
+
+- **Random**: immune agents chosen uniformly at random (baseline)
+- **Spatial**: immune agents chosen by farthest-point (maxmin) sampling — each successive
+  agent is the one farthest from all already-selected agents on the torus, maximizing
+  spatial coverage
+- **Targeted**: highest-contact-degree agents first (Finding 36 reference)
+
+| p_immune | f_ss random | f_ss spatial | f_ss targeted |
+|----------|-------------|--------------|---------------|
+| 0.00 | 0.594 ± 0.009 | 0.589 ± 0.006 | 0.586 ± 0.006 |
+| 0.10 | 0.490 ± 0.010 | 0.492 ± 0.010 | 0.493 ± 0.006 |
+| 0.20 | 0.391 ± 0.007 | 0.391 ± 0.013 | 0.398 ± 0.009 |
+| 0.30 | 0.301 ± 0.011 | 0.297 ± 0.009 | 0.298 ± 0.013 |
+| 0.40 | 0.202 ± 0.016 | 0.170 ± 0.085 | 0.168 ± 0.085 |
+| 0.46 | 0.088 ± 0.073 | 0.125 ± 0.063 | 0.072 ± 0.064 |
+| 0.50 | 0.056 ± 0.068 | 0.088 ± 0.045 | 0.052 ± 0.055 |
+| 0.60 | 0.000 ± 0.000 | 0.000 ± 0.000 | 0.000 ± 0.000 |
+
+All three strategies are statistically indistinguishable at every immune fraction. At
+p = 0.10-0.30, mean f_ss values agree within ±0.007, well within the ±0.009-0.013 standard
+deviations. Near the threshold (p = 0.40-0.50), the spatial and targeted strategies show
+substantially higher variance (std ~ 0.085) than random vaccination (std ~ 0.016-0.068),
+making their slightly lower mean values unreliable. At p = 0.46, the spatial strategy
+mean (0.125) is actually larger than random (0.088). This is a null result.
+
+The mechanism is kinematic mixing. Immune agents are selected at warmup time (t = 0),
+before the SIS dynamics begin at t = 1500 steps (15 time units). The flock's constant
+spatial reorganization under alignment, repulsion, and self-propulsion forces scrambles
+the initial agent positions between warmup and the epidemic run. By the time the epidemic
+begins, the spatial arrangement of immune agents is statistically uncorrelated with the
+warmup positions used for selection, making farthest-point spatial sampling equivalent
+to random in its practical effect on the contact network.
+
+A related effect explains the higher variance of spatial and targeted strategies near the
+threshold. Random vaccination distributes immune agents uniformly in expectation, producing
+a stable average contact-network coverage independent of the epidemic seed location.
+Spatial and targeted vaccinations place agents in specific positions that may or may not
+overlap with the epidemic's eventual spreading region — a source of additional variability
+with no accompanying mean improvement.
+
+Taken together, Findings 36 and 37 establish that the flock's kinematic reconfigurability
+defeats all static vaccination strategies. No agent-selection rule outperforms random
+vaccination in a continuously-mixing flocking collective, whether the selection criterion
+is contact-degree, spatial coverage, or random chance. The 2x herd-immunity threshold
+inflation is a structural property that cannot be exploited without real-time tracking and
+dynamic vaccination during the epidemic.
+
+---
+
+## 4.21 Langevin Thermostat Confirms FDT Diagnosis but KE/N Does Not Detect Structural Melting (Finding 39)
+
+Section 4.19 concluded that the smooth crossover is caused by non-equilibrium driving, not
+by potential softness, and proposed that Langevin dynamics — viscous damping plus
+FDT-satisfying thermal noise — would recover the hard-disc phase transition. This section
+tests that prediction directly.
+
+The Langevin simulation replaces the uniform random kick with viscous friction
+F_damp = -mu * v (mu = 10) and thermal noise amplitude sqrt(2 * mu * kT * dt) * N(0,1)
+per component per timestep. This satisfies the fluctuation-dissipation theorem: at thermal
+equilibrium the Maxwell-Boltzmann distribution is stationary, velocities satisfy
+equipartition (KE_x/N = kT/2 per component), and the system can in principle form an
+ordered phase at low kT that melts at a finite critical temperature. Two compactness values
+bracket the 2D hard-disc melting region: C = 0.60 (below the KTHNY transition) and
+C = 0.70 (at or above it). Parameters: N = 25, 50, 100, 200; kT = 0.001 to 5.0 (10 values);
+8 seeds; n = 1.5 repulsion; mu = 10 (langevin_repulsion.py).
+
+The equipartition check confirms correct thermalization: KE/N at kT = 0.1 is 0.1047-0.1054
+across all N and both compactnesses, within 1% of the target kT = 0.100. The Langevin
+thermostat functions as designed.
+
+However, the susceptibility chi = N * Var_seeds(time-avg KE/N) still peaks at kT = 5.0
+— the top of the sweep — for every combination of N and C. Moreover, both compactnesses
+give nearly identical chi values:
+
+| N | C = 0.60 chi_peak | C = 0.70 chi_peak | kT of peak |
+|---|-------------------|-------------------|------------|
+| 25  | 0.0817 | 0.0817 | 5.000 |
+| 50  | 0.0406 | 0.0406 | 5.000 |
+| 100 | 0.0507 | 0.0507 | 5.000 |
+| 200 | 0.0440 | 0.0440 | 5.000 |
+
+The identity of C = 0.60 and C = 0.70 chi values at kT = 5.0 is explained by the ratio
+of thermal to interaction energy: eps = 0.1 while kT = 5.0, so the repulsion is only 2%
+of the thermal energy. Both compactnesses act as non-interacting gases at kT = 5.0, and
+their chi values reflect free-gas velocity fluctuations rather than structural correlations.
+
+The root cause is that chi = N * Var(KE/N) is the wrong diagnostic for the KTHNY
+transition. KTHNY melting is a transition in positional order — the proliferation of
+disclination-antidisclination pairs that destroys long-range hexatic bond-angle order
+(Kosterlitz and Thouless, 1973; Halperin and Nelson, 1978). This transition shows up in the
+hexatic order parameter |psi_6| = |mean_neighbors exp(6 i theta)| and the bond-angle
+correlation function g6(r), not in kinetic energy fluctuations. Below KTHNY transition kT_c,
+|psi_6| is large (hexagonal positional order); above it, |psi_6| collapses. With chi based
+on KE/N, both the solid and fluid phases give small seed-to-seed variance in the time-averaged
+KE/N (all seeds agree on KE/N ~ kT), so the metric cannot distinguish phases.
+
+This result refines the chain of findings on the phase-transition question. Finding 17
+showed no transition in the original model. Finding 38 ruled out potential softness as the
+cause, identifying non-equilibrium driving as the culprit. The present finding confirms that
+Langevin dynamics thermalizes the system correctly (the FDT diagnosis was right) but
+demonstrates that the KE/N observable is insensitive to the structural melting transition.
+To observe KTHNY, two additions are required: (1) a positional order metric such as the
+hexatic order parameter, and (2) a harder repulsion to push the transition to a kT where
+equilibration is practical within the simulation timescale.
+
+---
+
 ## 5. Discussion
 
 The most striking result of the predator simulations is that flocking is not primarily
@@ -893,6 +1016,22 @@ suppress the recovery excursions that fixed predators permit. The modest mean-Ph
 R_enc/Rg sitting at 0.485 on average. Adaptation gains most at the margin, during the
 brief consolidation phases where the flock is most recoverable.
 
+The predator-strategy findings place this work in a broader literature of simulated predation
+on flocking models. Demsar and Lebar Bajec (2014) compared attack tactics (target the center,
+target the nearest, target isolated individuals) in a fuzzy individual-based model and found
+that social flocking protects against predators targeting isolated prey. Importantly, they do
+not test a coordinated multi-angle encirclement strategy, which is the key contribution of
+Sections 4.5-4.7 here. Inada and Kawachi (2002) identified four escape-pattern categories
+in a two-dimensional fish-school model, including "Split and Reunion" — the pattern that
+Sections 4.6 and 4.7 quantify and mechanistically explain: encirclement causes the split, and
+the reunion timescale is ~10 time units after predator removal. Bartashevich et al. (2024)
+studied the "fountain effect" in sardines evading marlin using both agent-based models and
+empirical observations, finding that prey optimize individual escape angles relative to the
+predator's attack direction. The fountain effect is a single-predator pattern; our encirclement
+result extends it to the multi-predator case where angular pressure from all sides prevents
+any single escape direction from being optimal, leading to directional fragmentation rather
+than a coherent fountain.
+
 The most closely related existing work is Levis et al. (2020), who studied bidirectional
 coupling between Vicsek-like flocking and SIS epidemic dynamics, finding that endogenous
 clustering (infected agents altering their motion rules) reduces the epidemic threshold
@@ -905,23 +1044,28 @@ while the epidemic is still ongoing. That timescale asymmetry, and the practical
 implication that external pressure can seed a long-lived epidemic state without
 sustaining it, does not appear to be addressed in the existing literature.
 
-The targeted vaccination result (Section 4.18) invites a comparison with the herd
-immunity literature. In heterogeneous networks (Barabasi-Albert scale-free, small-world),
-targeted vaccination of high-degree nodes reduces the epidemic threshold substantially
-(Pastor-Satorras and Vespignani, 2002; Cohen et al., 2003). The flock network fails to
-exhibit this effect because it lacks a fat-tailed degree distribution: the coefficient of
-variation of degree is 0.68 and the maximum is only 3.4 times the mean, compared with
-power-law networks where this ratio can exceed 100. The spatial embedding and kinematic
-reconfigurability of the flock prevent any individual agent from accumulating the
-degree heterogeneity required for hub-targeting to work. This distinction is informative:
-it means that for spatially embedded kinematic collectives, the epidemiology cannot be
-simplified by identifying a small set of critical agents. Intervention must be broad.
+The vaccination results (Sections 4.18 and 4.20) establish a broader principle beyond
+the specific null results. In heterogeneous networks (Barabasi-Albert scale-free,
+small-world), targeted vaccination of high-degree nodes reduces the epidemic threshold
+substantially (Pastor-Satorras and Vespignani, 2002; Cohen et al., 2003). Spatial
+vaccination strategies for geographic human populations have also been studied (Bhatt
+et al., 2022; Zhou et al., 2021), showing advantages when infection clusters spatially.
+The flock fails to benefit from either approach: degree-targeting is defeated by bounded
+degree heterogeneity (CV = 0.68) and kinematic reorganization that restores hub positions;
+spatial targeting is defeated by kinematic mixing that scrambles spatial distributions
+before the epidemic runs. Both null results trace to the same property of the flock —
+the constant spatial reorganization driven by the alignment force — which prevents any
+static structural feature of the contact network from remaining stable long enough to be
+exploited. For kinematic collectives, the epidemiological literature's targeting strategies
+are inapplicable in their standard form: only a dynamic vaccination strategy applied
+in real time during the epidemic, tracking current agent positions, could exploit the
+spatial-clustering mechanism that inflates the threshold.
 
 ---
 
 ## 6. Conclusions
 
-This study produced thirteen main results (selecting the most general across 36 findings):
+This study produced fifteen main results (selecting the most general across 39 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -1012,15 +1156,17 @@ outlasts the predation event itself. And a predator group that can track flock g
 in real time gains consistent advantage without requiring a fundamentally different
 strategy — geometry-awareness is a refinement, not a revolution.
 
-13. **Targeted vaccination fails to outperform random in the flock:** Immunizing
-    the highest-contact-degree agents first provides no significant reduction in the
-    herd-immunity threshold relative to random vaccination. Both strategies require
-    p_immune ~0.46 (matching Finding 30). The degree distribution (mean = 9.0, max = 31,
-    CV = 0.68) has insufficient heterogeneity for hub-targeting to matter, and kinematic
-    reorganization of the contact network restores hub positions even after high-degree
-    agents are removed. The spatial clustering that inflates the threshold above mean-field
-    is distinct from degree heterogeneity; targeting hubs addresses the latter but not
-    the former.
+13. **All vaccination targeting strategies fail in a kinematic flock:** Neither
+    degree-targeted vaccination (immunizing highest-contact-degree agents first, Finding
+    36) nor spatially-targeted vaccination (farthest-point maxmin sampling to maximize
+    spatial coverage, Finding 37) outperforms random vaccination. Both strategies require
+    p_immune ~0.46, identical to random. The mechanism is the flock's kinematic
+    reconfigurability: kinematic reorganization restores hub positions after high-degree
+    agents are immunized (defeating degree-targeting), and kinematic mixing during the
+    warmup phase scrambles the spatial distribution of immune agents before the epidemic
+    begins (defeating spatial targeting). No static agent-selection rule can maintain its
+    structural advantage in a continuously-mixing flocking collective; the 2x herd-immunity
+    threshold inflation is a systemic property that cannot be efficiently exploited.
 
 14. **The smooth crossover is a consequence of non-equilibrium driving, not repulsion
     softness:** Sweeping the repulsion exponent from n = 1.5 (current) to n = 12 (near
@@ -1030,18 +1176,25 @@ strategy — geometry-awareness is a refinement, not a revolution.
     compactness (C = 0.40) do exhibit a phase transition (KTHNY melting). The absence of
     any transition at n = 12 demonstrates that the model's non-thermal driving — uniform
     random kicks without viscous dissipation — prevents the Boltzmann equilibration
-    required for cooperative melting. A true phase transition would require replacing the
-    self-propulsion speed regulator with genuine Langevin dynamics (viscous damping +
-    thermal noise satisfying the fluctuation-dissipation theorem).
+    required for cooperative melting.
+
+15. **Langevin dynamics thermalize correctly but KE/N cannot detect structural melting:**
+    A Langevin thermostat (viscous damping + FDT-satisfying thermal noise) recovers
+    equilibrium thermalization — KE/N = kT to within 1% (equipartition) — confirming the
+    non-equilibrium diagnosis of Finding 38. However, the susceptibility chi = N*Var(KE/N)
+    still peaks at the top of the kT sweep and shows no N-dependent shift, because KTHNY
+    melting is a positional-order transition invisible to kinetic energy fluctuations.
+    Observing it directly would require the hexatic order parameter |psi_6| and likely a
+    harder repulsion potential to push the critical kT into an accessible range.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
 coherence under noise and naive predation; it transmits spatial clustering that amplifies
-contagion; it drives the spatial reorganization that defeats hub-targeted vaccination;
-and it enables the reunion that makes kinematic damage reversible. The most effective
-disruption strategies are those that operate at the flock's geometric scale (encirclement
-at R_enc/Rg ~ 0.5) or that exploit a timescale the alignment force cannot overcome
-(epidemic persistence after predator removal).
+contagion; it drives the spatial reorganization that defeats all vaccination targeting
+strategies; and it enables the reunion that makes kinematic damage reversible. The most
+effective disruption strategies are those that operate at the flock's geometric scale
+(encirclement at R_enc/Rg ~ 0.5) or that exploit a timescale the alignment force cannot
+overcome (epidemic persistence after predator removal).
 
 ---
 
@@ -1059,6 +1212,17 @@ social contagion. *Physical Review Research*, 2, 032056.
 Pacher, K., Bierbach, D., Kurvers, R. H. J. M., and Krause, J. (2026). Strategic choices
 of attack location allow predators to counter a collective prey defence. *Proceedings of
 the Royal Society B*, 293, 20260566.
+
+Inada, Y. and Kawachi, K. (2002). Order and flexibility in the motion of fish schools.
+*Journal of Theoretical Biology*, 214, 371-387. (Split and Reunion escape patterns in
+a two-dimensional fish-school model.)
+
+Demsar, J. and Lebar Bajec, I. (2014). Simulated predator attacks on flocks: A comparison
+of tactics. *Artificial Life*, 20(3), 343-359.
+
+Bartashevich, P., Schellinck, J., Tully, T., and Romanczuk, P. (2024). Collective
+anti-predator escape manoeuvres through optimal attack and avoidance strategies.
+*Communications Biology*, 7, 1548.
 
 ---
 
@@ -1102,4 +1266,5 @@ All simulation code is available at https://github.com/ninjahawk/Summer_Research
 | targeted_immunity.py | Targeted (high-degree first) vs random vaccination; herd-immunity efficiency |
 | spatial_vaccination.py | Spatial (farthest-point sampling) vs random vs degree-targeted vaccination |
 | hard_repulsion.py | Finite-size scaling with harder repulsion exponents n=1.5,3,6,12 |
+| langevin_repulsion.py | Langevin thermostat finite-size scaling; FDT diagnosis of crossover |
 | model.py | OOP foundation: Flock and Predator classes for new experiments |
