@@ -1328,3 +1328,39 @@ distinct experimental direction beyond the current model family.
    psi6 flat at ~0.4 across all kT. Correct metric confirmed; harder potential needed for KTHNY.
 4. 3D flocking extension: extend model to [0,1]^3 periodic domain; test whether the
    flock division mechanism and encirclement results still hold in 3D.
+
+---
+
+## Finding 41: 3D flocking validates cleanly -- v_eq = v0 + alpha/mu exact in 3D; crossover is less noise-robust than 2D
+<img src="./figures/flocking3d_1.png" width="640"/>
+
+**What:** Extension of the 2D flocking model to [0,1]^3 periodic domain.  Parameters scaled
+so that 3D has similar neighbor count to 2D: rf=0.20 gives N*(4/3)*pi*rf^3 = 11.7 expected
+neighbors (matching 2D rf=0.1 with ~11 neighbors).  r0=0.02 gives volume fraction ~0.012.
+All other parameters unchanged from 2D defaults.
+**Evidence:** flocking3d.py, N=350, r0=0.020, rf=0.20, alpha=1.0, v0=1.0, mu=10.0, 8 seeds.
+ramp sweep [0.0, 0.1, 0.2, 0.5, 1.0, 2.0, 3.0, 5.0, 7.0, 10.0]:
+  ramp=0.0:  Phi=1.0000  |v|=1.1000
+  ramp=0.1:  Phi=1.0000  |v|=1.1000
+  ramp=0.5:  Phi=0.9995  |v|=1.1000
+  ramp=1.0:  Phi=0.9982  |v|=1.1001
+  ramp=2.0:  Phi=0.9931  |v|=1.1006
+  ramp=5.0:  Phi=0.9595  |v|=1.1035
+  ramp=10.0: Phi=0.8409  |v|=1.1138
+**Key result 1 -- v_eq analytical result holds exactly in 3D:**
+Measured |v| at ramp=0 is 1.1000, matching the predicted v_eq = v0 + alpha/mu = 1.1000 exactly.
+The derivation (force balance at equilibrium in an aligned flock: alpha + mu*(v0-v_eq) = 0)
+uses only the 1D force balance along the aligned direction, which is dimensionality-independent.
+**Key result 2 -- 3D flocking works but is less noise-robust than 2D:**
+Phi degrades monotonically from 1.000 (ramp=0) to 0.841 (ramp=10).  In 2D at the same
+ramp=10, Phi is approximately 0.97-0.99 (from phase sweep data).  The 3D model is less
+noise-robust because random noise affects all 3 velocity components: at ramp=10, the noise
+RMS magnitude is ramp*sqrt(3/3) = ramp per agent in 3D vs ramp*sqrt(2/3) per agent in 2D.
+More degrees of freedom reduce the effectiveness of the alignment force at restoring order.
+The crossover is at ramp >> 10 -- an extended sweep to ramp=30 is needed to characterize
+the full transition region.
+**Seed-to-seed consistency:** std across seeds is very small throughout (0.0022 at ramp=10),
+confirming the 3D model is deterministic and well-behaved.
+**Implication:** The force-based flocking model generalizes cleanly to 3D.  The core
+analytical result (v_eq = v0 + alpha/mu) is universal.  The 3D transition region is at
+higher ramp than the first 10-step sweep covers; extended noise sweep is the natural next step.

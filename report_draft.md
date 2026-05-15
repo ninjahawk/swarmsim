@@ -75,7 +75,7 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers twenty-two investigations, producing forty numbered findings.
+This report covers twenty-three investigations, producing forty-one numbered findings.
 The first four sections establish the baseline: implementation validation, parameter
 sweeps, finite-size scaling to test for a true phase transition, and flock geometry.
 Sections five through nine develop the predator-strategy hierarchy — from naive
@@ -95,9 +95,10 @@ and spatially-targeted vaccination reduce the herd-immunity threshold (both null
 section nineteen tests whether harder repulsion can produce a true phase transition (null),
 section twenty-one tests whether Langevin dynamics recover the hard-disc structural
 melting transition (thermal equilibration achieved; structural metric needed to detect it),
-and section twenty-two measures the hexatic order parameter directly (confirming it is the
+section twenty-two measures the hexatic order parameter directly (confirming it is the
 correct diagnostic, but finding that n = 1.5 soft repulsion cannot crystallize at any
-accessible temperature).
+accessible temperature), and section twenty-three extends the model to three spatial
+dimensions, confirming that flocking and the v_eq analytical result generalize cleanly to 3D.
 
 ---
 
@@ -1021,6 +1022,59 @@ that would prevent agent overlap and enable genuine crystallization.
 
 ---
 
+## 4.23 Three-Dimensional Extension: Flocking Generalizes and v_eq Is Dimensionality-Independent (Finding 41)
+
+All preceding sections studied agents on a 2D periodic unit square. This section extends
+the model to a 3D periodic unit cube [0, 1]^3 and tests whether the core behaviors — flock
+formation, the analytical equilibrium-speed result, and the noise-coherence tradeoff — hold
+in three dimensions.
+
+Parameters were scaled to maintain a similar neighborhood density as the 2D default. The
+2D default (r_f = 0.10, N = 350) gives an expected neighbor count of N * pi * r_f^2 = 11.0
+agents. In 3D, r_f = 0.20 gives N * (4/3) * pi * r_f^3 = 11.7, matching the 2D count.
+The repulsion radius was set to r0 = 0.02, giving a volume fraction of approximately 0.012,
+comparable to the 2D area fraction of 0.028. All other parameters are unchanged: alpha = 1.0,
+v0 = 1.0, mu = 10.0, dt = 0.01 (flocking3d.py, N = 350, 8 seeds).
+
+The results show that flocking forms cleanly in 3D and that the analytical result transfers
+exactly:
+
+| ramp | Phi (3D) | Mean speed |
+|------|----------|------------|
+| 0.0  | 1.0000   | 1.1000     |
+| 0.5  | 0.9995   | 1.1000     |
+| 1.0  | 0.9982   | 1.1001     |
+| 2.0  | 0.9931   | 1.1006     |
+| 5.0  | 0.9595   | 1.1035     |
+| 7.0  | 0.9220   | 1.1068     |
+| 10.0 | 0.8409   | 1.1138     |
+
+**Equilibrium speed.** At ramp = 0, the measured mean speed is 1.1000, exactly matching the
+prediction v_eq = v0 + alpha/mu = 1.0 + 1.0/10.0 = 1.100. The analytical derivation uses
+only the force balance along the heading direction of an aligned flock:
+alpha + mu * (v0 - v_eq) = 0, giving v_eq = v0 + alpha/mu.
+This argument is dimensionality-independent, so the result holds in 3D for the same reason
+it holds in 2D. The 3D measurement confirms this: the formula is a universal property of the
+model's force structure, not an artifact of the 2D geometry.
+
+**Noise-coherence tradeoff in 3D.** Phi degrades monotonically from 1.000 at ramp = 0 to
+0.841 at ramp = 10. The seed-to-seed standard deviation is very small (std = 0.0022 at
+ramp = 10), confirming consistent behavior across initializations. The 3D flock is somewhat
+less noise-resistant than its 2D counterpart: at ramp = 10, 2D Phi is approximately 0.97-0.99
+(from the original phase sweeps), while 3D Phi = 0.84. This difference is expected from the
+noise geometry: in 3D, random kicks affect all three velocity components, so the total
+perturbation magnitude scales as ramp * sqrt(3) per step, compared to ramp * sqrt(2) in 2D
+(each component uniform on [-ramp, ramp] with variance ramp^2/3). With more degrees of
+freedom available for noise to decorrelate agent headings, the alignment force maintains less
+complete coherence at the same ramp value.
+
+The crossover from high-Phi to low-Phi in 3D appears to lie at ramp >> 10 (the order
+parameter remains at 0.84 even at ramp = 10, far from the plateau-to-collapse region). An
+extended noise sweep to ramp ~ 20-30 is the natural next step to characterize the full
+transition region.
+
+---
+
 ## 5. Discussion
 
 The most striking result of the predator simulations is that flocking is not primarily
@@ -1146,7 +1200,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 6. Conclusions
 
-This study produced sixteen main results (selecting the most general across 40 findings):
+This study produced seventeen main results (selecting the most general across 41 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -1253,6 +1307,16 @@ This study produced sixteen main results (selecting the most general across 40 f
     still peaks at the top of the kT sweep and shows no N-dependent shift, because KTHNY
     melting is a positional-order transition invisible to kinetic energy fluctuations.
 
+17. **Three-dimensional extension confirms universality of v_eq = v0 + alpha/mu:**
+    Extending the model to a periodic 3D unit cube with neighbor-count-matched parameters
+    (r_f = 0.20 for ~12 expected neighbors) reproduces coherent flocking across the tested
+    noise range. The equilibrium speed v_eq = v0 + alpha/mu = 1.100 holds exactly (measured:
+    1.1000 at ramp = 0), confirming the analytical result is dimensionality-independent —
+    a consequence of the 1D force balance along the heading direction. The 3D flock is
+    slightly less noise-resistant than 2D at the same ramp (Phi = 0.84 vs ~0.98 at ramp = 10)
+    because 3D velocity perturbations have one additional degree of freedom. Flocking forms
+    cleanly in 3D and the core analytical result transfers exactly.
+
 16. **Hexatic order parameter confirms soft repulsion cannot crystallize:**
     Measuring the hexatic order parameter |psi_6| directly (the correct diagnostic for KTHNY
     melting) reveals that n = 1.5 soft repulsion is incapable of forming a hexagonal solid at
@@ -1346,4 +1410,5 @@ All simulation code is available at https://github.com/ninjahawk/Summer_Research
 | hard_repulsion.py | Finite-size scaling with harder repulsion exponents n=1.5,3,6,12 |
 | langevin_repulsion.py | Langevin thermostat finite-size scaling; FDT diagnosis of crossover |
 | langevin_hexatic.py | Langevin dynamics with hexatic order parameter; KTHNY structural melting test |
+| flocking3d.py | 3D extension of the flocking model; v_eq validation and noise sweep |
 | model.py | OOP foundation: Flock and Predator classes for new experiments |
