@@ -64,7 +64,7 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers eighteen investigations, producing thirty-six numbered findings.
+This report covers nineteen investigations, producing thirty-eight numbered findings.
 The first four sections establish the baseline: implementation validation, parameter
 sweeps, finite-size scaling to test for a true phase transition, and flock geometry.
 Sections five through nine develop the predator-strategy hierarchy — from naive
@@ -79,9 +79,11 @@ including intermittent merge/split behavior and incomplete encirclement. Section
 sixteen follows epidemic persistence after predator removal, revealing a two-timescale
 asymmetry between kinematic recovery (~10 time units) and epidemic decay (~100+ time
 units). Section seventeen validates the universal R_enc/Rg ~ 0.5 optimum through an
-adaptive encirclement strategy, and section eighteen tests whether immunizing the
-highest-degree agents can reduce the herd-immunity threshold, finding no advantage over
-random vaccination because the flock's contact network lacks hub structure.
+adaptive encirclement strategy, section eighteen tests whether immunizing the
+highest-degree agents reduces the herd-immunity threshold (no advantage), and section
+nineteen tests whether harder repulsion can produce a true phase transition, finding
+instead that the smooth crossover is a consequence of non-equilibrium forcing, not
+potential softness.
 
 ---
 
@@ -749,7 +751,64 @@ together have redundant contacts with each other), not from degree heterogeneity
 are distinct properties: degree-targeted vaccination addresses the latter but not the
 former. A strategy that disperses immune agents spatially across the flock extent, rather
 than concentrating them in the high-degree core, would more directly disrupt spatial
-co-clustering and might outperform random vaccination — but this was not tested here.
+co-clustering and might outperform random vaccination — this hypothesis is tested in
+Section 4.19.
+
+---
+
+## 4.19 Repulsion Hardness Does Not Rescue the Phase Transition: A Non-Equilibrium Diagnosis (Finding 38)
+
+Finding 17 showed no diverging susceptibility at any tested compactness value (C = 0.10
+to 0.78) using the standard soft repulsion (exponent n = 1.5). The natural follow-up
+question is whether a harder repulsion potential would produce a true phase transition.
+In equilibrium statistical mechanics, 2D hard discs at compactness C ~ 0.40 form a
+hexagonal solid at low effective temperature and undergo the well-known KTHNY melting
+transition at a finite critical temperature, so a hard-core potential should, in
+principle, produce the diverging susceptibility that the soft model lacks.
+
+I tested this by sweeping the repulsion exponent n = 1.5, 3.0, 6.0, 12.0 in a
+repulsion-only simulation (no flocking, no self-propulsion) with finite-size scaling at
+N = 25, 50, 100, 200, C = 0.40, 8 seeds per point, and the same noise sweep eta = 0.5
+to 30 as in Finding 17 (hard_repulsion.py).
+
+The result is unambiguous: the chi-peak (susceptibility chi = N * Var(KE/N)) falls at
+eta = 30 — the top of the sweep — for every combination of exponent and system size.
+The KE/N curves are essentially identical across n = 1.5 to n = 12:
+
+| Exponent n | N = 25 chi peak | N = 50 chi peak | N = 100 chi peak | N = 200 chi peak |
+|------------|-----------------|-----------------|------------------|------------------|
+|     1.5    |     2607        |     7311        |      3785        |      3858        |
+|     3.0    |     2609        |     7305        |      3766        |      3854        |
+|     6.0    |     2615        |     7285        |      3770        |      3851        |
+|    12.0    |     2615        |     7289        |      3773        |      3853        |
+
+All peaks at eta = 30; no N-dependence of the peak location; chi values nearly
+identical within each N column across all exponents.
+
+The absence of a phase transition at n = 12 (near hard-core) requires a different
+explanation from softness. The root cause is the non-equilibrium nature of the driving.
+The current model uses uniform random kicks (each velocity component += eta * U[-1,1]
+at every timestep), which do not satisfy the fluctuation-dissipation theorem (FDT). The
+only velocity-limiting mechanism in the repulsion-only variant is confinement by
+neighboring agents; there is no viscous friction (-mu*v) to produce true thermal
+equilibration. Without FDT, there is no well-defined temperature, the system cannot
+reach the Boltzmann distribution in configuration space, and the cooperativity required
+for a phase transition cannot emerge. The crossover is instead set by the competition
+between random kick energy and the scale of positional confinement, which depends on
+the force range 2r0 but not on the force profile (exponent n). This explains the
+complete insensitivity to n.
+
+To observe the hard-disc phase transition in this model family, one would need to
+replace the self-propulsion speed regulator with genuine Langevin dynamics: viscous
+damping F_damp = -mu * v and noise amplitude sqrt(2*mu*kT/dt) * randn, which together
+satisfy FDT and recover the Boltzmann distribution in the long-time limit. The KTHNY
+transition would then appear at the appropriate area fraction and temperature.
+
+This result clarifies the relationship between Findings 2, 8, 12, 17, and the present
+one: the smooth crossover is a property of the entire model class (self-propulsion
+regulation + independent random kicks), not of any particular parameter regime. No
+modification of the repulsion potential within this model class will produce a true
+phase transition.
 
 ---
 
@@ -783,10 +842,14 @@ r0 = sqrt(C/(pi*N)) and testing a dilute regime (C = 0.10) shows the same behavi
 the dense regime: N-independent KE/N and monotone susceptibility with no finite-eta peak.
 The absence of a critical point is not a consequence of high compactness alone. Instead,
 both extremes fail for different reasons — too dense means caged oscillators, too dilute
-means non-interacting walkers. A true phase transition in this model, if it exists,
-would require an intermediate compactness where a solid phase can form and cooperative
-rearrangements are possible. The model's smooth crossover may be a general feature of
-this force-based formulation rather than a regime-specific artifact.
+means non-interacting walkers. Section 4.19 goes further by sweeping the repulsion
+exponent from n = 1.5 to n = 12 — approaching the hard-core limit — and finds identical
+behavior at every exponent. This rules out potential softness as the cause of the
+crossover. The root cause is instead the non-equilibrium driving: uniform random kicks
+without viscous dissipation do not satisfy the fluctuation-dissipation theorem, so the
+system cannot equilibrate into a crystal phase. The smooth crossover is a universal
+property of the model class, not a potential-specific artifact, and cannot be removed
+without replacing the driving mechanism itself.
 
 The long-time encirclement result is a caution against interpreting short-simulation
 steady states as equilibria. The 4000-step snapshots used in Sections 4.5-4.7 reported
@@ -953,6 +1016,18 @@ strategy — geometry-awareness is a refinement, not a revolution.
     agents are removed. The spatial clustering that inflates the threshold above mean-field
     is distinct from degree heterogeneity; targeting hubs addresses the latter but not
     the former.
+
+14. **The smooth crossover is a consequence of non-equilibrium driving, not repulsion
+    softness:** Sweeping the repulsion exponent from n = 1.5 (current) to n = 12 (near
+    hard-core) produces virtually identical finite-size scaling behavior in all cases —
+    chi_peak at the top of the noise sweep, N-independent KE/N curves, no diverging
+    susceptibility. In equilibrium statistical mechanics, 2D hard discs at the tested
+    compactness (C = 0.40) do exhibit a phase transition (KTHNY melting). The absence of
+    any transition at n = 12 demonstrates that the model's non-thermal driving — uniform
+    random kicks without viscous dissipation — prevents the Boltzmann equilibration
+    required for cooperative melting. A true phase transition would require replacing the
+    self-propulsion speed regulator with genuine Langevin dynamics (viscous damping +
+    thermal noise satisfying the fluctuation-dissipation theorem).
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

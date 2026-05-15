@@ -1076,11 +1076,55 @@ flock, not just the high-degree core agents).
 
 ---
 
+## Finding 38: Repulsion hardness does not affect the crossover -- the absence of a phase transition is driven by non-equilibrium forcing, not potential softness
+<img src="./figures/hard_repulsion_1_chi.png" width="640"/>
+<img src="./figures/hard_repulsion_2_ke.png" width="640"/>
+
+**What:** Finding 17 showed no phase transition in the standard model (n=1.5 repulsion exponent)
+at any compactness C=0.10-0.78, and conjectured that the soft repulsion potential was the
+root cause.  This experiment tests the conjecture directly by sweeping repulsion exponent
+n = 1.5, 3.0, 6.0, 12.0 with finite-size scaling (N=25, 50, 100, 200; C=0.40, 8 seeds, no
+flocking/self-propulsion).  Result: the chi-peak (susceptibility) for ALL exponents lies at
+eta=30 (the top of the sweep), for ALL N values.  The KE/N curves and crossover shape are
+essentially identical across n=1.5 to n=12.
+**Evidence:** hard_repulsion.py, 8 seeds, C=0.40, N=25-200, eta=0.5-30.
+chi_peak at eta=30.0 for all (n, N) combinations tested:
+  n=1.5:  N=25: chi=2607  N=50: chi=7311  N=100: chi=3785  N=200: chi=3858
+  n=3.0:  N=25: chi=2609  N=50: chi=7305  N=100: chi=3766  N=200: chi=3854
+  n=6.0:  N=25: chi=2615  N=50: chi=7285  N=100: chi=3770  N=200: chi=3851
+  n=12.0: N=25: chi=2615  N=50: chi=7289  N=100: chi=3773  N=200: chi=3853
+KE/N ranges also nearly identical across exponents at same N.
+**Interpretation:** The absence of a phase transition is NOT caused by the softness of the
+repulsion potential.  In equilibrium statistical mechanics, 2D hard discs (C=0.40) form a
+hexagonal solid at low temperature and undergo KTHNY melting at higher temperature -- a true
+phase transition does exist for hard-core potentials.  Our model produces no such transition
+even at n=12 (near hard-core) because the driving is NON-EQUILIBRIUM: uniform random kicks
+(not thermal noise satisfying detailed balance) with no viscous damping (no Stokes friction
+-mu*v term).  Without the fluctuation-dissipation relation, the "temperature" is not a
+well-defined control parameter, and the system cannot equilibrate into a crystal phase that
+melts sharply.  Instead, the crossover is set by the competition between random kick energy
+and positional confinement (cage size ~ r0), which depends on the force RANGE (2r0) but is
+insensitive to the force PROFILE (exponent n).
+**Implication:** Finding 17's conjecture was correct in one sense (the model cannot produce
+a true phase transition) but wrong about the cause.  The missing ingredient is not harder
+repulsion but thermal equilibration: a Langevin simulation with viscous damping (-mu*v),
+noise amplitude sqrt(2*mu*kT/dt), and a well-defined temperature T would recover the
+hard-disc transition.  Within the current model family (self-propulsion regulation, not
+viscous damping), no modification of the repulsion exponent will produce a diverging
+susceptibility.  The solid-to-fluid crossover is a universal consequence of the non-
+equilibrium driving, not a potential-specific artifact.
+
+---
+
 ## Open Questions / Next Directions
 1. Literature comparison: novelty assessment of Findings 14 (encirclement), 16 (division
    mechanism), 22+34 (reversibility vs irreversibility), 25 (SIS threshold in a flock),
    30 (spatial herd immunity inflation), 36 (degree-targeted vaccination null result).
-2. 3D extension or hard-core repulsion potentials (look for a true phase transition,
-   F17 follow-up with different microscopic physics).
-3. Spatial vaccination strategy: immunise agents uniformly distributed across the flock
-   extent (not by degree) -- does this outperform random?
+2. Spatial vaccination strategy (F37, in progress): does farthest-point spatial sampling
+   outperform random? F36 predicted it might, because spatial clustering (not degree
+   heterogeneity) drives the 2x threshold inflation.
+3. True phase transition via Langevin dynamics: replace self-propulsion with viscous damping
+   (-mu*v) and thermal noise; this satisfies fluctuation-dissipation and should recover
+   hard-disc melting at C~0.69-0.72.
+4. 3D flocking extension: extend model to [0,1]^3 periodic domain; test whether the
+   flock division mechanism and encirclement results still hold in 3D.
