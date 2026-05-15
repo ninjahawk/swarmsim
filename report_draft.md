@@ -75,7 +75,7 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers twenty-three investigations, producing forty-one numbered findings.
+This report covers twenty-four investigations, producing forty-two numbered findings.
 The first four sections establish the baseline: implementation validation, parameter
 sweeps, finite-size scaling to test for a true phase transition, and flock geometry.
 Sections five through nine develop the predator-strategy hierarchy — from naive
@@ -1075,6 +1075,54 @@ transition region.
 
 ---
 
+## 4.24 Three-Dimensional Noise Sweep: Smooth Crossover at ramp ~ 15-25, Consistent with 2D (Finding 42)
+
+Finding 41 confirmed that 3D flocking is coherent at ramp = 10 (Phi = 0.84), but the noise
+sweep only extended to ramp = 10 — far below the crossover region. This section extends the
+sweep to ramp = 30 at three system sizes (N = 100, 200, 350) and compares the 3D finite-size
+behavior to the 2D baseline (N = 350) using the susceptibility chi = N * Var_seeds(Phi)
+as the finite-size scaling diagnostic (flocking3d_noise.py, N_SEEDS = 8, N_ITER = 4000).
+
+![](./figures/flocking3d_noise_1.png)
+
+| System | chi_peak | ramp at chi_peak | Phi (ramp = 0.5) | Phi (ramp = 20) |
+|--------|----------|------------------|------------------|-----------------|
+| 3D N=100 | 0.1139 | 15.0 | 0.9993 | 0.2205 |
+| 3D N=200 | 0.0970 | 20.0 | 0.9995 | 0.3300 |
+| 3D N=350 | 0.1951 | 25.0 | 0.9995 | 0.4197 |
+| 2D N=350 | 0.7683 | 30.0 | 0.9997 | 0.6017 |
+
+**Crossover location and N-dependence.** In 3D the crossover shifts from ramp ~ 15 (N = 100)
+to ramp ~ 25 (N = 350) as system size grows. This is the opposite of the signature expected
+for a true phase transition, where chi_peak would grow and its location would converge to a
+finite critical noise amplitude ramp_c as N -> infinity. Here the peak location drifts upward
+with N because larger flocks average alignment forces over more neighbors: each additional
+neighbor partially cancels noise-induced heading deviations, so greater noise is required to
+destroy coherence. The chi_peak values are non-monotonic (0.11, 0.10, 0.20) and show no
+systematic divergence. The 3D behavior is therefore a smooth crossover — the same qualitative
+finding as the 2D model (Sections 4.2-4.3).
+
+**3D versus 2D.** At ramp = 20, the 3D flock at N = 350 has Phi = 0.42, compared to
+Phi = 0.60 for the equivalent 2D flock. The 2D chi_peak has not yet peaked at the top of
+the sweep (ramp = 30), indicating the 2D crossover lies beyond ramp = 30 — well above the
+3D crossover region of ramp ~ 15-25. The 3D model is substantially less noise-robust at
+matched neighbor count because a third velocity component is available for noise to disrupt:
+the noise RMS per step scales as ramp / sqrt(3) per component in 3D (uniform on
+[-ramp, ramp], variance = ramp^2/3), but the alignment force works on all three components
+equally, so three simultaneous perturbations accumulate more decorrelation per step than
+two. The qualitative phase behavior — smooth crossover, chi_peak drifting up with N —
+is the same in both dimensions, confirming that this is a universal feature of the
+force-based flocking model family.
+
+**Consistency with the non-equilibrium mechanism.** Finding 38 identified non-equilibrium
+driving (random kicks without viscous dissipation) as the root cause of the smooth crossover
+in the repulsion-only system. The 3D result extends that diagnosis to three dimensions: the
+same kinetic mechanism that prevents crystalline-phase melting in 2D also prevents a sharp
+flock-disorder transition in 3D. Dimensionality changes the crossover location but not its
+character.
+
+---
+
 ## 5. Discussion
 
 The most striking result of the predator simulations is that flocking is not primarily
@@ -1200,7 +1248,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 6. Conclusions
 
-This study produced seventeen main results (selecting the most general across 41 findings):
+This study produced eighteen main results (selecting the most general across 42 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -1307,7 +1355,7 @@ This study produced seventeen main results (selecting the most general across 41
     still peaks at the top of the kT sweep and shows no N-dependent shift, because KTHNY
     melting is a positional-order transition invisible to kinetic energy fluctuations.
 
-17. **Three-dimensional extension confirms universality of v_eq = v0 + alpha/mu:**
+16. **Three-dimensional extension confirms universality of v_eq = v0 + alpha/mu:**
     Extending the model to a periodic 3D unit cube with neighbor-count-matched parameters
     (r_f = 0.20 for ~12 expected neighbors) reproduces coherent flocking across the tested
     noise range. The equilibrium speed v_eq = v0 + alpha/mu = 1.100 holds exactly (measured:
@@ -1317,7 +1365,7 @@ This study produced seventeen main results (selecting the most general across 41
     because 3D velocity perturbations have one additional degree of freedom. Flocking forms
     cleanly in 3D and the core analytical result transfers exactly.
 
-16. **Hexatic order parameter confirms soft repulsion cannot crystallize:**
+17. **Hexatic order parameter confirms soft repulsion cannot crystallize:**
     Measuring the hexatic order parameter |psi_6| directly (the correct diagnostic for KTHNY
     melting) reveals that n = 1.5 soft repulsion is incapable of forming a hexagonal solid at
     any accessible temperature. |psi_6| ≈ 0.4 across the entire kT range (0.001 to 5.0) for
@@ -1328,6 +1376,16 @@ This study produced seventeen main results (selecting the most general across 41
     Demonstrating the KTHNY transition in this model family requires a near-hard-core Langevin
     simulation (n ≥ 12) or a true hard-disc Monte Carlo framework. This closes the phase-
     transition thread: the correct observable has been identified; a harder potential is needed.
+
+18. **The 3D noise-driven crossover is smooth and qualitatively identical to 2D:**
+    An extended noise sweep (ramp = 0.5-30) at three 3D system sizes (N = 100, 200, 350)
+    shows that the chi_peak location increases with N (ramp_c = 15, 20, 25 respectively)
+    rather than converging to a finite critical noise value. This is the signature of a
+    smooth crossover, not a phase transition, matching the 2D result at matched neighbor
+    count. The 3D crossover occurs at substantially lower noise (ramp ~ 15-25) than the
+    2D crossover (ramp > 30) because the third velocity component provides an additional
+    channel for noise to disrupt alignment. The non-equilibrium smooth-crossover mechanism
+    identified in Findings 38 and 39 is dimensionality-independent.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
@@ -1411,4 +1469,5 @@ All simulation code is available at https://github.com/ninjahawk/Summer_Research
 | langevin_repulsion.py | Langevin thermostat finite-size scaling; FDT diagnosis of crossover |
 | langevin_hexatic.py | Langevin dynamics with hexatic order parameter; KTHNY structural melting test |
 | flocking3d.py | 3D extension of the flocking model; v_eq validation and noise sweep |
+| flocking3d_noise.py | 3D extended noise sweep ramp=0.5-30 and 2D comparison; finite-size scaling |
 | model.py | OOP foundation: Flock and Predator classes for new experiments |

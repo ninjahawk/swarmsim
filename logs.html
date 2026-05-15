@@ -273,6 +273,11 @@
         <td class="hours-cell">1.50</td>
         <td>Finding 41 (flocking3d.py): extended the flocking model to [0,1]^3 periodic domain. Scaled rf=0.20 for ~12 expected neighbors (matching 2D). v_eq = v0+alpha/mu = 1.100 confirmed exactly in 3D (measured 1.1000 at ramp=0). Phi decreases from 1.000 (ramp=0) to 0.841 (ramp=10); 3D less noise-robust than 2D at same ramp due to additional noise degree of freedom. Crossover at ramp>>10; extended sweep needed. Report updated through Section 4.23 (23 investigations, 41 findings, 17 conclusions).</td>
       </tr>
+      <tr data-date="2026-05-15e">
+        <td class="date-cell">2026-05-15</td>
+        <td class="hours-cell">1.50</td>
+        <td>Finding 42 report section written (Section 4.24). Extended 3D noise sweep ramp=0.5-30 at N=100, 200, 350 (from flocking3d_noise.py output): crossover at ramp~15-25 in 3D vs ramp>30 in 2D; chi_peak drifts UP with N (ramp_c=15, 20, 25), confirming smooth crossover not phase transition. 3D Phi(ramp=20)=0.22-0.42 vs 2D Phi=0.60 -- 3D less noise-robust due to additional noise degree of freedom. Non-equilibrium smooth-crossover mechanism is dimensionality-independent. Introduction updated to 24 investigations, 42 findings. Conclusions updated to 18 main results; added result 18 (3D crossover) and renumbered 16/17. Appendix updated with flocking3d_noise.py.</td>
+      </tr>
       <tr data-date="2026-05-14">
         <td class="date-cell">2026-05-14</td>
         <td class="hours-cell">3.00</td>
@@ -356,6 +361,10 @@
     {
       date: "2026-05-15 (session 4)",
       body: "Finding 41 (flocking3d.py). Extended the flocking model to a periodic 3D unit cube [0,1]^3. Scaled rf=0.20 to maintain ~12 expected neighbors (matching 2D default). r0=0.02, N=350, alpha=1.0, v0=1.0, mu=10.0, 8 seeds.\n\nResults: (1) v_eq = v0+alpha/mu = 1.100 confirmed exactly in 3D (measured 1.1000 at ramp=0). The force-balance derivation is dimensionality-independent. (2) Phi decreases monotonically: 1.000 (ramp=0) to 0.841 (ramp=10). Seed-to-seed std is very small (0.002 at ramp=10). (3) 3D is somewhat less noise-robust than 2D at same ramp: at ramp=10, 2D Phi~0.97-0.99 vs 3D Phi=0.84. Additional noise degree of freedom reduces alignment efficiency. Crossover region is at ramp>>10; extended sweep needed.\n\nReport updated through Section 4.23 (23 investigations, 41 findings, 17 conclusions)."
+    },
+    {
+      date: "2026-05-15 (session 5)",
+      body: "Report section for Finding 42 written (Section 4.24) based on flocking3d_noise.py data from session 4.\n\nFinding 42. Extended 3D noise sweep ramp=0.5-30 at N=100, 200, 350, 8 seeds, compared to 2D N=350. Key results:\n\n(1) 3D crossover at ramp~15-25, N-dependent: chi_peak at ramp=15 (N=100), ramp=20 (N=200), ramp=25 (N=350). Peak location INCREASES with N -- the signature of a smooth crossover, not a phase transition. Larger flocks average over more neighbors, requiring higher noise to destroy coherence.\n\n(2) 3D substantially less noise-robust than 2D: at ramp=20, 3D Phi=0.22-0.42 (N-dependent) vs 2D Phi=0.60. 2D chi_peak has not peaked by ramp=30, indicating 2D crossover is at ramp>30. The third noise component is the mechanism -- identical to the dimensionality argument from Finding 41.\n\n(3) Qualitative behavior identical to 2D: smooth crossover, chi_peak drifting up with N, non-diverging susceptibility. Non-equilibrium driving (no FDT) is dimensionality-independent.\n\nReport updated: Introduction (24 investigations, 42 findings), Conclusions (18 main results, result 18 added for F42, numbering corrected), Appendix (flocking3d_noise.py added). Used AI assistance for code and report writing."
     },
     {
       date: "2026-05-15",
