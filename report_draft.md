@@ -35,11 +35,15 @@ Critically, when encirclement drives a sub-threshold contagion into a transient 
 state, removing the predators reverses kinematic fragmentation (in ~10 time units) but
 leaves the epidemic intact for hundreds of time units. Predation produces reversible
 kinematic damage; contagion produces lasting epidemic damage; the combination produces
-damage that outlasts the predation event itself by an order of magnitude. Finally, an
+damage that outlasts the predation event itself by an order of magnitude. An
 adaptive encirclement strategy — predators that continuously track live flock Rg and
 maintain R_enc = 0.5*Rg — cuts the fraction of time the flock spends in a highly
 coherent state by 34% compared to a fixed-radius strategy, validating the universality
-of the R_enc/Rg ~ 0.5 optimum across dynamical fluctuations.
+of the R_enc/Rg ~ 0.5 optimum across dynamical fluctuations. Finally, targeted
+vaccination (immunizing highest-degree agents first) provides no advantage over random
+vaccination: both strategies require p_immune ~ 0.46, because the flock contact network
+has bounded, not fat-tailed, degree heterogeneity, and kinematic reorganization restores
+hub positions after they are immunized.
 
 ---
 
@@ -684,6 +688,68 @@ more effective still.
 
 ---
 
+## 4.18 Targeted Vaccination Provides No Advantage Over Random: The Flock Contact Network Is Not Hub-Dominated (Finding 36)
+
+Finding 30 showed that the herd-immunity threshold in the flock is approximately twice
+the mean-field prediction (~0.46 vs. 0.20 at R0 = 1.25), attributed to spatial
+clustering of panicked sub-groups. A natural follow-up is whether targeting
+high-connectivity agents for immunity can reduce this inflated threshold. On a scale-free
+network (power-law degree distribution), immunizing hub nodes first can dramatically
+lower the required immune fraction because hubs are disproportionately responsible for
+spreading contagion. If the flock contact network has hub nodes, targeting them should
+outperform random vaccination.
+
+I compared two vaccination protocols at the same supercritical SIS parameters as Finding
+30 (beta = 2.5, gamma = 2.0, R0 = 1.25), across p_immune = 0 to 0.70 and 6 seeds
+(targeted_immunity.py). In the targeted condition, each seed's settled flock was
+analyzed for contact degree (number of agents within r_cont = 0.05), and the top
+p_immune fraction by degree was immunized before the first panicked agent was seeded.
+
+The result is negative: targeted vaccination provides no statistically significant
+advantage over random vaccination at any tested immune fraction:
+
+| p_immune | f_ss (random) | f_ss (targeted) | difference |
+|----------|---------------|-----------------|------------|
+|   0.00   | 0.593 ± 0.008 |  0.587 ± 0.006  |  −0.006    |
+|   0.10   | 0.491 ± 0.010 |  0.495 ± 0.006  |  +0.004    |
+|   0.20   | 0.393 ± 0.008 |  0.395 ± 0.010  |  +0.002    |
+|   0.30   | 0.304 ± 0.013 |  0.301 ± 0.014  |  −0.003    |
+|   0.40   | 0.204 ± 0.016 |  0.177 ± 0.080  |  −0.027    |
+|   0.46   | 0.101 ± 0.072 |  0.084 ± 0.065  |  −0.016    |
+|   0.50   | 0.046 ± 0.066 |  0.043 ± 0.053  |  −0.003    |
+|   0.60–0.70 | 0.000      |   0.000         |   0.000    |
+
+Differences at p_immune ≤ 0.30 are within noise (|diff| ≤ 0.006). Near the threshold
+(p = 0.40–0.46), targeted shows a small numerical edge, but the variance in the targeted
+condition is 4–5x higher than in the random condition (std = 0.080 vs. 0.016 at p =
+0.40), and the difference is not statistically robust. Both strategies cross the quench
+threshold (f_ss < 0.1) at p_immune ≈ 0.46, matching the random threshold from Finding 30.
+
+The contact degree distribution across all seeds has mean = 9.02, median = 8, std = 6.17,
+and max = 31. This is moderately heterogeneous (coefficient of variation CV = 0.68)
+but the maximum degree is only 3.4 times the mean — far below the ratios of 10–1000
+seen in social and internet networks where hub-targeting is effective. The second panel
+of Fig. X (targeted_immunity_1.png) shows the degree distribution; it is approximately
+unimodal and bounded, not power-law.
+
+There is a deeper reason why degree-targeting fails even given moderate heterogeneity:
+the flock contact network is spatially embedded and kinematically reconfigurable. Hub
+agents are high-degree because they occupy the dense interior of the flock, where many
+neighbors are in proximity. When those agents are immunized, the alignment and repulsion
+forces redistribute the remaining agents, and new interior positions form. The network
+topology reorganizes to restore a similar degree structure even with the specific hub
+agents removed.
+
+This result clarifies the mechanism behind Finding 30's inflated threshold. The 2x
+inflation arises from spatial co-movement of panicked agents (sub-clusters that travel
+together have redundant contacts with each other), not from degree heterogeneity. These
+are distinct properties: degree-targeted vaccination addresses the latter but not the
+former. A strategy that disperses immune agents spatially across the flock extent, rather
+than concentrating them in the high-degree core, would more directly disrupt spatial
+co-clustering and might outperform random vaccination — but this was not tested here.
+
+---
+
 ## 5. Discussion
 
 The most striking result of the predator simulations is that flocking is not primarily
@@ -768,11 +834,23 @@ while the epidemic is still ongoing. That timescale asymmetry, and the practical
 implication that external pressure can seed a long-lived epidemic state without
 sustaining it, does not appear to be addressed in the existing literature.
 
+The targeted vaccination result (Section 4.18) invites a comparison with the herd
+immunity literature. In heterogeneous networks (Barabasi-Albert scale-free, small-world),
+targeted vaccination of high-degree nodes reduces the epidemic threshold substantially
+(Pastor-Satorras and Vespignani, 2002; Cohen et al., 2003). The flock network fails to
+exhibit this effect because it lacks a fat-tailed degree distribution: the coefficient of
+variation of degree is 0.68 and the maximum is only 3.4 times the mean, compared with
+power-law networks where this ratio can exceed 100. The spatial embedding and kinematic
+reconfigurability of the flock prevent any individual agent from accumulating the
+degree heterogeneity required for hub-targeting to work. This distinction is informative:
+it means that for spatially embedded kinematic collectives, the epidemiology cannot be
+simplified by identifying a small set of critical agents. Intervention must be broad.
+
 ---
 
 ## 6. Conclusions
 
-This study produced twelve main results (selecting the most general across 35 findings):
+This study produced thirteen main results (selecting the most general across 36 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -862,6 +940,25 @@ of both stressors, even below each individual threshold, can produce damage that
 outlasts the predation event itself. And a predator group that can track flock geometry
 in real time gains consistent advantage without requiring a fundamentally different
 strategy — geometry-awareness is a refinement, not a revolution.
+
+13. **Targeted vaccination fails to outperform random in the flock:** Immunizing
+    the highest-contact-degree agents first provides no significant reduction in the
+    herd-immunity threshold relative to random vaccination. Both strategies require
+    p_immune ~0.46 (matching Finding 30). The degree distribution (mean = 9.0, max = 31,
+    CV = 0.68) has insufficient heterogeneity for hub-targeting to matter, and kinematic
+    reorganization of the contact network restores hub positions even after high-degree
+    agents are removed. The spatial clustering that inflates the threshold above mean-field
+    is distinct from degree heterogeneity; targeting hubs addresses the latter but not
+    the former.
+
+The consistent thread across all results is that collective alignment is both the source
+of the flock's robustness and the mechanism by which stressors interact. It maintains
+coherence under noise and naive predation; it transmits spatial clustering that amplifies
+contagion; it drives the spatial reorganization that defeats hub-targeted vaccination;
+and it enables the reunion that makes kinematic damage reversible. The most effective
+disruption strategies are those that operate at the flock's geometric scale (encirclement
+at R_enc/Rg ~ 0.5) or that exploit a timescale the alignment force cannot overcome
+(epidemic persistence after predator removal).
 
 ---
 

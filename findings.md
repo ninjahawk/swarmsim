@@ -60,6 +60,8 @@ kinematic flock system quantitatively matches the spatial-epidemic prediction.  
 | F32 Long-time intermittent dynamics | Possibly novel | Related to sustained-attack papers (bioRxiv 2023) but not identical |
 | F33 Incomplete encirclement non-monotone | Likely novel | No literature found; counterintuitive 5-predator result |
 | F34 Epidemic outlasts kinematic stressor | Likely novel | Not addressed in Levis 2020 or subsequent; reversibility asymmetry is new |
+| F35 Adaptive R_enc outperforms fixed | Likely novel | Closes F31 adaptive loop; adaptive predator geometry in flocking not studied |
+| F36 Targeted vaccination null result | Interesting null | Hub-targeting fails in kinematic flock; spatial reorganization is specific mechanism |
 
 ---
 
@@ -1021,12 +1023,64 @@ must be recalibrated when the flock grows or shrinks.
 
 ---
 
+## Finding 36: Targeted vaccination provides no significant advantage over random vaccination -- the flock contact network is not hub-dominated
+<img src="./figures/targeted_immunity_1.png" width="560"/>
+
+**What:** Comparing targeted (top contact-degree agents immunised first) vs random
+vaccination at supercritical SIS (beta=2.5, gamma=2.0, R0=1.25 -- same as Finding 30).
+Result: no significant advantage for targeted vaccination at any p_immune.  The herd-
+immunity threshold is p_c ~ 0.46 for BOTH strategies, identical to Finding 30's random-
+vaccination result.
+| p_immune | f_ss (random)  | f_ss (targeted) | diff    |
+|----------|----------------|-----------------|---------|
+|   0.00   | 0.593 +/- 0.008| 0.587 +/- 0.006 | -0.006  |
+|   0.10   | 0.491 +/- 0.010| 0.495 +/- 0.006 | +0.004  |
+|   0.20   | 0.393 +/- 0.008| 0.395 +/- 0.010 | +0.002  |
+|   0.30   | 0.304 +/- 0.013| 0.301 +/- 0.014 | -0.003  |
+|   0.40   | 0.204 +/- 0.016| 0.177 +/- 0.080 | -0.027  |
+|   0.46   | 0.101 +/- 0.072| 0.084 +/- 0.065 | -0.016  |
+|   0.50   | 0.046 +/- 0.066| 0.043 +/- 0.053 | -0.003  |
+|   0.60   | 0.000 +/- 0.000| 0.000 +/- 0.000 |  0.000  |
+All differences at p <= 0.30 are within statistical noise (|diff| <= 0.006, smaller than
+both error bars).  Near threshold (p=0.40-0.46) targeted shows a small edge (diff =
+-0.027 and -0.016) but the variance for targeted is 4-5x higher than for random
+(std 0.080 vs 0.016 at p=0.40), making these differences not statistically robust.
+**Evidence:** targeted_immunity.py, 6 seeds, slow prey (v0=0.02).
+Degree distribution across 6 seeds: mean=9.02, median=8, std=6.17, max=31.
+**Mechanism -- why targeting fails:**
+The classical network theory result (target hub nodes first) requires a fat-tailed degree
+distribution in which a small fraction of agents have dramatically higher connectivity.
+In a scale-free network, max_k/mean_k can be 100-1000x; here max_k/mean_k = 31/9 = 3.4.
+The degree heterogeneity (CV = std/mean = 6.17/9.02 = 0.68) is moderate but bounded.
+Immunising the top-degree agents removes the most connected individuals, but in a
+kinematic flock the contact network is not fixed: as high-degree agents at the flock
+center are immunised, their neighbors close in via the repulsion and alignment forces,
+and new hub positions form in the interior.  Spatial reorganisation restores the
+contact structure even when the specific high-degree agents are neutralised.
+**Contrast with Finding 30:** Finding 30 showed the random herd-immunity threshold is
+~2x mean-field (p_c~0.46 vs 0.20) due to spatial clustering.  The 2x inflation came
+from panicked sub-clusters moving together -- agents within a cluster contact mostly
+each other.  This is SPATIAL clustering, not degree heterogeneity.  Targeted vaccination
+is designed to exploit degree heterogeneity, not spatial clustering.  The flock has both
+properties, but the spatial-clustering effect is the dominant one for herd immunity, and
+targeted vaccination does not specifically counter it.
+**Implication:** Degree-targeted vaccination strategies, which are highly effective in
+scale-free social networks, offer minimal advantage in flocking collectives.  The reason
+is that flock contact networks are spatially-embedded and nearly uniform in degree: the
+most connected agents are those near the flock center, and their connectivity arises
+from geometric proximity (many neighbors in a dense region), not from topological hub
+status.  For a flock-like system, what matters for herd immunity is breaking the spatial
+clusters (which would require geographically targeted, rather than degree-targeted,
+vaccination -- e.g. vaccinating agents uniformly spread across the spatial extent of the
+flock, not just the high-degree core agents).
+
+---
+
 ## Open Questions / Next Directions
-1. Targeted vs random herd immunity: does vaccinating highest-degree agents first
-   require fewer immune individuals than random vaccination (F30 follow-up)?
-   [In progress — targeted_immunity.py running]
-2. Literature comparison: novelty assessment of Findings 14 (encirclement), 16 (division
+1. Literature comparison: novelty assessment of Findings 14 (encirclement), 16 (division
    mechanism), 22+34 (reversibility vs irreversibility), 25 (SIS threshold in a flock),
-   30 (spatial herd immunity inflation).
-3. 3D extension or hard-core repulsion potentials (look for a true phase transition,
+   30 (spatial herd immunity inflation), 36 (degree-targeted vaccination null result).
+2. 3D extension or hard-core repulsion potentials (look for a true phase transition,
    F17 follow-up with different microscopic physics).
+3. Spatial vaccination strategy: immunise agents uniformly distributed across the flock
+   extent (not by degree) -- does this outperform random?

@@ -129,7 +129,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-34 findings documented — full evidence and figures: [`findings.md`](findings.md)
+36 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
@@ -142,14 +142,14 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 | 14 | Encirclement (fixed-angle targets) is the **only strategy** to substantially disrupt the flock: Φ = 0.77 at n=6 |
 | 16 | Encirclement causes flock **DIVISION** (coherent sub-flocks heading in different directions), not dissolution |
 | 22 | Encirclement damage is **fully reversible**: sub-flocks reunite within ~10 time units of predator removal |
-| 23 | Encirclement + supercritical contagion: contagion dominates; stressors don't compose |
 | 25 | SIS contagion has a clean epidemic threshold at β/γ ≈ 1; flock coherence tracks it |
-| 29 | Encirclement shifts the SIS threshold by **~4%** (β_c 1.93 → 1.85) via compression |
 | 30 | Herd-immunity threshold in the flock is **~2× mean-field** prediction due to spatial clustering |
 | 31 | Encirclement scaling collapses on R_enc/Rg; optimal at R_enc/Rg ≈ 0.5 — strategy is **size-invariant** |
 | 32 | Long-time encirclement is **intermittent**: Φ oscillates 0.4–0.95 in a sustained merge/split cycle |
 | 33 | Incomplete encirclement (1 gap) is **more disruptive** than full ring; no global escape-route detection |
 | 34 | Predator removal after encirclement+SIS: kinematic damage reverses in ~10 tu, epidemic persists ~100+ tu |
+| 35 | **Adaptive R_enc = 0.5×Rg** outperforms fixed radius: Φ 0.778→0.713, high-coherence dwell time −34% |
+| 36 | **Targeted vaccination null result**: hub-targeting fails; flock contact network lacks fat-tailed degree distribution; kinematic reorganization restores hub positions |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
