@@ -729,7 +729,7 @@ The contact degree distribution across all seeds has mean = 9.02, median = 8, st
 and max = 31. This is moderately heterogeneous (coefficient of variation CV = 0.68)
 but the maximum degree is only 3.4 times the mean — far below the ratios of 10–1000
 seen in social and internet networks where hub-targeting is effective. The second panel
-of Fig. X (targeted_immunity_1.png) shows the degree distribution; it is approximately
+of the figure (targeted_immunity_1.png) shows the degree distribution; it is approximately
 unimodal and bounded, not power-law.
 
 There is a deeper reason why degree-targeting fails even given moderate heterogeneity:
