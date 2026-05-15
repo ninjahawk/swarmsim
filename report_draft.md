@@ -23,14 +23,19 @@ a clear hierarchy: naive (chase CoM) and coordinated (mutual repulsion) predator
 to disrupt the flock; only explicit encirclement — assigning each predator a fixed
 compass angle — substantially reduces coherence (Phi = 0.77 at n_pred = 6). Cluster
 analysis reveals this disruption is flock DIVISION into coherent sub-flocks rather than
-dissolution, and the division is fully transient: all sub-flocks reunite within ~10 time
-units of predator removal. Internal stressors behave differently: statically labeled
-panicked agents fail to disrupt the calm sub-flock (calm_Phi ~ 1.0 at 20% panic), but
-adding contact-mediated panic contagion drives the entire population to panic at any
-non-zero contagion rate, collapsing global coherence. Predation produces reversible
-damage; contagion produces absorbing damage. The primary function of flocking under
-stress is coherence maintenance, and the collective's principal vulnerabilities are
-multi-angle pressure and contagious internal state change.
+dissolution. Over long time (300 time units), the encircled flock enters an intermittent
+merge/split cycle rather than a steady fragmented state. Encirclement damage is fully
+reversible: sub-flocks reunite within ~10 time units of predator removal. Internal
+stressors obey different rules: static panic fails to disrupt the calm sub-flock (calm
+Phi ~ 1.0 at 20% panic fraction), but SIS contagion with recovery rate gamma has a
+clean epidemic threshold at beta/gamma ~ 1. Encirclement shifts this threshold by ~4%
+by compressing local contact density, and the spatial herd-immunity threshold (~0.46) is
+more than twice the mean-field prediction due to clustering in the contact network.
+Critically, when encirclement drives a sub-threshold contagion into a transient endemic
+state, removing the predators reverses kinematic fragmentation (in ~10 time units) but
+leaves the epidemic intact for hundreds of time units. Predation produces reversible
+kinematic damage; contagion produces lasting epidemic damage; the combination produces
+damage that outlasts the predation event itself by an order of magnitude.
 
 ---
 
@@ -547,6 +552,79 @@ within the bulk of the flock but not at the center, where it can push prey on al
 sides toward neighboring predators — the kinematic geometry that drives the flock
 division of Section 4.6.
 
+### 4.15 Long-time Dynamics and Incomplete Encirclement
+
+Two further experiments probe the limits of the encirclement strategy.
+
+All encirclement experiments to this point ran for 4000 timesteps (40 time units).
+To test whether the fragmented state is a true steady state or a transient on the way
+to a different long-time attractor, I ran 30000 steps (300 time units) under constant
+encirclement (long_encirclement.py, 4 seeds, n_pred=10, R_enc=0.15). The result is
+neither sustained fragmentation nor recovery: instead, Phi oscillates continuously.
+Within a single run, Phi excursions span from ~0.4 to ~0.95, with a temporal standard
+deviation of ~0.21 per seed. The seed-to-seed variation is only 0.061. The temporal
+fluctuations within each run dominate the between-seed variability, indicating that the
+dynamics are intrinsically intermittent rather than converging to a steady state. Cluster
+count and largest-cluster fraction oscillate in concert.
+
+The mechanism is a positive feedback cycle. When the flock briefly re-coalesces
+(Phi -> 0.9), all predators chase one CoM target offset by their respective angles —
+maximum multi-directional pressure — and the flock quickly fragments again. Once
+fragmented (Phi -> 0.5), the predators distribute among multiple sub-flocks rather than
+all pressuring one, reducing the effective attack. The dominant sub-flock can
+reassemble. The cycle repeats indefinitely; the long-time average Phi = 0.751 matches
+the short-time value of 0.72 from Section 4.6, but the short-time measurement was
+misleadingly quiet.
+
+To test whether leaving a gap in the encirclement creates an escape route, I ran a
+complementary experiment (encirclement_gap.py). Starting from a full 6-predator ring
+(60-degree spacing), I removed predators one at a time and measured the flock's Phi
+and whether its center-of-mass drift aligned with the gap direction. The result is
+non-monotone and the gap direction is irrelevant. Full encirclement (n_active=6) gives
+Phi = 0.918. Removing one predator to create a 120-degree gap drops Phi to 0.833 --
+WORSE than the full ring. Removing two or three predators raises Phi back to 0.91-0.96.
+The flock center-of-mass drift direction has no systematic alignment with the gap (mean
+angular difference 70-110 degrees from gap orientation), confirming that agents have no
+global awareness of where the ring is open.
+
+The non-monotone result arises because one-predator removal creates a persistent
+asymmetry: the five remaining predators keep re-encircling the shifted CoM, generating
+irregular multi-directional pressure that is more disruptive than balanced 6-fold
+pressure. Removing two or more predators reduces the angular complexity and lets the
+flock partially escape. Counterintuitively, a near-complete encirclement with a single
+gap is harder to escape than a full encirclement, and both are harder to escape than a
+3- or 4-predator arc.
+
+### 4.16 Outbreak Persistence After Predator Removal
+
+Section 4.7 showed that pure encirclement damage reverses within ~10 time units once
+predators are removed. Section 4.12 showed that supercritical SI contagion dominates
+and eliminates the encirclement effect entirely. A regime between these extremes exists:
+a contagion that is below the bare epidemic threshold (beta = 1.5, gamma = 2.0,
+beta/gamma = 0.75 < 1.93) but is pushed into a transient endemic state by the
+compression from encirclement. Does removing the predators allow both the kinematic
+damage AND the contagion to reverse, or does the contagion outlast the kinematic stressor?
+
+Running the three-phase protocol (outbreak_removal.py: warmup -> 4000 steps of
+encirclement + SIS -> 5000 steps of recovery) answers this directly. During the
+encirclement phase, local contact count rises by ~3x (Section 4.13) and the effective
+transmission exceeds the recovery rate, establishing an endemic panic fraction of
+f = 0.450 and suppressing Phi to 0.185. When predators are removed, kinematic recovery
+begins -- Phi rises to 0.266 within 50 time units -- but the contagion does not collapse.
+After 50 time units without predators, f = 0.413, barely changed from its peak. The
+timescales are starkly asymmetric: kinematic damage heals in ~10 time units (Section 4.7);
+contagion-driven damage persists for hundreds of time units as the system slowly evolves
+back toward the bare endemic state (~0.34 panic fraction at these parameters).
+
+The contrast illuminates the qualitative difference between the two damage types
+introduced in Section 4.10. Pure encirclement damage is kinematic: sub-flocks that were
+pushed apart simply re-merge on the periodic torus when the directional pressure
+disappears. SIS contagion damage is a population state: the distribution of panicked vs.
+calm agents evolves on epidemic timescales set by beta and gamma, not on kinematic
+timescales set by flock size and swimming speed. A predator group that seeds a panic
+cascade even transiently — even one that would not sustain itself in an unencircled flock
+— inflicts damage that outlasts the predation event itself by an order of magnitude.
+
 ---
 
 ## 5. Discussion
@@ -584,11 +662,38 @@ would require an intermediate compactness where a solid phase can form and coope
 rearrangements are possible. The model's smooth crossover may be a general feature of
 this force-based formulation rather than a regime-specific artifact.
 
+The long-time encirclement result is a caution against interpreting short-simulation
+steady states as equilibria. The 4000-step snapshots used in Sections 4.5-4.7 reported
+a "steady" disrupted flock at Phi ~ 0.72. The 30000-step runs in Section 4.15 reveal
+that this value is a time-average hiding large oscillations (temporal std = 0.21 per
+seed). The long-time attractor of the encircled flock is not a fixed fragmented state
+but a persistent merge/split cycle. This has methodological implications: order-parameter
+measurements from short runs near an encirclement configuration may give misleading
+precision.
+
+The encirclement gap experiment (Section 4.15) challenges intuitions about escape.
+Removing one predator from a symmetric ring is MORE damaging to flock coherence than
+the full ring, because the asymmetry creates a perpetually shifting CoM chase rather
+than a balanced stable pattern. This is counterintuitive from a naive perspective where
+gaps should always help. The result reflects a general feature of these agent models:
+agents have no global spatial awareness. They respond only to local forces, so a gap
+in the predator ring is invisible to agents far from the gap.
+
+The outbreak persistence result (Section 4.16) highlights an asymmetry in recovery
+timescales. Kinematic damage from encirclement reverses rapidly because it has no memory
+beyond the agents' current positions and velocities; once the force pattern changes, the
+trajectory changes. Epidemic damage has memory in the agent's internal state (panicked vs.
+calm) and reverses on epidemic timescales set by the ratio of infection and recovery rates,
+which are independent of kinematic parameters. This is a qualitative distinction with
+potential biological relevance: a predator event that coincides with a near-threshold
+social contagion (collective alarm behavior, epidemic disease) leaves a lasting mark on
+the collective that outlives the predation event itself.
+
 ---
 
 ## 6. Conclusions
 
-This study produced eight main results:
+This study produced eleven main results (selecting the most general across 34 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -624,26 +729,49 @@ This study produced eight main results:
    sub-flocks reunite within ~10 time units. The damage is purely kinematic and fully
    reversible.
 
-7. **Internal stressors require contagion to matter:** Statically labeled panicked
-   agents do not propagate disruption — the alignment force keeps calm neighbors
-   coherent even at 20% panic fraction. Once a contact-mediated contagion mechanism is
-   added, any non-zero contagion rate drives the population to total panic and the
-   flock collapses. Predation produces reversible damage; contagion produces absorbing
-   damage. The two stressor classes are qualitatively different.
+7. **Encirclement is size-invariant when scaled to flock geometry:** The encirclement
+   disruption floor depends on R_enc/Rg, not on absolute R_enc or absolute N. The
+   optimal disruption at R_enc/Rg ~ 0.5 is universal across tested flock sizes. The
+   apparent N-dependence reported in earlier experiments was an R_enc/Rg mismatch.
 
-8. **Minimum viable flock size:** Flock coherence requires N ~ 18-25 in a unit domain.
-   Below N ~ 12 the flock is unreliable even without a stressor; the dilution-based
-   "safety in numbers" hypothesis has a lower limit below which collective evasion
-   cannot work because the collective itself cannot form.
+8. **Long-time encirclement is intermittent:** Over 300 time units, the encircled flock
+   does not settle into a steady fragmented state. Phi oscillates between ~0.4 and ~0.95
+   as sub-flocks repeatedly merge and re-split, driven by a self-reinforcing cycle
+   between coherence and multi-directional predator pressure.
+
+9. **Internal stressors require contagion to matter:** Statically labeled panicked
+   agents do not propagate disruption — the alignment force keeps calm neighbors
+   coherent even at 20% panic fraction. Once a contact-mediated SIS contagion mechanism
+   is added, the epidemic threshold appears at beta/gamma ~ 1. Below threshold the flock
+   contains the outbreak; above it an endemic panicked state suppresses coherence
+   proportionally to beta/gamma. The flock is not a well-mixed population at the
+   contagion length scale: the spatial herd-immunity threshold (~0.46) is more than
+   twice the mean-field prediction (~0.20), driven by clustering of panicked sub-groups.
+
+10. **Encirclement shifts the epidemic threshold by ~4%:** Compressing the flock raises
+    local contact count ~3x and lowers the effective epidemic threshold from beta_c =
+    1.93 to 1.85. The shift is real but modest: compression creates redundant contacts
+    within already-panicked sub-clusters rather than fresh ones. Encirclement is a
+    near-critical amplifier, not a general one.
+
+11. **Epidemic damage outlasts kinematic damage by an order of magnitude:** When
+    encirclement drives a sub-threshold contagion into a transient endemic state, removing
+    the predators reverses the kinematic fragmentation (~10 time units, as in pure
+    encirclement) but leaves the SIS epidemic intact. After 50 time units without predators,
+    panic fraction remains at 0.41 (barely below the encirclement-elevated peak of 0.45)
+    and Phi is only 0.27. The residual epidemic suppresses alignment for hundreds of time
+    units. Kinematic damage is reversible; epidemic damage outlasts the event that caused it.
 
 Taken together, these results suggest that the primary function of the alignment force
 in this model — and possibly in biological flocking — is to maintain a single
 coordinated collective response to whatever stressor is encountered. Flock coherence is
-remarkably robust to most disruption modes (noise, aggressive predators, internal
-panic without contagion), and even when broken by encirclement it reconstitutes
-spontaneously. The two ways to truly damage the collective in this model are
-multi-angle predator pressure (transient) and contact-mediated panic contagion
-(absorbing).
+remarkably robust to most disruption modes (noise, aggressive predators, internal panic
+without contagion), and even when broken by encirclement it reconstitutes spontaneously.
+The two fundamental ways to damage the collective are multi-angle predator pressure
+(reversible on kinematic timescales, ~10 time units) and contact-mediated panic contagion
+(absorbing or slowly reversible on epidemic timescales, ~100+ time units). The combination
+of both stressors, even below each individual threshold, can produce damage that significantly
+outlasts the predation event itself.
 
 ---
 
@@ -683,5 +811,14 @@ All simulation code is available at https://github.com/ninjahawk/Summer_Research
 | panic_contagion.py | SI panic contagion (no recovery) |
 | contagion_sis.py | SIS panic contagion with recovery rate gamma |
 | hybrid_stressors.py | Combined predation + contagion |
+| hybrid_sis.py | Sub-threshold SIS + encirclement (compression-amplification) |
 | segregation.py | Active/passive segregation (mixed v0 populations) |
+| segregation_alpha.py | Alpha-contrast segregation + local-purity diagnostic |
+| large_N_encirclement.py | Encirclement at N=350, 700, 1000 |
+| critical_shift.py | Beta sweep with/without encirclement; threshold shift measurement |
+| herd_immunity.py | Immune sub-population sweep at supercritical SIS |
+| renc_scaling.py | R_enc sweep at N=350 and N=1000; collapse on R_enc/Rg |
+| long_encirclement.py | Long-time encirclement (30000 steps); merge/split dynamics |
+| encirclement_gap.py | Incomplete encirclement; gap detection test |
+| outbreak_removal.py | Encirclement+SIS then predator removal; epidemic persistence |
 | model.py | OOP foundation: Flock and Predator classes for new experiments |

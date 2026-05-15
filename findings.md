@@ -876,17 +876,59 @@ flock.
 
 ---
 
+## Finding 34: Encirclement-established contagion persists after predator removal -- damage irreversibility requires both stressors
+<img src="./figures/outbreak_removal_1.png" width="480"/>
+
+**What:** Running a three-phase protocol (warmup -> encirclement + SIS -> predators removed)
+with beta=1.5, gamma=2.0 (bare beta/gamma=0.75; bare endemic fraction ~0.34, below the
+f_ss=0.5 threshold) tests whether contagion established under compression collapses once the
+compressor is removed.  Result: it does NOT.  During encirclement, compression elevates local
+<k> (Finding 26) and drives f to 0.450 and Phi to 0.185.  After predator removal, Phi
+partially recovers (0.185 -> 0.266) consistent with sub-flock kinematic reunification, but
+f only slowly declines (0.450 -> 0.413 in 50 time units), remaining far above the bare
+endemic level.  The flock does not return to coherence.
+**Evidence:** outbreak_removal.py, 5 seeds, slow prey (v0=0.02), n_pred=6, R_enc=0.15.
+- During attack (last 5 tu, t=45-50):  f = 0.450 +/- 0.015   Phi = 0.185 +/- 0.055
+- Post-removal (last 10 tu, t=89-100): f = 0.413 +/- 0.039   Phi = 0.266 +/- 0.069
+**Mechanism:** When encirclement compresses the flock, local <k> triples (Finding 26,
+8.9 -> 30.2), driving effective beta*<k>/gamma well above 1 and establishing an endemic
+SIS state at f~0.45.  Removing the predators ends the kinematic compression -- sub-flocks
+can re-merge (Finding 22), which raises Phi from 0.185 to 0.266 in ~50 tu.  But the
+contagion was seeded into a large fraction of the population.  Post-removal, the bare
+dynamics (beta/gamma=0.75, below threshold) should eventually drive f -> 0, but the
+approach is slow: with f~0.41 and ~145 panicked agents still circulating among 350 total,
+the per-step recovery rate is much slower than the peak infection rate during compression.
+The system decays toward the bare endemic state (~0.34) on a timescale of hundreds of
+time units -- far longer than the kinematic recovery time of ~10 tu (Finding 22).
+**Contrast with Finding 22 (pure encirclement):** Without contagion, Phi recovers to
+0.95+ in ~10 time units after predator removal.  With contagion established, Phi is still
+only 0.266 after 50 time units.  The residual epidemic suppresses alignment even once the
+kinematic stressor is gone.  Encirclement alone is fully reversible; encirclement + SIS
+leaves a long-lived epidemiological scar.
+**Contrast with Finding 23 (simultaneous encirclement + supercritical SI):** In Finding 23,
+supercritical SI absorbed everything and predators were irrelevant.  Here, the contagion is
+sub-threshold but pushed above a transient supercritical regime only by compression.  The
+two stressors cooperate during the attack and then partially decouple on removal --
+kinematic damage reverses quickly, epidemiological damage slowly.
+**Implication:** From a biological standpoint: a predator group that triggers a panic
+cascade (even a sub-threshold one) while physically encircling the flock inflicts lasting
+damage that outlives the predation event itself.  The "reversibility" of predation
+(Finding 22) is conditional on no contagion being present.  A predator strategy that
+deliberately seeds panic first (or takes advantage of pre-existing near-critical social
+contagion) achieves disproportionate impact relative to the duration of the attack.
+This result connects kinematic and epidemiological timescales in a concrete prediction:
+kinematic recovery ~ O(10) time units; epidemiological residual ~ O(100+) time units.
+
+---
+
 ## Open Questions / Next Directions
-1. Sub-threshold (SIS) hybrid: with gamma chosen so contagion alone fizzles, can
-   encirclement push it back over the epidemic threshold?  (Spatial compression should
-   raise local <k>, effectively increasing beta.)
-2. Asymmetric alpha segregation: redo Finding 24 with different alpha values between
-   groups, not just v0 contrast, to test whether asymmetric alignment force is enough
-   to produce segregation.
-3. Long-time predator pressure: does fragmentation eventually re-merge while predators
-   are still active, or does the steady state stay divided?
-4. Larger systems (N=1000+): does the encirclement floor at Phi ~ 0.67 hold, or do
-   very large flocks behave differently?
-5. Literature comparison: novelty assessment of Findings 14 (encirclement), 16 (division
-   mechanism), 22 (reversibility), 23 (stressor non-composition), and 25 (SIS threshold
-   in a flock).
+1. Targeted vs random herd immunity: does vaccinating highest-degree agents first
+   require fewer immune individuals than random vaccination (F30 follow-up)?
+2. Adaptive predator strategies: predators that read Rg online and set R_enc = Rg/2
+   (the universal optimum from Finding 31); how does this compare to fixed R_enc?
+3. Literature comparison: novelty assessment of Findings 14 (encirclement), 16 (division
+   mechanism), 22+34 (reversibility vs irreversibility), 25 (SIS threshold in a flock),
+   30 (spatial herd immunity inflation).
+4. 3D extension or hard-core repulsion potentials (look for a true phase transition,
+   F17 follow-up with different microscopic physics).
+5. Report completion: add Sections 4.15 (F34) and finalize abstract/conclusion.
