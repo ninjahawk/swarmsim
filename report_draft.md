@@ -64,7 +64,7 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers sixteen investigations, producing thirty-four numbered findings.
+This report covers eighteen investigations, producing thirty-six numbered findings.
 The first four sections establish the baseline: implementation validation, parameter
 sweeps, finite-size scaling to test for a true phase transition, and flock geometry.
 Sections five through nine develop the predator-strategy hierarchy — from naive
@@ -75,10 +75,13 @@ minimum viable flock size, static and contagious panic, and segregation by agent
 heterogeneity. Sections thirteen through sixteen examine the coupling between predator
 and contagion stressors: hybrid-stressor interaction, epidemic-threshold shifts under
 compression, spatial-network herd immunity, and the long-time dynamics of encirclement
-including intermittent merge/split behavior and incomplete encirclement. The final
-section follows epidemic persistence after predator removal, revealing a two-timescale
+including intermittent merge/split behavior and incomplete encirclement. Section
+sixteen follows epidemic persistence after predator removal, revealing a two-timescale
 asymmetry between kinematic recovery (~10 time units) and epidemic decay (~100+ time
-units).
+units). Section seventeen validates the universal R_enc/Rg ~ 0.5 optimum through an
+adaptive encirclement strategy, and section eighteen tests whether immunizing the
+highest-degree agents can reduce the herd-immunity threshold, finding no advantage over
+random vaccination because the flock's contact network lacks hub structure.
 
 ---
 
@@ -1017,4 +1020,6 @@ All simulation code is available at https://github.com/ninjahawk/Summer_Research
 | outbreak_removal.py | Encirclement+SIS then predator removal; epidemic persistence |
 | adaptive_encirclement.py | Adaptive R_enc=0.5*live_Rg vs fixed R_enc; disruption comparison |
 | targeted_immunity.py | Targeted (high-degree first) vs random vaccination; herd-immunity efficiency |
+| spatial_vaccination.py | Spatial (farthest-point sampling) vs random vs degree-targeted vaccination |
+| hard_repulsion.py | Finite-size scaling with harder repulsion exponents n=1.5,3,6,12 |
 | model.py | OOP foundation: Flock and Predator classes for new experiments |
