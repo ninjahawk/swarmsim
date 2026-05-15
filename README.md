@@ -76,6 +76,9 @@ The experiments follow a logical arc, each motivated by the result before it:
 | **13. Herd immunity** | How many immune agents are needed to quench an outbreak? | `herd_immunity.py` → `targeted_immunity.py` |
 | **14. Segregation** | Does a mixed-speed population spatially separate? | `segregation.py` → `segregation_alpha.py` |
 | **15. Adaptive predators** | Do predators that track flock geometry outperform fixed strategy? | `adaptive_encirclement.py` |
+| **16. Vaccination strategies** | Can targeting high-degree or spatially-distributed agents reduce herd-immunity threshold? | `targeted_immunity.py` → `spatial_vaccination.py` |
+| **17. Phase transition mechanism** | Why does the model lack a true phase transition? Is it the soft repulsion, or something else? | `hard_repulsion.py` → `langevin_repulsion.py` → `langevin_hexatic.py` |
+| **18. 3D extension** | Does flocking and the v_eq result hold in three dimensions? | `flocking3d.py` |
 
 ---
 
@@ -129,7 +132,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-36 findings documented — full evidence and figures: [`findings.md`](findings.md)
+40 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
@@ -149,7 +152,11 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 | 33 | Incomplete encirclement (1 gap) is **more disruptive** than full ring; no global escape-route detection |
 | 34 | Predator removal after encirclement+SIS: kinematic damage reverses in ~10 tu, epidemic persists ~100+ tu |
 | 35 | **Adaptive R_enc = 0.5×Rg** outperforms fixed radius: Φ 0.778→0.713, high-coherence dwell time −34% |
-| 36 | **Targeted vaccination null result**: hub-targeting fails; flock contact network lacks fat-tailed degree distribution; kinematic reorganization restores hub positions |
+| 36 | **Targeted vaccination null**: hub-targeting fails; kinematic reorganization restores hub positions |
+| 37 | **Spatial vaccination null**: farthest-point spatial sampling fails; kinematic mixing scrambles positions |
+| 38 | **Repulsion exponent null**: sweeping n=1.5→12 gives identical crossover; non-equilibrium driving is cause |
+| 39 | **Langevin thermalizes correctly** (KE/N=kT to 1%), but chi_KE cannot detect KTHNY structural melting |
+| 40 | **Hexatic |ψ₆| confirms n=1.5 cannot crystallize**: flat at ~0.4 across all kT; soft repulsion prevents lattice formation |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
