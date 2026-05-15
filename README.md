@@ -66,8 +66,16 @@ The experiments follow a logical arc, each motivated by the result before it:
 | **3. Geometry** | What shape does the flock take? | `geometry.py` |
 | **4. Single predator** | Does flocking help prey survive? | `predator.py` |
 | **5. Predator strategy hierarchy** | How many and how coordinated do predators need to be to break the flock? | `multi_predator.py` → `evasion_analysis.py` → `coordinated_predators.py` → `encirclement.py` → `encirclement_scaling.py` → `fragmentation.py` |
-| **6. Internal disruption** | Does panic from within disrupt the flock more or less than a predator? | `panic.py` *(ready to run)* |
-| **7. Realistic predator** | What changes when the predator has limited sensing range? | `predator_sensing.py` *(ready to run)* |
+| **6. Encirclement limits** | Does the encirclement floor scale with N? Is it stable long-term? Does a gap help the flock? | `large_N_encirclement.py` → `renc_scaling.py` → `long_encirclement.py` → `encirclement_gap.py` |
+| **7. Minimum viable size** | Below what N does collective evasion fail? | `min_flock_size.py` |
+| **8. Reversibility** | Does encirclement damage reverse after predator removal? | `reunion.py` |
+| **9. Realistic predator** | What changes with limited sensing range? | `predator_sensing.py` |
+| **10. Internal panic** | Does panic from within disrupt the flock? | `panic.py` |
+| **11. Contagion** | What if panic spreads by contact? (SI and SIS models) | `panic_contagion.py` → `contagion_sis.py` |
+| **12. Hybrid stressors** | How do predation and contagion interact? | `hybrid_stressors.py` → `hybrid_sis.py` → `critical_shift.py` → `outbreak_removal.py` |
+| **13. Herd immunity** | How many immune agents are needed to quench an outbreak? | `herd_immunity.py` → `targeted_immunity.py` |
+| **14. Segregation** | Does a mixed-speed population spatially separate? | `segregation.py` → `segregation_alpha.py` |
+| **15. Adaptive predators** | Do predators that track flock geometry outperform fixed strategy? | `adaptive_encirclement.py` |
 
 ---
 
@@ -121,25 +129,27 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
+34 findings documented — full evidence and figures: [`findings.md`](findings.md)
+
+**Selected highlights:**
+
 | # | Finding |
 |---|---------|
-| 1 | Cruise speed is v_eq = v₀ + α/μ (exact analytical result) |
-| 2 | Repulsion-only solid-to-fluid transition appears continuous |
-| 3 | Flock forms at very low alignment amplitude (α ≈ 0.05–0.10) |
-| 4 | Full model robust to noise up to η ≈ 10; collapses near η ≈ 20 |
+| 1 | Cruise speed is **v_eq = v₀ + α/μ** (exact analytical result, not just v₀) |
+| 2 | Solid-to-fluid transition is a smooth crossover at all compactness values — no true phase transition |
 | 5 | Flocking prey maintain Φ ≈ 1.0 under predator pressure; non-flocking scatter to Φ ≈ 0.1 |
-| 6 | Evasion floor: minimum predator-prey distance saturates regardless of predator speed |
-| 7 | Dilution effect: larger flocks expose smaller fractions to predator threat |
-| 8 | Fixed-compactness finite-size scaling confirms crossover — not phase transition — at both C=0.78 and C=0.10 |
-| 9 | Flock elongates with stronger alignment force and under predator pressure |
-| 10 | Multiple naive predators maintain high flock coherence while increasing elongation |
-| 11 | Multiple predators co-localize at prey CoM — explains why evasion distance increases with more predators |
-| 12 | Fixed-compactness crossover is identical in dense and dilute regimes — not regime-specific |
-| 13 | Coordinated predators (with mutual repulsion) spread out spatially but still cannot break the flock (Φ > 0.92) |
-| 14 | Encirclement — predators from equally spaced angles — achieves Φ = 0.77 at n=6, the first substantial disruption |
-| 15 | Encirclement threshold does not scale simply with N; both N=100 and N=350 converge to Φ ≈ 0.67 at n_pred=10 |
-| 16 | Φ = 0.77 reflects flock **division**, not dissolution — encirclement compresses agents into coherent sub-flocks escaping in different directions |
-| 17 | No phase transition at any intermediate compactness (C = 0.15–0.60); crossover is universal in this model due to soft repulsion potential |
+| 11 | Multiple naive predators co-localize at CoM, self-undermining — paradoxically helps flock |
+| 14 | Encirclement (fixed-angle targets) is the **only strategy** to substantially disrupt the flock: Φ = 0.77 at n=6 |
+| 16 | Encirclement causes flock **DIVISION** (coherent sub-flocks heading in different directions), not dissolution |
+| 22 | Encirclement damage is **fully reversible**: sub-flocks reunite within ~10 time units of predator removal |
+| 23 | Encirclement + supercritical contagion: contagion dominates; stressors don't compose |
+| 25 | SIS contagion has a clean epidemic threshold at β/γ ≈ 1; flock coherence tracks it |
+| 29 | Encirclement shifts the SIS threshold by **~4%** (β_c 1.93 → 1.85) via compression |
+| 30 | Herd-immunity threshold in the flock is **~2× mean-field** prediction due to spatial clustering |
+| 31 | Encirclement scaling collapses on R_enc/Rg; optimal at R_enc/Rg ≈ 0.5 — strategy is **size-invariant** |
+| 32 | Long-time encirclement is **intermittent**: Φ oscillates 0.4–0.95 in a sustained merge/split cycle |
+| 33 | Incomplete encirclement (1 gap) is **more disruptive** than full ring; no global escape-route detection |
+| 34 | Predator removal after encirclement+SIS: kinematic damage reverses in ~10 tu, epidemic persists ~100+ tu |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
@@ -159,24 +169,41 @@ Full documentation, evidence, and figures for each finding: [`findings.md`](find
 | File | Investigation |
 |------|--------------|
 | `analysis.py` | Validation limiting cases and parameter sweeps (Findings 1–4) |
-| `phase_transition.py` | Finite-size scaling of repulsion-only transition (Finding 8) |
-| `compactness_phase.py` | Fixed-compactness finite-size scaling at C=0.10 and C=0.78 (Finding 12) |
-| `compactness_search.py` | Phase transition search across C = 0.15–0.60 (Finding 17) |
-| `geometry.py` | Radius of gyration and aspect ratio analysis (Finding 9) |
-| `predator.py` | Single-predator extension — 4 experiments (Findings 5–7) |
-| `multi_predator.py` | Multiple naive predators (Finding 10) |
-| `evasion_analysis.py` | Predator co-localization diagnostic (Finding 11) |
-| `coordinated_predators.py` | Predator-predator repulsion — coordination strength sweep and flock-breaking threshold (Finding 13) |
-| `encirclement.py` | Encirclement strategy — radius sweep and flock-breaking threshold (Finding 14) |
-| `encirclement_scaling.py` | Encirclement threshold vs flock size N (Finding 15) |
-| `fragmentation.py` | Flock fragmentation analysis — cluster detection, sub-flock coherence (Finding 16) |
+| `phase_transition.py` | Finite-size scaling of repulsion-only transition |
+| `compactness_phase.py` | Fixed-compactness finite-size scaling at C=0.10 and C=0.78 |
+| `compactness_search.py` | Phase transition search across C = 0.15–0.60 |
+| `geometry.py` | Radius of gyration and aspect ratio analysis |
+| `predator.py` | Single-predator extension — 4 experiments |
+| `multi_predator.py` | Multiple naive predators |
+| `evasion_analysis.py` | Predator co-localization diagnostic |
+| `coordinated_predators.py` | Predator-predator repulsion experiments |
+| `encirclement.py` | Encirclement strategy — radius sweep and flock-breaking threshold |
+| `encirclement_scaling.py` | Encirclement threshold vs flock size N |
+| `fragmentation.py` | Flock fragmentation analysis — cluster detection, sub-flock coherence |
 
 ### Experiments (new — import from `model.py`)
 
 | File | Investigation |
 |------|--------------|
-| `panic.py` | Panic dynamics — fraction of erratic agents disrupting a calm flock *(written, not yet run)* |
-| `predator_sensing.py` | Limited predator sensing range — search/attack phases, hunting cycles *(written, not yet run)* |
+| `panic.py` | Panic dynamics — fraction of erratic agents (Finding 18) |
+| `predator_sensing.py` | Limited predator sensing range (Finding 19) |
+| `panic_contagion.py` | SI panic contagion — no recovery (Finding 20) |
+| `contagion_sis.py` | SIS contagion with recovery rate γ; epidemic threshold sweep (Finding 25) |
+| `reunion.py` | Sub-flock reunion after predator removal (Finding 22) |
+| `min_flock_size.py` | Minimum N for collective coherence and evasion (Finding 21) |
+| `hybrid_stressors.py` | Combined predation + SI contagion (Finding 23) |
+| `hybrid_sis.py` | Sub-threshold SIS + encirclement; compression amplification (Finding 26) |
+| `segregation.py` | Active/passive v0 contrast — null segregation result (Finding 24) |
+| `segregation_alpha.py` | Alpha-contrast segregation with local-purity diagnostic (Finding 27) |
+| `large_N_encirclement.py` | Encirclement at N=350, 700, 1000 (Finding 28) |
+| `critical_shift.py` | Beta sweep with/without encirclement; threshold shift (Finding 29) |
+| `herd_immunity.py` | Immune sub-population sweep at supercritical SIS (Finding 30) |
+| `renc_scaling.py` | R_enc sweep at N=350 and N=1000; collapse on R_enc/Rg (Finding 31) |
+| `long_encirclement.py` | 30000-step encirclement; merge/split dynamics (Finding 32) |
+| `encirclement_gap.py` | Incomplete encirclement and gap detection (Finding 33) |
+| `outbreak_removal.py` | Encirclement+SIS then predator removal; epidemic persistence (Finding 34) |
+| `targeted_immunity.py` | Targeted vs random vaccination at supercritical SIS |
+| `adaptive_encirclement.py` | Adaptive R_enc = 0.5×Rg vs fixed R_enc |
 
 ### Supporting files
 
@@ -186,7 +213,7 @@ Full documentation, evidence, and figures for each finding: [`findings.md`](find
 | `build_report.py` | Generates `report_draft.pdf` from `report_draft.md` using reportlab |
 | `sim_demo.html` | Interactive browser simulation (open locally or via htmlpreview link above) |
 | `logs.html` | Time log and research log — open in browser |
-| `findings.md` | Running notes on all 17 findings with figures |
+| `findings.md` | Running notes on all 34 findings with figures |
 | `report_draft.md` | Full research report in Markdown |
 
 ---
@@ -202,10 +229,7 @@ python phase_transition.py
 python compactness_phase.py
 python compactness_search.py
 
-# Geometry
-python geometry.py
-
-# Predator strategy hierarchy (run in order)
+# Predator strategy hierarchy
 python predator.py
 python multi_predator.py
 python evasion_analysis.py
@@ -214,9 +238,27 @@ python encirclement.py
 python encirclement_scaling.py
 python fragmentation.py
 
-# Upcoming experiments
+# Panic and contagion
 python panic.py
-python predator_sensing.py
+python panic_contagion.py
+python contagion_sis.py
+
+# Hybrid stressors
+python hybrid_stressors.py
+python hybrid_sis.py
+python outbreak_removal.py
+
+# Scaling and herd immunity
+python large_N_encirclement.py
+python renc_scaling.py
+python critical_shift.py
+python herd_immunity.py
+python targeted_immunity.py
+
+# Long-time and adaptive dynamics
+python long_encirclement.py
+python encirclement_gap.py
+python adaptive_encirclement.py
 ```
 
 Open `sim_demo.html` in a browser for a real-time interactive simulation with adjustable parameters.
