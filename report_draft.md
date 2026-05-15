@@ -43,7 +43,12 @@ of the R_enc/Rg ~ 0.5 optimum across dynamical fluctuations. Finally, targeted
 vaccination (immunizing highest-degree agents first) provides no advantage over random
 vaccination: both strategies require p_immune ~ 0.46, because the flock contact network
 has bounded, not fat-tailed, degree heterogeneity, and kinematic reorganization restores
-hub positions after they are immunized.
+hub positions after they are immunized. Finally, sweeping the repulsion exponent from
+n = 1.5 (soft) to n = 12 (near hard-core) produces identical finite-size scaling
+at all exponents — chi_peak at the top of the noise sweep for all N. The smooth crossover
+is not caused by potential softness; it is a consequence of the model's non-equilibrium
+driving (uniform random kicks without viscous dissipation), which prevents Boltzmann
+equilibration and the cooperative melting required for a true phase transition.
 
 ---
 
