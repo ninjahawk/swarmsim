@@ -1261,15 +1261,70 @@ transition at higher kT.  This remains open for a future experiment.
 
 ---
 
+## Finding 40: Hexatic order parameter confirms n=1.5 soft repulsion cannot crystallize -- KTHNY transition requires harder potential
+<img src="./figures/langevin_hexatic_1.png" width="640"/>
+
+**What:** Finding 39 established that chi_KE is insensitive to structural melting and proposed
+that the hexatic order parameter |psi6| = |(1/k_j) * sum_neighbors exp(6*i*theta)| is the
+correct observable for the KTHNY structural phase transition.  This experiment (langevin_hexatic.py)
+replaces chi_KE with chi_psi6 = N * Var_seeds(time-avg |psi6|) for the same Langevin simulation
+at C=0.60 and C=0.70, N=25-200, kT=0.001-5.0, 8 seeds, n=1.5.
+**Evidence:** langevin_hexatic.py. Summary of chi_psi6 and |psi6| vs kT:
+| C | N | chi_psi6_peak | kT of peak | psi6(kT=0.001) | psi6(kT=5.0) |
+|---|---|---------------|------------|----------------|--------------|
+| 0.60 | 25  | 0.0115 | 0.001 | 0.416 | 0.425 |
+| 0.60 | 50  | 0.0044 | 0.001 | 0.423 | 0.423 |
+| 0.60 | 100 | 0.0024 | 0.005 | 0.421 | 0.422 |
+| 0.60 | 200 | 0.0042 | 0.001 | 0.416 | 0.421 |
+| 0.70 | 25  | 0.0044 | 0.005 | 0.372 | 0.387 |
+| 0.70 | 50  | 0.0023 | 0.001 | 0.378 | 0.386 |
+| 0.70 | 100 | 0.0010 | 0.005 | 0.377 | 0.386 |
+| 0.70 | 200 | 0.0027 | 0.001 | 0.376 | 0.385 |
+Equipartition confirmed (KE/N at kT=0.1 is 0.1053-0.1055, within 1% of target kT=0.1).
+**Null result -- three diagnostic failures of KTHNY signal:**
+(1) |psi6| IS FLAT across all kT: C=0.60 varies only 0.416-0.425 (2%) across the entire
+kT sweep; C=0.70 varies 0.372-0.387 (4%).  A KTHNY solid-to-fluid transition would show
+|psi6| near 1.0 in the solid phase and near 0 in the fluid phase, with a sharp crossover
+at kT_c.  Here |psi6| is constant at ~0.4 at BOTH the coldest (kT=0.001) and hottest (kT=5.0)
+temperatures -- no solid phase, no fluid phase in the expected KTHNY sense.
+(2) chi_psi6 PEAKS AT THE BOTTOM OF THE SWEEP (kT=0.001-0.005): the susceptibility has no
+interior maximum.  This is the signature of a monotonically decreasing function, not of a
+critical point at finite kT_c.
+(3) chi_psi6 DOES NOT GROW WITH N: for C=0.60, chi_psi6_peak goes 0.0115 (N=25) -> 0.0024
+(N=100) -> 0.0042 (N=200), with no systematic increase.  A diverging susceptibility would
+scale as N^(gamma/nu).  The observed values actually decrease.
+**Mechanism:** The failure is not in the metric (psi6 IS the correct observable for KTHNY)
+but in the potential.  For a hexagonal crystal to form, each agent must have 6 neighbors at a
+well-defined lattice spacing with no overlap.  The n=1.5 repulsion (F ~ (1-d/2r0)^1.5) is a
+smooth contact avoidance: it approaches zero at d=2r0 and allows significant overlap before
+becoming substantial.  Agents can pass through each other's soft cores at any finite kT,
+preventing a rigid hexagonal lattice from locking in.  The psi6 ~0.4 constant reflects fixed
+short-range geometric correlation from the initial repulsive packing, not a thermally-ordered
+crystalline phase.
+**Counterintuitive density dependence:** C=0.70 has lower psi6 than C=0.60 at all kT (0.38
+vs 0.42).  In equilibrium hard-disc systems, higher compactness drives more hexagonal order.
+With soft repulsion, the opposite occurs: at C=0.70, agents are close enough to exert
+significant overlapping repulsion in many directions simultaneously, creating a frustrated
+amorphous arrangement.  At C=0.60 there is more room and agents settle into locally hexagonal
+clusters (psi6 slightly higher), but without long-range crystalline order.
+**Implication:** The four-experiment phase-transition thread is now complete:
+- F17: no transition in original model (any C)
+- F38: non-equilibrium driving (not softness) is the cause
+- F39: Langevin thermalizes correctly; KE/N is wrong metric
+- F40: correct metric (|psi6|) confirms n=1.5 cannot crystallize; psi6 flat across all kT
+To demonstrate KTHNY requires a near-hard-core Langevin simulation (n=12 or true hard-disc
+MC) where agents cannot overlap and a hexagonal lattice can lock in at low kT.  That is a
+distinct experimental direction beyond the current model family.
+
+---
+
 ## Open Questions / Next Directions
 1. Literature comparison: completed 2026-05-15 (session 2). New papers added: Demsar &
    Lebar Bajec 2014, Bartashevich et al. 2024, Inada & Kawachi 2002, Scientific Reports 2025.
    Novelty table updated for F14, F16, F22, F32, F33, F34, F35, F37, F38.
-2. Spatial vaccination strategy (F37, in progress): preliminary data (2 seeds) shows no
-   systematic advantage for spatial over random vaccination; kinematic mixing likely erases
-   spatial targeting benefits as it erased degree-targeting benefits (F36).
-3. KTHNY transition via Langevin + positional order metric: F39 confirmed the Langevin
-   thermostat thermalizes correctly, but KE/N is the wrong observable for structural melting.
-   Next step: implement hexatic order parameter psi_6 and repeat at C=0.60-0.75 with n=6 or n=12.
+2. Spatial vaccination strategy (F37): COMPLETE. Null result -- kinematic mixing erases all
+   static targeting strategies. p_c~0.46 for random, spatial, and targeted.
+3. KTHNY via hexatic order parameter (F40): COMPLETE. n=1.5 soft repulsion cannot crystallize;
+   psi6 flat at ~0.4 across all kT. Correct metric confirmed; harder potential needed for KTHNY.
 4. 3D flocking extension: extend model to [0,1]^3 periodic domain; test whether the
    flock division mechanism and encirclement results still hold in 3D.

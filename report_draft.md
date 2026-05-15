@@ -49,8 +49,12 @@ potential softness; it is a consequence of non-equilibrium driving (uniform rand
 without viscous dissipation). A follow-up Langevin simulation confirms that proper thermal
 equilibration (FDT satisfied; KE/N = kT at equilibrium) is achievable within this model
 family, but the kinetic energy susceptibility chi = N*Var(KE/N) is not sensitive to the
-structural hard-disc melting transition; a positional order metric such as the hexatic
-order parameter would be needed to detect it.
+structural hard-disc melting transition. A final experiment measuring the hexatic order
+parameter |psi_6| directly reveals that the n = 1.5 soft repulsion cannot crystallize at
+any accessible temperature: |psi_6| ≈ 0.4 across the entire kT range from 0.001 to 5.0
+with no N-dependent susceptibility peak. The KTHNY transition is absent because the soft
+potential allows agents to pass through each other's cores at any finite kT, preventing
+hexagonal lattice formation.
 
 ---
 
@@ -71,7 +75,7 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers twenty-one investigations, producing thirty-nine numbered findings.
+This report covers twenty-two investigations, producing forty numbered findings.
 The first four sections establish the baseline: implementation validation, parameter
 sweeps, finite-size scaling to test for a true phase transition, and flock geometry.
 Sections five through nine develop the predator-strategy hierarchy — from naive
@@ -89,8 +93,11 @@ units). Section seventeen validates the universal R_enc/Rg ~ 0.5 optimum through
 adaptive encirclement strategy, sections eighteen and twenty test whether degree-targeted
 and spatially-targeted vaccination reduce the herd-immunity threshold (both null results),
 section nineteen tests whether harder repulsion can produce a true phase transition (null),
-and section twenty-one tests whether Langevin dynamics recover the hard-disc structural
-melting transition (thermal equilibration achieved; structural metric needed to detect it).
+section twenty-one tests whether Langevin dynamics recover the hard-disc structural
+melting transition (thermal equilibration achieved; structural metric needed to detect it),
+and section twenty-two measures the hexatic order parameter directly (confirming it is the
+correct diagnostic, but finding that n = 1.5 soft repulsion cannot crystallize at any
+accessible temperature).
 
 ---
 
@@ -940,6 +947,80 @@ equilibration is practical within the simulation timescale.
 
 ---
 
+## 4.22 Hexatic Order Parameter Detects No Crystallization: Soft Repulsion Cannot Produce KTHNY Melting (Finding 40)
+
+Section 4.21 identified that chi = N * Var(KE/N) cannot detect the KTHNY structural melting
+transition, and proposed the hexatic order parameter as the correct diagnostic. This section
+tests that proposal directly with the same Langevin simulation (langevin_hexatic.py), replacing
+KE/N measurements with a bond-angle analysis. At each measurement step, the bond angle
+theta_{jk} is computed for every pair of neighbors within distance 3*r0, and
+
+|psi_6,j| = |(1/k_j) * sum_{k: r_jk <= 3*r0} exp(6*i*theta_{jk})|
+
+is averaged over all agents. The susceptibility is chi_psi6 = N * Var_seeds(time-avg |psi_6|).
+For a KTHNY transition, chi_psi6 should peak at a finite kT_c that shifts with N, and the peak
+magnitude should grow with N. Parameters: C = 0.60 and C = 0.70; N = 25, 50, 100, 200; kT =
+0.001 to 5.0; 8 seeds.
+
+| C | N | chi_psi6 peak | kT at peak | psi6(kT=0.001) | psi6(kT=5.0) |
+|---|---|---------------|------------|----------------|--------------|
+| 0.60 | 25  | 0.0115 | 0.001 | 0.416 | 0.425 |
+| 0.60 | 50  | 0.0044 | 0.001 | 0.423 | 0.423 |
+| 0.60 | 100 | 0.0024 | 0.005 | 0.421 | 0.422 |
+| 0.60 | 200 | 0.0042 | 0.001 | 0.416 | 0.421 |
+| 0.70 | 25  | 0.0044 | 0.005 | 0.372 | 0.387 |
+| 0.70 | 50  | 0.0023 | 0.001 | 0.378 | 0.386 |
+| 0.70 | 100 | 0.0010 | 0.005 | 0.377 | 0.386 |
+| 0.70 | 200 | 0.0027 | 0.001 | 0.376 | 0.385 |
+
+This is a null result with three diagnostic signatures:
+
+**(1) |psi_6| is flat across all temperatures.** For C = 0.60, |psi_6| ranges from 0.416 to
+0.425 across the entire kT sweep — a 2% variation with no systematic trend. For C = 0.70 the
+range is 0.372–0.387 (4%). A KTHNY transition would show |psi_6| near 1.0 in the solid phase
+and collapsing toward 0 in the fluid phase, with a sharp crossover at kT_c. Here |psi_6| is
+constant at ~0.4 at both the coldest (kT = 0.001) and hottest (kT = 5.0) tested temperatures.
+No solid phase exists at low kT; no fluid phase exists at high kT in the KTHNY sense.
+
+**(2) chi_psi6 peaks at the bottom of the sweep.** All chi_psi6 peaks occur at kT = 0.001 or
+kT = 0.005 — the lowest tested temperatures. The susceptibility is a monotonically decreasing
+function of kT with no interior maximum. There is no temperature at which the system is near
+a structural phase boundary.
+
+**(3) chi_psi6 does not grow with N.** For C = 0.60, chi_psi6_peak falls from 0.0115 at
+N = 25 to 0.0024 at N = 100 and 0.0042 at N = 200 — no systematic increase. A diverging
+susceptibility would scale as N^(gamma/nu) in finite-size scaling theory. The observed trend
+is the opposite.
+
+The failure lies not in the metric but in the potential. For a hexagonal crystal to form,
+agents need six well-defined nearest neighbors at a fixed lattice spacing with no overlap.
+The n = 1.5 repulsion force F ~ (1 - r/2r0)^{1.5} is a smooth contact-avoidance: it
+approaches zero at d = 2r0 and allows agents to overlap substantially before exerting
+significant force. At any finite kT, agents can pass through each other's soft cores, so
+no rigid hexagonal lattice can lock in. The flat |psi_6| ≈ 0.4 at all temperatures reflects
+fixed short-range geometric correlation from the initial repulsive packing — not a
+thermally-ordered crystalline phase.
+
+A notable secondary result is that C = 0.70 produces lower |psi_6| than C = 0.60 at every
+temperature (0.38 vs. 0.42). In equilibrium hard-disc systems, higher compactness drives more
+hexagonal ordering until the KTHNY melting point. With soft repulsion, the opposite occurs:
+at C = 0.70, agents are closely packed enough to exert overlapping repulsive forces in many
+simultaneous directions, creating a frustrated amorphous arrangement that is less hexagonally
+ordered than C = 0.60. The soft potential frustrates crystallization precisely where hard
+discs would crystallize most strongly.
+
+This finding completes the four-step phase-transition thread. Finding 17 showed no
+susceptibility peak at any compactness in the original model. Finding 38 ruled out soft
+repulsion as the cause, identifying non-equilibrium driving as the culprit. Finding 39
+confirmed that Langevin dynamics thermalize correctly but that KE/N is the wrong
+observable. The present finding shows that even with the correct observable (|psi_6|),
+the n = 1.5 soft repulsion cannot produce a hexagonal solid at any accessible temperature.
+The correct metric has been identified; the missing ingredient is a harder repulsion
+potential (n ≥ 12 in a Langevin framework, or a true hard-disc Monte Carlo simulation)
+that would prevent agent overlap and enable genuine crystallization.
+
+---
+
 ## 5. Discussion
 
 The most striking result of the predator simulations is that flocking is not primarily
@@ -1065,7 +1146,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 6. Conclusions
 
-This study produced fifteen main results (selecting the most general across 39 findings):
+This study produced sixteen main results (selecting the most general across 40 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -1143,19 +1224,6 @@ This study produced fifteen main results (selecting the most general across 39 f
     strategy eliminates the off-optimum excursions that arise from flock geometry
     fluctuations during intermittent dynamics.
 
-Taken together, these results suggest that the primary function of the alignment force
-in this model — and possibly in biological flocking — is to maintain a single
-coordinated collective response to whatever stressor is encountered. Flock coherence is
-remarkably robust to most disruption modes (noise, aggressive predators, internal panic
-without contagion), and even when broken by encirclement it reconstitutes spontaneously.
-The two fundamental ways to damage the collective are multi-angle predator pressure
-(reversible on kinematic timescales, ~10 time units) and contact-mediated panic contagion
-(absorbing or slowly reversible on epidemic timescales, ~100+ time units). The combination
-of both stressors, even below each individual threshold, can produce damage that significantly
-outlasts the predation event itself. And a predator group that can track flock geometry
-in real time gains consistent advantage without requiring a fundamentally different
-strategy — geometry-awareness is a refinement, not a revolution.
-
 13. **All vaccination targeting strategies fail in a kinematic flock:** Neither
     degree-targeted vaccination (immunizing highest-contact-degree agents first, Finding
     36) nor spatially-targeted vaccination (farthest-point maxmin sampling to maximize
@@ -1184,8 +1252,18 @@ strategy — geometry-awareness is a refinement, not a revolution.
     non-equilibrium diagnosis of Finding 38. However, the susceptibility chi = N*Var(KE/N)
     still peaks at the top of the kT sweep and shows no N-dependent shift, because KTHNY
     melting is a positional-order transition invisible to kinetic energy fluctuations.
-    Observing it directly would require the hexatic order parameter |psi_6| and likely a
-    harder repulsion potential to push the critical kT into an accessible range.
+
+16. **Hexatic order parameter confirms soft repulsion cannot crystallize:**
+    Measuring the hexatic order parameter |psi_6| directly (the correct diagnostic for KTHNY
+    melting) reveals that n = 1.5 soft repulsion is incapable of forming a hexagonal solid at
+    any accessible temperature. |psi_6| ≈ 0.4 across the entire kT range (0.001 to 5.0) for
+    both compactness values (C = 0.60 and C = 0.70), with no solid-phase value near 1.0 and no
+    fluid-phase collapse to 0. chi_psi6 peaks at the bottom of the kT sweep with no N-dependent
+    growth. The mechanism is that the smooth n = 1.5 contact-avoidance potential allows agents to
+    overlap at any finite kT, preventing the rigid hexagonal lattice required for KTHNY melting.
+    Demonstrating the KTHNY transition in this model family requires a near-hard-core Langevin
+    simulation (n ≥ 12) or a true hard-disc Monte Carlo framework. This closes the phase-
+    transition thread: the correct observable has been identified; a harder potential is needed.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
@@ -1267,4 +1345,5 @@ All simulation code is available at https://github.com/ninjahawk/Summer_Research
 | spatial_vaccination.py | Spatial (farthest-point sampling) vs random vs degree-targeted vaccination |
 | hard_repulsion.py | Finite-size scaling with harder repulsion exponents n=1.5,3,6,12 |
 | langevin_repulsion.py | Langevin thermostat finite-size scaling; FDT diagnosis of crossover |
+| langevin_hexatic.py | Langevin dynamics with hexatic order parameter; KTHNY structural melting test |
 | model.py | OOP foundation: Flock and Predator classes for new experiments |
