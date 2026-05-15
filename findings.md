@@ -4,7 +4,7 @@ Started 2026-05-08
 ---
 
 ## Literature Context and Novelty Assessment
-*Added 2026-05-15 based on literature search.*
+*Added 2026-05-15 based on literature search. Updated 2026-05-15 (session 2) with additional papers.*
 
 ### Background papers
 
@@ -35,33 +35,82 @@ but our mechanism is fundamentally different: we are interested in HOW MANY ANGL
 overcome collective evasion, and the scaling relationship R_enc/Rg ~ 0.5 (Findings 14, 31) appears
 not to be addressed in empirical predator-strategy literature.
 
+**Demsar & Lebar Bajec (2014). "Simulated Predator Attacks on Flocks: A Comparison of Tactics."
+Artificial Life 20(3): 343-359.**
+Compared three attack tactics (attack center, attack nearest, attack isolated) against social vs.
+individualistic prey using a fuzzy individual-based model.  Found social flocking is the optimal
+anti-predatory response to predators targeting isolated individuals.  Relevant to F14: Demsar &
+Bajec do NOT test a coordinated multi-angle encirclement strategy; our encirclement (equal-angle
+compass assignment from CoM) is not among their tactics.  Supports novelty of F14's angular-coverage
+threshold result.
+
+**Bartashevich, Romanczuk et al. (2024). "Collective anti-predator escape manoeuvres through optimal
+attack and avoidance strategies." Communications Biology 7, 1548.**
+Uses agent-based modeling + empirical sardine-vs-marlin observations to study how the "fountain
+effect" arises when prey optimize escape angles to maximize distance from predator.  The fountain
+effect is a cohesive split-and-rejoin pattern in response to a SINGLE predator's attack direction.
+Our encirclement result (F16) is the multi-predator analog: angular COMPRESSION from multiple
+directions produces a more violent flock DIVISION into directionally separated sub-flocks rather
+than a single fountain.  The single-predator fountain timescale is not measured in their paper;
+our quantification of reunion time (~10 tu, F22) appears novel.
+
+**[2025 paper] "Behavioural response of prey to repeated attacks by non-coordinating predators."
+Scientific Reports, 2025.**
+Uses an underdamped Langevin model (physically similar to our Langevin follow-up, F39) to study
+REPEATED attacks by naive (non-coordinating) predators.  Key mechanism: when opposing predation
+pressures stretch the group transversely, narrowing leads to splitting.  This is the non-coordinated
+analog of our coordinated encirclement (F14-F16).  Our contribution beyond this paper: (a) we study
+COORDINATED strategies (compass-angle assignment, not random repeated attacks), (b) we measure
+the angular-coverage threshold and R_enc/Rg scaling, and (c) we study the reunion timescale after
+predator REMOVAL (not repeated attacks).
+
+**Inada & Kawachi (2002/2005). "Dynamics of prey-flock escaping behavior in response to predator's
+attack." J. Theor. Biol., doi: 10.1016/j.jtbi.2005.01.009.**
+Two-dimensional molecular-dynamics simulation identifying four collective escape patterns:
+Split and Reunion, Split and Separate into Two Groups, Scattered, and Maintain Formation and
+Distance.  Our F16 demonstrates the "Split and Reunion" pattern (flock division into coherent
+sub-flocks that reconsolidate after predator removal), F22 quantifies the reunion timescale
+(~10 time units).  Our contributions beyond Inada & Kawachi: (a) the CAUSE is explicit
+encirclement (multi-angle pressure) rather than single-predator attack angle, (b) we characterize
+the transition between division patterns as a function of predator count, and (c) we identify
+the asymmetry between kinematic recovery (F22, F7) and epidemic recovery (F34).
+
 **Collective evasion timescales / recovery:**
-No paper found specifically studying the timescale asymmetry between kinematic flock recovery after
-predator removal and epidemic state recovery.  Finding 22 (kinematic reversibility, ~10 tu) and
-Finding 34 (epidemic persistence, ~100+ tu) together appear to be a novel contribution.
+Literature (Inada & Kawachi, Bartashevich et al.) identifies the "split and reunion" pattern and
+the fountain effect, but does not quantify reunion timescales or compare kinematic vs. epidemic
+recovery after stressor removal.  Finding 22 (kinematic reversibility, ~10 tu), Finding 7
+(same, earlier measurement), and Finding 34 (epidemic persistence, ~100+ tu) together provide
+the first explicit timescale comparison in a hybrid kinematic-contagion system.  This asymmetry
+appears to be a novel contribution.
 
 **Spatial herd immunity inflation:**
 Herd immunity inflation above mean-field is a known effect in spatial SIR/SIS models (Diekmann
 et al.; Keeling & Rohani) and empirically confirmed during COVID-19 (Britton et al. 2020, Science).
-Our Finding 30 (2x inflation in a flock context, p_c ~ 0.46 vs 0.20) is a demonstration that a
-kinematic flock system quantitatively matches the spatial-epidemic prediction.  The SPECIFIC context
-(flocking agents, spatial clustering from alignment force) appears not to have been studied before.
+Spatial vaccination strategies for geographic populations have been studied (Bhatt et al. 2022,
+PLoS Comput. Biol.; Zhou et al. 2021, GeoHealth), but these use fixed geographic regions, not
+kinematic agents that constantly mix spatially.  Our Finding 30 (2x inflation in a flock context,
+p_c ~ 0.46 vs 0.20) is a demonstration that a kinematic flock system quantitatively matches the
+spatial-epidemic prediction.  Finding 37 (spatial vaccination, in progress) tests whether
+spatially-distributed immunity can exploit this; preliminary results suggest kinematic mixing
+defeats spatial targeting as effectively as it defeats degree-targeting (F36).
 
 ### Novelty summary
 
 | Finding | Status | Notes |
 |---------|--------|-------|
-| F14 Encirclement disruption | Likely novel | Specific to force-based ABM; angular threshold not studied in literature |
-| F16 Flock division (not dissolution) | Likely novel | Division mechanism in simulation; related to biological wolf-pack herding |
-| F22 Kinematic reversibility | Likely novel | No literature found on post-predator sub-flock reunion timescale |
+| F14 Encirclement disruption | Likely novel | Demsar&Bajec 2014 does not test multi-angle compass assignment; angular threshold not in literature |
+| F16 Flock division (not dissolution) | Related + novel | Inada&Kawachi 2002 identifies "Split and Reunion" pattern; our contribution is mechanism (encirclement) + predator-count transition |
+| F22 Kinematic reversibility (~10 tu) | Novel | Inada&Kawachi identifies pattern but does not quantify reunion timescale; explicit ~10 tu measurement is new |
 | F29 Threshold shift ~4% from compression | Related | Similar to Levis 2020 (endogenous) but external-predator mechanism is different |
-| F30 Herd immunity 2x mean-field | Known effect | Consistent with spatial SIS literature; novel in flock context |
+| F30 Herd immunity 2x mean-field | Known effect | Consistent with spatial SIS literature; novel in kinematic-flock context |
 | F31 R_enc/Rg scaling universal | Likely novel | No literature found on size-invariant encirclement calibration |
-| F32 Long-time intermittent dynamics | Possibly novel | Related to sustained-attack papers (bioRxiv 2023) but not identical |
+| F32 Long-time intermittent dynamics | Possibly novel | Related to repeated-attack papers (Scientific Reports 2025) but not identical mechanism |
 | F33 Incomplete encirclement non-monotone | Likely novel | No literature found; counterintuitive 5-predator result |
-| F34 Epidemic outlasts kinematic stressor | Likely novel | Not addressed in Levis 2020 or subsequent; reversibility asymmetry is new |
-| F35 Adaptive R_enc outperforms fixed | Likely novel | Closes F31 adaptive loop; adaptive predator geometry in flocking not studied |
+| F34 Epidemic outlasts kinematic stressor | Likely novel | Not addressed in Levis 2020 or any predator-prey paper found; timescale asymmetry is new |
+| F35 Adaptive R_enc outperforms fixed | Likely novel | No paper found on adaptive predator geometry tracking in flocking |
 | F36 Targeted vaccination null result | Interesting null | Hub-targeting fails in kinematic flock; spatial reorganization is specific mechanism |
+| F37 Spatial vaccination (in progress) | Likely null | Preliminary: kinematic mixing erases spatial targeting advantage as it erases degree targeting |
+| F38 Non-equilibrium driving causes crossover | Likely novel | FDT diagnosis in force-based ABM context; not in equilibrium statistical mechanics literature |
 
 ---
 
