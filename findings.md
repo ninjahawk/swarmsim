@@ -3,6 +3,66 @@ Started 2026-05-08
 
 ---
 
+## Literature Context and Novelty Assessment
+*Added 2026-05-15 based on literature search.*
+
+### Background papers
+
+**Levis, Diaz-Guilera, Pagonabarraga, Starnini (2019/2020). "Flocking-enhanced social contagion."
+Phys. Rev. Research 2, 032056.**
+Studies bidirectional coupling between a Vicsek-like flocking model and SIS epidemic dynamics, where
+agents' flocking DEPENDS on their SIS state (infected agents aligned differently).  Key result:
+flocking self-organizes dense swarms that reduce the epidemic threshold below the global mean-field
+limit.  Directly related to Findings 26, 29 (compression raises effective contact count, shifts
+threshold) but via a DIFFERENT MECHANISM: their compression is endogenous (epidemic state drives
+clustering), ours is exogenous (predator encirclement compresses the flock mechanically).  Our
+experiment is the first to test the EXTERNAL predator analog of this effect, and to study what
+happens when the external compressor is REMOVED (Finding 34 -- epidemic persistence -- is not
+addressed in this paper).
+
+**Silverberg, Bierbaum, Sethna, Cohen (2013). "Collective motion of humans in mosh and circle pits."
+Phys. Rev. Lett. 110, 228701.**
+Original source model.  Demonstrates the same four-force ABM produces realistic crowd dynamics.
+Our project is a systematic extension of this model into predator-prey, contagion, and hybrid regimes.
+
+**Recent (2025-2026) predator-strategy papers:**
+Pacher, Bierbach, Kurvers, Krause et al. (2026). "Strategic choices of attack location allow
+predators to counter a collective prey defence." Proc. R. Soc. B 293, 20260566.
+Studies real predatory birds choosing attack positions against fish shoals.  Found that conspicuous
+predators avoid the center of shoals to minimize prey alert response; cryptic predators prefer
+center attacks.  Our encirclement strategy (equal-angle offset from CoM) is a computational analog
+but our mechanism is fundamentally different: we are interested in HOW MANY ANGLES are needed to
+overcome collective evasion, and the scaling relationship R_enc/Rg ~ 0.5 (Findings 14, 31) appears
+not to be addressed in empirical predator-strategy literature.
+
+**Collective evasion timescales / recovery:**
+No paper found specifically studying the timescale asymmetry between kinematic flock recovery after
+predator removal and epidemic state recovery.  Finding 22 (kinematic reversibility, ~10 tu) and
+Finding 34 (epidemic persistence, ~100+ tu) together appear to be a novel contribution.
+
+**Spatial herd immunity inflation:**
+Herd immunity inflation above mean-field is a known effect in spatial SIR/SIS models (Diekmann
+et al.; Keeling & Rohani) and empirically confirmed during COVID-19 (Britton et al. 2020, Science).
+Our Finding 30 (2x inflation in a flock context, p_c ~ 0.46 vs 0.20) is a demonstration that a
+kinematic flock system quantitatively matches the spatial-epidemic prediction.  The SPECIFIC context
+(flocking agents, spatial clustering from alignment force) appears not to have been studied before.
+
+### Novelty summary
+
+| Finding | Status | Notes |
+|---------|--------|-------|
+| F14 Encirclement disruption | Likely novel | Specific to force-based ABM; angular threshold not studied in literature |
+| F16 Flock division (not dissolution) | Likely novel | Division mechanism in simulation; related to biological wolf-pack herding |
+| F22 Kinematic reversibility | Likely novel | No literature found on post-predator sub-flock reunion timescale |
+| F29 Threshold shift ~4% from compression | Related | Similar to Levis 2020 (endogenous) but external-predator mechanism is different |
+| F30 Herd immunity 2x mean-field | Known effect | Consistent with spatial SIS literature; novel in flock context |
+| F31 R_enc/Rg scaling universal | Likely novel | No literature found on size-invariant encirclement calibration |
+| F32 Long-time intermittent dynamics | Possibly novel | Related to sustained-attack papers (bioRxiv 2023) but not identical |
+| F33 Incomplete encirclement non-monotone | Likely novel | No literature found; counterintuitive 5-predator result |
+| F34 Epidemic outlasts kinematic stressor | Likely novel | Not addressed in Levis 2020 or subsequent; reversibility asymmetry is new |
+
+---
+
 ## Model Summary
 Charbonneau Chapter 10. N agents on a periodic 2D unit square [0,1]^2.
 Each agent subject to 4 forces per timestep:

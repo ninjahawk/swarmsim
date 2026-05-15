@@ -689,6 +689,18 @@ potential biological relevance: a predator event that coincides with a near-thre
 social contagion (collective alarm behavior, epidemic disease) leaves a lasting mark on
 the collective that outlives the predation event itself.
 
+The most closely related existing work is Levis et al. (2020), who studied bidirectional
+coupling between Vicsek-like flocking and SIS epidemic dynamics, finding that endogenous
+clustering (infected agents altering their motion rules) reduces the epidemic threshold
+in a similar way to the encirclement-induced compression found here. The critical
+difference is that Levis et al.'s mechanism is internal: the epidemic state controls
+flocking, so compression and contagion are inseparable. In the present model, the
+compression is imposed externally by predators, making it possible to study the
+removal experiment (Section 4.16) — what happens when the compressor is switched off
+while the epidemic is still ongoing. That timescale asymmetry, and the practical
+implication that external pressure can seed a long-lived epidemic state without
+sustaining it, does not appear to be addressed in the existing literature.
+
 ---
 
 ## 6. Conclusions
@@ -782,6 +794,13 @@ Charbonneau, P. (2017). *Natural Complexity: A Modeling Handbook*. Princeton Uni
 Silverberg, J. L., Bierbaum, M., Sethna, J. P., and Cohen, I. (2013). Collective motion
 of humans in mosh and circle pits at heavy metal concerts. *Physical Review Letters*,
 110, 228701.
+
+Levis, D., Diaz-Guilera, A., Pagonabarraga, I., and Starnini, M. (2020). Flocking-enhanced
+social contagion. *Physical Review Research*, 2, 032056.
+
+Pacher, K., Bierbach, D., Kurvers, R. H. J. M., and Krause, J. (2026). Strategic choices
+of attack location allow predators to counter a collective prey defence. *Proceedings of
+the Royal Society B*, 293, 20260566.
 
 ---
 
