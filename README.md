@@ -55,6 +55,20 @@ New experiments import from `model.py`. To add a new experiment: import `Flock`,
 
 **Legacy layer (`flocking.py`)** — procedural implementation that predates the OOP refactor. The earlier experiment scripts (`predator.py`, `multi_predator.py`, `encirclement.py`, etc.) import from here. They are retained intact for reproducibility and are not broken by the `model.py` refactor.
 
+### Repository Layout
+
+```
+root/        flocking.py  model.py  predator.py  geometry.py  multi_predator.py  encirclement.py  analysis.py
+predator/    predator strategy experiments
+contagion/   panic, epidemic, and vaccination experiments
+phase/       phase-transition and statistical-mechanics experiments
+3d/          three-dimensional extension experiments
+figures/     output PNG figures
+outputs/     captured text/log output from runs
+```
+
+Experiment scripts in subfolders automatically add the project root to `sys.path` so they can import the core library files above.
+
 ### Investigation Progression
 
 The experiments follow a logical arc, each motivated by the result before it:
@@ -62,23 +76,23 @@ The experiments follow a logical arc, each motivated by the result before it:
 | Stage | Question | Scripts |
 |-------|----------|---------|
 | **1. Baseline** | Does the model reproduce expected flocking behavior? | `flocking.py`, `analysis.py` |
-| **2. Phase transition** | Is the solid-to-fluid transition a true phase transition? | `phase_transition.py`, `compactness_phase.py`, `compactness_search.py` |
+| **2. Phase transition** | Is the solid-to-fluid transition a true phase transition? | `phase/phase_transition.py`, `phase/compactness_phase.py`, `phase/compactness_search.py` |
 | **3. Geometry** | What shape does the flock take? | `geometry.py` |
 | **4. Single predator** | Does flocking help prey survive? | `predator.py` |
-| **5. Predator strategy hierarchy** | How many and how coordinated do predators need to be to break the flock? | `multi_predator.py` → `evasion_analysis.py` → `coordinated_predators.py` → `encirclement.py` → `encirclement_scaling.py` → `fragmentation.py` |
-| **6. Encirclement limits** | Does the encirclement floor scale with N? Is it stable long-term? Does a gap help the flock? | `large_N_encirclement.py` → `renc_scaling.py` → `long_encirclement.py` → `encirclement_gap.py` |
-| **7. Minimum viable size** | Below what N does collective evasion fail? | `min_flock_size.py` |
-| **8. Reversibility** | Does encirclement damage reverse after predator removal? | `reunion.py` |
-| **9. Realistic predator** | What changes with limited sensing range? | `predator_sensing.py` |
-| **10. Internal panic** | Does panic from within disrupt the flock? | `panic.py` |
-| **11. Contagion** | What if panic spreads by contact? (SI and SIS models) | `panic_contagion.py` → `contagion_sis.py` |
-| **12. Hybrid stressors** | How do predation and contagion interact? | `hybrid_stressors.py` → `hybrid_sis.py` → `critical_shift.py` → `outbreak_removal.py` |
-| **13. Herd immunity** | How many immune agents are needed to quench an outbreak? | `herd_immunity.py` → `targeted_immunity.py` |
-| **14. Segregation** | Does a mixed-speed population spatially separate? | `segregation.py` → `segregation_alpha.py` |
-| **15. Adaptive predators** | Do predators that track flock geometry outperform fixed strategy? | `adaptive_encirclement.py` |
-| **16. Vaccination strategies** | Can targeting high-degree or spatially-distributed agents reduce herd-immunity threshold? | `targeted_immunity.py` → `spatial_vaccination.py` |
-| **17. Phase transition mechanism** | Why does the model lack a true phase transition? Is it the soft repulsion, or something else? | `hard_repulsion.py` → `langevin_repulsion.py` → `langevin_hexatic.py` |
-| **18. 3D extension** | Does flocking and the v_eq result hold in three dimensions? | `flocking3d.py` |
+| **5. Predator strategy hierarchy** | How many and how coordinated do predators need to be to break the flock? | `multi_predator.py` → `predator/evasion_analysis.py` → `predator/coordinated_predators.py` → `encirclement.py` → `predator/encirclement_scaling.py` → `predator/fragmentation.py` |
+| **6. Encirclement limits** | Does the encirclement floor scale with N? Is it stable long-term? Does a gap help the flock? | `predator/large_N_encirclement.py` → `predator/renc_scaling.py` → `predator/long_encirclement.py` → `predator/encirclement_gap.py` |
+| **7. Minimum viable size** | Below what N does collective evasion fail? | `predator/min_flock_size.py` |
+| **8. Reversibility** | Does encirclement damage reverse after predator removal? | `predator/reunion.py` |
+| **9. Realistic predator** | What changes with limited sensing range? | `predator/predator_sensing.py` |
+| **10. Internal panic** | Does panic from within disrupt the flock? | `contagion/panic.py` |
+| **11. Contagion** | What if panic spreads by contact? (SI and SIS models) | `contagion/panic_contagion.py` → `contagion/contagion_sis.py` |
+| **12. Hybrid stressors** | How do predation and contagion interact? | `contagion/hybrid_stressors.py` → `contagion/hybrid_sis.py` → `contagion/critical_shift.py` → `contagion/outbreak_removal.py` |
+| **13. Herd immunity** | How many immune agents are needed to quench an outbreak? | `contagion/herd_immunity.py` → `contagion/targeted_immunity.py` |
+| **14. Segregation** | Does a mixed-speed population spatially separate? | `contagion/segregation.py` → `contagion/segregation_alpha.py` |
+| **15. Adaptive predators** | Do predators that track flock geometry outperform fixed strategy? | `predator/adaptive_encirclement.py` |
+| **16. Vaccination strategies** | Can targeting high-degree or spatially-distributed agents reduce herd-immunity threshold? | `contagion/targeted_immunity.py` → `contagion/spatial_vaccination.py` |
+| **17. Phase transition mechanism** | Why does the model lack a true phase transition? Is it the soft repulsion, or something else? | `phase/hard_repulsion.py` → `phase/langevin_repulsion.py` → `phase/langevin_hexatic.py` |
+| **18. 3D extension** | Does flocking and the v_eq result hold in three dimensions? Extended noise sweep | `3d/flocking3d.py` → `3d/flocking3d_noise.py` |
 
 ---
 
