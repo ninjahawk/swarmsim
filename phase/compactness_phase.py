@@ -15,6 +15,8 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
 from flocking import run, params, kinetic_energy
 
 os.makedirs('figures', exist_ok=True)

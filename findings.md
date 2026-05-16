@@ -1405,12 +1405,59 @@ and finite-size behavior are consistent between 2D and 3D.
 
 ---
 
+## Finding 43: 3D encirclement fails to replicate 2D effectiveness -- R_enc/Rg universal optimum is 2D-specific
+<img src="./figures/flocking3d_predator_1.png" width="640"/>
+
+**What:** Extends the 3D flocking model with predator pressure. Tests naive (chase CoM) vs
+encirclement strategies at n_pred=1,3,6,10, and sweeps R_enc to test whether the R_enc/Rg~0.5
+universal optimum from Finding 23 transfers to 3D.
+**Evidence:** flocking3d_predator.py, N=350, slow prey v0=0.02, ramp=0.1, N_SEEDS=5, N_ITER=5000.
+3D encirclement results (R_enc=0.15, n_pred=1-10):
+  n_pred=1:  Phi=0.999  Rg=0.421
+  n_pred=3:  Phi=0.999  Rg=0.417
+  n_pred=6:  Phi=0.953+/-0.077  Rg=0.397
+  n_pred=10: Phi=0.941+/-0.074  Rg=0.375
+2D encirclement at same R_enc=0.15:
+  n_pred=3:  Phi=0.969  |  n_pred=6:  Phi=0.750  |  n_pred=10: Phi=0.729
+3D R_enc sweep at n_pred=6:
+  R_enc=0.15: R_enc/Rg=0.38, Phi=0.953+/-0.077
+  R_enc=0.20: R_enc/Rg=0.50, Phi=0.997+/-0.001  <-- 2D optimum, NO disruption in 3D
+  R_enc=0.25: R_enc/Rg=0.62, Phi=0.985
+**Key result 1 -- naive predators fail in 3D as in 2D:**
+Naive co-localization occurs in 3D for the same reason as 2D (all predators target the same
+3D CoM), giving Phi>0.99 at all n_pred. The co-localization mechanism is dimension-independent.
+**Key result 2 -- encirclement is dramatically less effective in 3D:**
+At n_pred=6 and R_enc=0.15 (2D-calibrated), 3D encirclement gives Phi=0.953 (high variance
++/-0.077) vs 2D Phi=0.750 (consistent). At n_pred=10, Phi=0.941 vs 2D Phi=0.729.
+Disruption exists but is mild and unreliable -- the 3D flock is much more robust.
+**Key result 3 -- R_enc/Rg~0.50 universal optimum does NOT transfer to 3D:**
+The R_enc sweep shows minimum disruption at R_enc=0.15 (R_enc/Rg=0.38), NOT at R_enc/Rg=0.50.
+At R_enc=0.20 (exactly R_enc/Rg=0.50 -- the 2D optimum), Phi jumps back to 0.997 (no
+disruption). The 2D universal scaling law breaks down completely in 3D.
+**Key result 4 -- mechanism: 3D provides an escape dimension and sparse sphere coverage:**
+(a) The 3D flock has Rg~0.40 vs 2D Rg~0.29 -- larger spread means the same absolute R_enc
+corresponds to a smaller R_enc/Rg. (b) More fundamentally, 6 predators on a sphere surface
+cover far less of the solid angle than 6 predators on a circle cover of the full circle: a
+sphere surface is ~6x larger than a same-radius circle, so encirclement density drops. (c)
+The flock can escape through the third spatial dimension (vertical to any predator plane),
+making encirclement fundamentally less effective regardless of R_enc.
+**Implication:** Encirclement is a 2D-specific strategy whose effectiveness depends on
+predators sealing a 1D ring (circle). In 3D, sealing a 2D surface (sphere) with the same
+number of predators is geometrically much harder. Effective 3D predator encirclement would
+require either many more predators (to achieve comparable sphere coverage) or a fundamentally
+different strategy that blocks all 3D escape directions simultaneously.
+
+---
+
 ## Open Questions / Next Directions
-1. 3D flocking (F41, F42): COMPLETE.
+1. 3D flocking (F41, F42, F43): F41, F42, F43 COMPLETE.
    - F41: v_eq=v0+alpha/mu exact in 3D; basic noise sweep
    - F42: smooth crossover at ramp~15-25; chi_peak drifts up with N; same as 2D qualitatively
-2. 3D predator strategies (F43, NOT YET STARTED):
-   Does encirclement work in 3D?  Is R_enc/Rg~0.5 universal ratio still valid?
-   Script: flocking3d_predator.py -- 3D dynamics + n_pred=1,3,6 encircling predators
-3. Further 3D experiments: phase transition in 3D (hard repulsion Langevin), segregation in 3D
+   - F43: 3D encirclement fails to replicate 2D; R_enc/Rg~0.5 optimum is 2D-specific; escape dimension mechanism
+2. Further 3D experiments (NOT YET STARTED):
+   - How many predators does 3D encirclement need to match 2D disruption? (scale n_pred to 20-50)
+   - 3D adaptive encirclement: does adapting R_enc help when sphere coverage is the bottleneck?
+3. Alternative research directions:
+   - Phase transition in 3D (hard repulsion Langevin in 3D)
+   - Segregation in 3D
 

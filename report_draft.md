@@ -75,30 +75,39 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers twenty-four investigations, producing forty-two numbered findings.
-The first four sections establish the baseline: implementation validation, parameter
-sweeps, finite-size scaling to test for a true phase transition, and flock geometry.
-Sections five through nine develop the predator-strategy hierarchy — from naive
-co-localization to coordinated spreading to encirclement — and characterize encirclement
-as the only strategy capable of substantial disruption, acting through transient flock
-division rather than dissolution. Sections ten through twelve turn to internal stressors:
-minimum viable flock size, static and contagious panic, and segregation by agent
-heterogeneity. Sections thirteen through sixteen examine the coupling between predator
-and contagion stressors: hybrid-stressor interaction, epidemic-threshold shifts under
-compression, spatial-network herd immunity, and the long-time dynamics of encirclement
-including intermittent merge/split behavior and incomplete encirclement. Section
-sixteen follows epidemic persistence after predator removal, revealing a two-timescale
-asymmetry between kinematic recovery (~10 time units) and epidemic decay (~100+ time
-units). Section seventeen validates the universal R_enc/Rg ~ 0.5 optimum through an
-adaptive encirclement strategy, sections eighteen and twenty test whether degree-targeted
-and spatially-targeted vaccination reduce the herd-immunity threshold (both null results),
-section nineteen tests whether harder repulsion can produce a true phase transition (null),
-section twenty-one tests whether Langevin dynamics recover the hard-disc structural
-melting transition (thermal equilibration achieved; structural metric needed to detect it),
-section twenty-two measures the hexatic order parameter directly (confirming it is the
-correct diagnostic, but finding that n = 1.5 soft repulsion cannot crystallize at any
-accessible temperature), and section twenty-three extends the model to three spatial
-dimensions, confirming that flocking and the v_eq analytical result generalize cleanly to 3D.
+This report covers twenty-five investigations, producing forty-three numbered findings.
+The first three sections establish the baseline: implementation validation and the v_eq
+analytical result (Section 4.1), parameter sweeps and flock formation (Section 4.2),
+and the solid-to-fluid transition tested as a true phase transition (Section 4.3).
+Section 4.4 extends the model with a predator agent and uses it to characterize flock
+geometry under pressure — establishing both the single-predator baseline and the
+geometric metrics used throughout. Sections 4.5 through 4.9 develop the predator-strategy
+hierarchy — from naive co-localization to coordinated spreading to encirclement — and
+characterize encirclement as the only strategy capable of substantial disruption, acting
+through transient flock division rather than dissolution, with a universal disruption
+optimum at R_enc/Rg ~ 0.5. Sections 4.10 through 4.12 introduce internal stressors:
+contagious panic via SI and SIS epidemic dynamics, the epidemic threshold, and hybrid
+predation-contagion interactions including agent-heterogeneity segregation. Sections
+4.13 through 4.15 refine the predator-contagion system — sub-threshold coupling,
+near-critical compression effects, universal encirclement scaling, and long-time
+merge/split dynamics. Section 4.16 reveals a two-timescale asymmetry in recovery:
+kinematic damage from encirclement reverses in ~10 time units, while epidemic damage
+from a contagion outbreak persists for ~100+ time units after predators are removed.
+Sections 4.17 through 4.20 address four targeted-intervention questions: adaptive
+encirclement validates the R_enc/Rg universal optimum dynamically; degree-targeted and
+spatially-targeted vaccination (Sections 4.18, 4.20) are both null results defeated by
+kinematic reorganization; harder repulsion (Section 4.19) fails to produce a true phase
+transition, diagnosing the smooth crossover as non-equilibrium in origin. Sections 4.21
+and 4.22 close the phase-transition thread: a Langevin thermostat confirms FDT-satisfying
+dynamics thermalize correctly, but the hexatic order parameter (Section 4.22) reveals
+that n = 1.5 soft repulsion cannot crystallize at any accessible temperature. Sections
+4.23 and 4.24 extend the model to three spatial dimensions: flocking and v_eq generalize
+exactly to 3D, and the noise-driven crossover in 3D is a smooth crossover at ramp ~ 15-25
+(consistent with the 2D behavior, confirming a dimensionality-independent mechanism).
+Section 4.25 introduces 3D predator strategies and finds that encirclement fails to replicate
+its 2D effectiveness: the R_enc/Rg universal optimum is 2D-specific, and sphere-surface
+coverage by a fixed number of predators is geometrically insufficient to close off escape
+in three dimensions.
 
 ---
 
@@ -1123,6 +1132,69 @@ character.
 
 ---
 
+## 4.25 Three-Dimensional Predator Strategies: Encirclement Is 2D-Specific (Finding 43)
+
+Having confirmed that the 3D flocking model behaves qualitatively like its 2D counterpart
+under noise, this section introduces predator pressure in three dimensions and asks whether
+the predator-strategy hierarchy established in Sections 4.4-4.7 transfers to 3D. In
+particular, does encirclement work in 3D, and does the universal scaling law R_enc/Rg ~ 0.5
+(Finding 23) still identify the optimal encirclement radius?
+
+Parameters match the slow-prey predator regime used throughout: prey v0 = 0.02, ramp = 0.1
+(same as legacy PREY_DEFAULT); 3D neighbor-count-matched physics (r_f = 0.20, r0 = 0.02
+from Finding 41); predators with v0_pred = 0.05, alpha_pred = 5.0 (flocking3d_predator.py,
+N = 350, N_SEEDS = 5, N_ITER = 5000). Predators for 3D encirclement are placed at n_pred
+points distributed uniformly on a unit sphere (Fibonacci sphere algorithm), each targeting
+the flock center of mass offset by R_enc in their assigned direction.
+
+| n_pred | 3D naive Phi | 3D enc Phi (R_enc=0.15) | 2D enc Phi (R_enc=0.15) | 3D Rg | 2D Rg |
+|--------|-------------|------------------------|------------------------|-------|-------|
+| 1      | 0.998       | 0.999                  | 0.999                  | 0.421 | 0.258 |
+| 3      | 0.998       | 0.999                  | 0.969                  | 0.417 | 0.298 |
+| 6      | 0.996       | 0.953 +/- 0.077        | 0.750                  | 0.397 | 0.295 |
+| 10     | 0.992       | 0.941 +/- 0.074        | 0.729                  | 0.375 | 0.355 |
+
+![](./figures/flocking3d_predator_1.png)
+
+**Naive predators fail in 3D.** Naive co-localization occurs in 3D for the same reason as
+2D: all predators target the same flock center of mass and pile up at one point. The 3D
+co-localization mechanism is dimension-independent.
+
+**3D encirclement is dramatically less effective than 2D.** At n_pred = 6 and R_enc = 0.15
+(the value calibrated for 2D in Section 4.5), 3D encirclement gives Phi = 0.953 with high
+seed-to-seed variance (std = 0.077), compared to Phi = 0.750 with low variance in 2D. At
+n_pred = 10, the 3D floor is Phi = 0.941, compared to Phi = 0.729 in 2D. The 3D disruption
+is mild and unreliable — it occasionally succeeds but cannot be relied upon.
+
+**The R_enc/Rg ~ 0.5 universal optimum does not transfer to 3D.** The R_enc sweep at
+n_pred = 6 reveals the breakdown of the 2D scaling law. Minimum disruption occurs at
+R_enc = 0.15 (R_enc/Rg = 0.38), not at the 2D-optimal R_enc/Rg = 0.50. At R_enc = 0.20
+(which achieves R_enc/Rg = 0.50 given the 3D Rg ~ 0.40), Phi rises back to 0.997 —
+essentially no disruption. The 2D universal optimum is not only different in 3D but
+counterproductive: moving predators to the geometrically correct 2D-analogous radius
+actually reduces disruption.
+
+**The mechanism is geometric.** Two factors explain the breakdown. First, the 3D flock
+occupies a larger spatial volume: Rg_3D ~ 0.40 versus Rg_2D ~ 0.29, so the same absolute
+R_enc corresponds to a smaller R_enc/Rg ratio and positions predators further inside the
+flock perimeter. Second, and more fundamentally, 6 predators distributed on a sphere
+surface achieve far lower angular coverage than 6 predators on a circle: a sphere has
+~4 pi steradians of solid angle while a circle has 2 pi radians, so the same predator count
+subtends a much smaller fraction of the enclosure surface. The 3D flock can escape through
+any direction that is not directly blocked, and with only 6 predators on a sphere, large
+unblocked solid-angle gaps always remain. The flock consistently finds and exploits these
+gaps, particularly by moving perpendicular to whatever plane the predators approximately
+occupy.
+
+The encirclement strategy is fundamentally a 2D mechanism: it works by closing a 1D ring
+(a circle) around the flock, which n_pred predators can do effectively when n_pred is large
+relative to the circumference. In 3D, closing a 2D surface (a sphere) around the flock
+requires either many more predators — enough to reduce unblocked gaps to below the flock's
+coherence length — or a fundamentally different strategy that explicitly targets the 3D
+escape dimension.
+
+---
+
 ## 5. Discussion
 
 The most striking result of the predator simulations is that flocking is not primarily
@@ -1248,7 +1320,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 6. Conclusions
 
-This study produced eighteen main results (selecting the most general across 42 findings):
+This study produced nineteen main results (selecting the most general across 43 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -1387,6 +1459,17 @@ This study produced eighteen main results (selecting the most general across 42 
     channel for noise to disrupt alignment. The non-equilibrium smooth-crossover mechanism
     identified in Findings 38 and 39 is dimensionality-independent.
 
+19. **3D encirclement fails to replicate 2D effectiveness; the R_enc/Rg universal
+    optimum is 2D-specific:** With 6 predators distributed on a sphere surface (Fibonacci
+    sphere), 3D encirclement achieves Phi = 0.953 (std = 0.077) at best, compared to
+    Phi = 0.750 consistently in 2D at the same R_enc. The R_enc/Rg ~ 0.5 universal optimum
+    identified in Finding 23 breaks down completely: at R_enc/Rg = 0.50 in 3D, Phi returns
+    to 0.997 (no disruption). The mechanism is geometric: 6 predators on a sphere surface
+    leave large unblocked solid-angle gaps through which the flock escapes, particularly in
+    the direction perpendicular to whatever plane the predators approximately occupy.
+    Encirclement is a 2D-specific strategy that relies on closing a 1D ring; extending it
+    to 3D requires either many more predators or a fundamentally different approach.
+
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
 coherence under noise and naive predation; it transmits spatial clustering that amplifies
@@ -1470,4 +1553,5 @@ All simulation code is available at https://github.com/ninjahawk/Summer_Research
 | langevin_hexatic.py | Langevin dynamics with hexatic order parameter; KTHNY structural melting test |
 | flocking3d.py | 3D extension of the flocking model; v_eq validation and noise sweep |
 | flocking3d_noise.py | 3D extended noise sweep ramp=0.5-30 and 2D comparison; finite-size scaling |
+| flocking3d_predator.py | 3D predator strategies: naive vs encirclement, R_enc sweep, 2D comparison |
 | model.py | OOP foundation: Flock and Predator classes for new experiments |

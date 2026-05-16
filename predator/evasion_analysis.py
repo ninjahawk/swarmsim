@@ -13,6 +13,8 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
 from multi_predator import run_multi_predator, geom_multi, mean_min_pred_dist
 from predator import PREY_DEFAULT, PRED_DEFAULT
 
