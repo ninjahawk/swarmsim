@@ -182,6 +182,44 @@ Unless otherwise noted, simulations use the parameters from Charbonneau Table 10
 N = 350, r0 = 0.005, eps = 0.1, r_f = 0.1, alpha = 1.0, v0 = 1.0, mu = 10.0,
 ramp = 0.5, dt = 0.01.
 
+### 2.6 Methodology and Conventions
+
+Unless otherwise stated, every reported quantity follows the same protocol so that
+results across sections are directly comparable.
+
+**Seeds and replicates.** Every parameter-sweep point is the mean over independent
+random initializations of agent positions and velocities. The standard count is
+8 seeds per point for predator experiments and 5 seeds per point for noise / phase
+sweeps. Sections where this differs (e.g., long-time encirclement at 30000 steps,
+N = 1000 large-N runs) state the seed count explicitly.
+
+**Error bars.** Quoted uncertainties are one standard deviation across seeds (1 sigma),
+not standard errors of the mean. Figures plot error bars at the same convention. When
+a finding reports a value as A +/- B, B is the seed-to-seed sigma.
+
+**Run length and warmup.** Default sweeps run 4000 timesteps at dt = 0.01 (40 time
+units) and discard the first 1000 steps (10 tu) as warmup before averaging. Long-time
+experiments (Section 4.15, Section 4.16) extend to 30000 steps. Convergence was
+verified by comparing the steady-state Phi between the first and second halves of
+each run; differences below 0.02 are treated as converged.
+
+**Compactness convention.** Compactness is defined as C = pi * N * r0^2, the fraction
+of domain area occupied by hard-disc cores. For fixed-compactness scaling (Section
+4.3), r0 = sqrt(C / (pi * N)) so C is held constant as N varies.
+
+**Order-parameter averages.** Phi values quoted in steady-state are time-averaged
+over the post-warmup window; values quoted with both a mean and a temporal sigma
+(Section 4.15) report both the time-average and the within-run temporal spread.
+
+**3D conventions.** 3D experiments (Sections 4.23-4.25) hold neighbor count constant
+by scaling r0 and r_f. The mapping used throughout is r0 = 0.02, r_f = 0.20, on the
+periodic unit cube [0, 1]^3. All other parameters match the 2D defaults except where
+noted.
+
+**Reproducibility.** All scripts use `numpy.random.default_rng(seed)` with explicit
+seed values 0..N_seeds-1. Source code for every figure is in the repository at the
+path noted in each section opening.
+
 ---
 
 ## 3. Validation
@@ -667,7 +705,7 @@ cascade even transiently — even one that would not sustain itself in an unenci
 
 ---
 
-## 4.17 Adaptive Encirclement: Tracking Flock Geometry Increases Disruption (Finding 35)
+### 4.17 Adaptive Encirclement: Tracking Flock Geometry Increases Disruption (Finding 35)
 
 Finding 31 established that encirclement performance collapses on the dimensionless
 ratio R_enc/Rg and that the optimum is at R_enc/Rg ~ 0.5 for both N = 350 and N = 1000.
@@ -717,7 +755,7 @@ more effective still.
 
 ---
 
-## 4.18 Targeted Vaccination Provides No Advantage Over Random: The Flock Contact Network Is Not Hub-Dominated (Finding 36)
+### 4.18 Targeted Vaccination Provides No Advantage Over Random: The Flock Contact Network Is Not Hub-Dominated (Finding 36)
 
 Finding 30 showed that the herd-immunity threshold in the flock is approximately twice
 the mean-field prediction (~0.46 vs. 0.20 at R0 = 1.25), attributed to spatial
@@ -780,7 +818,7 @@ Section 4.19.
 
 ---
 
-## 4.19 Repulsion Hardness Does Not Rescue the Phase Transition: A Non-Equilibrium Diagnosis (Finding 38)
+### 4.19 Repulsion Hardness Does Not Rescue the Phase Transition: A Non-Equilibrium Diagnosis (Finding 38)
 
 Finding 17 showed no diverging susceptibility at any tested compactness value (C = 0.10
 to 0.78) using the standard soft repulsion (exponent n = 1.5). The natural follow-up
@@ -836,7 +874,7 @@ phase transition.
 
 ---
 
-## 4.20 Spatial Vaccination Also Fails: Kinematic Mixing Defeats All Targeting Strategies (Finding 37)
+### 4.20 Spatial Vaccination Also Fails: Kinematic Mixing Defeats All Targeting Strategies (Finding 37)
 
 Section 4.18 showed that degree-targeted vaccination — immunizing the highest-contact-degree
 agents first — provides no advantage over random vaccination because the flock contact network
@@ -899,7 +937,7 @@ dynamic vaccination during the epidemic.
 
 ---
 
-## 4.21 Langevin Thermostat Confirms FDT Diagnosis but KE/N Does Not Detect Structural Melting (Finding 39)
+### 4.21 Langevin Thermostat Confirms FDT Diagnosis but KE/N Does Not Detect Structural Melting (Finding 39)
 
 Section 4.19 concluded that the smooth crossover is caused by non-equilibrium driving, not
 by potential softness, and proposed that Langevin dynamics — viscous damping plus
@@ -957,7 +995,7 @@ equilibration is practical within the simulation timescale.
 
 ---
 
-## 4.22 Hexatic Order Parameter Detects No Crystallization: Soft Repulsion Cannot Produce KTHNY Melting (Finding 40)
+### 4.22 Hexatic Order Parameter Detects No Crystallization: Soft Repulsion Cannot Produce KTHNY Melting (Finding 40)
 
 Section 4.21 identified that chi = N * Var(KE/N) cannot detect the KTHNY structural melting
 transition, and proposed the hexatic order parameter as the correct diagnostic. This section
@@ -1031,7 +1069,7 @@ that would prevent agent overlap and enable genuine crystallization.
 
 ---
 
-## 4.23 Three-Dimensional Extension: Flocking Generalizes and v_eq Is Dimensionality-Independent (Finding 41)
+### 4.23 Three-Dimensional Extension: Flocking Generalizes and v_eq Is Dimensionality-Independent (Finding 41)
 
 All preceding sections studied agents on a 2D periodic unit square. This section extends
 the model to a 3D periodic unit cube [0, 1]^3 and tests whether the core behaviors — flock
@@ -1084,7 +1122,7 @@ transition region.
 
 ---
 
-## 4.24 Three-Dimensional Noise Sweep: Smooth Crossover at ramp ~ 15-25, Consistent with 2D (Finding 42)
+### 4.24 Three-Dimensional Noise Sweep: Smooth Crossover at ramp ~ 15-25, Consistent with 2D (Finding 42)
 
 Finding 41 confirmed that 3D flocking is coherent at ramp = 10 (Phi = 0.84), but the noise
 sweep only extended to ramp = 10 — far below the crossover region. This section extends the
@@ -1132,7 +1170,7 @@ character.
 
 ---
 
-## 4.25 Three-Dimensional Predator Strategies: Encirclement Is 2D-Specific (Finding 43)
+### 4.25 Three-Dimensional Predator Strategies: Encirclement Is 2D-Specific (Finding 43)
 
 Having confirmed that the 3D flocking model behaves qualitatively like its 2D counterpart
 under noise, this section introduces predator pressure in three dimensions and asks whether
@@ -1195,7 +1233,90 @@ escape dimension.
 
 ---
 
-## 5. Discussion
+## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
+
+Three of the strongest results in this study — the failure of degree-targeted vaccination
+(Section 4.18), the failure of spatial vaccination (Section 4.20), and the dimensional
+specificity of encirclement (Section 4.25) — converge on a single mechanism that also
+explains the reversibility of encirclement damage (Section 4.7), the herd-immunity
+inflation (Section 4.14), and the long-time merge/split steady state (Section 4.15).
+That mechanism is **alignment-driven kinematic mixing**: the flocking force not only
+aligns velocities but, as a side effect, continuously reorganizes the spatial
+neighborhood graph faster than any static structural feature can be exploited or
+sustained.
+
+The argument is direct. In a flock at Phi ~ 1, all agents move with similar velocity
+but with the small dispersion induced by repulsion, noise, and the local averaging
+in the flocking force. Neighbor identities therefore turn over on a timescale set
+by these local fluctuations, not by the bulk-flock motion. Any property attached to
+agent identity — its degree in the contact network, its spatial coordinate, its
+location relative to the flock perimeter — is therefore shuffled on the same
+timescale. Three consequences follow:
+
+**Static targeting collapses to random.** Degree-targeted vaccination assumes a fat
+tail and a stable hub set. The flock has neither: the empirical degree distribution
+has CV ~ 0.68 (Finding 28) and the agents holding the top-degree positions at one
+moment hold different positions seconds later, as shown by the identical
+threshold p_c ~ 0.46 found for both targeted and random strategies (Section 4.18).
+Spatial vaccination, sampled by maxmin farthest-point distance, fails for the same
+reason at p_c ~ 0.46 (Section 4.20). The two null results are not independent
+observations; they are the same mechanism producing the same number.
+
+**Damage with no internal state is reversible; damage with internal state is not.**
+Encirclement applies a directed external force pattern. Once removed, agent positions
+and velocities relax under the same alignment force that does the mixing — and they
+relax fast, on the ~10-time-unit timescale of one full neighbor-graph turnover
+(Section 4.7, Finding 22). Contagion, by contrast, attaches a binary panic/calm
+flag to agent identity that mixing cannot erase. The asymmetry of recovery
+timescales (Section 4.16) is therefore not coincidental: it follows from where
+the damage is stored. Anything stored in positions or velocities is mixed away;
+anything stored in internal state outlasts the stressor.
+
+**Herd-immunity inflation is the kinematic-mixing signature in equilibrium.**
+The herd-immunity threshold p_c ~ 0.46 is more than twice the mean-field value
+(Section 4.14, Finding 30). Mean-field treats the contact graph as
+well-mixed and instantaneously sampled; the spatial-SIS literature treats it
+as static and clustered. The flock is in between: clustered at any instant
+but constantly resampled. The factor-of-two inflation reflects the residual
+clustering that mixing does not fully erase per epidemic timescale, and is
+consistent across both random and targeted strategies because mixing
+homogenizes them.
+
+**Dimensional specificity of encirclement.** In 2D, six predators arranged on a
+ring around a flock of Rg = 0.30 close off the boundary at angular spacing 60
+degrees, which is the same order as the angular fluctuation of the flock under
+the merge/split cycle. The flock cannot escape because every escape direction is
+covered. In 3D, the same six predators arranged on a sphere of the same radius
+cover a solid angle of about 2*pi steradians out of 4*pi — half the sphere is
+open. Mixing on the sphere surface is no help because the predators themselves
+do not mix; the prey simply leave through the uncovered solid angle (Section
+4.25, Finding 43). Encirclement is therefore 2D-specific not because the flock
+behaves differently in 3D, but because the geometric coverage requirement
+scales as solid angle, not arc length. A 3D analog would require ~6x more
+predators to match the 2D angular coverage density, and Section 4.26 is left
+to test this prediction.
+
+The non-equilibrium phase-transition diagnosis (Section 4.19, Section 4.21,
+Section 4.22) sits adjacent to this story rather than within it. The smooth
+crossover is a property of the driving, not the mixing: uniform random kicks
+without viscous dissipation violate FDT (Section 4.21) and prevent crystallization
+of the soft repulsion (Section 4.22). But once a flock is forming and the alignment
+force is active, the same kinematic mixing that defeats targeting is set in motion.
+The two threads share the model and the alignment force but address different
+levels of organization: phase behavior is a property of the velocity distribution,
+mixing is a property of the spatial-neighbor graph.
+
+This synthesis makes a falsifiable prediction. A flocking model in which the
+alignment force is replaced by a topological (k-nearest-neighbor) interaction
+rather than a metric one should exhibit weaker mixing — the neighbor graph would
+be more stable because k-nearest is a permutation-stable structure. Under such a
+modification, targeted vaccination should partially recover its advantage over
+random, and recovery from encirclement should slow. This is a clear experimental
+direction beyond the present study.
+
+---
+
+## 6. Discussion
 
 The most striking result of the predator simulations is that flocking is not primarily
 a strategy for maximizing distance from a predator. Non-flocking agents individually
@@ -1318,7 +1439,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ---
 
-## 6. Conclusions
+## 7. Conclusions
 
 This study produced nineteen main results (selecting the most general across 43 findings):
 
@@ -1481,7 +1602,7 @@ overcome (epidemic persistence after predator removal).
 
 ---
 
-## References
+## 8. References
 
 Charbonneau, P. (2017). *Natural Complexity: A Modeling Handbook*. Princeton University Press.
 
@@ -1509,7 +1630,7 @@ anti-predator escape manoeuvres through optimal attack and avoidance strategies.
 
 ---
 
-## Appendix: Code
+## 9. Appendix: Code
 
 All simulation code is available at https://github.com/ninjahawk/Summer_Research
 

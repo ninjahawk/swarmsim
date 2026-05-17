@@ -3,6 +3,69 @@ Started 2026-05-08
 
 ---
 
+## Index by Theme
+
+The 43 numbered findings below are presented chronologically (in the order they were
+generated). For navigation, here they are grouped by theme:
+
+### Baseline and Validation
+- F1  Equilibrium cruise speed v_eq = v0 + alpha/mu (exact)
+- F2  Solid-to-fluid transition appears continuous (preliminary)
+- F3  Low threshold for flock formation (alpha ~ 0.05)
+- F4  Full model robust to noise up to eta ~ 10
+- F9  Solid-to-fluid is a crossover, not a phase transition (finite-size scaling)
+- F17 No phase transition at any intermediate compactness (C = 0.15-0.60)
+
+### Predator Strategy (2D)
+- F5  Flocking maintains coherence under predator pressure (Phi ~ 1.0)
+- F6  Flock coherence robust to predator aggression
+- F7  Dilution effect: larger flocks expose smaller fractions
+- F8  Naive multi-predator co-localizes at CoM (mechanism diagnosed)
+- F10 Coordinated predators spread out but cannot break the flock (Phi > 0.92)
+- F11 Encirclement disrupts the flock (Phi = 0.77 at n_pred = 6)
+- F14 Encirclement floor: angular coverage is the key variable
+- F15 Encirclement works by flock division, not dissolution
+- F16 Minimum viable flock size (Phi = 0.9 crosses between N = 18-25)
+- F22 Sub-flock reunion in ~10 tu after predator removal
+- F25 Predator sensing threshold at r_sense ~ flock radius
+- F31 R_enc/Rg ~ 0.5 universal optimum (size-invariant encirclement scaling)
+- F32 Long-time encirclement: intermittent merge/split steady state
+- F33 Incomplete encirclement non-monotonic (5-active gap most disruptive)
+- F35 Adaptive R_enc = 0.5*Rg outperforms fixed (validates F31 dynamically)
+
+### Contagion and Vaccination
+- F12 Static panic does not propagate (calm Phi ~ 1.0 at 20% panic)
+- F18 (retracted; superseded by F23)
+- F23 SI contagion saturates flock at any beta > 0
+- F24 SIS contagion has clean epidemic threshold at beta/gamma ~ 1
+- F26 Combined predation + contagion: contagion dominates
+- F27 No spatial segregation from v0 contrast alone
+- F29 Sub-threshold SIS + encirclement: compression doubles panic peak (mild)
+- F30 Alpha-contrast produces real segregation via local clustering
+- F34 Outbreak persistence: epidemic outlasts predator removal by 100+ tu
+- F36 Targeted (degree-based) vaccination null result
+- F37 Spatial vaccination null result
+- F29 Critical-shift: encirclement lowers epidemic threshold by ~4%
+- F30 Herd-immunity threshold p_c ~ 0.46 (2x mean-field)
+
+### Phase Transition (Diagnosis Thread)
+- F9, F17 (above)
+- F38 Repulsion hardness null result (n = 1.5-12 identical)
+- F39 Langevin thermostat satisfies FDT (KE/N = kT to 1%)
+- F40 Hexatic order parameter |psi6| flat: soft repulsion cannot crystallize
+
+### 3D Extension
+- F41 Flocking generalizes to 3D; v_eq exact
+- F42 3D noise crossover at ramp ~ 15-25 (smooth, not a phase transition)
+- F43 3D encirclement fails at R_enc/Rg ~ 0.5; 2D-specific result
+- F44 (planned) 3D predator scaling: how many predators match 2D floor?
+
+### Floor and Scaling
+- F20 Encirclement floor is N-dependent at fixed R_enc (mid-N artifact)
+- F31 With R_enc/Rg scaling, encirclement is size-invariant
+
+---
+
 ## Literature Context and Novelty Assessment
 *Added 2026-05-15 based on literature search. Updated 2026-05-15 (session 2) with additional papers.*
 
@@ -1449,15 +1512,41 @@ different strategy that blocks all 3D escape directions simultaneously.
 
 ---
 
+## Finding 44 (PLANNED): 3D predator-count scaling
+**Status:** script written (3d/flocking3d_predator_scaling.py), not yet run.
+**Question:** F43 left 3D encirclement at Phi ~ 0.95 with n_pred = 6, well above the 2D
+floor of ~0.67. If the proposed mechanism (sphere-surface coverage insufficient) is
+correct, the disruption floor should drop as n_pred increases, with crossover predicted
+at n_pred ~ 13 (matching per-predator solid-angle gap to per-predator angular gap in 2D)
+and full 2D-equivalent disruption at n_pred ~ 20-50.
+**Geometric prediction:**
+2D: 6 predators on a ring = 60-deg gap each = ~1 rad of arc.
+3D: matching ~1 sr gap each on a sphere = n_pred ~ 4*pi sr / 1 sr ~ 13.
+**Expected results:**
+  n_pred =  1   Phi ~ 1.0
+  n_pred =  6   Phi ~ 0.95   (reproduces F43)
+  n_pred = 13   Phi ~ 0.85   (predicted crossover)
+  n_pred = 20   Phi ~ 0.75
+  n_pred = 50   Phi ~ 0.65   (matches/exceeds 2D floor)
+**Falsifies if:** 3D Phi stays above 0.90 even at n_pred = 50 -- would mean the
+"escape via third dimension" mechanism is fundamental, not just coverage-limited.
+**Runtime:** ~30-60 minutes (6 n_pred values * 5 seeds * 5000 steps * N = 350).
+**To run:** `python 3d/flocking3d_predator_scaling.py`
+
+---
+
 ## Open Questions / Next Directions
 1. 3D flocking (F41, F42, F43): F41, F42, F43 COMPLETE.
    - F41: v_eq=v0+alpha/mu exact in 3D; basic noise sweep
    - F42: smooth crossover at ramp~15-25; chi_peak drifts up with N; same as 2D qualitatively
    - F43: 3D encirclement fails to replicate 2D; R_enc/Rg~0.5 optimum is 2D-specific; escape dimension mechanism
-2. Further 3D experiments (NOT YET STARTED):
-   - How many predators does 3D encirclement need to match 2D disruption? (scale n_pred to 20-50)
+2. Further 3D experiments:
+   - **F44 (script ready, not run):** 3D predator-count scaling, n_pred=1..50
    - 3D adaptive encirclement: does adapting R_enc help when sphere coverage is the bottleneck?
 3. Alternative research directions:
    - Phase transition in 3D (hard repulsion Langevin in 3D)
    - Segregation in 3D
+   - Topological (k-nearest-neighbor) alignment force: test the mixing-mechanism
+     prediction from report §5 (synthesis section) -- targeted vaccination should
+     partially recover if neighbor graph is permutation-stable
 
