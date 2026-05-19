@@ -58,17 +58,16 @@ generated). For navigation, here they are grouped by theme:
 ### 3D Extension
 - F41 Flocking generalizes to 3D; v_eq exact
 - F42 3D noise crossover at ramp ~ 15-25 (smooth, not a phase transition)
-- F43 3D encirclement fails at R_enc/Rg ~ 0.5; 2D-specific result
-- F44 3D encirclement disruption non-monotonic in n_pred; hard floor Phi ~ 0.91
-- F45 3D adaptive encirclement null result; tracking damps the disruptive fluctuations
+- F43 3D encirclement does not disrupt the flock at all (Phi=1.0); encirclement is 2D-specific [corrected -- predator sign bug]
+- F44 3D encirclement fails at every predator count 1-50 (Phi>=0.99) [corrected -- predator sign bug]
+- F45 3D adaptive encirclement also does nothing (Phi=0.9998) [corrected -- predator sign bug]
 - F46 Vaccination targeting fails in 3D too; kinematic mixing is dimension-independent
 - F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
 - F48 Freezing the contact graph does not rescue targeting; degree-targeting null is structural
-- F49 3D compression mechanism verified; planar ring arrangement worse than spherical
+- F49 3D encirclement fails under any arrangement (sphere/planar) [corrected -- predator sign bug]
 - F50 Hard repulsion does not crystallize; higher exponent shrinks the core, not hardens it
 - F51 3D alpha-contrast segregation: matches 2D at moderate contrast, diluted at high contrast
 - F52 3D mixes ~1.8x SLOWER than 2D at matched degree; "mixing aid" theme falsified
-- F44 (planned) 3D predator scaling: how many predators match 2D floor?
 
 ### Floor and Scaling
 - F20 Encirclement floor is N-dependent at fixed R_enc (mid-N artifact)
@@ -1478,132 +1477,107 @@ and finite-size behavior are consistent between 2D and 3D.
 
 ---
 
-## Finding 43: 3D encirclement fails to replicate 2D effectiveness -- R_enc/Rg universal optimum is 2D-specific
+## Finding 43: 3D encirclement does not disrupt the flock at all -- encirclement is strictly 2D-specific
 <img src="./figures/flocking3d_predator_1.png" width="640"/>
 
-**What:** Extends the 3D flocking model with predator pressure. Tests naive (chase CoM) vs
-encirclement strategies at n_pred=1,3,6,10, and sweeps R_enc to test whether the R_enc/Rg~0.5
-universal optimum from Finding 23 transfers to 3D.
-**Evidence:** flocking3d_predator.py, N=350, slow prey v0=0.02, ramp=0.1, N_SEEDS=5, N_ITER=5000.
-3D encirclement results (R_enc=0.15, n_pred=1-10):
-  n_pred=1:  Phi=0.999  Rg=0.421
-  n_pred=3:  Phi=0.999  Rg=0.417
-  n_pred=6:  Phi=0.953+/-0.077  Rg=0.397
-  n_pred=10: Phi=0.941+/-0.074  Rg=0.375
-2D encirclement at same R_enc=0.15:
-  n_pred=3:  Phi=0.969  |  n_pred=6:  Phi=0.750  |  n_pred=10: Phi=0.729
-3D R_enc sweep at n_pred=6:
-  R_enc=0.15: R_enc/Rg=0.38, Phi=0.953+/-0.077
-  R_enc=0.20: R_enc/Rg=0.50, Phi=0.997+/-0.001  <-- 2D optimum, NO disruption in 3D
-  R_enc=0.25: R_enc/Rg=0.62, Phi=0.985
-**Key result 1 -- naive predators fail in 3D as in 2D:**
-Naive co-localization occurs in 3D for the same reason as 2D (all predators target the same
-3D CoM), giving Phi>0.99 at all n_pred. The co-localization mechanism is dimension-independent.
-**Key result 2 -- encirclement is dramatically less effective in 3D:**
-At n_pred=6 and R_enc=0.15 (2D-calibrated), 3D encirclement gives Phi=0.953 (high variance
-+/-0.077) vs 2D Phi=0.750 (consistent). At n_pred=10, Phi=0.941 vs 2D Phi=0.729.
-Disruption exists but is mild and unreliable -- the 3D flock is much more robust.
-**Key result 3 -- R_enc/Rg~0.50 universal optimum does NOT transfer to 3D:**
-The R_enc sweep shows minimum disruption at R_enc=0.15 (R_enc/Rg=0.38), NOT at R_enc/Rg=0.50.
-At R_enc=0.20 (exactly R_enc/Rg=0.50 -- the 2D optimum), Phi jumps back to 0.997 (no
-disruption). The 2D universal scaling law breaks down completely in 3D.
-**Key result 4 -- mechanism: 3D provides an escape dimension and sparse sphere coverage:**
-(a) The 3D flock has Rg~0.40 vs 2D Rg~0.29 -- larger spread means the same absolute R_enc
-corresponds to a smaller R_enc/Rg. (b) More fundamentally, 6 predators on a sphere surface
-cover far less of the solid angle than 6 predators on a circle cover of the full circle: a
-sphere surface is ~6x larger than a same-radius circle, so encirclement density drops. (c)
-The flock can escape through the third spatial dimension (vertical to any predator plane),
-making encirclement fundamentally less effective regardless of R_enc.
-**Implication:** Encirclement is a 2D-specific strategy whose effectiveness depends on
-predators sealing a 1D ring (circle). In 3D, sealing a 2D surface (sphere) with the same
-number of predators is geometrically much harder. Effective 3D predator encirclement would
-require either many more predators (to achieve comparable sphere coverage) or a fundamentally
-different strategy that blocks all 3D escape directions simultaneously.
+**CORRECTION NOTE:** This finding was originally published with an inverted predator-force
+sign in the 3D scripts (`force_on_prey` returned the negative of the repulsion, so the
+"predators" attracted prey). The numbers below are the CORRECTED results after fixing the
+sign. The original writeup reported "mild disruption (Phi~0.95)" and an "R_enc/Rg optimum"
+-- both were artifacts of the attraction bug. Findings 44, 45, and 49 are corrected
+likewise; all four collapse into this one result.
+
+**What:** Extends the 3D flocking model with correctly repulsive predator pressure. Tests
+naive (chase CoM) vs encirclement at n_pred=1,3,6,10 and sweeps R_enc, comparing to 2D.
+**Evidence:** flocking3d_predator.py (corrected), N=350, slow prey v0=0.02, ramp=0.1,
+N_SEEDS=5, N_ITER=5000.
+3D, R_enc=0.15:
+  n_pred  3D naive   3D encirclement   2D encirclement (same R_enc)
+   1      1.000      1.000             0.999
+   3      1.000      1.000             0.969
+   6      1.000      1.000             0.750
+  10      1.000      1.000             0.729
+3D R_enc sweep at n_pred=6 (3D flock Rg~0.43):
+  R_enc=0.05 (R/Rg=0.12) Phi=1.000 | 0.15 (0.35) 1.000 | 0.20 (0.47) 1.000 |
+  0.25 (0.58) 1.000 | 0.30 (0.70) 1.000 | 0.35 (0.82) 1.000
+**Key result 1 -- 3D encirclement does not disrupt the flock, at all.**
+With correct repulsive predators, 3D encirclement leaves Phi = 1.000 at every predator
+count and every encirclement radius tested. There is no disruption, no R_enc optimum, no
+variance -- the 3D flock is completely unmoved. 2D encirclement at the identical R_enc=0.15
+disrupts strongly (Phi 0.75 at n_pred=6, 0.73 at n_pred=10). The 2D-vs-3D contrast is
+total: Phi~0.73 (2D) vs 1.000 (3D).
+**Key result 2 -- naive predators also fail in 3D, as in 2D.**
+Naive predators co-localize at the CoM and give Phi=1.000 -- the co-localization failure
+mode is dimension-independent.
+**Key result 3 -- mechanism: a 2D ring closes a curve, a 3D shell cannot close a volume.**
+2D encirclement works by placing predators around the flock's 1D perimeter, sealing every
+escape direction in the plane. In 3D the prey can always leave through a direction no
+predator blocks: a handful of predators on a sphere cover only a small fraction of the
+4*pi solid angle, and the flock simply flows through the gaps. Two further factors
+reinforce this: (a) the simulated 3D flock is spatially diffuse (Rg~0.43, nearly
+box-filling -- the model has no cohesion force, and in 3D the flock does not self-compact
+the way the 2D flock settles to Rg~0.29), so there is no compact target to surround; and
+(b) repulsive predators at any R_enc just open small local voids that the flock flows
+around -- Rg stays ~0.43 and the order parameter never moves.
+**Implication:** Encirclement is strictly a 2D strategy. It depends on sealing a closed
+curve (the flock perimeter) with point predators, which a modest number of predators can
+do in 2D but cannot do for a 2D surface enclosing a 3D volume. No encirclement radius,
+predator count (see F44), adaptive scheme (F45), or predator arrangement (F49) recovers
+any disruption in 3D. Effective 3D flock disruption would require a fundamentally
+non-encirclement strategy.
 
 ---
 
-## Finding 44: 3D encirclement disruption is non-monotonic in predator count -- a hard floor at Phi~0.91, never reaching the 2D floor
+## Finding 44: 3D encirclement does not disrupt the flock at any predator count (1-50)
 <img src="./figures/finding44_3d_predator_scaling.png" width="640"/>
 
+**CORRECTION NOTE:** Originally published with the inverted predator-force sign (see F43
+correction note). The original writeup reported a "non-monotonic disruption with a hard
+floor at Phi~0.91" and "compression densifies the flock" -- both artifacts of the
+attraction bug (attractive predators on an interior shell pulled the flock inward, which
+is why the buggy Rg fell). The corrected results below show no disruption whatsoever.
 **What:** Sweeps predator count n_pred = 1, 3, 6, 10, 20, 50 for 3D encirclement at fixed
-R_enc = 0.15, to test whether adding predators closes the sphere-surface coverage gap and
-drives 3D disruption down toward the 2D floor (~0.67).
-**Evidence:** flocking3d_predator_scaling.py, N=350, slow prey v0=0.02, ramp=0.1,
-N_SEEDS=5, N_ITER=5000, warmup=3000.
-  n_pred= 1  Phi=0.999+/-0.000  Rg=0.421+/-0.009
-  n_pred= 3  Phi=0.999+/-0.000  Rg=0.417+/-0.008
-  n_pred= 6  Phi=0.981+/-0.022  Rg=0.399+/-0.015
-  n_pred=10  Phi=0.913+/-0.082  Rg=0.355+/-0.049   <-- disruption optimum
-  n_pred=20  Phi=0.975+/-0.026  Rg=0.312+/-0.044
-  n_pred=50  Phi=0.930+/-0.035  Rg=0.241+/-0.024
-**Key result 1 -- the geometric prediction is falsified.**
-The pre-registered prediction (F43 follow-up) was a monotonic decrease in Phi with n_pred,
-crossing the 2D floor (~0.67) near n_pred ~ 20-50 once the sphere surface was adequately
-covered. Instead disruption is NON-MONOTONIC: Phi reaches a shallow minimum of 0.913 at
-n_pred=10, then RISES back to 0.93-0.98 for n_pred = 20 and 50. The 3D order parameter
-never drops below ~0.91 at any predator count tested. The "coverage-limited" hypothesis --
-that enough predators would seal the sphere -- is wrong.
-**Key result 2 -- mechanism: more predators compress, they do not divide.**
-Rg falls monotonically with n_pred (0.42 -> 0.24): each added predator squeezes the flock
-inward. In 2D this compression DIVIDES the flock into scattering sub-flocks (F15), which is
-why 2D encirclement works. In 3D the same compression instead packs the flock into a
-denser, smaller sphere. A denser flock has stronger local alignment coupling (more
-neighbors within rf), so it is MORE coherent, not less. Past n_pred~10 the compression
-effect dominates and Phi climbs back up. 3D encirclement therefore has a built-in
-self-defeating feedback: the harder you squeeze, the more cohesive the target becomes.
-**Key result 3 -- the n_pred=10 optimum is real but unreliable.**
-At the optimum the seed-to-seed std is large (+/-0.082): some seeds reach Phi~0.8, others
-stay near 0.99. n_pred=10 sits on a knife-edge between the under-coverage regime (few
-predators, flock ignores them) and the over-compression regime (many predators, flock
-balls up). Neither neighboring count is reliably disruptive.
-**Implication:** Encirclement cannot be rescued in 3D by brute-force predator count. The
-2D floor of Phi~0.67 is unreachable in 3D with this strategy at any n_pred up to 50. This
-confirms F43's deeper reading: the escape-dimension argument is FUNDAMENTAL, not merely a
-coverage deficit. Effective 3D flock disruption requires a qualitatively different
-strategy -- one that exploits the compression-induced density gradient or attacks the
-flock's internal alignment coupling directly, rather than relying on geometric enclosure.
+R_enc = 0.15, with correctly repulsive predators.
+**Evidence:** flocking3d_predator_scaling.py (corrected), N=350, v0=0.02, ramp=0.1,
+N_SEEDS=5, N_ITER=5000.
+  n_pred= 1  Phi=1.000+/-0.000  Rg=0.425
+  n_pred= 3  Phi=1.000+/-0.000  Rg=0.428
+  n_pred= 6  Phi=1.000+/-0.000  Rg=0.431
+  n_pred=10  Phi=1.000+/-0.000  Rg=0.433
+  n_pred=20  Phi=0.998+/-0.004  Rg=0.445
+  n_pred=50  Phi=0.992+/-0.010  Rg=0.470
+**Key result -- predator count does not matter; 3D encirclement never disrupts.**
+Phi stays at or above 0.99 for every predator count from 1 to 50. There is no
+disruption optimum and no non-monotonicity -- the buggy version's "dip to 0.913 at
+n_pred=10" does not exist. Rg rises slightly with n_pred (0.425 -> 0.470): repulsive
+predators push prey gently outward, the opposite of the buggy version's spurious
+compression. The flock stays fully coherent regardless of how many predators encircle it.
+**Implication:** Confirms F43. 3D encirclement cannot be rescued by brute-force predator
+count -- it does not disrupt the flock at all, at any count. The failure is the geometric
+one of F43 (a handful of point predators cannot seal a 2D surface around a 3D volume), not
+a coverage deficit that more predators could close.
 
 ---
 
-## Finding 45: 3D adaptive encirclement is a null result -- adaptive tracking does not help, and mildly hurts by damping disruptive fluctuations
+## Finding 45: 3D adaptive encirclement also does not disrupt the flock
 <img src="./figures/finding45_3d_adaptive.png" width="560"/>
 
-**What:** In 2D, adaptive R_enc = 0.5*live_Rg outperforms fixed R_enc (F35) by holding the
-predators at the R_enc/Rg~0.5 optimum through the merge/split cycle. This tests whether
-adaptive tracking helps in 3D, where F43 showed the 2D optimum ratio does not transfer.
-Compares fixed R_enc=0.15 against adaptive at ratios 0.38 and 0.50, n_pred=10, long run
-(15000 steps = 150 time units) to capture the steady state.
-**Evidence:** flocking3d_adaptive.py, N=350, slow prey v0=0.02, ramp=0.1, N_SEEDS=5.
-  fixed R_enc=0.15        Phi=0.968+/-0.009  t_std=0.077  Rg=0.305  f(Phi>0.85)=0.924
-  adaptive R_enc=0.38*Rg  Phi=0.974+/-0.013  t_std=0.060  Rg=0.338  f(Phi>0.85)=0.942
-  adaptive R_enc=0.50*Rg  Phi=0.982+/-0.012  t_std=0.036  Rg=0.334  f(Phi>0.85)=0.963
-**Key result 1 -- adaptive does not help; it mildly hurts.**
-Fixed R_enc=0.15 gives the LOWEST steady-state Phi (0.968, most disruption). Adaptive
-tracking monotonically raises Phi: 0.38*Rg -> 0.974, 0.50*Rg -> 0.982. The 2D benefit of
-adaptive encirclement (F35: mean Phi 0.778 -> 0.713, a real improvement) does not transfer
-to 3D. It reverses sign.
-**Key result 2 -- mechanism: adaptive damps the only disruptive moments.**
-The temporal std of Phi falls sharply with adaptivity (t_std: 0.077 fixed -> 0.060 -> 0.036).
-In 3D, encirclement never produces sustained disruption (F43, F44); its only disruptive
-moments are transient downward fluctuations of Phi. Fixed R_enc lets these fluctuations
-happen. Adaptive R_enc, by continuously repositioning predators to track the live Rg,
-stabilizes the predator-flock geometry into a steady configuration -- which suppresses the
-fluctuations and therefore suppresses the disruption. Adaptive tracking makes the flock
-STEADIER, and a steadier 3D flock is a more coherent one.
-**Key result 3 -- the F44 n_pred=10 minimum is a transient.**
-F44 measured Phi=0.913 at n_pred=10 over 5000 steps; here the same configuration (fixed
-R_enc=0.15, n_pred=10) settles to Phi=0.968 over 15000 steps. The F44 "disruption optimum"
-is a mid-run transient that relaxes away over longer times -- consistent with F44's finding
-that n_pred=10 sits on an unreliable knife-edge.
-**Why it differs from 2D:** Adaptive encirclement works in 2D because there is a genuine
-R_enc/Rg~0.5 optimum (F23) and tracking Rg keeps predators on it through the merge/split
-cycle. F43 already showed 3D has no such optimum -- the disruption-vs-R_enc curve is shallow
-and flat. With no optimum to track, adaptive control contributes only its stabilizing
-side-effect, which is counterproductive.
-**Implication:** Confirms and extends F43/F44. Encirclement in 3D cannot be rescued by
-predator count (F44) or by adaptive geometry (F45). All three 3D predator findings point
-to the same conclusion: geometric enclosure is a 2D-specific strategy, and 3D flock
-disruption requires a fundamentally different mechanism.
+**CORRECTION NOTE:** Originally published with the inverted predator-force sign (see F43
+correction note). The original writeup reported "fixed Phi=0.968 vs adaptive 0.974/0.982"
+and a story about "adaptive damping disruptive fluctuations" -- artifacts of the attraction
+bug. The corrected results show no disruption in any configuration.
+**What:** Tests whether adaptive R_enc = ratio*live_Rg helps in 3D. Compares fixed
+R_enc=0.15 against adaptive at ratios 0.38 and 0.50, n_pred=10, 15000 steps.
+**Evidence:** flocking3d_adaptive.py (corrected), N=350, v0=0.02, ramp=0.1, N_SEEDS=5.
+  fixed R_enc=0.15        Phi=0.9998  t_std=0.000  Rg=0.435  f(Phi>0.85)=1.000
+  adaptive R_enc=0.38*Rg  Phi=0.9998  t_std=0.000  Rg=0.435  f(Phi>0.85)=1.000
+  adaptive R_enc=0.50*Rg  Phi=0.9998  t_std=0.000  Rg=0.432  f(Phi>0.85)=1.000
+**Key result -- adaptive radius makes no difference; 3D encirclement still does nothing.**
+Fixed and adaptive R_enc all leave the flock at Phi=0.9998 with zero temporal fluctuation.
+There is no disruption to improve on or damp. The 2D benefit of adaptive encirclement
+(F35) has no 3D analogue because 3D encirclement produces no disruption in the first place.
+**Implication:** Confirms F43/F44. 3D encirclement cannot be rescued by adaptive geometry
+any more than by predator count -- there is simply no disruption at any radius or schedule.
 
 ---
 
@@ -1776,54 +1750,33 @@ Section 5 has been revised to separate these two mechanisms.
 
 ---
 
-## Finding 49: 3D encirclement compression mechanism verified; planar (ring) predator arrangement is worse than spherical, not better
+## Finding 49: 3D encirclement does not disrupt the flock under any predator arrangement (sphere or planar)
 <img src="./figures/finding49_3d_strategy.png" width="680"/>
 
-**What:** Finding 44 proposed that 3D encirclement fails because adding predators
-compresses the flock, and in 3D compression densifies it (more neighbors within the
-alignment radius), strengthening the alignment coupling. This experiment (a) verifies that
-mechanism by measuring the mean alignment-neighbor count <k_align> directly, and (b) tests
-the report's implicit claim that the spherical predator arrangement is the bottleneck, by
-comparing it against a planar arrangement -- all predators on a ring in the z=z_com plane,
-recreating the 2D encirclement geometry inside the 3D flock.
-**Evidence:** flocking3d_strategy.py, N=350, N_SEEDS=5, N_ITER=5000, R_enc=0.15.
-  mode     n_pred  Phi              Rg      <k_align>
-  sphere      6    0.981+/-0.022    0.399   22.0
-  sphere     10    0.913+/-0.082    0.355   41.3
-  sphere     20    0.975+/-0.026    0.312   48.1
-  planar      6    0.971+/-0.053    0.393   24.6
-  planar     10    0.998+/-0.001    0.411   18.8
-  planar     20    0.997+/-0.001    0.399   21.0
-**Key result 1 -- the F44 compression mechanism is verified.**
-Under spherical encirclement, as n_pred rises 6->10->20 the radius of gyration falls
-monotonically (0.399->0.355->0.312) and the mean alignment-neighbor count rises
-monotonically (22.0->41.3->48.1). Adding predators demonstrably compresses and densifies
-the 3D flock, exactly as Finding 44 claimed.
-**Key result 2 -- densification explains the Phi recovery, but Phi is not a pure function
-of <k_align>.** From n_pred=10 to 20, <k_align> rises 41->48 and Phi rises 0.913->0.975:
-densification stabilizes the flock, as F44 predicted. But from n_pred=6 to 10, <k_align>
-also rises (22->41) while Phi FALLS (0.981->0.913). The picture is a competition: predator
-forcing perturbs the flock, densification stabilizes it. At n_pred=10 the perturbation
-transiently wins (the F44 knife-edge); by n_pred=20 the flock is so dense (<k_align>=48)
-that the stabilization dominates and coherence is restored. The F44 mechanism is the
-restoring force, not the whole story.
-**Key result 3 -- the planar (ring) arrangement is WORSE than spherical, not better.**
-The report (Section 4.25) argued a sphere is intrinsically harder to seal than a 2D ring.
-The natural inference -- that a ring of predators would do better -- is refuted. Planar
-encirclement gives Phi=0.998 at n_pred=10 and 0.997 at n_pred=20: essentially no
-disruption, strictly worse than the (already weak) spherical result. The reason is
-decisive: planar predators sit in the z=z_com plane and constrain only the flock's xy
-extent. The flock simply extends along the unconstrained z axis -- planar Rg stays
-~0.39-0.41 and <k_align> stays ~19-25, i.e. the flock is NOT compressed at all. A ring in
-3D closes nothing; the third dimension is wide open above and below it.
-**Implication:** Closes the 3D predator thread definitively. Spherical encirclement at
-least achieves compression (and fails because compression densifies and stabilizes); the
-planar ring fails even harder because it achieves no compression. Together with F43
-(radius), F44 (count), and F45 (adaptive), every geometric variant of encirclement has now
-been shown to fail in 3D. The escape dimension is fundamental: any predator arrangement
-that leaves one spatial axis unconstrained lets the flock flow along it, and no arrangement
-of a modest predator count can constrain all three axes of a sphere the way a 2D ring
-constrains both axes of a circle.
+**CORRECTION NOTE:** Originally published with the inverted predator-force sign (see F43
+correction note). The original writeup reported a "verified compression mechanism" (Rg
+falling, <k_align> rising) and "planar worse than spherical" -- all artifacts. The buggy
+"compression" was attractive predators pulling the flock inward; with correct repulsive
+predators there is no compression and no disruption.
+**What:** Compares spherical (Fibonacci-sphere) vs planar (ring in z=z_com plane) predator
+arrangements at n_pred=6,10,20, R_enc=0.15, with correctly repulsive predators. Also
+records the mean alignment-neighbor count <k_align>.
+**Evidence:** flocking3d_strategy.py (corrected), N=350, N_SEEDS=5, N_ITER=5000.
+  mode     n_pred  Phi       Rg      <k_align>
+  sphere      6    0.9998    0.431   16.7
+  sphere     10    0.9998    0.433   16.5
+  sphere     20    0.9980    0.445   15.5
+  planar      6    0.9998    0.432   16.6
+  planar     10    0.9998    0.432   16.6
+  planar     20    0.9998    0.433   16.2
+**Key result -- neither arrangement disrupts; there is no compression.**
+Spherical and planar arrangements both leave Phi >= 0.998 at every predator count. Rg
+stays ~0.43 and <k_align> stays ~16 throughout -- the flock is neither compressed nor
+densified. The buggy version's "compression mechanism" does not exist with correct
+predators. Spherical and planar are equivalent because both do nothing.
+**Implication:** Confirms F43/F44/F45. 3D encirclement does not disrupt the flock under
+any predator count, radius, adaptive scheme, or arrangement. Every geometric variant
+fails. Encirclement is strictly a 2D strategy.
 
 ---
 
