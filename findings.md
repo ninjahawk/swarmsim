@@ -32,6 +32,7 @@ generated). For navigation, here they are grouped by theme:
 - F32 Long-time encirclement: intermittent merge/split steady state
 - F33 Incomplete encirclement non-monotonic (5-active gap most disruptive)
 - F35 Adaptive R_enc = 0.5*Rg outperforms fixed (validates F31 dynamically)
+- F53 Prey fatigue does not make encirclement damage irreversible (align-fatigue deepens attack)
 
 ### Contagion and Vaccination
 - F12 Static panic does not propagate (calm Phi ~ 1.0 at 20% panic)
@@ -1927,6 +1928,59 @@ disrupt (escape dimension, F43-F49), hard to target (structural, F48), and hard 
 (geometric, F51), but none of these is due to faster mixing. This finding is a direct
 self-test catch: an interpretive theme that looked unifying was falsified by the
 measurement it predicted.
+
+---
+
+## Finding 53: Prey fatigue does not make encirclement damage irreversible -- but alignment-impairing fatigue deepens the attack
+<img src="./figures/finding53_fatigue.png" width="560"/>
+
+**What:** Findings 22 and 26 established that encirclement damage is fully reversible --
+divided sub-flocks reunite within ~10 time units of predator removal -- but both assumed
+prey agents have no internal state. This adds a per-agent fatigue variable Q in [0,1]: Q
+rises (rate r_fat) while an agent is within a predator's range and recovers (rate
+r_rec=0.01) otherwise. Fatigue impairs one faculty, tested in two modes -- 'speed'
+(effective v0 *= 1-Q) and 'align' (effective alpha *= 1-Q). Protocol: warmup ->
+encirclement (60 tu) -> predators removed -> recovery (60 tu).
+**Evidence:** fatigue.py (2D, corrected repulsive predators), N=350, n_pred=10,
+R_enc=0.5*Rg, N_SEEDS=5. r_fat swept 0-0.8.
+  mode    r_fat   Phi_enc   Phi_recovered   Q_enc   Q_rec
+  speed   0.0     0.895     0.959           0.00    0.00
+  speed   0.2     0.851     1.000           0.59    0.15
+  speed   0.8     0.918     0.999           0.74    0.18
+  align   0.0     0.895     0.959           0.00    0.00
+  align   0.1     0.831     1.000           0.23    0.01
+  align   0.2     0.699     1.000           0.63    0.12
+  align   0.8     0.693     0.999           0.80    0.23
+**Key result 1 -- encirclement damage stays reversible, even with fatigue.**
+Phi recovers to >=0.96 in EVERY configuration -- both modes, every fatigue rate. The
+fatigued cases recover to 0.999-1.000, even more completely than the no-fatigue baseline
+(0.959, whose lower value and large +/-0.082 std are one slow-reuniting seed, not a
+fatigue effect). Fatigue does not make encirclement damage irreversible.
+**Key result 2 -- recovery happens even while substantial fatigue persists.**
+At r_fat=0.8, agents end the recovery phase still carrying Q_rec~0.18-0.23 of fatigue, yet
+Phi has fully returned to ~1.0. Coherence recovers before fatigue does. The reason:
+once predators leave, every agent de-stresses and sheds fatigue at the same rate, so the
+residual fatigue is HOMOGENEOUS across the flock. A uniformly fatigued flock (all agents
+with the same reduced v0 or alpha) still aligns perfectly -- fatigue only enables
+disruption when it is heterogeneous.
+**Key result 3 -- the two fatigue modes differ, exactly as F24/F27 predict.**
+Alignment-impairing fatigue ('align' mode) deepens the during-encirclement disruption:
+Phi_enc falls monotonically with r_fat (0.895 -> 0.831 -> 0.699 -> 0.693). Speed-impairing
+fatigue ('speed' mode) does not: Phi_enc stays ~0.85-0.94 with no trend. This is the
+direct dynamical analogue of F24 (a v0 contrast does NOT segregate the flock -- alignment
+homogenises group speed) and F27 (an alpha contrast DOES segregate, via local clustering).
+A flock of agents with heterogeneous alpha (some fatigued, some not) partially segregates,
+which the encircling predators exploit; heterogeneous v0 does not segregate, so
+speed-fatigue gives the predators no extra purchase.
+**Implication:** The reversibility of kinematic damage (F22) is robust to agent fatigue.
+Fatigue matters only while it is heterogeneous and only when it impairs ALIGNMENT, not
+speed -- and even then it merely deepens the transient disruption, it does not make the
+damage outlast the predators. This sharpens the F22/F26 dichotomy: kinematic damage is
+reversible not because the flock has no memory, but because the alignment force realigns
+agents regardless of their internal fatigue state, and post-attack fatigue decays
+uniformly so it leaves no exploitable heterogeneity. Contagion remains the only stressor
+studied that writes irreversible damage, because it writes a heterogeneous internal label
+that mixing and recovery cannot homogenise away.
 
 ---
 

@@ -91,7 +91,7 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers thirty-four investigations, producing fifty-two numbered findings.
+This report covers thirty-five investigations, producing fifty-three numbered findings.
 The first three sections establish the baseline: implementation validation and the v_eq
 analytical result (Section 4.1), parameter sweeps and flock formation (Section 4.2),
 and the solid-to-fluid transition tested as a true phase transition (Section 4.3).
@@ -1694,6 +1694,63 @@ measurement it predicted.
 
 ---
 
+### 4.35 Prey Fatigue Does Not Make Encirclement Damage Irreversible (Finding 53)
+
+Section 4.7 (Finding 22) established that encirclement damage is fully reversible: divided
+sub-flocks reunite within ~10 time units once the predators are removed. That result, and
+the kinematic-vs-epidemic asymmetry of Section 4.16, assume prey agents carry no internal
+state. This section tests that assumption by giving each agent a fatigue variable Q in
+[0, 1] that rises while the agent is within a predator's range (rate r_fat) and recovers
+otherwise (rate r_rec = 0.01). Fatigue impairs one faculty, and two modes are tested:
+'speed' (effective cruise speed v0 is scaled by 1 - Q) and 'align' (effective alignment
+strength alpha is scaled by 1 - Q). The protocol is warmup, then 60 time units of
+encirclement, then predator removal and 60 time units of recovery (fatigue.py, 2D, N = 350,
+n_pred = 10, N_SEEDS = 5).
+
+| mode  | r_fat | Phi during enc. | Phi recovered | Q at end of recovery |
+|-------|-------|-----------------|---------------|----------------------|
+| speed | 0.0   | 0.895           | 0.959         | 0.00                 |
+| speed | 0.2   | 0.851           | 1.000         | 0.15                 |
+| speed | 0.8   | 0.918           | 0.999         | 0.18                 |
+| align | 0.1   | 0.831           | 1.000         | 0.01                 |
+| align | 0.2   | 0.699           | 1.000         | 0.12                 |
+| align | 0.8   | 0.693           | 0.999         | 0.23                 |
+
+![](./figures/finding53_fatigue.png)
+
+**Encirclement damage stays reversible, in both modes, at every fatigue rate.** The order
+parameter recovers to at least 0.96 in every configuration, and the fatigued cases recover
+to 0.999-1.000 — even more completely than the no-fatigue baseline, whose slightly lower
+0.959 (with a large seed standard deviation) is one slow-reuniting realization rather than
+a fatigue effect. Prey fatigue does not make encirclement damage outlast the predators.
+
+**Coherence recovers before fatigue does.** At the highest accumulation rate the agents
+end the recovery phase still carrying Q ~ 0.2 of fatigue, yet the flock has fully
+realigned. The reason is that once the predators leave, every agent de-stresses and sheds
+fatigue at the same rate, so the residual fatigue is homogeneous across the flock. A
+uniformly fatigued flock — every agent with the same reduced speed or alignment strength —
+still aligns perfectly. Fatigue enables disruption only while it is heterogeneous.
+
+**The two fatigue modes differ exactly as the segregation findings predict.**
+Alignment-impairing fatigue deepens the disruption *during* the attack: Phi during
+encirclement falls monotonically with the fatigue rate, from 0.90 to 0.69. Speed-impairing
+fatigue does not — Phi during encirclement stays near 0.85-0.94 with no trend. This is the
+dynamical analogue of Sections 4.10 and 4.12: a speed (v0) contrast does not segregate the
+flock because the alignment force homogenizes group speed (Finding 24), whereas an
+alignment-strength (alpha) contrast does segregate it via local clustering (Finding 27). A
+flock with heterogeneous fatigue-induced alpha partially segregates, and the encircling
+predators exploit that; heterogeneous fatigue-induced speed gives them no such purchase.
+
+The result sharpens the kinematic-versus-internal-state dichotomy of Section 4.16.
+Kinematic damage is reversible not because the flock has no memory, but because the
+alignment force realigns agents irrespective of their fatigue, and post-attack fatigue
+decays uniformly and so leaves no exploitable heterogeneity. Contagion remains the only
+stressor in this study that inflicts lasting damage — because it alone writes a
+*heterogeneous* internal label (panicked versus calm) that neither mixing nor uniform
+recovery can erase.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -1949,7 +2006,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced twenty-five main results (selecting the most general across 52 findings):
+This study produced twenty-six main results (selecting the most general across 53 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -2162,6 +2219,18 @@ This study produced twenty-five main results (selecting the most general across 
     dimension, structural degree-homogeneity, and neighborhood geometry — none of which is
     faster mixing. This is one of several cases (see also results 22 and 23) where a
     pre-registered or interpretive prediction was tested and corrected rather than assumed.
+
+26. **Prey fatigue does not make encirclement damage irreversible:** Adding a per-agent
+    fatigue variable that accumulates under predator pressure and impairs either cruise
+    speed or alignment strength does not change the reversibility established in result 6:
+    the flock recovers to Phi ~ 1.0 within the recovery window at every fatigue rate, in
+    both modes. Coherence recovers even while substantial fatigue persists, because
+    post-attack fatigue decays uniformly and a homogeneously fatigued flock still aligns.
+    Fatigue deepens the disruption *during* the attack only when it impairs alignment, not
+    speed — the dynamical echo of results 16 and 19 on segregation (an alpha contrast
+    segregates the flock, a v0 contrast does not). Contagion remains the only stressor
+    studied that inflicts lasting damage, because it alone writes a heterogeneous internal
+    label that uniform recovery cannot erase.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

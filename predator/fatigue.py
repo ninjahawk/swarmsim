@@ -216,7 +216,8 @@ def run(r_fat, mode, seed):
 
 if __name__ == '__main__':
     print('Finding 53 -- prey fatigue and the reversibility of encirclement')
-    print('  N=%d  n_pred=%d  R_enc=%.2f  seeds=%d' % (N, N_PRED, R_ENC, N_SEEDS))
+    print('  N=%d  n_pred=%d  R_enc=%.2f*Rg  seeds=%d' % (
+          N, N_PRED, RENC_RATIO, N_SEEDS))
     print('  encirclement %d steps, recovery %d steps; r_rec=%.2f' % (
           N_ENC, N_REC, R_REC))
     print('  r_fat sweep: %s   modes: speed, align' % R_FAT_VALS)
@@ -262,8 +263,8 @@ if __name__ == '__main__':
 
     with open('outputs/finding53_fatigue.txt', 'w') as f:
         f.write('Finding 53 -- prey fatigue and encirclement reversibility\n')
-        f.write('N=%d n_pred=%d R_enc=%.2f seeds=%d r_rec=%.2f\n\n' % (
-                N, N_PRED, R_ENC, N_SEEDS, R_REC))
+        f.write('N=%d n_pred=%d R_enc=%.2f*Rg seeds=%d r_rec=%.2f\n\n' % (
+                N, N_PRED, RENC_RATIO, N_SEEDS, R_REC))
         for mode in ('speed', 'align'):
             f.write('mode=%s:\n' % mode)
             f.write('  r_fat  Phi_enc  Phi_recovered  Q_enc  Q_rec\n')
