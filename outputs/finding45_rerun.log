@@ -1,0 +1,10 @@
+Finding 45 -- 3D adaptive encirclement
+  N=350  seeds=5  iter=15000  warmup=3000  n_pred=10
+
+  fixed R_enc=0.15           Phi=1.000+/-0.000  tstd=0.000  Rg=0.435  f(Phi>0.85)=1.000  [167s]
+  adaptive R_enc=0.38*Rg     Phi=1.000+/-0.000  tstd=0.000  Rg=0.435  f(Phi>0.85)=1.000  [172s]
+  adaptive R_enc=0.50*Rg     Phi=1.000+/-0.000  tstd=0.000  Rg=0.432  f(Phi>0.85)=1.000  [172s]
+
+Total runtime: 8.5 min
+  -> figures/finding45_3d_adaptive.png
+  -> outputs/finding45_3d_adaptive.txt

@@ -1984,6 +1984,55 @@ that mixing and recovery cannot homogenise away.
 
 ---
 
+## Finding 54: Heterogeneous recovery rates lower the SIS epidemic threshold -- slow recoverers act as reservoirs
+<img src="./figures/recovery_heterogeneity_1.png" width="640"/>
+
+**What:** Finding 25 established a clean SIS epidemic threshold at beta/gamma ~ 1 for a
+flock in which every agent recovers from panic at the SAME rate gamma. Real populations
+are heterogeneous -- some individuals shed panic fast, others stay agitated. This adds a
+per-agent recovery rate gamma_i drawn from a bimodal distribution {1-spread, 1+spread}
+(50/50), holding the arithmetic-mean gamma fixed at 1.0. The question: does a spread in
+gamma at fixed mean change the outbreak? Mean-field theory predicts yes -- the endemic
+state is governed by the per-agent ratio beta*<k>/gamma_i, so slow recoverers (small
+gamma_i) sit panicked far longer and act as reservoirs that keep reseeding neighbours.
+The effective threshold is set closer to the HARMONIC mean of gamma (<= arithmetic mean),
+so spreading gamma at fixed mean should LOWER the threshold.
+**Evidence:** recovery_heterogeneity.py, N=350, beta swept 0.1-5.0, 4 seeds. Conditions
+(all mean gamma=1.0): homog (spread 0), mild (0.5), strong (0.8), extreme (0.95).
+  condition   spread   beta_c (f_ss crosses 0.15)
+  homog       0.00     0.385
+  mild        0.50     0.318
+  strong      0.80     0.155
+  extreme     0.95     < 0.1 (endemic at every beta tested)
+**Key result 1 -- heterogeneity lowers the epidemic threshold, ~2.5x at strong spread.**
+beta_c falls monotonically: 0.385 (homog) -> 0.318 (mild) -> 0.155 (strong). At extreme
+spread the flock is endemic even at beta=0.1 (f_ss=0.319) -- the slow half (gamma=0.05)
+recovers so rarely that any contagion rate sustains an outbreak. Heterogeneity helps the
+epidemic, exactly as the harmonic-mean argument predicts.
+**Key result 2 -- the effect is a near-threshold phenomenon; deep supercritical it vanishes.**
+At beta=5.0 all four conditions converge to f_ss~0.91. Far above threshold every agent is
+re-infected faster than even the fast recoverers can clear, so the recovery distribution
+stops mattering. Heterogeneity reshapes the threshold, not the saturated endemic state.
+**Key result 3 -- reservoir confirmed: panic localises on slow recoverers.**
+At beta=1.0 the slow-agent panic fraction exceeds the fast-agent fraction by 1.45x (mild),
+1.84x (strong), 1.97x (extreme). At extreme spread the slow half is essentially saturated
+(f=0.974) while the fast half sits at f~0.50 -- the outbreak is carried by the slow
+sub-population, which reseeds the fast agents faster than they recover.
+**Key result 4 -- heterogeneity sweep at fixed beta=0.7 is monotonic.**
+Holding beta=0.7, f_ss rises smoothly with spread: 0.430 (spread 0) -> 0.542 (0.6) ->
+0.675 (0.95). The endemic level is a continuous function of the recovery-rate spread.
+**Implication:** The F25 epidemic threshold is not a property of the mean recovery rate
+alone -- it is set by the SPREAD of recovery rates. A population with a fast-recovering
+majority and a slow-recovering minority is more epidemic-prone than a uniform population
+with the same average resilience, because the slow minority forms a persistent reservoir.
+This is the contagion-side counterpart to the F53 fatigue result: there, heterogeneity in
+an internal state (fatigue) enabled disruption only transiently; here, heterogeneity in an
+internal rate (recovery) shifts a genuine threshold. It also reframes vaccination -- the
+most valuable agents to protect are not the high-degree hubs (F36 found none) but the
+slow recoverers, the agents whose internal dynamics make them reservoirs.
+
+---
+
 ## Open Questions / Next Directions
 1. 3D flocking thread COMPLETE (F41-F46):
    - F41: v_eq=v0+alpha/mu exact in 3D; basic noise sweep

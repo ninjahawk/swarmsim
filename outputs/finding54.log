@@ -1,0 +1,75 @@
+Exp 1: beta sweep, mean gamma=1.0, 4 seeds
+  (bimodal {1-spread, 1+spread}; spread=0 is homogeneous)
+  -- homog (spread=0.00) --
+     beta= 0.1  f_ss=0.000 +/- 0.000
+     beta= 0.2  f_ss=0.000 +/- 0.000
+     beta= 0.3  f_ss=0.001 +/- 0.002
+     beta= 0.4  f_ss=0.176 +/- 0.030
+     beta= 0.5  f_ss=0.227 +/- 0.011
+     beta= 0.7  f_ss=0.430 +/- 0.017
+     beta= 1.0  f_ss=0.598 +/- 0.010
+     beta= 1.5  f_ss=0.720 +/- 0.012
+     beta= 2.0  f_ss=0.788 +/- 0.005
+     beta= 3.0  f_ss=0.862 +/- 0.003
+     beta= 5.0  f_ss=0.909 +/- 0.003
+  -- mild (spread=0.50) --
+     beta= 0.1  f_ss=0.000 +/- 0.000
+     beta= 0.2  f_ss=0.000 +/- 0.000
+     beta= 0.3  f_ss=0.117 +/- 0.075
+     beta= 0.4  f_ss=0.296 +/- 0.026
+     beta= 0.5  f_ss=0.361 +/- 0.024
+     beta= 0.7  f_ss=0.526 +/- 0.016
+     beta= 1.0  f_ss=0.641 +/- 0.014
+     beta= 1.5  f_ss=0.736 +/- 0.006
+     beta= 2.0  f_ss=0.808 +/- 0.004
+     beta= 3.0  f_ss=0.859 +/- 0.003
+     beta= 5.0  f_ss=0.912 +/- 0.003
+  -- strong (spread=0.80) --
+     beta= 0.1  f_ss=0.004 +/- 0.007
+     beta= 0.2  f_ss=0.268 +/- 0.014
+     beta= 0.3  f_ss=0.376 +/- 0.018
+     beta= 0.4  f_ss=0.465 +/- 0.017
+     beta= 0.5  f_ss=0.524 +/- 0.021
+     beta= 0.7  f_ss=0.625 +/- 0.011
+     beta= 1.0  f_ss=0.692 +/- 0.007
+     beta= 1.5  f_ss=0.772 +/- 0.006
+     beta= 2.0  f_ss=0.821 +/- 0.004
+     beta= 3.0  f_ss=0.868 +/- 0.002
+     beta= 5.0  f_ss=0.915 +/- 0.002
+  -- extreme (spread=0.95) --
+     beta= 0.1  f_ss=0.319 +/- 0.027
+     beta= 0.2  f_ss=0.495 +/- 0.004
+     beta= 0.3  f_ss=0.547 +/- 0.012
+     beta= 0.4  f_ss=0.602 +/- 0.009
+     beta= 0.5  f_ss=0.622 +/- 0.003
+     beta= 0.7  f_ss=0.675 +/- 0.005
+     beta= 1.0  f_ss=0.735 +/- 0.003
+     beta= 1.5  f_ss=0.796 +/- 0.010
+     beta= 2.0  f_ss=0.832 +/- 0.005
+     beta= 3.0  f_ss=0.876 +/- 0.002
+     beta= 5.0  f_ss=0.918 +/- 0.003
+
+  Threshold beta (f_ss crosses 0.15):
+     homog    beta_c = 0.385
+     mild     beta_c = 0.318
+     strong   beta_c = 0.155
+     extreme  beta_c = nan
+
+Exp 2: reservoir check -- panic fraction among slow vs fast agents
+  (fixed beta=1.0, near threshold)
+  mild     slow-agent f=0.759  fast-agent f=0.524  ratio=1.45
+  strong   slow-agent f=0.896  fast-agent f=0.488  ratio=1.84
+  extreme  slow-agent f=0.974  fast-agent f=0.496  ratio=1.97
+
+Exp 3: heterogeneity sweep at fixed beta=0.7 (sub-threshold for homog)
+  spread=0.00  f_ss=0.430 +/- 0.017
+  spread=0.20  f_ss=0.447 +/- 0.015
+  spread=0.40  f_ss=0.487 +/- 0.011
+  spread=0.60  f_ss=0.542 +/- 0.015
+  spread=0.80  f_ss=0.625 +/- 0.011
+  spread=0.90  f_ss=0.645 +/- 0.002
+  spread=0.95  f_ss=0.675 +/- 0.005
+
+  --> figures/recovery_heterogeneity_1.png
+
+Heterogeneous-recovery SIS analysis complete.

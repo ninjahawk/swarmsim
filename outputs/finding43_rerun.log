@@ -1,0 +1,44 @@
+Experiment A: naive vs encirclement, n_pred sweep, R_enc=0.15
+  N=350  N_SEEDS=5  N_ITER=5000  V0_prey=0.02  ramp=0.1
+
+  n_pred= 1  naive Phi=1.000+/-0.000  enc Phi=1.000+/-0.000  Rg=0.425
+  n_pred= 3  naive Phi=1.000+/-0.000  enc Phi=1.000+/-0.000  Rg=0.428
+  n_pred= 6  naive Phi=1.000+/-0.000  enc Phi=1.000+/-0.000  Rg=0.431
+  n_pred=10  naive Phi=1.000+/-0.000  enc Phi=1.000+/-0.000  Rg=0.433
+
+Experiment B: R_enc sweep, n_pred=6
+  R_enc=0.05  Phi=1.000+/-0.000  Rg=0.431  R_enc/Rg=0.12
+  R_enc=0.10  Phi=1.000+/-0.000  Rg=0.433  R_enc/Rg=0.23
+  R_enc=0.15  Phi=1.000+/-0.000  Rg=0.431  R_enc/Rg=0.35
+  R_enc=0.20  Phi=1.000+/-0.000  Rg=0.427  R_enc/Rg=0.47
+  R_enc=0.25  Phi=1.000+/-0.000  Rg=0.430  R_enc/Rg=0.58
+  R_enc=0.30  Phi=1.000+/-0.000  Rg=0.431  R_enc/Rg=0.70
+  R_enc=0.35  Phi=1.000+/-0.000  Rg=0.427  R_enc/Rg=0.82
+
+Experiment C: 2D comparison at same n_pred values (R_enc=0.15)
+  n_pred= 1  2D enc Phi=0.999+/-0.001  Rg=0.258
+  n_pred= 3  2D enc Phi=0.969+/-0.048  Rg=0.298
+  n_pred= 6  2D enc Phi=0.750+/-0.117  Rg=0.295
+  n_pred=10  2D enc Phi=0.729+/-0.051  Rg=0.355
+
+Summary: 3D naive vs 3D enc vs 2D enc (R_enc=0.15)
+  n_pred   3D naive     3D enc      2D enc      3D Rg    2D Rg
+   1       1.000        1.000       0.999       0.425     0.258
+   3       1.000        1.000       0.969       0.428     0.298
+   6       1.000        1.000       0.750       0.431     0.295
+  10       1.000        1.000       0.729       0.433     0.355
+
+R_enc sweep (n_pred=6):
+  R_enc   Phi      Rg      R_enc/Rg
+  0.05    1.000+/-0.000  0.431    0.12
+  0.10    1.000+/-0.000  0.433    0.23
+  0.15    1.000+/-0.000  0.431    0.35
+  0.20    1.000+/-0.000  0.427    0.47
+  0.25    1.000+/-0.000  0.430    0.58
+  0.30    1.000+/-0.000  0.431    0.70
+  0.35    1.000+/-0.000  0.427    0.82
+
+Optimal R_enc = 0.10 (Phi=1.000, R_enc/Rg=0.23)
+Compare: 2D optimal R_enc/Rg ~ 0.50 (Finding 23)
+
+  --> figures/flocking3d_predator_1.png

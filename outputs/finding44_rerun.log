@@ -1,0 +1,14 @@
+Finding 44 -- 3D predator-count scaling
+  N=350  seeds=5  iter=5000  warmup=3000  R_enc=0.15
+  n_pred values: [1, 3, 6, 10, 20, 50]
+
+  n_pred= 1  Phi=1.000+/-0.000  Rg=0.425+/-0.009  [58s]
+  n_pred= 3  Phi=1.000+/-0.000  Rg=0.428+/-0.011  [61s]
+  n_pred= 6  Phi=1.000+/-0.000  Rg=0.431+/-0.010  [63s]
+  n_pred=10  Phi=1.000+/-0.000  Rg=0.433+/-0.011  [57s]
+  n_pred=20  Phi=0.998+/-0.004  Rg=0.445+/-0.017  [65s]
+  n_pred=50  Phi=0.992+/-0.010  Rg=0.470+/-0.021  [86s]
+
+Total runtime: 6.5 min
+  -> figures/finding44_3d_predator_scaling.png
+  -> outputs/finding44_3d_predator_scaling.txt

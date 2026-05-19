@@ -1,0 +1,14 @@
+Finding 49 -- 3D predator arrangement and the compression mechanism
+  N=350  seeds=5  iter=5000  R_enc=0.15
+  n_pred: [6, 10, 20]  modes: sphere, planar
+
+  sphere  n_pred= 6  Phi=1.000+/-0.000  Rg=0.431  <k_align>=16.7  [65s]
+  sphere  n_pred=10  Phi=1.000+/-0.000  Rg=0.433  <k_align>=16.5  [69s]
+  sphere  n_pred=20  Phi=0.998+/-0.004  Rg=0.445  <k_align>=15.5  [76s]
+  planar  n_pred= 6  Phi=1.000+/-0.000  Rg=0.432  <k_align>=16.6  [65s]
+  planar  n_pred=10  Phi=1.000+/-0.000  Rg=0.432  <k_align>=16.6  [66s]
+  planar  n_pred=20  Phi=1.000+/-0.000  Rg=0.433  <k_align>=16.2  [73s]
+
+Total runtime: 6.9 min
+  -> figures/finding49_3d_strategy.png
+  -> outputs/finding49_3d_strategy.txt
