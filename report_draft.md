@@ -1751,6 +1751,76 @@ recovery can erase.
 
 ---
 
+### 4.36 Heterogeneous Recovery Rates Lower the SIS Epidemic Threshold: Slow Recoverers Are Reservoirs (Finding 54)
+
+Section 4.11 (Finding 25) established a clean SIS epidemic threshold at beta/gamma ~ 1 for
+a flock in which every agent recovers from panic at the same rate gamma. That assumption is
+idealized: real populations are heterogeneous, with some individuals shedding agitation
+quickly and others remaining agitated far longer. The present section asks whether a
+*spread* in the per-agent recovery rate, at fixed arithmetic-mean gamma, changes the
+outbreak. Per-agent gamma_i is drawn from a bimodal distribution {1 - spread, 1 + spread}
+with the two halves equally populated, so that the population mean recovery rate remains
+1.0 across conditions (recovery_heterogeneity.py, N = 350, N_SEEDS = 4).
+
+The mean-field prediction is unambiguous. In well-mixed SIS the endemic state is governed
+by the per-agent ratio beta * <k> / gamma_i, and slow recoverers (small gamma_i) sit
+panicked far longer than fast recoverers and act as reservoirs that repeatedly reseed their
+neighbours. The effective epidemic threshold for a heterogeneous-gamma population is set
+not by the arithmetic mean of gamma but by something closer to its *harmonic* mean. Since
+harmonic mean is less than or equal to arithmetic mean, spreading gamma at fixed arithmetic
+mean must lower the threshold.
+
+| condition | spread | beta_c (f_ss crosses 0.15) |
+|-----------|--------|-----------------------------|
+| homog     | 0.00   | 0.385                       |
+| mild      | 0.50   | 0.318                       |
+| strong    | 0.80   | 0.155                       |
+| extreme   | 0.95   | endemic at every beta tested |
+
+![](./figures/recovery_heterogeneity_1.png)
+
+**Heterogeneity lowers the epidemic threshold, by about a factor of 2.5 at strong spread.**
+beta_c falls monotonically from 0.385 (homogeneous) through 0.318 (mild) to 0.155 (strong).
+At extreme spread the slow half of the population (gamma = 0.05) recovers so rarely that
+any contagion rate sustains an outbreak — f_ss = 0.319 already at beta = 0.1, the smallest
+contagion rate tested. The harmonic-mean argument is confirmed quantitatively.
+
+**The effect is a near-threshold phenomenon and disappears deep in the endemic regime.**
+At beta = 5 all four conditions converge to f_ss ~ 0.91. Far above threshold every calm
+agent is re-infected faster than even the fast recoverers can clear, so the recovery
+distribution stops mattering. Heterogeneity reshapes the threshold, not the saturated
+endemic state.
+
+**Panic localises on the slow recoverers.** At fixed beta = 1.0 the slow-agent panic
+fraction exceeds the fast-agent fraction by 1.45x (mild), 1.84x (strong), and 1.97x
+(extreme). At extreme spread the slow half is essentially saturated at f = 0.974 while the
+fast half sits at f ~ 0.50: the outbreak is *carried* by the slow sub-population, which
+reseeds the fast agents faster than they recover. A complementary heterogeneity sweep at
+fixed sub-threshold beta = 0.7 shows f_ss rising smoothly with the spread, from 0.430 at
+zero spread to 0.675 at spread = 0.95.
+
+This result reframes the vaccination story of Sections 4.13 and 4.18. Finding 36 ruled out
+degree-targeting because the flock contact graph has no hubs to target, and Finding 48
+showed that ruling-out is *structural* rather than kinematic. Finding 54 identifies a
+different kind of hub: a hub in internal-state space rather than in graph space. The
+high-value vaccination targets are not the topologically central agents — they do not
+exist — but the agents whose internal recovery dynamics make them reservoirs. This is a
+target the flock contact-graph diagnostics could not see, because it lives in the agents'
+private state, not in their connections.
+
+The Finding 54 result also dovetails with Finding 53 from the opposite direction.
+Finding 53 found that heterogeneity in a per-agent *internal state* (fatigue Q) enabled
+disruption only transiently, because the post-attack fatigue distribution homogenized.
+Finding 54 finds that heterogeneity in a per-agent *internal rate* (recovery gamma)
+shifts a genuine threshold, because the heterogeneity is permanent: an agent is
+intrinsically slow or fast, not transiently fatigued. Heterogeneity that the dynamics can
+erase is a transient amplifier; heterogeneity that the dynamics cannot erase is a
+threshold shifter. Contagion remains the only stressor in this study that writes lasting
+damage, but the size of that damage is set by recovery-rate heterogeneity, not by the
+mean recovery rate alone.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -2006,7 +2076,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced twenty-six main results (selecting the most general across 53 findings):
+This study produced twenty-seven main results (selecting the most general across 54 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -2231,6 +2301,22 @@ This study produced twenty-six main results (selecting the most general across 5
     segregates the flock, a v0 contrast does not). Contagion remains the only stressor
     studied that inflicts lasting damage, because it alone writes a heterogeneous internal
     label that uniform recovery cannot erase.
+
+27. **Heterogeneous recovery rates lower the SIS epidemic threshold:** Drawing per-agent
+    gamma_i from a bimodal distribution {1 - spread, 1 + spread} at fixed arithmetic
+    mean 1.0, the threshold beta_c at which the panic fraction crosses 0.15 falls from
+    0.385 (homogeneous) to 0.318 (spread 0.5) to 0.155 (spread 0.8), and at spread 0.95
+    the flock is endemic at every contagion rate tested. Panic localizes on the slow
+    recoverers — the slow-to-fast panic-fraction ratio reaches 1.97 at extreme spread —
+    so the outbreak is carried by an internal-state reservoir rather than by topological
+    hubs. The effect is a near-threshold phenomenon: at high beta all spreads converge to
+    the same saturated endemic state. The result identifies a different kind of
+    vaccination target than the topological one ruled out by results 13 and 18: the
+    high-value agents to protect are the agents whose internal dynamics make them
+    reservoirs, not the (absent) high-degree hubs. Read together with result 26, it
+    completes the heterogeneity story — heterogeneity in an internal *state* that the
+    dynamics homogenize is a transient amplifier, heterogeneity in an internal *rate*
+    that the dynamics cannot erase is a permanent threshold shifter.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

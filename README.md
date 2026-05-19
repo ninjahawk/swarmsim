@@ -107,6 +107,11 @@ The experiments follow a logical arc, each motivated by the result before it:
 | **16. Vaccination strategies** | Can targeting high-degree or spatially-distributed agents reduce herd-immunity threshold? | `contagion/targeted_immunity.py` → `contagion/spatial_vaccination.py` |
 | **17. Phase transition mechanism** | Why does the model lack a true phase transition? Is it the soft repulsion, or something else? | `phase/hard_repulsion.py` → `phase/langevin_repulsion.py` → `phase/langevin_hexatic.py` |
 | **18. 3D extension** | Does flocking and the v_eq result hold in three dimensions? Extended noise sweep | `3d/flocking3d.py` → `3d/flocking3d_noise.py` |
+| **19. 3D predators** | Does encirclement transfer to 3D? Radius, count, adaptive, sphere/planar arrangement | `3d/flocking3d_predator.py` → `3d/flocking3d_predator_scaling.py` → `3d/flocking3d_adaptive.py` → `3d/flocking3d_strategy.py` |
+| **20. 3D contagion & segregation** | Do vaccination nulls and α-contrast segregation transfer to 3D? Does 3D mix faster than 2D? | `3d/flocking3d_vaccination.py` → `3d/flocking3d_segregation.py` → `contagion/mixing_dimension.py` |
+| **21. Section 5 self-tests** | Does topological alignment slow mixing? Does freezing contacts rescue targeting? | `contagion/topological_mixing.py` → `contagion/contact_freezing.py` |
+| **22. Phase-transition closure** | Does hard repulsion crystallize? | `phase/langevin_hexatic_hard.py` |
+| **23. Agent memory** | Does fatigue make encirclement damage irreversible? Do heterogeneous recovery rates shift the SIS threshold? | `predator/fatigue.py` → `contagion/recovery_heterogeneity.py` |
 
 ---
 
@@ -160,7 +165,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-40 findings documented — full evidence and figures: [`findings.md`](findings.md)
+54 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
@@ -184,7 +189,16 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 | 37 | **Spatial vaccination null**: farthest-point spatial sampling fails; kinematic mixing scrambles positions |
 | 38 | **Repulsion exponent null**: sweeping n=1.5→12 gives identical crossover; non-equilibrium driving is cause |
 | 39 | **Langevin thermalizes correctly** (KE/N=kT to 1%), but chi_KE cannot detect KTHNY structural melting |
-| 40 | **Hexatic |ψ₆| confirms n=1.5 cannot crystallize**: flat at ~0.4 across all kT; soft repulsion prevents lattice formation |
+| 40 | **Hexatic \|ψ₆\| confirms n=1.5 cannot crystallize**: flat at ~0.4 across all kT; soft repulsion prevents lattice formation |
+| 41 | **3D flocking validates**: v_eq = v₀ + α/μ exact in 3D; Φ = 0.841 at η=10; 3D less noise-robust than 2D |
+| 43 | **3D encirclement fails entirely**: Φ ≈ 1.0 at every R_enc, every n_pred — encirclement is strictly 2D-specific (point predators cannot seal a closed surface) |
+| 46 | **3D vaccination null transfers**: random / spatial / degree-targeted vaccination all identical in 3D |
+| 47 | **Section 5 self-test #1 FALSIFIED**: k-NN alignment does NOT slow kinematic mixing (Jaccard 0.036 vs 0.037) |
+| 48 | **Section 5 self-test #2**: Freezing contacts does NOT rescue degree-targeting → the null is **structural** (no hubs), not kinematic |
+| 50 | **Hard repulsion null** (F40 falsified): exponent n=12, 24 also flat \|ψ₆\| — `base_r^n` cannot crystallize at ANY exponent; raising n shrinks the core, doesn't harden it |
+| 52 | **"3D mixes faster" theme FALSIFIED**: at matched contact degree, 3D rewires at ~0.56× the 2D rate — 3D mixes ~1.8× SLOWER |
+| 53 | **Prey fatigue null**: encirclement damage stays reversible even with per-agent fatigue Q; align-mode fatigue deepens during-attack disruption (F27 echo), speed-mode doesn't (F24 echo) |
+| 54 | **Heterogeneous SIS recovery**: spread in per-agent γ at fixed mean lowers β_c by ~2.5× (0.385 → 0.155); slow recoverers are reservoirs (1.5–2× more panic than fast); reframes vaccination toward slow recoverers |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
@@ -199,46 +213,18 @@ Full documentation, evidence, and figures for each finding: [`findings.md`](find
 | `model.py` | **OOP foundation** — `Flock`, `Predator` classes; `flock.evolve()`; `simulate()` helper. Import this for new experiments. |
 | `flocking.py` | Procedural core — buffer zone, vectorized forces, run loop, order parameter. Used by legacy experiment scripts. |
 
-### Experiments (legacy — procedural, import from `flocking.py`)
+### Experiment scripts
 
-| File | Investigation |
-|------|--------------|
-| `analysis.py` | Validation limiting cases and parameter sweeps (Findings 1–4) |
-| `phase_transition.py` | Finite-size scaling of repulsion-only transition |
-| `compactness_phase.py` | Fixed-compactness finite-size scaling at C=0.10 and C=0.78 |
-| `compactness_search.py` | Phase transition search across C = 0.15–0.60 |
-| `geometry.py` | Radius of gyration and aspect ratio analysis |
-| `predator.py` | Single-predator extension — 4 experiments |
-| `multi_predator.py` | Multiple naive predators |
-| `evasion_analysis.py` | Predator co-localization diagnostic |
-| `coordinated_predators.py` | Predator-predator repulsion experiments |
-| `encirclement.py` | Encirclement strategy — radius sweep and flock-breaking threshold |
-| `encirclement_scaling.py` | Encirclement threshold vs flock size N |
-| `fragmentation.py` | Flock fragmentation analysis — cluster detection, sub-flock coherence |
+Experiments live in four theme subfolders. Each script is self-contained, has an `if __name__ == "__main__"` guard, and imports the root-level core library (`flocking.py`, `model.py`, `geometry.py`) via a `sys.path` insert at the top of the file.
 
-### Experiments (new — import from `model.py`)
+| Folder | Theme | Representative scripts |
+|--------|-------|------------------------|
+| `predator/` | predator strategies, encirclement, fragmentation, reunion, sensing, adaptive radius, prey fatigue (F5–F16, F20–F35, F53) | `encirclement_scaling.py`, `adaptive_encirclement.py`, `fragmentation.py`, `long_encirclement.py`, `fatigue.py` |
+| `contagion/` | panic, SI/SIS contagion, vaccination, segregation, mixing, heterogeneous recovery (F18–F37, F47, F48, F52, F54) | `contagion_sis.py`, `targeted_immunity.py`, `spatial_vaccination.py`, `topological_mixing.py`, `recovery_heterogeneity.py` |
+| `phase/` | finite-size scaling, hard repulsion, Langevin, hexatic order parameter (F2, F9, F17, F38–F40, F50) | `phase_transition.py`, `langevin_repulsion.py`, `langevin_hexatic.py`, `langevin_hexatic_hard.py` |
+| `3d/` | three-dimensional flocking, predators, vaccination, segregation (F41–F46, F49, F51) | `flocking3d.py`, `flocking3d_predator.py`, `flocking3d_vaccination.py`, `flocking3d_segregation.py` |
 
-| File | Investigation |
-|------|--------------|
-| `panic.py` | Panic dynamics — fraction of erratic agents (Finding 18) |
-| `predator_sensing.py` | Limited predator sensing range (Finding 19) |
-| `panic_contagion.py` | SI panic contagion — no recovery (Finding 20) |
-| `contagion_sis.py` | SIS contagion with recovery rate γ; epidemic threshold sweep (Finding 25) |
-| `reunion.py` | Sub-flock reunion after predator removal (Finding 22) |
-| `min_flock_size.py` | Minimum N for collective coherence and evasion (Finding 21) |
-| `hybrid_stressors.py` | Combined predation + SI contagion (Finding 23) |
-| `hybrid_sis.py` | Sub-threshold SIS + encirclement; compression amplification (Finding 26) |
-| `segregation.py` | Active/passive v0 contrast — null segregation result (Finding 24) |
-| `segregation_alpha.py` | Alpha-contrast segregation with local-purity diagnostic (Finding 27) |
-| `large_N_encirclement.py` | Encirclement at N=350, 700, 1000 (Finding 28) |
-| `critical_shift.py` | Beta sweep with/without encirclement; threshold shift (Finding 29) |
-| `herd_immunity.py` | Immune sub-population sweep at supercritical SIS (Finding 30) |
-| `renc_scaling.py` | R_enc sweep at N=350 and N=1000; collapse on R_enc/Rg (Finding 31) |
-| `long_encirclement.py` | 30000-step encirclement; merge/split dynamics (Finding 32) |
-| `encirclement_gap.py` | Incomplete encirclement and gap detection (Finding 33) |
-| `outbreak_removal.py` | Encirclement+SIS then predator removal; epidemic persistence (Finding 34) |
-| `targeted_immunity.py` | Targeted vs random vaccination at supercritical SIS |
-| `adaptive_encirclement.py` | Adaptive R_enc = 0.5×Rg vs fixed R_enc |
+A complete file-by-file index lives in the per-finding evidence sections of [`findings.md`](findings.md). A predator-force sign bug in the 3D scripts was found and fixed in May 2026 (commit `30ead1c`); F43/F44/F45/F49 were rerun with the corrected sign and write-ups updated.
 
 ### Supporting files
 
@@ -248,53 +234,50 @@ Full documentation, evidence, and figures for each finding: [`findings.md`](find
 | `build_report.py` | Generates `report_draft.pdf` from `report_draft.md` using reportlab |
 | `sim_demo.html` | Interactive browser simulation (open locally or via htmlpreview link above) |
 | `logs.html` | Time log and research log — open in browser |
-| `findings.md` | Running notes on all 34 findings with figures |
+| `findings.md` | Running notes on all 54 findings with figures |
 | `report_draft.md` | Full research report in Markdown |
 
 ---
 
 ## Run
 
+All experiment scripts are invoked from the repository root and write figures into `figures/` and logs into `outputs/`.
+
 ```bash
-# Validation and parameter sweeps
+# Validation, phase transition, baseline (root-level legacy scripts)
 python analysis.py
 
-# Phase transition analysis
-python phase_transition.py
-python compactness_phase.py
-python compactness_search.py
+# Phase transition (subfolder)
+python phase/phase_transition.py
+python phase/compactness_search.py
+python phase/langevin_hexatic_hard.py
 
-# Predator strategy hierarchy
+# Predator strategy (legacy roots + new subfolder)
 python predator.py
 python multi_predator.py
-python evasion_analysis.py
-python coordinated_predators.py
 python encirclement.py
-python encirclement_scaling.py
-python fragmentation.py
+python predator/encirclement_scaling.py
+python predator/adaptive_encirclement.py
+python predator/long_encirclement.py
+python predator/fatigue.py
 
-# Panic and contagion
-python panic.py
-python panic_contagion.py
-python contagion_sis.py
+# Contagion, vaccination, mixing
+python contagion/contagion_sis.py
+python contagion/targeted_immunity.py
+python contagion/spatial_vaccination.py
+python contagion/topological_mixing.py
+python contagion/contact_freezing.py
+python contagion/mixing_dimension.py
+python contagion/recovery_heterogeneity.py
 
-# Hybrid stressors
-python hybrid_stressors.py
-python hybrid_sis.py
-python outbreak_removal.py
-
-# Scaling and herd immunity
-python large_N_encirclement.py
-python renc_scaling.py
-python critical_shift.py
-python herd_immunity.py
-python targeted_immunity.py
-
-# Long-time and adaptive dynamics
-python long_encirclement.py
-python encirclement_gap.py
-python adaptive_encirclement.py
+# 3D extension
+python 3d/flocking3d.py
+python 3d/flocking3d_predator.py
+python 3d/flocking3d_vaccination.py
+python 3d/flocking3d_segregation.py
 ```
+
+For the full set of scripts and what each tests, see the per-finding sections of [`findings.md`](findings.md).
 
 Open `sim_demo.html` in a browser for a real-time interactive simulation with adjustable parameters.
 
