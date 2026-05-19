@@ -58,6 +58,9 @@ generated). For navigation, here they are grouped by theme:
 - F41 Flocking generalizes to 3D; v_eq exact
 - F42 3D noise crossover at ramp ~ 15-25 (smooth, not a phase transition)
 - F43 3D encirclement fails at R_enc/Rg ~ 0.5; 2D-specific result
+- F44 3D encirclement disruption non-monotonic in n_pred; hard floor Phi ~ 0.91
+- F45 3D adaptive encirclement null result; tracking damps the disruptive fluctuations
+- F46 Vaccination targeting fails in 3D too; kinematic mixing is dimension-independent
 - F44 (planned) 3D predator scaling: how many predators match 2D floor?
 
 ### Floor and Scaling
@@ -1512,38 +1515,158 @@ different strategy that blocks all 3D escape directions simultaneously.
 
 ---
 
-## Finding 44 (PLANNED): 3D predator-count scaling
-**Status:** script written (3d/flocking3d_predator_scaling.py), not yet run.
-**Question:** F43 left 3D encirclement at Phi ~ 0.95 with n_pred = 6, well above the 2D
-floor of ~0.67. If the proposed mechanism (sphere-surface coverage insufficient) is
-correct, the disruption floor should drop as n_pred increases, with crossover predicted
-at n_pred ~ 13 (matching per-predator solid-angle gap to per-predator angular gap in 2D)
-and full 2D-equivalent disruption at n_pred ~ 20-50.
-**Geometric prediction:**
-2D: 6 predators on a ring = 60-deg gap each = ~1 rad of arc.
-3D: matching ~1 sr gap each on a sphere = n_pred ~ 4*pi sr / 1 sr ~ 13.
-**Expected results:**
-  n_pred =  1   Phi ~ 1.0
-  n_pred =  6   Phi ~ 0.95   (reproduces F43)
-  n_pred = 13   Phi ~ 0.85   (predicted crossover)
-  n_pred = 20   Phi ~ 0.75
-  n_pred = 50   Phi ~ 0.65   (matches/exceeds 2D floor)
-**Falsifies if:** 3D Phi stays above 0.90 even at n_pred = 50 -- would mean the
-"escape via third dimension" mechanism is fundamental, not just coverage-limited.
-**Runtime:** ~30-60 minutes (6 n_pred values * 5 seeds * 5000 steps * N = 350).
-**To run:** `python 3d/flocking3d_predator_scaling.py`
+## Finding 44: 3D encirclement disruption is non-monotonic in predator count -- a hard floor at Phi~0.91, never reaching the 2D floor
+<img src="./figures/finding44_3d_predator_scaling.png" width="640"/>
+
+**What:** Sweeps predator count n_pred = 1, 3, 6, 10, 20, 50 for 3D encirclement at fixed
+R_enc = 0.15, to test whether adding predators closes the sphere-surface coverage gap and
+drives 3D disruption down toward the 2D floor (~0.67).
+**Evidence:** flocking3d_predator_scaling.py, N=350, slow prey v0=0.02, ramp=0.1,
+N_SEEDS=5, N_ITER=5000, warmup=3000.
+  n_pred= 1  Phi=0.999+/-0.000  Rg=0.421+/-0.009
+  n_pred= 3  Phi=0.999+/-0.000  Rg=0.417+/-0.008
+  n_pred= 6  Phi=0.981+/-0.022  Rg=0.399+/-0.015
+  n_pred=10  Phi=0.913+/-0.082  Rg=0.355+/-0.049   <-- disruption optimum
+  n_pred=20  Phi=0.975+/-0.026  Rg=0.312+/-0.044
+  n_pred=50  Phi=0.930+/-0.035  Rg=0.241+/-0.024
+**Key result 1 -- the geometric prediction is falsified.**
+The pre-registered prediction (F43 follow-up) was a monotonic decrease in Phi with n_pred,
+crossing the 2D floor (~0.67) near n_pred ~ 20-50 once the sphere surface was adequately
+covered. Instead disruption is NON-MONOTONIC: Phi reaches a shallow minimum of 0.913 at
+n_pred=10, then RISES back to 0.93-0.98 for n_pred = 20 and 50. The 3D order parameter
+never drops below ~0.91 at any predator count tested. The "coverage-limited" hypothesis --
+that enough predators would seal the sphere -- is wrong.
+**Key result 2 -- mechanism: more predators compress, they do not divide.**
+Rg falls monotonically with n_pred (0.42 -> 0.24): each added predator squeezes the flock
+inward. In 2D this compression DIVIDES the flock into scattering sub-flocks (F15), which is
+why 2D encirclement works. In 3D the same compression instead packs the flock into a
+denser, smaller sphere. A denser flock has stronger local alignment coupling (more
+neighbors within rf), so it is MORE coherent, not less. Past n_pred~10 the compression
+effect dominates and Phi climbs back up. 3D encirclement therefore has a built-in
+self-defeating feedback: the harder you squeeze, the more cohesive the target becomes.
+**Key result 3 -- the n_pred=10 optimum is real but unreliable.**
+At the optimum the seed-to-seed std is large (+/-0.082): some seeds reach Phi~0.8, others
+stay near 0.99. n_pred=10 sits on a knife-edge between the under-coverage regime (few
+predators, flock ignores them) and the over-compression regime (many predators, flock
+balls up). Neither neighboring count is reliably disruptive.
+**Implication:** Encirclement cannot be rescued in 3D by brute-force predator count. The
+2D floor of Phi~0.67 is unreachable in 3D with this strategy at any n_pred up to 50. This
+confirms F43's deeper reading: the escape-dimension argument is FUNDAMENTAL, not merely a
+coverage deficit. Effective 3D flock disruption requires a qualitatively different
+strategy -- one that exploits the compression-induced density gradient or attacks the
+flock's internal alignment coupling directly, rather than relying on geometric enclosure.
+
+---
+
+## Finding 45: 3D adaptive encirclement is a null result -- adaptive tracking does not help, and mildly hurts by damping disruptive fluctuations
+<img src="./figures/finding45_3d_adaptive.png" width="560"/>
+
+**What:** In 2D, adaptive R_enc = 0.5*live_Rg outperforms fixed R_enc (F35) by holding the
+predators at the R_enc/Rg~0.5 optimum through the merge/split cycle. This tests whether
+adaptive tracking helps in 3D, where F43 showed the 2D optimum ratio does not transfer.
+Compares fixed R_enc=0.15 against adaptive at ratios 0.38 and 0.50, n_pred=10, long run
+(15000 steps = 150 time units) to capture the steady state.
+**Evidence:** flocking3d_adaptive.py, N=350, slow prey v0=0.02, ramp=0.1, N_SEEDS=5.
+  fixed R_enc=0.15        Phi=0.968+/-0.009  t_std=0.077  Rg=0.305  f(Phi>0.85)=0.924
+  adaptive R_enc=0.38*Rg  Phi=0.974+/-0.013  t_std=0.060  Rg=0.338  f(Phi>0.85)=0.942
+  adaptive R_enc=0.50*Rg  Phi=0.982+/-0.012  t_std=0.036  Rg=0.334  f(Phi>0.85)=0.963
+**Key result 1 -- adaptive does not help; it mildly hurts.**
+Fixed R_enc=0.15 gives the LOWEST steady-state Phi (0.968, most disruption). Adaptive
+tracking monotonically raises Phi: 0.38*Rg -> 0.974, 0.50*Rg -> 0.982. The 2D benefit of
+adaptive encirclement (F35: mean Phi 0.778 -> 0.713, a real improvement) does not transfer
+to 3D. It reverses sign.
+**Key result 2 -- mechanism: adaptive damps the only disruptive moments.**
+The temporal std of Phi falls sharply with adaptivity (t_std: 0.077 fixed -> 0.060 -> 0.036).
+In 3D, encirclement never produces sustained disruption (F43, F44); its only disruptive
+moments are transient downward fluctuations of Phi. Fixed R_enc lets these fluctuations
+happen. Adaptive R_enc, by continuously repositioning predators to track the live Rg,
+stabilizes the predator-flock geometry into a steady configuration -- which suppresses the
+fluctuations and therefore suppresses the disruption. Adaptive tracking makes the flock
+STEADIER, and a steadier 3D flock is a more coherent one.
+**Key result 3 -- the F44 n_pred=10 minimum is a transient.**
+F44 measured Phi=0.913 at n_pred=10 over 5000 steps; here the same configuration (fixed
+R_enc=0.15, n_pred=10) settles to Phi=0.968 over 15000 steps. The F44 "disruption optimum"
+is a mid-run transient that relaxes away over longer times -- consistent with F44's finding
+that n_pred=10 sits on an unreliable knife-edge.
+**Why it differs from 2D:** Adaptive encirclement works in 2D because there is a genuine
+R_enc/Rg~0.5 optimum (F23) and tracking Rg keeps predators on it through the merge/split
+cycle. F43 already showed 3D has no such optimum -- the disruption-vs-R_enc curve is shallow
+and flat. With no optimum to track, adaptive control contributes only its stabilizing
+side-effect, which is counterproductive.
+**Implication:** Confirms and extends F43/F44. Encirclement in 3D cannot be rescued by
+predator count (F44) or by adaptive geometry (F45). All three 3D predator findings point
+to the same conclusion: geometric enclosure is a 2D-specific strategy, and 3D flock
+disruption requires a fundamentally different mechanism.
+
+---
+
+## Finding 46: Vaccination targeting fails in 3D too -- kinematic mixing defeats spatial and degree-targeted strategies in three dimensions
+<img src="./figures/finding46_3d_vaccination.png" width="560"/>
+
+**What:** The report's Section 5 synthesis attributes the failure of degree-targeted (F36)
+and spatial (F37) vaccination to alignment-driven kinematic mixing -- the alignment force
+continuously rewires the neighbor graph faster than any static structural feature can be
+exploited. Both null results were established in 2D. This tests whether the mechanism
+survives in 3D, where the extra spatial degree of freedom could plausibly speed mixing up
+(spatial vaccination fails even harder) or slow it down (immune-agent coverage persists,
+spatial vaccination starts to help).
+**Evidence:** flocking3d_vaccination.py, 3D flocking model (N=350, [0,1]^3 torus,
+r0=0.02, rf=0.20, v0=0.02), SIS contagion (beta=2.5, gamma=2.0) on the 3D contact
+network. R_CONT=0.155 tuned so mean contact degree (8.05) matches the 2D experiments.
+N_SEEDS=5, 10000-step SIS runs, f_ss = mean panic fraction over the last 20 time units.
+  p_immune  random          spatial         targeted
+  0.00      0.806+/-0.005   0.805+/-0.002   0.809+/-0.005
+  0.10      0.701+/-0.008   0.705+/-0.004   0.705+/-0.004
+  0.20      0.598+/-0.002   0.600+/-0.003   0.601+/-0.005
+  0.30      0.493+/-0.003   0.494+/-0.004   0.495+/-0.005
+  0.40      0.387+/-0.004   0.392+/-0.006   0.387+/-0.009
+  0.46      0.322+/-0.006   0.320+/-0.008   0.323+/-0.006
+  0.50      0.282+/-0.008   0.284+/-0.005   0.283+/-0.009
+  0.60      0.168+/-0.006   0.170+/-0.011   0.166+/-0.008
+Degree distribution: mean=8.05, median=7, max=26, CV=0.59.
+**Key result 1 -- complete strategy equivalence (the central null result).**
+At every immune fraction, random, spatial (3D farthest-point maxmin), and degree-targeted
+vaccination produce identical steady-state panic fractions. The largest difference between
+any two strategies at any p_immune is ~0.005, smaller than the seed-to-seed standard
+deviation. Neither targeting strategy beats random in 3D. The F36/F37 null results
+transfer to three dimensions without qualification.
+**Key result 2 -- the mixing mechanism is dimension-independent.**
+This was not guaranteed. F43 showed one 2D result (R_enc/Rg~0.5 optimum) fails to transfer
+to 3D. But kinematic mixing does transfer: the extra degree of freedom does not slow the
+neighbor-graph turnover enough for spatial coverage to persist, nor does the degree
+distribution gain a fat tail (CV=0.59 in 3D vs 0.68 in 2D -- if anything LESS heterogeneous,
+giving hub-targeting even less to exploit). The alignment force reshuffles agent identities
+faster than the epidemic timescale in 3D just as in 2D.
+**Key result 3 -- no herd-immunity threshold within p<=0.6.**
+Unlike the 2D experiments (F37 quenched near p~0.46), f_ss here declines smoothly with
+p_immune and remains nonzero (0.168) even at p=0.60. This is a regime effect, not a
+contradiction: the 3D contact network gives an effective reproduction number
+R0 ~ beta*<k>/gamma ~ 10, far more supercritical than the 2D runs, so immunity dilutes the
+epidemic proportionally rather than quenching it. The strategy-equivalence result is
+independent of this -- all three strategies sit on the same decay curve.
+**Implication:** Strengthens the Section 5 synthesis. Alignment-driven kinematic mixing is
+a dimension-independent mechanism. The flock's defining feature -- velocity alignment --
+is precisely what makes its members interchangeable on the epidemic timescale, so any
+vaccination strategy that relies on a stable structural property (high degree, spatial
+position) collapses to random in both 2D and 3D. Targeting can only beat random in a flock
+if there is a fixed sub-structure that the alignment force does not erase.
 
 ---
 
 ## Open Questions / Next Directions
-1. 3D flocking (F41, F42, F43): F41, F42, F43 COMPLETE.
+1. 3D flocking thread COMPLETE (F41-F46):
    - F41: v_eq=v0+alpha/mu exact in 3D; basic noise sweep
    - F42: smooth crossover at ramp~15-25; chi_peak drifts up with N; same as 2D qualitatively
-   - F43: 3D encirclement fails to replicate 2D; R_enc/Rg~0.5 optimum is 2D-specific; escape dimension mechanism
-2. Further 3D experiments:
-   - **F44 (script ready, not run):** 3D predator-count scaling, n_pred=1..50
-   - 3D adaptive encirclement: does adapting R_enc help when sphere coverage is the bottleneck?
+   - F43: 3D encirclement fails; R_enc/Rg~0.5 optimum is 2D-specific
+   - F44: 3D predator-count scaling -- disruption non-monotonic, hard floor Phi~0.91
+   - F45: 3D adaptive encirclement null -- tracking damps the disruptive fluctuations
+   - F46: 3D vaccination null -- kinematic mixing defeats targeting in 3D too
+2. 3D predator thread is fully closed. Encirclement cannot be rescued in 3D by radius
+   tuning (F43), predator count (F44), or adaptive geometry (F45).
 3. Alternative research directions:
+   - A 3D-effective predator strategy that is NOT encirclement: exploit the
+     compression-induced density gradient (F44), or attack alignment coupling directly.
+     Would validate the F44/F45 mechanistic claim.
    - Phase transition in 3D (hard repulsion Langevin in 3D)
    - Segregation in 3D
    - Topological (k-nearest-neighbor) alignment force: test the mixing-mechanism

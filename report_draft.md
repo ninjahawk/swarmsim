@@ -1233,6 +1233,179 @@ escape dimension.
 
 ---
 
+### 4.26 Three-Dimensional Predator-Count Scaling: Disruption Is Non-Monotonic and Floored (Finding 44)
+
+Section 4.25 closed with a hypothesis: 3D encirclement might be rescued by adding more
+predators, on the reasoning that enough predators on the enclosing sphere would shrink the
+unblocked solid-angle gaps below the flock's coherence length. This section tests that
+hypothesis directly by sweeping the predator count over n_pred = 1, 3, 6, 10, 20, 50 at
+fixed R_enc = 0.15 (flocking3d_predator_scaling.py, N = 350, N_SEEDS = 5, N_ITER = 5000).
+If the coverage-deficit reading of Finding 43 were correct, Phi should fall monotonically
+toward the 2D floor (~0.67) as n_pred grows.
+
+| n_pred | 3D enc Phi (R_enc=0.15) | 3D Rg |
+|--------|------------------------|-------|
+| 1      | 0.999 +/- 0.000        | 0.421 |
+| 3      | 0.999 +/- 0.000        | 0.417 |
+| 6      | 0.981 +/- 0.022        | 0.399 |
+| 10     | 0.913 +/- 0.082        | 0.355 |
+| 20     | 0.975 +/- 0.026        | 0.312 |
+| 50     | 0.930 +/- 0.035        | 0.241 |
+
+![](./figures/finding44_3d_predator_scaling.png)
+
+**The prediction is falsified.** Disruption is not monotonic in n_pred. The order parameter
+reaches a shallow minimum of Phi = 0.913 at n_pred = 10, then *rises* back to 0.93-0.98 for
+n_pred = 20 and 50. At no predator count does the 3D flock fall below Phi ~ 0.91, and the
+2D floor of ~0.67 is never approached. Brute-force predator count does not rescue 3D
+encirclement.
+
+**The mechanism is compression without division.** The radius of gyration falls
+monotonically with predator count (Rg: 0.42 -> 0.24): every added predator squeezes the
+flock further inward. In 2D this same compression is precisely what makes encirclement
+work — it forces the flock to *divide* into coherent sub-flocks that scatter along separate
+trajectories (Section 4.6, Finding 15). In 3D, compression has the opposite effect: it
+packs the flock into a denser, smaller sphere rather than splitting it. A denser flock
+carries more neighbors within each agent's alignment radius r_f, which strengthens the
+local alignment coupling and makes the flock *more* coherent. Past n_pred ~ 10 this
+densification dominates, and Phi climbs back toward unity. 3D encirclement thus contains a
+self-defeating feedback loop: the harder the predators squeeze, the more cohesive — and
+harder to break — the target becomes.
+
+**The optimum is a knife-edge.** The minimum at n_pred = 10 carries a large seed-to-seed
+standard deviation (+/- 0.082): some realizations dip to Phi ~ 0.8 while others remain near
+0.99. n_pred = 10 sits at an unstable balance between an under-coverage regime, where too
+few predators leave the flock essentially undisturbed, and an over-compression regime,
+where many predators consolidate it into a robust ball. Neither neighboring count disrupts
+the flock reliably.
+
+This result settles the interpretive question left open by Section 4.25. The dimensional
+specificity of encirclement is not a coverage deficit that more predators could remedy; it
+is fundamental. The escape-dimension argument holds, but the deeper reason is that the 3D
+compression response itself works against the attacker. Effective 3D flock disruption will
+require a qualitatively different strategy — one that exploits the compression-induced
+density gradient, or attacks the internal alignment coupling directly, rather than relying
+on geometric enclosure.
+
+---
+
+### 4.27 Adaptive Encirclement Does Not Transfer to 3D: Tracking Flock Geometry Damps the Only Disruptive Moments (Finding 45)
+
+Section 4.17 (Finding 35) showed that in 2D, adaptive predators that continuously reset
+R_enc = 0.5 * live_Rg outperform fixed-radius predators, because adaptivity holds the
+encirclement geometry at the universal R_enc/Rg ~ 0.5 optimum (Section 4.14) throughout the
+merge/split cycle. This section asks whether adaptive control offers any analogous benefit
+in 3D, given that Section 4.25 already established that 3D has no such optimum to track.
+
+Three configurations are compared at n_pred = 10 over a long run of 15000 steps
+(150 time units) to reach steady state: fixed R_enc = 0.15, adaptive R_enc = 0.38 * Rg
+(the empirical 3D optimum ratio from Section 4.25), and adaptive R_enc = 0.50 * Rg (the
+2D-inherited optimum). The metrics are mean Phi, the *temporal* standard deviation of Phi
+within a run, and the fraction of time the flock is coherent (Phi > 0.85).
+
+| Configuration         | Phi             | temporal std | Rg    | f(Phi > 0.85) |
+|-----------------------|-----------------|--------------|-------|---------------|
+| fixed R_enc = 0.15    | 0.968 +/- 0.009 | 0.077        | 0.305 | 0.924         |
+| adaptive 0.38 * Rg    | 0.974 +/- 0.013 | 0.060        | 0.338 | 0.942         |
+| adaptive 0.50 * Rg    | 0.982 +/- 0.012 | 0.036        | 0.334 | 0.963         |
+
+![](./figures/finding45_3d_adaptive.png)
+
+**Adaptive control does not help — it mildly hurts.** Fixed R_enc = 0.15 produces the
+lowest steady-state Phi (0.968, the most disruption). Adaptivity monotonically *raises*
+Phi: 0.974 at ratio 0.38, 0.982 at ratio 0.50. The clear 2D benefit of adaptive
+encirclement (Section 4.17: mean Phi 0.778 -> 0.713) does not merely vanish in 3D — it
+reverses sign.
+
+**The mechanism is the suppression of fluctuations.** The temporal standard deviation of
+Phi falls steeply with adaptivity, from 0.077 (fixed) to 0.060 to 0.036. In 3D,
+encirclement never imposes sustained disruption (Sections 4.25-4.26); the flock's order
+parameter sits near unity and dips only in brief transient fluctuations. Fixed-radius
+predators allow these dips. Adaptive predators, by continuously repositioning to track the
+live radius of gyration, lock the predator-flock geometry into a steady configuration,
+which smooths out the fluctuations. Since the fluctuations *are* the disruption, damping
+them damps the only effect the predators were having. Adaptive control makes the 3D flock
+steadier, and a steadier flock is a more coherent one.
+
+**This also reframes the Finding 44 minimum.** Section 4.26 measured Phi = 0.913 at
+n_pred = 10 over 5000 steps. The same configuration here (fixed R_enc, n_pred = 10),
+extended to 15000 steps, relaxes to Phi = 0.968. The n_pred = 10 "disruption optimum" is
+a mid-run transient, not a steady state — consistent with Section 4.26's characterization
+of n_pred = 10 as an unreliable knife-edge.
+
+Adaptive encirclement works in 2D because there is a genuine optimum to track; tracking it
+keeps predators effective as the flock breathes. In 3D, with no optimum and no sustained
+disruption, the only thing adaptive control reliably does is stabilize the system against
+the attacker. Together, Sections 4.25-4.27 form a consistent picture: 3D encirclement
+cannot be rescued by radius tuning (4.25), by predator count (4.26), or by adaptive
+geometry (4.27). Geometric enclosure is intrinsically a 2D strategy.
+
+---
+
+### 4.28 Vaccination Targeting Fails in 3D: Kinematic Mixing Is Dimension-Independent (Finding 46)
+
+Sections 4.18 and 4.20 established that neither degree-targeted nor spatial vaccination
+beats random immunization in the 2D flock, and the synthesis of Section 5 attributes both
+null results to alignment-driven kinematic mixing. Section 4.25, however, demonstrated that
+a 2D result need not survive the move to 3D — the universal encirclement optimum does not.
+It is therefore a genuine open question whether the mixing mechanism itself is
+dimension-independent. The extra translational degree of freedom in 3D could plausibly
+accelerate neighbor-graph turnover, making spatial vaccination fail even more decisively,
+or it could dilute local density enough that immune-agent coverage persists long enough to
+matter.
+
+This section settles the question. The 3D flocking model is coupled to SIS contagion on a
+3D contact network (beta = 2.5, gamma = 2.0), with the contact radius R_CONT = 0.155 tuned
+so the mean contact degree (8.05) matches the 2D vaccination experiments. Three strategies
+— random, spatial farthest-point (maxmin) sampling on the 3D torus, and degree-targeted —
+are compared over an immune-fraction sweep (flocking3d_vaccination.py, N = 350,
+N_SEEDS = 5).
+
+| p_immune | f_ss random      | f_ss spatial     | f_ss targeted    |
+|----------|------------------|------------------|------------------|
+| 0.00     | 0.806 +/- 0.005  | 0.805 +/- 0.002  | 0.809 +/- 0.005  |
+| 0.10     | 0.701 +/- 0.008  | 0.705 +/- 0.004  | 0.705 +/- 0.004  |
+| 0.20     | 0.598 +/- 0.002  | 0.600 +/- 0.003  | 0.601 +/- 0.005  |
+| 0.30     | 0.493 +/- 0.003  | 0.494 +/- 0.004  | 0.495 +/- 0.005  |
+| 0.40     | 0.387 +/- 0.004  | 0.392 +/- 0.006  | 0.387 +/- 0.009  |
+| 0.46     | 0.322 +/- 0.006  | 0.320 +/- 0.008  | 0.323 +/- 0.006  |
+| 0.50     | 0.282 +/- 0.008  | 0.284 +/- 0.005  | 0.283 +/- 0.009  |
+| 0.60     | 0.168 +/- 0.006  | 0.170 +/- 0.011  | 0.166 +/- 0.008  |
+
+![](./figures/finding46_3d_vaccination.png)
+
+**All three strategies are statistically identical.** At every immune fraction, the three
+strategies produce the same steady-state panic fraction; the largest gap between any two at
+any p_immune is about 0.005, well within the seed-to-seed standard deviation. Neither
+spatial coverage nor degree targeting confers any advantage over choosing immune agents at
+random. The 2D null results of Sections 4.18 and 4.20 transfer to 3D without qualification.
+
+**The mixing mechanism is dimension-independent.** This outcome was not guaranteed — the
+preceding four sections documented a 2D predator result that explicitly fails in 3D — so
+the transfer is informative. The extra degree of freedom neither slows neighbor-graph
+turnover enough for spatial coverage to persist, nor introduces degree heterogeneity: the
+3D contact-degree distribution has coefficient of variation 0.59, even lower than the 2D
+value of 0.68, leaving hub-targeting with still less structure to exploit. The alignment
+force reshuffles agent identities faster than the epidemic timescale in three dimensions
+exactly as it does in two.
+
+**A regime caveat.** Unlike the 2D experiment, where the epidemic quenched near
+p_immune ~ 0.46, here f_ss declines smoothly and remains nonzero (0.168) even at
+p_immune = 0.60. This is a consequence of the contact-network parameters: the 3D network
+yields an effective reproduction number of order beta * mean_k / gamma ~ 10, far more
+supercritical than the 2D runs, so immunity dilutes the epidemic in proportion rather than
+extinguishing it. The strategy-equivalence result is independent of this regime detail —
+all three strategies lie on the same decay curve regardless of where the curve sits.
+
+The conclusion reinforces the central claim of Section 5. Velocity alignment, the property
+that defines a flock, is precisely what renders its members interchangeable on the
+epidemic timescale. Any vaccination strategy that relies on a stable structural property —
+high contact degree, favorable spatial position — therefore collapses to random in both
+two and three dimensions. Targeting can only outperform random when the flock contains a
+fixed sub-structure that the alignment force does not continuously erase.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Three of the strongest results in this study — the failure of degree-targeted vaccination
@@ -1260,7 +1433,12 @@ moment hold different positions seconds later, as shown by the identical
 threshold p_c ~ 0.46 found for both targeted and random strategies (Section 4.18).
 Spatial vaccination, sampled by maxmin farthest-point distance, fails for the same
 reason at p_c ~ 0.46 (Section 4.20). The two null results are not independent
-observations; they are the same mechanism producing the same number.
+observations; they are the same mechanism producing the same number. Section 4.28
+extends both null results to 3D: random, spatial, and degree-targeted vaccination
+remain statistically indistinguishable in three dimensions, and the contact-degree
+distribution is if anything less heterogeneous (CV ~ 0.59). Kinematic mixing is
+therefore dimension-independent — the alignment force shuffles agent identity faster
+than the epidemic timescale regardless of the number of spatial dimensions.
 
 **Damage with no internal state is reversible; damage with internal state is not.**
 Encirclement applies a directed external force pattern. Once removed, agent positions
@@ -1292,9 +1470,23 @@ open. Mixing on the sphere surface is no help because the predators themselves
 do not mix; the prey simply leave through the uncovered solid angle (Section
 4.25, Finding 43). Encirclement is therefore 2D-specific not because the flock
 behaves differently in 3D, but because the geometric coverage requirement
-scales as solid angle, not arc length. A 3D analog would require ~6x more
-predators to match the 2D angular coverage density, and Section 4.26 is left
-to test this prediction.
+scales as solid angle, not arc length.
+
+The natural follow-up — that a 3D analog would simply require more predators to
+match the 2D angular coverage density — was tested in Section 4.26 and *falsified*.
+Sweeping the predator count to n_pred = 50 does not drive the 3D order parameter
+toward the 2D floor; disruption is non-monotonic, reaching a shallow minimum near
+n_pred = 10 and then weakening again. The reason refines the mixing picture rather
+than contradicting it. Adding predators compresses the flock (Rg falls from 0.42 to
+0.24), and in 2D that compression is what divides the flock into scattering
+sub-flocks. In 3D the same compression instead packs the flock into a denser
+sphere, and a denser flock carries more neighbors within each alignment radius —
+strengthening the very coupling that drives mixing and coherence. Section 4.27 then
+shows that adaptive radius control, which improves 2D encirclement, mildly *worsens*
+it in 3D by damping the transient fluctuations that are its only disruptive moments.
+Encirclement is 2D-specific in a deeper sense than coverage geometry alone: in 3D the
+flock's compression response and its alignment coupling actively conspire against the
+attacker.
 
 The non-equilibrium phase-transition diagnosis (Section 4.19, Section 4.21,
 Section 4.22) sits adjacent to this story rather than within it. The smooth

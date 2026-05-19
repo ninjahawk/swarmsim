@@ -1,0 +1,7 @@
+Finding 45 -- 3D adaptive encirclement
+N=350 seeds=5 iter=15000 n_pred=10
+
+config                      Phi_mean  Phi_std  t_std  Rg     f(Phi>0.85)
+fixed R_enc=0.15            0.9678    0.0091   0.0769  0.3048  0.9237
+adaptive R_enc=0.38*Rg      0.9736    0.0128   0.0603  0.3383  0.9422
+adaptive R_enc=0.50*Rg      0.9818    0.0117   0.0358  0.3343  0.9626
