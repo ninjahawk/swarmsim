@@ -1,0 +1,10 @@
+Finding 51 -- alpha-contrast segregation in 3D
+N=350 seeds=5 iter=4000 f_active=0.50
+
+alpha_passive  contrast  purity_active  purity_passive  Phi
+1.00           0.00      0.4886         0.4920          0.9995
+0.70           0.30      0.5261         0.5194          0.9994
+0.50           0.50      0.5542         0.5395          0.9993
+0.30           0.70      0.5516         0.5333          0.9990
+0.10           0.90      0.5534         0.5174          0.9931
+0.00           1.00      0.6895         0.6203          0.5232

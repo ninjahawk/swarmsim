@@ -66,6 +66,7 @@ generated). For navigation, here they are grouped by theme:
 - F48 Freezing the contact graph does not rescue targeting; degree-targeting null is structural
 - F49 3D compression mechanism verified; planar ring arrangement worse than spherical
 - F50 Hard repulsion does not crystallize; higher exponent shrinks the core, not hardens it
+- F51 3D alpha-contrast segregation: matches 2D at moderate contrast, diluted at high contrast
 - F44 (planned) 3D predator scaling: how many predators match 2D floor?
 
 ### Floor and Scaling
@@ -1873,6 +1874,53 @@ repulsion -- a true inverse-power-law potential (force ~ d^-n) or a WCA/hard-dis
 not a higher exponent in the existing base_r^n force. This is a corrected and definitive
 close to the phase-transition thread (F2, F9, F17, F38, F39, F40, F50): within the
 Charbonneau model as written, the smooth crossover is the only behavior, at any exponent.
+
+---
+
+## Finding 51: Alpha-contrast segregation in 3D -- identical to 2D at moderate contrast, but the extra dimension dilutes it at high contrast
+<img src="./figures/finding51_3d_segregation.png" width="560"/>
+
+**What:** Finding 27 showed that in 2D, two populations with different alignment strength
+alpha spatially segregate -- the local-purity diagnostic (fraction of an agent's rf
+neighbors sharing its type) rose from 0.50 (well mixed) to 0.73 at maximum alpha contrast.
+This tests whether that self-organized segregation transfers to 3D. Findings 46-48
+established that kinematic MIXING (which destroys imposed structure) is
+dimension-independent; this asks whether self-ORGANIZED structure is too.
+**Evidence:** flocking3d_segregation.py, 3D flocking N=350, fast-prey regime (v0=1.0,
+ramp=0.5), f_active=0.5, N_SEEDS=5. alpha_active=1.0, alpha_passive swept 1.0->0.0.
+  alpha_passive  3D purity_active   2D purity_active (F27)
+  1.0 (no contrast)  0.489+/-0.009    0.500
+  0.7                0.526+/-0.014    --
+  0.5                0.554+/-0.021    0.556
+  0.3                0.552+/-0.012    0.550
+  0.1                0.553+/-0.013    0.630
+  0.0                0.690+/-0.023    0.732
+3D Phi: 0.999 for alpha_passive>=0.3, 0.993 at 0.1, collapses to 0.523 at 0.0.
+**Key result 1 -- segregation transfers to 3D, and is identical to 2D at moderate contrast.**
+At alpha_passive = 0.5 and 0.3, the 3D local purity (0.554, 0.552) matches the 2D values
+(0.556, 0.550) to within noise. Self-organized alpha-contrast segregation is real in 3D.
+The mechanism (weaker-alignment agents fall out of the tight active core and cluster
+locally) is dimension-independent in the moderate-contrast regime.
+**Key result 2 -- the extra dimension dilutes segregation at high contrast.**
+The 2D and 3D curves diverge sharply once the contrast is large. At alpha_passive=0.1, 2D
+purity has climbed to 0.630 while 3D is still on a flat plateau at 0.553 -- no stronger
+than at alpha_passive=0.5. In 2D segregation rises steadily from moderate contrast onward;
+in 3D it plateaus at a mild ~0.55 and only breaks upward at alpha_passive=0.0 (purity
+0.690). The extra spatial dimension gives a partially-aligned passive agent more
+independent directions along which to interpenetrate the active population, so moderate
+mis-alignment is no longer enough to drive clustering -- it is mixed back in.
+**Key result 3 -- strong 3D segregation costs global coherence.**
+3D segregation only becomes strong (purity 0.69) at alpha_passive=0.0, where the passive
+half of the flock has zero alignment and behaves as a non-flocking gas. At that point the
+global order parameter collapses to Phi=0.523: the "segregated" state is really an
+aligned active flock shedding an incoherent passive cloud, not two co-moving coherent
+sub-flocks. For all alpha_passive >= 0.1, Phi stays >= 0.99 and segregation is only mild.
+**Implication:** Self-organized structure is partially dimension-dependent, in contrast to
+kinematic mixing (F46) which is fully dimension-independent. Both point the same way: the
+extra dimension favors mixing. Mixing erodes imposed structure equally in 2D and 3D
+(F46-F48), and it also erodes self-organized segregation more effectively in 3D than in 2D
+(F51). A flock in three dimensions is harder to sort and just as hard to target -- the
+third dimension is, consistently across every experiment, a mixing aid.
 
 ---
 

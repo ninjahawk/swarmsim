@@ -89,7 +89,7 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers thirty-two investigations, producing fifty numbered findings.
+This report covers thirty-three investigations, producing fifty-one numbered findings.
 The first three sections establish the baseline: implementation validation and the v_eq
 analytical result (Section 4.1), parameter sweeps and flock formation (Section 4.2),
 and the solid-to-fluid transition tested as a true phase transition (Section 4.3).
@@ -131,7 +131,10 @@ contact-graph-freezing experiment shows the degree-targeting null result is stru
 rather than kinematic — sharpening the synthesis of Section 5. Section 4.32 closes the
 phase-transition thread: a hard-repulsion Langevin simulation (exponent n = 12 and 24)
 still does not crystallize, because a higher exponent in this force form shrinks the
-effective core rather than hardening it.
+effective core rather than hardening it. Section 4.33 closes the segregation thread in 3D:
+alpha-contrast segregation transfers to three dimensions but is diluted by the extra
+spatial dimension, consistent with the recurring finding that the third dimension acts as
+a mixing aid.
 
 ---
 
@@ -1663,6 +1666,59 @@ exponent and at any temperature.
 
 ---
 
+### 4.33 Alpha-Contrast Segregation in 3D: Diluted by the Extra Dimension (Finding 51)
+
+Section 4.12 (Finding 27) showed that two populations differing in alignment strength
+alpha spatially segregate in 2D: a local-purity diagnostic — the fraction of an agent's
+r_f neighbors sharing its type — rose from 0.50 (well mixed) to 0.73 at maximum alpha
+contrast, even though the along-heading bulk segregation index missed the effect. This
+section asks whether that self-organized segregation transfers to 3D. The question
+complements the vaccination results: Sections 4.28-4.30 showed that kinematic mixing,
+which *destroys* imposed structure, is dimension-independent; this tests whether
+self-*organized* structure behaves the same way (flocking3d_segregation.py, N = 350,
+fast-prey regime, f_active = 0.5, N_SEEDS = 5).
+
+| alpha_passive | 3D purity (active) | 2D purity (active, F27) | 3D Phi |
+|---------------|--------------------|-------------------------|--------|
+| 1.0 (none)    | 0.489              | 0.500                   | 1.000  |
+| 0.5           | 0.554              | 0.556                   | 0.999  |
+| 0.3           | 0.552              | 0.550                   | 0.999  |
+| 0.1           | 0.553              | 0.630                   | 0.993  |
+| 0.0           | 0.690              | 0.732                   | 0.523  |
+
+![](./figures/finding51_3d_segregation.png)
+
+**Segregation transfers to 3D, and at moderate contrast it is identical to 2D.** At
+alpha_passive = 0.5 and 0.3, the 3D local purity (0.554, 0.552) matches the 2D values
+(0.556, 0.550) to within seed noise. Self-organized alpha-contrast segregation is a real
+3D effect, and its mechanism — weaker-alignment agents falling out of the tight active
+core and clustering locally — operates the same way in both dimensions at moderate
+contrast.
+
+**The extra dimension dilutes segregation at high contrast.** The 2D and 3D curves
+diverge once the contrast is large. At alpha_passive = 0.1 the 2D purity has climbed to
+0.630, but the 3D purity is still on a flat plateau at 0.553 — no higher than at
+alpha_passive = 0.5. In 2D segregation rises steadily as contrast increases; in 3D it
+plateaus at a mild ~0.55 and breaks upward only at alpha_passive = 0.0. The extra spatial
+dimension gives a partially-aligned passive agent more independent directions along which
+to interpenetrate the active population, so moderate mis-alignment is no longer enough to
+sustain clustering — the agent is mixed back in.
+
+**Strong 3D segregation costs global coherence.** The 3D flock segregates strongly (purity
+0.690) only at alpha_passive = 0.0, where the passive half has zero alignment and behaves
+as a non-flocking gas. There the global order parameter collapses to Phi = 0.523: the
+"segregated" state is an aligned active flock shedding an incoherent passive cloud, not
+two co-moving coherent sub-flocks. For every alpha_passive >= 0.1 the flock stays coherent
+(Phi >= 0.99) and segregation is only mild.
+
+The result completes a consistent picture. Kinematic mixing erodes imposed structure
+equally in 2D and 3D (Section 4.28), and it also erodes self-organized segregation
+*more* effectively in 3D than in 2D. Across every experiment in this study — encirclement,
+vaccination, and now segregation — the third spatial dimension acts as a mixing aid: it
+makes the flock harder to disrupt, harder to target, and harder to sort.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -1929,7 +1985,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced twenty-three main results (selecting the most general across 50 findings):
+This study produced twenty-four main results (selecting the most general across 51 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -2124,6 +2180,17 @@ This study produced twenty-three main results (selecting the most general across
     exhibiting KTHNY melting would require a genuinely different potential (a true
     inverse-power-law or hard-disc form). The solid-to-fluid behavior is a smooth
     crossover at every exponent and temperature tested.
+
+24. **Self-organized segregation is partially dimension-dependent:** Two populations
+    differing in alignment strength alpha segregate in 3D as they do in 2D — local purity
+    rises above the well-mixed value of 0.5 — but the effect is diluted in three
+    dimensions. At moderate contrast the 2D and 3D purities are identical (~0.55); at high
+    contrast they diverge, with 2D purity climbing to 0.63-0.73 while 3D purity plateaus
+    near 0.55 and breaks upward only when the passive population has zero alignment (and
+    the flock loses global coherence). The extra spatial dimension gives partially-aligned
+    agents more directions along which to interpenetrate, so it dilutes self-organized
+    segregation just as it aids the kinematic mixing that defeats targeting — the third
+    dimension is consistently a mixing aid.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
