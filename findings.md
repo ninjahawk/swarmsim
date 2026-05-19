@@ -61,6 +61,7 @@ generated). For navigation, here they are grouped by theme:
 - F44 3D encirclement disruption non-monotonic in n_pred; hard floor Phi ~ 0.91
 - F45 3D adaptive encirclement null result; tracking damps the disruptive fluctuations
 - F46 Vaccination targeting fails in 3D too; kinematic mixing is dimension-independent
+- F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
 - F44 (planned) 3D predator scaling: how many predators match 2D floor?
 
 ### Floor and Scaling
@@ -1653,6 +1654,63 @@ if there is a fixed sub-structure that the alignment force does not erase.
 
 ---
 
+## Finding 47: The Section 5 topological-alignment prediction is FALSIFIED -- k-NN alignment does not slow kinematic mixing, and targeted vaccination does not recover
+<img src="./figures/finding47_topological_mixing.png" width="680"/>
+
+**What:** The report's Section 5 synthesis closed with an explicit, pre-registered
+falsifiable prediction: replacing the metric alignment force (align to all neighbors within
+rf) with a topological one (align to the k nearest neighbors) should produce "weaker mixing
+-- the neighbor graph would be more stable because k-nearest is a permutation-stable
+structure," and consequently "targeted vaccination should partially recover its advantage
+over random." This experiment tests that prediction head-on.
+**Evidence:** topological_mixing.py, 2D flocking N=350, N_SEEDS=5. The alignment rule is
+switchable between metric (neighbors within rf=0.10) and topological (k nearest neighbors,
+with k=32 calibrated to the mean metric alignment degree). Two diagnostics:
+(A) mixing rate -- mean Jaccard dissimilarity of each agent's contact-neighbor set (within
+R_CONT=0.05) between snapshots 2 time units apart; (B) random vs degree-targeted
+vaccination at supercritical SIS (beta=2.5, gamma=2.0).
+  Diagnostic A -- mixing rate (Jaccard dissimilarity per 2 tu):
+    metric  0.0371+/-0.0039   contact-degree CV = 0.655
+    topo    0.0364+/-0.0032   contact-degree CV = 0.615
+  Diagnostic B -- targeted-vs-random advantage (f_ss random minus f_ss targeted;
+  positive = targeting helps):
+    metric: p=0.20 -0.006 | p=0.30 -0.013 | p=0.40 -0.007 | p=0.50 -0.024
+    topo:   p=0.20 -0.004 | p=0.30 -0.007 | p=0.40 -0.038 | p=0.50  0.000
+**Key result 1 -- the prediction is falsified on both counts.**
+(a) Topological alignment does NOT slow mixing. The Jaccard neighbor-graph turnover is
+0.0364 per 2 tu for topo vs 0.0371 for metric -- statistically identical, the difference
+far smaller than the seed-to-seed std. (b) Targeted vaccination does NOT recover an
+advantage under topological alignment. The targeted-minus-random advantage is negative or
+zero at every immune fraction under BOTH alignment rules -- targeting never beats random,
+and at p=0.40 topo it is 0.038 WORSE. The Section 5 prediction is wrong.
+**Key result 2 -- why "permutation-stable" was a red herring.**
+The prediction conflated two distinct networks. The ALIGNMENT network (who an agent
+averages velocity with) is what topological alignment changes -- and yes, k-NN fixes every
+agent's alignment degree at exactly k. But the CONTACT network (who is within R_CONT, the
+network contagion actually spreads on) is set by physical proximity, and it churns because
+agents with slightly dispersed velocities slide past one another. That residual velocity
+dispersion comes from repulsion, noise, and the averaging in the alignment force -- all
+present identically under both rules. Changing how the alignment force *selects* neighbors
+does not change how fast agents *physically move past* each other. So the contact graph
+rewires at the same rate, and the contact-degree distribution stays equally heterogeneous
+(CV 0.62 vs 0.66 -- k-NN did not homogenize it, because it homogenizes the alignment
+degree, not the contact degree).
+**Key result 3 -- a real but unrelated side effect.**
+Topological alignment does lower f_ss in absolute terms (random-vaccination f_ss at p=0.20:
+0.359 topo vs 0.389 metric; full quench at p=0.50 for topo vs residual 0.025 for metric).
+The k-NN flock is slightly more spatially extended, weakening the contagion. But this is a
+uniform shift of the whole epidemic curve, not a targeting effect -- random and targeted
+shift together, and targeting still confers no advantage.
+**Implication:** Kinematic mixing is driven by the physical relative motion of agents, not
+by the topology of the alignment rule. The mechanism is even more robust than Section 5
+claimed: it does not depend on the metric character of the alignment force. Section 5's
+falsifiable prediction was a genuine test of the synthesis, and the synthesis failed it --
+the proposed escape route (a permutation-stable alignment graph) does not exist, because
+the contact graph and the alignment graph are different objects. The report's Section 5
+has been updated to record this falsification and the corrected mechanism.
+
+---
+
 ## Open Questions / Next Directions
 1. 3D flocking thread COMPLETE (F41-F46):
    - F41: v_eq=v0+alpha/mu exact in 3D; basic noise sweep
@@ -1663,13 +1721,18 @@ if there is a fixed sub-structure that the alignment force does not erase.
    - F46: 3D vaccination null -- kinematic mixing defeats targeting in 3D too
 2. 3D predator thread is fully closed. Encirclement cannot be rescued in 3D by radius
    tuning (F43), predator count (F44), or adaptive geometry (F45).
-3. Alternative research directions:
+3. Section 5 self-test COMPLETE (F47): the topological-alignment prediction was tested
+   and FALSIFIED. k-NN alignment does not slow mixing; targeting still fails. Section 5
+   revised. Kinematic mixing is a property of physical relative motion, not the
+   alignment rule -- mechanism is more robust than originally claimed.
+4. Alternative research directions:
    - A 3D-effective predator strategy that is NOT encirclement: exploit the
      compression-induced density gradient (F44), or attack alignment coupling directly.
      Would validate the F44/F45 mechanistic claim.
+   - Freeze the contact graph directly (suppress relative agent motion) -- F47 identified
+     this as the only genuine route to making targeting work; is there a physical regime
+     (very low noise, very strong alignment) where the contact graph nearly freezes?
    - Phase transition in 3D (hard repulsion Langevin in 3D)
    - Segregation in 3D
-   - Topological (k-nearest-neighbor) alignment force: test the mixing-mechanism
-     prediction from report §5 (synthesis section) -- targeted vaccination should
-     partially recover if neighbor graph is permutation-stable
+   - Agent memory / fatigue models
 

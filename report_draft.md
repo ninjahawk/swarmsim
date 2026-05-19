@@ -1406,6 +1406,73 @@ fixed sub-structure that the alignment force does not continuously erase.
 
 ---
 
+### 4.29 Topological Alignment Does Not Slow Mixing: A Falsified Prediction (Finding 47)
+
+The synthesis of Section 5 closes with a pre-registered, falsifiable prediction: that
+replacing the metric alignment force with a topological (k-nearest-neighbor) one would
+produce a more stable neighbor graph — k-nearest being a "permutation-stable" structure —
+and that targeted vaccination would consequently recover an advantage over random. A
+synthesis worth stating should be tested against its own predictions, and this section
+does so directly.
+
+The 2D flocking model is given a switchable alignment rule (topological_mixing.py,
+N = 350, N_SEEDS = 5): metric alignment averages the velocities of all neighbors within
+r_f = 0.10; topological alignment averages the velocities of the k nearest neighbors, with
+k = 32 calibrated to the mean metric alignment degree so the two rules are dynamically
+comparable. Two diagnostics are run under each rule: (A) the neighbor-graph mixing rate,
+measured as the mean Jaccard dissimilarity of each agent's contact-neighbor set between
+snapshots two time units apart, and (B) random versus degree-targeted vaccination at
+supercritical SIS.
+
+| Diagnostic A          | metric            | topological       |
+|-----------------------|-------------------|-------------------|
+| Jaccard turnover/2tu  | 0.0371 +/- 0.0039 | 0.0364 +/- 0.0032 |
+| contact-degree CV     | 0.655             | 0.615             |
+
+| Targeted advantage (f_ss random − targeted) | p=0.20 | p=0.30 | p=0.40 | p=0.50 |
+|---------------------------------------------|--------|--------|--------|--------|
+| metric alignment                            | −0.006 | −0.013 | −0.007 | −0.024 |
+| topological alignment                       | −0.004 | −0.007 | −0.038 |  0.000 |
+
+![](./figures/finding47_topological_mixing.png)
+
+**The prediction is falsified on both counts.** Topological alignment does not slow
+mixing: the neighbor-graph turnover rate is 0.0364 per two time units under k-NN alignment
+versus 0.0371 under metric alignment — statistically indistinguishable, the gap far below
+the seed-to-seed standard deviation. And targeted vaccination does not recover: the
+targeted-minus-random advantage is negative or zero at every immune fraction under both
+alignment rules, exactly as in Section 4.18. Targeting never beats random; at p = 0.40
+under topological alignment it is in fact 0.038 worse.
+
+**Why "permutation-stable" was a red herring.** The prediction conflated two distinct
+networks. The *alignment* network — the set of agents whose velocity an agent averages —
+is what the topological rule changes, and k-NN does fix every agent's alignment degree at
+exactly k. But contagion does not spread on the alignment network; it spreads on the
+*contact* network, the set of agents within R_CONT. The contact network rewires because
+agents with slightly dispersed velocities physically slide past one another, and that
+velocity dispersion is produced by repulsion, noise, and the averaging in the alignment
+force — all present identically under both rules. Changing how the alignment force
+*selects* its neighbors does not change how fast agents *physically move past* each other.
+The contact graph therefore turns over at the same rate, and its degree distribution
+remains equally heterogeneous (CV 0.62 versus 0.66): k-NN homogenizes the alignment degree,
+not the contact degree.
+
+**A real but unrelated side effect.** Topological alignment does lower the steady-state
+panic fraction in absolute terms — random-vaccination f_ss at p = 0.20 is 0.359 under k-NN
+versus 0.389 under metric, and the epidemic quenches fully at p = 0.50 under k-NN. The
+topological flock is slightly more spatially extended, which weakens the contagion. But
+this shifts the entire epidemic curve uniformly; random and targeted move together, and
+targeting still confers no advantage.
+
+The synthesis failed its own test, and the failure is informative. The proposed escape
+route — a permutation-stable alignment graph that static targeting could exploit — does
+not exist, because the alignment graph and the contact graph are different objects.
+Kinematic mixing is driven by the physical relative motion of agents, not by the topology
+of the alignment rule, and the mechanism is therefore more robust than Section 5
+originally claimed. The synthesis below has been revised to incorporate this result.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Three of the strongest results in this study — the failure of degree-targeted vaccination
@@ -1498,13 +1565,30 @@ The two threads share the model and the alignment force but address different
 levels of organization: phase behavior is a property of the velocity distribution,
 mixing is a property of the spatial-neighbor graph.
 
-This synthesis makes a falsifiable prediction. A flocking model in which the
-alignment force is replaced by a topological (k-nearest-neighbor) interaction
-rather than a metric one should exhibit weaker mixing — the neighbor graph would
-be more stable because k-nearest is a permutation-stable structure. Under such a
-modification, targeted vaccination should partially recover its advantage over
-random, and recovery from encirclement should slow. This is a clear experimental
-direction beyond the present study.
+This synthesis made a falsifiable prediction, and Section 4.29 tested it. The
+prediction was that replacing the metric alignment force with a topological
+(k-nearest-neighbor) one would exhibit weaker mixing — the neighbor graph being
+more stable because k-nearest is a "permutation-stable" structure — so that
+targeted vaccination would partially recover its advantage. The prediction was
+falsified: under k-NN alignment the neighbor-graph turnover is unchanged
+(Jaccard dissimilarity 0.036 versus 0.037 per two time units) and targeted
+vaccination still confers no advantage over random.
+
+The falsification sharpens rather than weakens the synthesis. The error in the
+prediction was to conflate two networks. The topological rule alters the
+*alignment* graph — whose velocity each agent averages — and indeed fixes every
+agent's alignment degree at exactly k. But contagion, targeting, and the herd-
+immunity threshold all live on the *contact* graph, the set of agents within
+R_CONT. The contact graph rewires because agents with slightly dispersed
+velocities physically slide past one another, and that dispersion — generated by
+repulsion, noise, and the local averaging — is identical under both alignment
+rules. Kinematic mixing is therefore a property of the agents' physical relative
+motion, not of the alignment rule's neighbor-selection topology. The mechanism is
+more robust than first claimed: there is no permutation-stable variant of the
+alignment force that static targeting could exploit, because the graph that
+targeting must beat is not the graph the alignment force defines. A genuine
+escape would require freezing the *contact* graph itself — that is, suppressing
+the relative motion of agents — which is incompatible with a flock that moves.
 
 ---
 

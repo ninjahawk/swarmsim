@@ -1,0 +1,20 @@
+Finding 47 -- topological vs metric alignment
+N=350 seeds=5  calibrated k=32
+
+Diagnostic A -- mixing rate (Jaccard dissimilarity per 2 tu):
+  metric   0.0371 +/- 0.0039   degree CV = 0.655
+  topo     0.0364 +/- 0.0032   degree CV = 0.615
+
+Diagnostic B -- vaccination (f_ss):
+  metric alignment:
+    p_immune  random  targeted  advantage(rand-targ)
+    0.20      0.3889  0.3945    -0.0057
+    0.30      0.2974  0.3103    -0.0128
+    0.40      0.1550  0.1618    -0.0068
+    0.50      0.0251  0.0488    -0.0236
+  topo alignment:
+    p_immune  random  targeted  advantage(rand-targ)
+    0.20      0.3588  0.3624    -0.0036
+    0.30      0.2565  0.2639    -0.0074
+    0.40      0.0748  0.1133    -0.0385
+    0.50      0.0000  0.0000    +0.0000
