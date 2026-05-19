@@ -40,9 +40,10 @@ adaptive encirclement strategy — predators that continuously track live flock 
 maintain R_enc = 0.5*Rg — cuts the fraction of time the flock spends in a highly
 coherent state by 34% compared to a fixed-radius strategy, validating the universality
 of the R_enc/Rg ~ 0.5 optimum across dynamical fluctuations. Neither degree-targeted nor spatially-targeted vaccination outperforms random: both require
-p_immune ~ 0.46, because kinematic reorganization restores hub positions after high-degree
-agents are immunized, and kinematic mixing scrambles the spatial distribution of immune
-agents before the epidemic runs — defeating both targeting strategies by the same mechanism.
+p_immune ~ 0.46. A dedicated follow-up disentangles the cause — spatial targeting fails
+because kinematic mixing scrambles the immune agents' coverage before the epidemic runs,
+while degree targeting fails for a distinct structural reason (the flock contact network
+has no hubs to target), a null result that persists even when the contact graph is frozen.
 Sweeping the repulsion exponent from n = 1.5 (soft) to n = 12 (near hard-core) produces
 identical finite-size scaling at all exponents. The smooth crossover is not caused by
 potential softness; it is a consequence of non-equilibrium driving (uniform random kicks
@@ -55,6 +56,19 @@ any accessible temperature: |psi_6| ≈ 0.4 across the entire kT range from 0.00
 with no N-dependent susceptibility peak. The KTHNY transition is absent because the soft
 potential allows agents to pass through each other's cores at any finite kT, preventing
 hexagonal lattice formation.
+
+Finally, I extend the model to three spatial dimensions. Flocking and the exact result
+v_eq = v0 + alpha/mu both generalize cleanly to 3D, and the noise-driven crossover remains
+smooth. Encirclement, however, does not transfer: no geometric variant — radius tuning,
+predator count up to 50, adaptive tracking, or planar arrangement — reproduces the 2D
+disruption, because in 3D the compression that encirclement induces densifies the flock
+and strengthens its alignment coupling rather than dividing it. The vaccination null
+results, by contrast, do extend to 3D unchanged. A concluding pair of experiments tests
+the synthesis against its own pre-registered prediction: replacing the metric alignment
+force with a topological one does not slow kinematic mixing, and freezing the contact
+graph does not rescue degree-targeted vaccination — confirming that kinematic mixing is a
+property of the agents' physical motion and that the degree-targeting null is structural
+rather than kinematic.
 
 ---
 
@@ -75,7 +89,7 @@ repulsion, velocity-aligning flocking force, self-propulsion toward a target spe
 random noise. The interplay of these four forces produces a rich behavioral phase space,
 including crystalline order, disordered fluid motion, and coherent streaming flocks.
 
-This report covers twenty-five investigations, producing forty-three numbered findings.
+This report covers thirty-one investigations, producing forty-nine numbered findings.
 The first three sections establish the baseline: implementation validation and the v_eq
 analytical result (Section 4.1), parameter sweeps and flock formation (Section 4.2),
 and the solid-to-fluid transition tested as a true phase transition (Section 4.3).
@@ -104,10 +118,17 @@ that n = 1.5 soft repulsion cannot crystallize at any accessible temperature. Se
 4.23 and 4.24 extend the model to three spatial dimensions: flocking and v_eq generalize
 exactly to 3D, and the noise-driven crossover in 3D is a smooth crossover at ramp ~ 15-25
 (consistent with the 2D behavior, confirming a dimensionality-independent mechanism).
-Section 4.25 introduces 3D predator strategies and finds that encirclement fails to replicate
-its 2D effectiveness: the R_enc/Rg universal optimum is 2D-specific, and sphere-surface
-coverage by a fixed number of predators is geometrically insufficient to close off escape
-in three dimensions.
+Sections 4.25 through 4.31 develop the three-dimensional thread in depth. Section 4.25
+introduces 3D predator strategies and finds that encirclement fails to replicate its 2D
+effectiveness — the R_enc/Rg universal optimum is 2D-specific. Sections 4.26, 4.27, and
+4.31 show this failure cannot be repaired by predator count, adaptive geometry, or planar
+arrangement: every geometric variant of encirclement fails in 3D, and the compression it
+induces densifies and stabilizes the flock rather than dividing it. Section 4.28 confirms
+that the vaccination null results extend to 3D. Sections 4.29 and 4.30 then test the
+report's own synthesis against itself: a pre-registered prediction (that a topological
+alignment force would slow mixing and rescue targeted vaccination) is falsified, and a
+contact-graph-freezing experiment shows the degree-targeting null result is structural
+rather than kinematic — sharpening the synthesis of Section 5.
 
 ---
 
@@ -1852,7 +1873,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced nineteen main results (selecting the most general across 43 findings):
+This study produced twenty-two main results (selecting the most general across 49 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -1999,17 +2020,51 @@ This study produced nineteen main results (selecting the most general across 43 
     to 0.997 (no disruption). The mechanism is geometric: 6 predators on a sphere surface
     leave large unblocked solid-angle gaps through which the flock escapes, particularly in
     the direction perpendicular to whatever plane the predators approximately occupy.
-    Encirclement is a 2D-specific strategy that relies on closing a 1D ring; extending it
-    to 3D requires either many more predators or a fundamentally different approach.
+    Encirclement is a 2D-specific strategy that relies on closing a 1D ring.
+
+20. **No geometric variant of encirclement works in 3D:** The 2D-to-3D failure of
+    encirclement cannot be repaired by any geometric adjustment. Increasing the predator
+    count produces non-monotonic disruption with a hard floor near Phi ~ 0.91 — the 2D
+    floor (~0.67) is never reached, even at n_pred = 50. Adaptive radius tracking, which
+    helps in 2D, mildly hurts in 3D by damping the transient fluctuations that are
+    encirclement's only disruptive moments. A planar predator ring is worse than a
+    spherical arrangement, not better, because the flock escapes along the axis the ring
+    leaves unconstrained. Direct measurement confirms the mechanism: adding predators
+    compresses the 3D flock (Rg falls) and densifies it (mean alignment-neighbor count
+    rises from 22 to 48), and this densification strengthens the alignment coupling,
+    making a compressed flock more cohesive rather than dividing it. Geometric enclosure
+    is intrinsically a 2D strategy.
+
+21. **The vaccination null results extend to 3D:** Random, spatial, and degree-targeted
+    vaccination remain statistically indistinguishable in a 3D flock, with the
+    contact-degree distribution if anything less heterogeneous than in 2D (CV ~ 0.59).
+    Kinematic mixing — and the absence of exploitable degree structure — are both
+    dimension-independent.
+
+22. **The synthesis survives its own self-test, with one correction:** Section 5's
+    pre-registered prediction — that a topological (k-nearest-neighbor) alignment force
+    would slow kinematic mixing and let targeted vaccination recover — was tested and
+    falsified: k-NN alignment leaves the neighbor-graph turnover unchanged because the
+    contact graph rewires through physical agent motion, not through the alignment rule's
+    neighbor-selection topology. A second experiment froze the contact graph directly (by
+    driving the flock into its low-noise solid regime, reducing the mixing rate thirtyfold)
+    and found that degree-targeted vaccination still does not beat random. This forces a
+    correction to the synthesis: the degree-targeting null result is structural — the flock
+    contact network simply has no hubs — and is independent of mixing, whereas the spatial
+    vaccination null result genuinely is kinematic. The two null results are distinct
+    mechanisms, not one.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
 coherence under noise and naive predation; it transmits spatial clustering that amplifies
-contagion; it drives the spatial reorganization that defeats all vaccination targeting
-strategies; and it enables the reunion that makes kinematic damage reversible. The most
+contagion; it drives the kinematic mixing that defeats spatial vaccination targeting; it
+densifies and stabilizes the flock against 3D encirclement; and it enables the reunion
+that makes kinematic damage reversible. Where targeting fails for a structural reason
+rather than a kinematic one — as in degree-targeted vaccination — the cause is that the
+flock contact network never had the exploitable heterogeneity to begin with. The most
 effective disruption strategies are those that operate at the flock's geometric scale
-(encirclement at R_enc/Rg ~ 0.5) or that exploit a timescale the alignment force cannot
-overcome (epidemic persistence after predator removal).
+(encirclement at R_enc/Rg ~ 0.5, in 2D only) or that exploit a timescale the alignment
+force cannot overcome (epidemic persistence after predator removal).
 
 ---
 
