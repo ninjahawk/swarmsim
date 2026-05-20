@@ -1,0 +1,74 @@
+Exp 1: beta sweep, gamma=1.0, 4 seeds
+  (per-agent beta_i; arithmetic mean held fixed at sweep value)
+  -- homog --
+     beta= 0.1  f_ss=0.000 +/- 0.000
+     beta= 0.2  f_ss=0.000 +/- 0.000
+     beta= 0.3  f_ss=0.000 +/- 0.000
+     beta= 0.4  f_ss=0.091 +/- 0.059
+     beta= 0.5  f_ss=0.260 +/- 0.009
+     beta= 0.7  f_ss=0.457 +/- 0.036
+     beta= 1.0  f_ss=0.615 +/- 0.017
+     beta= 1.5  f_ss=0.727 +/- 0.007
+     beta= 2.0  f_ss=0.793 +/- 0.002
+     beta= 3.0  f_ss=0.860 +/- 0.003
+     beta= 5.0  f_ss=0.908 +/- 0.004
+  -- mild --
+     beta= 0.1  f_ss=0.000 +/- 0.000
+     beta= 0.2  f_ss=0.000 +/- 0.000
+     beta= 0.3  f_ss=0.000 +/- 0.000
+     beta= 0.4  f_ss=0.115 +/- 0.081
+     beta= 0.5  f_ss=0.219 +/- 0.067
+     beta= 0.7  f_ss=0.411 +/- 0.029
+     beta= 1.0  f_ss=0.582 +/- 0.016
+     beta= 1.5  f_ss=0.722 +/- 0.007
+     beta= 2.0  f_ss=0.787 +/- 0.003
+     beta= 3.0  f_ss=0.860 +/- 0.003
+     beta= 5.0  f_ss=0.909 +/- 0.003
+  -- strong --
+     beta= 0.1  f_ss=0.000 +/- 0.000
+     beta= 0.2  f_ss=0.000 +/- 0.000
+     beta= 0.3  f_ss=0.000 +/- 0.000
+     beta= 0.4  f_ss=0.115 +/- 0.081
+     beta= 0.5  f_ss=0.219 +/- 0.067
+     beta= 0.7  f_ss=0.407 +/- 0.014
+     beta= 1.0  f_ss=0.577 +/- 0.017
+     beta= 1.5  f_ss=0.720 +/- 0.004
+     beta= 2.0  f_ss=0.786 +/- 0.001
+     beta= 3.0  f_ss=0.858 +/- 0.006
+     beta= 5.0  f_ss=0.910 +/- 0.002
+  -- extreme --
+     beta= 0.1  f_ss=0.000 +/- 0.000
+     beta= 0.2  f_ss=0.000 +/- 0.000
+     beta= 0.3  f_ss=0.014 +/- 0.025
+     beta= 0.4  f_ss=0.088 +/- 0.090
+     beta= 0.5  f_ss=0.243 +/- 0.019
+     beta= 0.7  f_ss=0.425 +/- 0.027
+     beta= 1.0  f_ss=0.574 +/- 0.016
+     beta= 1.5  f_ss=0.711 +/- 0.009
+     beta= 2.0  f_ss=0.769 +/- 0.005
+     beta= 3.0  f_ss=0.838 +/- 0.004
+     beta= 5.0  f_ss=0.892 +/- 0.003
+
+  Threshold beta (f_ss crosses 0.15):
+     homog    beta_c = 0.435
+     mild     beta_c = 0.434
+     strong   beta_c = 0.434
+     extreme  beta_c = 0.440
+
+Exp 2: source attribution at beta_mean=1.0
+  mild     super-agent f=0.580  normal-agent f=0.583  source share super=73.6%
+  strong   super-agent f=0.582  normal-agent f=0.572  source share super=88.9%
+  extreme  super-agent f=0.568  normal-agent f=0.580  source share super=97.2%
+
+Exp 3: heterogeneity sweep at beta_mean=0.5 (near-threshold)
+  delta=0.00  f_ss=0.227 +/- 0.011
+  delta=0.20  f_ss=0.295 +/- 0.027
+  delta=0.40  f_ss=0.221 +/- 0.020
+  delta=0.60  f_ss=0.248 +/- 0.032
+  delta=0.80  f_ss=0.248 +/- 0.032
+  delta=1.00  f_ss=0.248 +/- 0.032
+  delta=1.50  f_ss=0.248 +/- 0.032
+
+  --> figures/infectiousness_heterogeneity_1.png
+
+Heterogeneous-infectiousness SIS analysis complete.

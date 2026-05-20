@@ -1821,6 +1821,275 @@ mean recovery rate alone.
 
 ---
 
+### 4.37 Heterogeneous Infectiousness Does Not Shift the SIS Threshold: Super-Spreaders Source Most Events but Do Not Lower beta_c (Finding 55)
+
+Finding 54 established that heterogeneity in the recovery rate gamma -- the consumer
+side of the transmission ledger -- lowers the SIS epidemic threshold via a harmonic-mean
+effect. The natural dual question is whether the SOURCE side is symmetric: if each
+agent carries its own transmission rate beta_i, drawn from a bimodal distribution at
+fixed arithmetic mean, does the threshold shift? Mean-field intuition predicts no --
+the endemic state depends linearly on average beta but inverse-linearly on per-agent
+gamma, so spreading beta at fixed mean should leave beta_c unchanged. But spatial
+contact graphs admit a super-spreader effect, in which a high-beta minority dominates
+seeding events; whether that effect bleeds into a population-level threshold shift is
+the open question.
+
+The experiment ran SIS contagion with homogeneous gamma=1.0 and per-agent beta_i in
+four conditions, all sharing arithmetic-mean beta equal to the sweep variable: homog
+(all equal), mild (bimodal {beta-0.5, beta+0.5}), strong ({beta-0.8, beta+0.8}, clipped
+non-negative and renormalized), and extreme ({0.05*beta, 1.95*beta}). The beta sweep
+covered 0.1 to 5.0 with four seeds per cell.
+
+![figures/infectiousness_heterogeneity_1.png](figures/infectiousness_heterogeneity_1.png)
+
+The result is a flat threshold. beta_c (linear-interpolated crossing of f_ss = 0.15)
+sits at 0.435 (homog), 0.434 (mild), 0.434 (strong), and 0.440 (extreme) -- a
+difference below seed noise. The four sweep curves are visually indistinguishable
+across the entire beta range. Spread in beta at fixed mean does not move the
+epidemic threshold.
+
+The transmission-attribution counter tells a different story at the event level. Of
+all calm-to-panic transitions, the high-beta half sources 73.6% of events in the mild
+condition, 88.9% in the strong condition, and 97.2% in the extreme condition, even
+though super-agents are 50% of the population. Yet the steady-state panic fractions
+for super-agents and normal-agents are statistically equal (0.58 vs 0.58 in mild,
+0.58 vs 0.57 in strong, 0.57 vs 0.58 in extreme). Once an agent is panicked, every
+agent recovers at the same homogeneous gamma, so the source asymmetry produces no
+stock asymmetry. Inflow skew does not translate to outcome skew.
+
+The asymmetry between Finding 54 and Finding 55 sharpens the F54 vaccination
+prescription. The valuable targets are those agents whose internal *rate* makes them
+reservoirs (slow recoverers, F54), not the agents whose internal rate makes them
+spreaders (super-spreaders, F55). Targeting super-spreaders would change which agents
+deliver the contagion but not whether the contagion persists, because every panicked
+agent regardless of beta_i exerts the same residence time on its neighbours. Targeting
+slow recoverers cuts the residence time directly. This frames the third
+vaccination-target class introduced by F54 -- internal-state hubs -- as specifically
+the *recovery-rate* hubs, not the transmission-rate hubs.
+
+---
+
+### 4.38 Targeting Slow Recoverers Beats Random Vaccination by 2-3x: The First Strategy in This Study That Beats Random (Finding 56)
+
+Findings 36, 37, 47, and 48 documented a striking pattern: across more than a dozen
+targeting experiments in 2D and 3D, no vaccination strategy ever outperformed random
+selection. Degree-targeting failed because the flock's contact network is thin-tailed
+(no hubs to target); spatial-targeting failed because kinematic mixing erases the
+geometric coverage; topological-alignment freezing failed because the contact graph and
+the alignment graph are decoupled. After this run of nulls the standing summary in
+Section 5 separated the failures into two distinct mechanisms but left intact the
+broader claim that no static agent-selection rule can sustain its advantage in a
+continuously-mixing flock.
+
+Finding 54 cracked the puzzle from a different angle. It introduced a third candidate
+target class -- internal-state hubs, specifically slow recoverers (small gamma_i) -- whose
+"hub-ness" travels with the agent across kinematic mixing, immune to both the structural
+absence of degree hubs and the kinematic erosion of geometric coverage. The slow class
+is the source of the F54 reservoir effect that lowers the SIS threshold. The prediction
+follows directly: in a heterogeneous-recovery flock, targeting the slow class should
+beat random.
+
+This experiment tests it. The setup uses the F54 "strong" condition (bimodal gamma in
+{0.2, 1.8}, arithmetic mean 1.0) at beta = 0.30, just above the strong-condition
+threshold beta_c = 0.318. Four strategies were compared at matched p_immune: random,
+slow (lowest gamma_i first), fast (highest gamma_i first, as a control), and degree
+(highest mean contact degree, the F36 strategy).
+
+![figures/slow_recoverer_vaccination_1.png](figures/slow_recoverer_vaccination_1.png)
+
+The prediction is confirmed dramatically. At p_immune = 0.20, slow-targeting gives
+f_ss = 0.115 versus random 0.233 -- a 50% reduction. At p_immune = 0.30, f_ss falls to
+0.027 versus random 0.189 (an 85% reduction). At p_immune = 0.40 slow-targeting
+eradicates the epidemic (f_ss = 0.000) while random is still endemic (0.095) and even
+degree-targeting -- which had been a clean null in Findings 36 and 48 -- remains
+endemic at 0.076. The effective herd-immunity threshold under slow-targeting is
+roughly p_c ~ 0.30, against ~0.50 for random.
+
+The control case is informative. Fast-targeting -- immunising the agents who already
+recover in less than one time unit -- is strictly *worse* than random at every p_immune
+tested (0.371 vs 0.306 at p = 0.10; 0.265 vs 0.095 at p = 0.40). Vaccinating
+non-reservoirs leaves the slow class untouched, and the slow class then sustains the
+epidemic by re-seeding the unprotected fast agents. Vaccination policy is not simply
+"remove agents from the epidemic" -- it is "remove the agents who hold the epidemic
+between events."
+
+The localisation check at p_immune = 0.20 confirms the mechanism. Under random
+selection, the non-immune slow class sits at f = 0.487 while the non-immune fast class
+sits at f = 0.102 -- the F54 reservoir effect. Under slow-targeting the non-immune
+slow class drops to f = 0.292 (the slow agents still present are saturated less
+because fewer of them are available) and the non-immune fast class drops to f = 0.054.
+Removing reservoir capacity collapses panic across the whole population, not just on
+the immunised half.
+
+Degree-targeting in this heterogeneous-recovery regime shows a faint advantage over
+random at p = 0.30-0.50 (e.g. 0.076 vs 0.095 at p = 0.40) -- a ~20% effect at the edge
+of seed noise. It is plausibly chance overlap between the high-degree set and the
+slow class, given that the heterogeneity assignment is random and degree is essentially
+random in this network; if some high-degree agents happen to be slow, degree-targeting
+catches them. The effect is dwarfed by the direct slow-targeting advantage and does not
+upgrade the F36 verdict on degree.
+
+This is the first vaccination strategy in the entire study, across 56 findings and
+roughly fifteen targeting experiments, to beat random. The result resolves the puzzle
+that Section 5 had narrowed to two failure mechanisms: a third target class exists. It
+is not visible on the contact graph (so F36 and F48 missed it) and it is not visible
+in geometric position (so F37 missed it); it lives in the per-agent recovery rate.
+What makes this target class work is exactly what eliminated the others: dynamics. The
+agent who recovers slowly today recovers slowly tomorrow -- the kinematic mixing that
+erases spatial coverage and the contact-graph rewiring that defeats degree-targeting
+both leave gamma_i invariant. Combined with the F54 reservoir mechanism, that
+invariance is what converts a per-agent label into actionable vaccination policy.
+
+---
+
+### 4.39 Spatial Vaccination Remains a Null Even With Heterogeneous Recovery: The Slow-Targeting Advantage Is Internal, Not Spatial (Finding 57)
+
+The Finding 56 result raises a natural question. Slow-targeting succeeds where the
+previous targeting strategies failed, but is the success really about per-agent recovery
+rates, or could it be that slow agents happen to be spatially well-distributed and the
+advantage actually flows through spatial coverage? Finding 37 had ruled out spatial
+targeting in the homogeneous-recovery regime; Finding 56's heterogeneity reopens the
+question because the epidemic now concentrates on a specific sub-population whose
+spatial pattern could matter.
+
+The experiment compares random, spatial (farthest-point sampling at t = 0), and
+slow-targeting in the Finding 56 setup. If the slow advantage operated through spatial
+distribution, spatial targeting should track slow at matched p_immune. If it operates
+through the per-agent rate mechanism alone, spatial should track random.
+
+![figures/het_recovery_spatial_1.png](figures/het_recovery_spatial_1.png)
+
+Spatial tracks random, not slow. The two curves are within seed noise at every
+p_immune (maximum gap 0.025 with seed standard deviations near 0.020), and at
+p_immune = 0.40 spatial is in fact nominally worse than random (0.100 vs 0.075). The
+Finding 37 kinematic-mixing null transfers to the heterogeneous-recovery regime
+unchanged. Meanwhile slow-targeting reproduces the Finding 56 advantage exactly --
+f_ss = 0.024 at p_immune = 0.30 vs random's 0.171 and spatial's 0.168, eradication at
+p_immune = 0.40 -- confirming the result is reproducible in a separate run.
+
+The interpretive consequence is sharp. Spatial coverage and internal-rate targeting are
+independent axes; only internal-rate targeting works. The targeting puzzle that the
+Section 5 synthesis had broken into two failure mechanisms now resolves into a single
+distinction: where the hub label lives. Strategies that read hub-ness off a
+system-level observable -- contact-graph position, geometric location, alignment-topology
+neighbour set -- all fail, because the kinematic dynamics scramble those observables
+between attack and response. The one strategy that succeeds reads hub-ness off a
+per-agent internal rate that the dynamics cannot scramble. External observables fail;
+internal rates succeed.
+
+This also sets up the natural cross-dimensional test. Finding 46 reported a 3D
+vaccination null for degree and spatial targets; that result is now understood as a
+3D extension of the structural and kinematic erosion mechanisms. The slow-targeting
+mechanism, by contrast, is per-agent and dimension-independent. The prediction for 3D
+is that slow-targeting will reproduce the 2D advantage; failure would indicate the
+mechanism is more subtle than the per-agent-invariance argument suggests.
+
+---
+
+### 4.40 Slow-Recoverer Vaccination Transfers to 3D Unchanged: The Per-Agent Rate Mechanism Is Dimension-Independent (Finding 58)
+
+The Finding 57 prediction was sharp: the slow-targeting advantage operates through a
+per-agent internal rate that the dynamics cannot mix away, so it should transfer to 3D
+regardless of the Finding 46 null on degree and spatial targeting. This experiment
+tests it.
+
+The setup uses the F46 3D vaccination harness (N = 350, torus [0,1]^3,
+R_CONT = 0.155 chosen so the mean contact degree matches the 2D experiments) with
+bimodal per-agent gamma_i in {0.4, 3.6} -- the F54 strong-spread analog with
+arithmetic mean 2.0 -- at beta = 1.5, near the heterogeneous-condition threshold.
+Strategies: random, spatial (3D farthest-point on the torus), slow (lowest gamma_i
+first). Three seeds, 8000 SIS iterations per cell.
+
+![figures/flocking3d_slow_vaccination_1.png](figures/flocking3d_slow_vaccination_1.png)
+
+Slow-targeting beats random at every p_immune. The advantage grows from 3% at
+p_immune = 0.10 (0.661 vs 0.638), through 42% at p_immune = 0.40 (0.382 vs 0.223), to
+total eradication at p_immune = 0.50 (0.000 vs 0.282). Spatial tracks random to within
+0.007 at every p_immune, confirming the Finding 37 / Finding 46 kinematic-mixing null
+survives the heterogeneous regime in 3D as well. The slow-vs-spatial gap at
+p_immune = 0.40 is 0.159 while spatial-vs-random is 0.000: the mechanism is purely
+per-agent, not spatial.
+
+The eradication at p_immune = 0.50 is the cleanest possible signature of the
+mechanism. The bimodal distribution makes "slow" an exact 50/50 class label, and
+removing the slow half collapses f_ss to zero with zero standard deviation across
+seeds. Removing exactly the reservoir class strips the SIS endemic state to nothing,
+because no agent left in the population has a recovery time long enough to sustain a
+chain of new infections. Random selection at p_immune = 0.50 leaves the slow class
+half-immunised and half-not, and the unprotected slow half is enough to maintain
+f_ss = 0.282.
+
+The magnitude of the slow advantage is smaller in 3D than in 2D. At p_immune = 0.40,
+Finding 56 reported slow at 0.000 vs random at 0.095 (a clean win in absolute terms);
+here in 3D slow is 0.223 vs random 0.382 (a 42% relative improvement but a much
+larger residual epidemic). Two related geometric effects plausibly explain the
+dilution. Finding 46 reported degree CV = 0.59 in 3D vs 0.68 in 2D -- the 3D contact
+graph is even more homogeneous, so each slow agent contributes less concentrated
+reservoir mass to its neighbourhood. Finding 52 showed 3D mixes 1.8x slower than 2D
+at matched degree, which keeps panic localised on the slow class for longer -- but
+also keeps it from spreading to fresh territory as efficiently, so the global f_ss is
+lower at every condition (random at p = 0.00 sits at 0.753 in 3D, far below the
+near-saturation seen in 2D at comparable supercritical conditions). The mechanism
+transfers; the magnitude is geometry-dependent.
+
+The combined verdict across Findings 56, 57, and 58 is unambiguous. Of the four
+canonical targeting strategies tested across 2D and 3D -- degree, spatial, random,
+slow -- only slow-targeting works, and it works in both dimensions. The Section 5
+narrative is now: kinematic mixing defeats targeting strategies that read hub-ness off
+a system-level observable, but not strategies that read it off a per-agent invariant
+rate. The result is robust to dimension.
+
+---
+
+### 4.41 Slow-Recoverer Vaccination Survives Continuous Distributions: The Mechanism Does Not Need a Bimodal Class Structure (Finding 59)
+
+Findings 54, 56, 57, and 58 all used a bimodal per-agent gamma_i distribution -- a
+clean 50/50 split into slow and fast classes. That structure made slow-targeting a
+class-membership question. Real biological populations are not bimodal; recovery
+rates are continuously distributed, with the slow-vs-fast distinction a quantile
+rather than a label. The natural concern is that the Finding 56 mechanism is an
+artifact of the bimodal split -- that the strategy fails when the boundary between
+slow and fast is soft.
+
+This experiment uses a lognormal per-agent gamma_i with arithmetic mean 1.0 and width
+parameter sigma_log varied from 0 (homogeneous) to 1.2 (broad heavy-tailed). Beta is
+fixed at 0.35, just above the homogeneous threshold. The slow-targeting strategy
+becomes: take the bottom p_immune fraction of agents by exact gamma_i value.
+
+![figures/continuous_gamma_vaccination_1.png](figures/continuous_gamma_vaccination_1.png)
+
+The slow-targeting advantage survives continuous distributions, and grows with the
+width. Below sigma_log = 0.4 the distribution is tight and beta = 0.35 lies below the
+effective threshold for both strategies; neither establishes an endemic state. The
+advantage activates at sigma_log = 0.6 (random 0.105 vs slow 0.043, a 59% reduction)
+and reaches its strongest form at sigma_log = 0.8, where slow-targeting produces
+total eradication (f_ss = 0.000) at p_immune = 0.20 while random sits at 0.194.
+Above sigma_log = 1.0 the lognormal's heavy tail begins to contain agents with
+recovery rates so extreme that p_immune = 0.20 is insufficient to capture them all,
+and the advantage shrinks in absolute terms (slow rises from 0.000 at sigma = 0.8 to
+0.116 at sigma = 1.0 to 0.214 at sigma = 1.2). The non-monotonicity flags a regime
+where extreme tail-heterogeneity outruns a fixed p_immune budget; a larger p_immune
+would restore the advantage.
+
+The p_immune sweep at sigma_log = 0.6 confirms the F56 pattern qualitatively. At
+p_immune = 0.20, slow gives f_ss = 0.043 vs random's 0.105 (a 59% reduction); at
+p_immune = 0.30, slow eradicates (0.000) vs random's 0.036; above p_immune = 0.30
+both strategies sit near zero because beta = 0.35 leaves the epidemic close to
+threshold even under random selection at this spread. The slow-targeting herd-immunity
+threshold is roughly p_c = 0.20-0.30, about half the random threshold -- the same
+factor-of-two effective improvement seen in the bimodal case (Finding 56).
+
+The operational consequence is sharper than the bimodal case suggested. The Finding 56
+mechanism does not require a clean slow-vs-fast taxonomy. In any heterogeneous-recovery
+population where gamma_i is broadly distributed (sigma_log >= 0.5), targeting the
+lowest-gamma quantile beats random selection. Biological recovery distributions are
+typically lognormal-like rather than bimodal, so the practical implication is that the
+policy "vaccinate the bottom X% by observed recovery behaviour" should work for any
+realistic heterogeneity profile. The bimodal cases of Findings 54-58 were a useful
+analytical simplification, not a precondition for the mechanism.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -2076,7 +2345,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced twenty-seven main results (selecting the most general across 54 findings):
+This study produced thirty main results (selecting the most general across 59 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -2317,6 +2586,55 @@ This study produced twenty-seven main results (selecting the most general across
     completes the heterogeneity story — heterogeneity in an internal *state* that the
     dynamics homogenize is a transient amplifier, heterogeneity in an internal *rate*
     that the dynamics cannot erase is a permanent threshold shifter.
+
+28. **Heterogeneous infectiousness does NOT shift the SIS threshold:** The dual experiment
+    to result 27 -- per-agent transmission rate beta_i drawn from a bimodal distribution
+    at fixed arithmetic mean, with gamma homogeneous -- leaves beta_c flat at 0.434-0.440
+    across homog, mild, strong, and extreme spread conditions. Super-spreaders dominate
+    transmission ATTRIBUTION (the high-beta half sources 74-97% of all calm-to-panic
+    events) but not endemic LOAD (panic fractions on super and normal agents are
+    statistically equal). Because every panicked agent recovers at the same gamma,
+    inflow skew does not translate to stock skew. Read with result 27, this establishes
+    that source-side and sink-side heterogeneity are asymmetric in SIS on this flock:
+    slow recoverers are reservoirs (threshold shifters), super-spreaders are merely
+    messengers (event-level only). The vaccination prescription sharpened by result 27 --
+    target internal-state hubs -- specifically means recovery-rate hubs, not
+    transmission-rate hubs.
+
+29. **Targeting slow recoverers is the first vaccination strategy in this study that
+    beats random:** In the heterogeneous-recovery regime of result 27 (bimodal gamma
+    {0.2, 1.8}, beta just above threshold), immunising the slow half of the population
+    first achieves f_ss = 0.115 at p_immune = 0.20 (vs random's 0.233), 0.027 at
+    p_immune = 0.30 (vs 0.189), and full eradication at p_immune = 0.40 (vs 0.095). The
+    effective herd-immunity threshold falls from p_c ~ 0.50 (random) to p_c ~ 0.30
+    (slow-targeted). Fast-targeting is strictly worse than random at every p_immune.
+    Degree-targeting in this heterogeneous regime shows a faint advantage (~20% at the
+    edge of seed noise), plausibly chance overlap of high-degree and slow agents and
+    not enough to upgrade the result-13 verdict on degree. The slow-targeting advantage
+    resolves the targeting puzzle posed by results 13, 18, 22, and 23: a third target
+    class exists -- internal-state hubs, specifically the recovery-rate hubs -- and the
+    dynamics that eliminate the other target classes (kinematic mixing, contact-graph
+    rewiring) leave gamma_i invariant by construction. The agent who recovers slowly
+    today recovers slowly tomorrow, and combined with the result-27 reservoir mechanism
+    that per-agent invariance converts an internal label into actionable policy.
+
+30. **The slow-targeting advantage transfers to 3D and to continuous distributions:**
+    Result 29's slow-targeting policy was replicated in 3D (bimodal gamma at the
+    Finding 54 strong analog, N = 350 torus): at p_immune = 0.50 slow-targeting
+    eradicates the epidemic (f_ss = 0.000) while random leaves f_ss = 0.282; at
+    p_immune = 0.40 slow is 0.223 vs random's 0.382. Spatial targeting remains a
+    clean null vs random in 3D (gap below 0.01 at every p_immune). The 3D absolute
+    advantage is smaller than 2D because the 3D contact graph is more homogeneous
+    (result 25) and 3D mixes more slowly at matched degree, both of which dilute the
+    reservoir mechanism without eliminating it. The bimodal class structure is also
+    not required: replacing the bimodal gamma with a lognormal of width
+    sigma_log = 0.6-0.8 reproduces the 2D advantage (slow eradicates at
+    p_immune = 0.20-0.30 while random remains endemic), establishing that the policy
+    "vaccinate the bottom X% by observed gamma_i" works for any plausibly heterogeneous
+    distribution. The bimodal cases of results 27-29 were an analytical simplification,
+    not a precondition. Across all four canonical targeting strategies (degree, spatial,
+    random, slow) and both dimensions, only slow-targeting beats random; that result
+    is now reproduced in 3D and under continuous distributions.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

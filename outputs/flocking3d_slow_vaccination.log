@@ -1,0 +1,43 @@
+F58 -- 3D slow-recoverer vaccination
+  beta=1.50 gamma_mean=2.00 spread=1.60  N=350 seeds=3
+  bimodal gamma {0.40, 3.60}
+  p_immune: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
+
+  seed 0: warmup...
+    Phi=1.000  mean_k=8.79  max_k=25
+    p=0.00: random=0.754 spatial=0.754 slow=0.754
+    p=0.10: random=0.664 spatial=0.647 slow=0.643
+    p=0.20: random=0.571 spatial=0.565 slow=0.513
+    p=0.30: random=0.458 spatial=0.474 slow=0.385
+    p=0.40: random=0.375 spatial=0.388 slow=0.207
+    p=0.50: random=0.280 spatial=0.283 slow=0.000
+  seed 1: warmup...
+    Phi=1.000  mean_k=7.80  max_k=19
+    p=0.00: random=0.751 spatial=0.757 slow=0.759
+    p=0.10: random=0.665 spatial=0.665 slow=0.641
+    p=0.20: random=0.567 spatial=0.572 slow=0.525
+    p=0.30: random=0.472 spatial=0.476 slow=0.365
+    p=0.40: random=0.402 spatial=0.382 slow=0.222
+    p=0.50: random=0.279 spatial=0.280 slow=0.000
+  seed 2: warmup...
+    Phi=1.000  mean_k=7.09  max_k=18
+    p=0.00: random=0.755 spatial=0.754 slow=0.750
+    p=0.10: random=0.653 spatial=0.666 slow=0.629
+    p=0.20: random=0.564 spatial=0.570 slow=0.512
+    p=0.30: random=0.487 spatial=0.488 slow=0.393
+    p=0.40: random=0.368 spatial=0.376 slow=0.239
+    p=0.50: random=0.287 spatial=0.295 slow=0.000
+
+Runtime: 34.2 min
+
+=== Results ===
+p_immune      random     spatial        slow
+   0.00     0.753+/-0.002  0.755+/-0.001  0.755+/-0.004
+   0.10     0.661+/-0.005  0.659+/-0.009  0.638+/-0.006
+   0.20     0.567+/-0.003  0.569+/-0.003  0.517+/-0.006
+   0.30     0.472+/-0.012  0.479+/-0.006  0.381+/-0.012
+   0.40     0.382+/-0.014  0.382+/-0.005  0.223+/-0.013
+   0.50     0.282+/-0.003  0.286+/-0.006  0.000+/-0.000
+  --> figures/flocking3d_slow_vaccination_1.png
+
+F58 complete.

@@ -1,0 +1,27 @@
+F57: het-recovery + spatial vaccination interaction
+  beta=0.30 spread=0.80 4 seeds
+  -- random --
+     p_imm=0.00  f_ss=0.382 +/- 0.022
+     p_imm=0.10  f_ss=0.299 +/- 0.020
+     p_imm=0.20  f_ss=0.238 +/- 0.010
+     p_imm=0.30  f_ss=0.171 +/- 0.038
+     p_imm=0.40  f_ss=0.075 +/- 0.031
+     p_imm=0.50  f_ss=0.016 +/- 0.019
+  -- spatial --
+     p_imm=0.00  f_ss=0.382 +/- 0.022
+     p_imm=0.10  f_ss=0.294 +/- 0.024
+     p_imm=0.20  f_ss=0.220 +/- 0.019
+     p_imm=0.30  f_ss=0.168 +/- 0.016
+     p_imm=0.40  f_ss=0.100 +/- 0.016
+     p_imm=0.50  f_ss=0.020 +/- 0.021
+  -- slow --
+     p_imm=0.00  f_ss=0.382 +/- 0.022
+     p_imm=0.10  f_ss=0.245 +/- 0.015
+     p_imm=0.20  f_ss=0.140 +/- 0.035
+     p_imm=0.30  f_ss=0.024 +/- 0.027
+     p_imm=0.40  f_ss=0.000 +/- 0.000
+     p_imm=0.50  f_ss=0.000 +/- 0.000
+
+  --> figures/het_recovery_spatial_1.png
+
+F57 analysis complete.

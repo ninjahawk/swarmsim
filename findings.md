@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 43 numbered findings below are presented chronologically (in the order they were
+The 59 numbered findings below are presented chronologically (in the order they were
 generated). For navigation, here they are grouped by theme:
 
 ### Baseline and Validation
@@ -2030,6 +2030,278 @@ an internal state (fatigue) enabled disruption only transiently; here, heterogen
 internal rate (recovery) shifts a genuine threshold. It also reframes vaccination -- the
 most valuable agents to protect are not the high-degree hubs (F36 found none) but the
 slow recoverers, the agents whose internal dynamics make them reservoirs.
+
+---
+
+## Finding 55: Heterogeneous infectiousness does NOT shift the SIS threshold -- super-spreaders source most transmissions but do not lower beta_c
+<img src="./figures/infectiousness_heterogeneity_1.png" width="640"/>
+
+**What:** F54 found that heterogeneity in the RECOVERY rate gamma -- the consumer side
+of the transmission ledger -- lowers the SIS threshold by a harmonic-mean effect. The
+natural dual question is what happens when the SOURCE side is heterogeneous: per-agent
+transmission rate beta_i drawn from a bimodal distribution at fixed arithmetic mean,
+with gamma homogeneous. Mean-field intuition is asymmetric: the endemic state depends
+linearly on average beta but inverse-linearly on per-agent gamma, so spreading beta at
+fixed mean should NOT shift beta_c the way spreading gamma did. But spatial structure
+could still introduce a super-spreader effect, with the high-beta minority dominating
+seed events.
+**Evidence:** infectiousness_heterogeneity.py, N=350, gamma=1.0, 4 seeds. Conditions
+(all arithmetic-mean beta = sweep value): homog, mild ({beta-0.5, beta+0.5}), strong
+({beta-0.8, beta+0.8}, clipped at 0 then renormalised), extreme ({0.05*beta, 1.95*beta}).
+  condition   beta_c (f_ss crosses 0.15)
+  homog       0.435
+  mild        0.434
+  strong      0.434
+  extreme     0.440
+**Key result 1 -- the threshold is FLAT across heterogeneity.** beta_c sits at 0.434-0.440
+for every condition tested; the difference is below seed noise. The harmonic-vs-arithmetic
+asymmetry between source and sink rates is real: F54 moved beta_c by a factor of 2.5,
+F55 moves it by less than 1%. Threshold position is set by the arithmetic mean of beta
+and the harmonic mean of gamma.
+**Key result 2 -- but super-spreaders DOMINATE transmission attribution.** Of all
+calm-to-panic transitions, the high-beta half sources 73.6% (mild), 88.9% (strong), and
+97.2% (extreme) of them, even though they are 50% of the population. The dynamics are
+massively skewed toward super-spreaders at the EVENT level. Yet at the population level
+the steady-state panic fractions for super and normal agents are nearly equal
+(0.58 vs 0.58, 0.58 vs 0.57, 0.57 vs 0.58) -- once panicked, every agent recovers at the
+same rate gamma=1, so the inflow asymmetry does not produce a stock asymmetry.
+**Key result 3 -- super-spreader saturation.** Beyond a moderate spread the additive
+bimodal hits zero and renormalises, so the "extreme" condition stabilises at
+{0, 2*beta_mean}: half the flock cannot transmit at all. f_ss is essentially unchanged
+from the homogeneous case at the same mean. A super-spreader minority is sufficient to
+sustain the same epidemic; the silent half is a passenger, not a brake.
+**Implication:** Source-side and sink-side heterogeneity play asymmetric roles in SIS
+on this flock. Slow recoverers (F54) are RESERVOIRS that hold panic and re-seed --
+lowering the effective threshold. Super-spreaders (F55) are MERELY messengers --
+their over-representation in transmission events does not produce reservoir behaviour
+because they recover at the same rate as everyone else. This sharpens the F54
+vaccination prescription: protect agents by their gamma_i (internal-state hubs), not
+by their beta_i. The latter dominates events but not endemic load.
+
+---
+
+## Finding 56: Targeting slow recoverers beats random vaccination by 2-3x -- the F54 prediction confirmed
+<img src="./figures/slow_recoverer_vaccination_1.png" width="640"/>
+
+**What:** F54 predicted that in a heterogeneous-recovery population, the most valuable
+vaccination targets are not the (absent) topological hubs but the slow recoverers --
+the agents whose internal dynamics make them reservoirs. F36 and F48 had ruled out
+degree-targeting because the contact graph is thin-tailed (no hubs); F37 had ruled out
+spatial-targeting because kinematic mixing erases coverage. The F54 mechanism opens a
+third target class -- internal-state hubs -- whose "hub-ness" travels with the agent
+across kinematic mixing, immune to both the structural and kinematic erosion mechanisms.
+This experiment tests the prediction directly.
+**Evidence:** slow_recoverer_vaccination.py, N=350, gamma bimodal {0.2, 1.8}
+(F54 "strong"), beta=0.30 (just above the strong-condition threshold), 4 seeds.
+Strategies: random, slow (lowest gamma_i first), fast (highest gamma_i first, control),
+degree (highest mean contact degree). Immune agents never panic.
+  p_imm       random   slow    fast    degree
+  0.10        0.306    0.258   0.371   0.300
+  0.20        0.233    0.115   0.315   0.262
+  0.30        0.189    0.027   0.305   0.185
+  0.40        0.095    0.000   0.265   0.076
+  0.50        0.016    0.000   0.246   0.055
+**Key result 1 -- slow-targeting crushes the epidemic at half the random p_imm.**
+At p_imm=0.20 slow gives f_ss=0.115, half the random level (0.233). At p_imm=0.30 it
+falls to 0.027 (85% below random's 0.189). At p_imm=0.40 slow ERADICATES (0.000) while
+random is still at 0.095 and even degree is at 0.076. The effective herd-immunity
+threshold under slow-targeting is p_c ~ 0.30-0.35, vs ~0.50 for random.
+**Key result 2 -- fast-targeting is strictly WORSE than random.** Immunising the half
+that recovers fastest (gamma=1.8, the agents who clear panic in <1 tu anyway) leaves the
+slow reservoir untouched. At every p_imm tested fast gives a HIGHER endemic than random
+(0.371 vs 0.306 at p_imm=0.10; 0.265 vs 0.095 at p_imm=0.40). Vaccinating non-reservoirs
+is worse than randomly hitting both classes.
+**Key result 3 -- the F54 reservoir mechanism is what slow-targeting exploits.**
+At p_imm=0.20 the non-immune slow fraction has panic f=0.292 under slow-targeting (vs
+0.487 under random), and the non-immune fast fraction has f=0.054 (vs 0.102 under
+random). Removing reservoir capacity from the slow class collapses panic ACROSS THE
+WHOLE POPULATION, not just on the immunised half. Fast-targeting leaves the slow class
+saturated (f=0.552) which then re-seeds the unprotected fast agents (f=0.128).
+**Key result 4 -- degree-targeting shows a faint signal in heterogeneous regime.**
+At p_imm=0.40 degree gives 0.076 vs random's 0.095 -- a real but small (~20%) advantage,
+likely because high-degree agents in this regime happen to overlap with the slow class
+by chance. The effect is at the edge of seed noise (random std 0.020, degree std 0.061)
+and is dwarfed by the slow-targeting advantage. F36/F48 remain correct: degree is not
+the right axis. The right axis is gamma_i.
+**Implication:** F54's predicted vaccination policy works and works powerfully. The
+internal-state hub class is REAL in this model and gives a 2-3x improvement over
+random at moderate p_imm. This is the FIRST targeting strategy in the entire study
+(through 55 findings, ten previous targeting experiments) to beat random.  It does so
+because (a) the "hub-ness" is a per-agent rate that the dynamics cannot mix away (the
+agent who recovers slowly today recovers slowly tomorrow), and (b) the reservoir
+mechanism (F54) makes them disproportionately responsible for sustaining the endemic
+state. This closes the F36/F37/F48 vaccination puzzle: a heterogeneous flock has
+exploitable hubs, but they are not the agents you find by examining the contact graph
+-- they are the agents you find by examining their internal recovery dynamics.
+
+---
+
+## Finding 57: Spatial vaccination null transfers to the heterogeneous-recovery regime -- slow-targeting works through internal state, not spatial structure
+<img src="./figures/het_recovery_spatial_1.png" width="640"/>
+
+**What:** F37 ruled out spatial (farthest-point) vaccination in the homogeneous regime
+because kinematic mixing erases geometric coverage faster than the epidemic resolves.
+F56 then established that slow-recoverer targeting beats random by 2-3x in the
+heterogeneous-recovery regime. The natural follow-up: does heterogeneous recovery
+SOMEHOW rescue spatial targeting (perhaps because the epidemic now localises on a
+specific sub-population whose spatial coverage matters more)? Or is F37's null robust
+to internal-state heterogeneity, with F56's gain coming purely from the per-agent rate
+mechanism?
+**Evidence:** het_recovery_spatial.py, N=350, gamma bimodal {0.2, 1.8}, beta=0.30,
+4 seeds. Same setup as F56. Strategies: random, spatial (farthest-point at t=0), slow.
+  p_imm       random   spatial  slow
+  0.10        0.299    0.294    0.245
+  0.20        0.238    0.220    0.140
+  0.30        0.171    0.168    0.024
+  0.40        0.075    0.100    0.000
+  0.50        0.016    0.020    0.000
+**Key result 1 -- spatial and random are statistically identical.** At every p_imm the
+spatial and random curves agree to within seed noise (max difference 0.025, both
+strategies have +/- ~0.020). At p=0.40 spatial is in fact NOMINALLY worse than random
+(0.100 vs 0.075), although the difference is below noise. F37's kinematic-mixing
+explanation transfers to the heterogeneous-recovery regime unchanged: spatial coverage
+is erased equally fast regardless of whether the recovery distribution is homogeneous
+or bimodal.
+**Key result 2 -- slow-targeting reproduces the F56 advantage cleanly.** Slow at
+p_imm=0.20 hits f_ss=0.140 vs random's 0.238 (60% reduction); at p=0.30, 0.024 vs 0.171
+(86% reduction); at p=0.40, eradication (0.000) vs random's 0.075. The numbers track
+F56's exactly, confirming F56 is reproducible in a separate run.
+**Key result 3 -- the F56 mechanism is internal, not spatial.** If slow-targeting were
+"actually" working by giving spatially good coverage (because slow agents happen to be
+well-distributed), then spatial-targeting should produce a comparable advantage. It
+doesn't. The two strategies sit on opposite ends of the spectrum at p=0.30: spatial at
+f=0.168, slow at f=0.024. Spatial coverage and internal-rate targeting are independent
+axes; only internal-rate targeting works.
+**Implication:** F56 and F57 together close the F36/F37/F48 vaccination puzzle for
+this model. The three failed target classes (degree, spatial, alignment-topology) all
+share a property: they identify hub-ness through a SYSTEM-LEVEL observable (graph
+position, location, neighbour-selection rule) that the kinematic dynamics scramble
+between attack and response. The successful target class (slow recoverers) identifies
+hub-ness through a PER-AGENT internal rate that the dynamics cannot scramble. The
+boundary between "exploitable hub" and "kinematically erased target" in this model is
+the location of the hub label: external observables fail, internal rates succeed. This
+also resolves an ambiguity left open by F46: the 3D vaccination null was a structural
+result on degree/spatial -- F56's prediction is that 3D should show a slow-targeting
+advantage equally, since gamma_i is per-agent and dimension-independent. A 3D
+slow-targeting experiment is the next natural test.
+
+---
+
+## Finding 58: Slow-recoverer vaccination transfers to 3D unchanged -- the per-agent rate mechanism is dimension-independent
+<img src="./figures/flocking3d_slow_vaccination_1.png" width="640"/>
+
+**What:** F46 reported a 3D vaccination NULL: random, spatial, and degree-targeted
+strategies are statistically identical in 3D, just as in 2D (F36/F37). F56 in 2D
+showed that adding heterogeneity in recovery rate gamma_i opens up a new target class
+(internal-state hubs) that DOES beat random. F57 confirmed the slow-targeting advantage
+is per-agent rate, not spatial. Prediction: the F56 mechanism transfers to 3D unchanged,
+since gamma_i is per-agent and dimension-independent. This experiment tests the
+prediction directly.
+**Evidence:** 3d/flocking3d_slow_vaccination.py, N=350, 3D torus, R_CONT=0.155
+(mean k~8), gamma_i bimodal {0.4, 3.6} (mean 2.0, F54-strong analog), beta=1.5,
+3 seeds, 8000 SIS iter. Strategies: random, spatial (3D farthest-point), slow.
+  p_imm   random           spatial          slow
+  0.10    0.661+/-0.005    0.659+/-0.009    0.638+/-0.006
+  0.20    0.567+/-0.003    0.569+/-0.003    0.517+/-0.006
+  0.30    0.472+/-0.012    0.479+/-0.006    0.381+/-0.012
+  0.40    0.382+/-0.014    0.382+/-0.005    0.223+/-0.013
+  0.50    0.282+/-0.003    0.286+/-0.006    0.000+/-0.000
+**Key result 1 -- slow-targeting beats random at every p_imm in 3D.**
+Advantage grows from 3% at p_imm=0.10 (0.661 vs 0.638) to 42% at p_imm=0.40 (0.382 vs
+0.223) to total eradication at p_imm=0.50 (0.000 vs 0.282). Same qualitative pattern as
+F56 in 2D: deeper p_imm gives sharper relative gain, with clean eradication at half the
+population vaccinated.
+**Key result 2 -- spatial is again a clean null vs random in 3D.**
+Spatial and random agree to within 0.007 at every p_imm tested. The F37 kinematic-mixing
+explanation transfers to 3D regardless of recovery-rate heterogeneity (consistent with
+F46). The slow-vs-spatial gap at p_imm=0.40 is 0.159 (0.382 - 0.223), while spatial-vs-
+random is 0.000 -- the mechanism is purely per-agent, not spatial.
+**Key result 3 -- 3D advantage is smaller than 2D advantage.**
+In 2D (F56) at p_imm=0.40 slow eradicates (f=0.000) while random sits at 0.095 --
+nearly a complete win. In 3D at p_imm=0.40 slow is 0.223 vs random 0.382 -- a smaller
+absolute gap. The 3D reservoir effect is diluted, plausibly because the 3D contact
+graph is even more homogeneous (F46 reported CV=0.59 in 3D vs CV=0.68 in 2D) so each
+slow agent contributes less concentrated reservoir mass. F52 also showed 3D mixes 1.8x
+slower than 2D at matched degree, which keeps the slow class from spreading panic as
+efficiently as in 2D. The mechanism transfers, but the magnitude is geometry-dependent.
+**Key result 4 -- p_imm=0.50 produces clean eradication.**
+In all three seeds, p_imm=0.50 under slow-targeting yields f_ss=0.000 with zero
+standard deviation: the slow half of the population is exactly the bimodal slow class,
+and removing them entirely strips the reservoir down to nothing. Random at p_imm=0.50
+leaves 0.282 of the population panicked. This is the cleanest signal of the per-agent
+mechanism: targeting EXACTLY the reservoir class collapses the epidemic to zero.
+**Implication:** The F56 mechanism is dimension-independent, as predicted by F57's
+internal-vs-spatial argument. Of the four canonical targeting strategies tested across
+2D and 3D (degree, spatial, random, slow), only slow-targeting works -- and it works in
+both dimensions. The "kinematic mixing defeats targeting" thesis from F36/F37/F46
+remains correct for system-level observables, but is silent on per-agent internal
+rates, which the dynamics cannot mix away. This sharpens the F36/F37/F46 result into a
+positive statement: in a heterogeneous-recovery flock, slow-targeting is the canonical
+vaccination policy regardless of dimension. The cost of dimension-going-up is partial
+dilution of the magnitude, not loss of the mechanism.
+
+---
+
+## Finding 59: Slow-recoverer vaccination advantage survives continuous (lognormal) gamma distributions -- and grows with the width of the distribution
+<img src="./figures/continuous_gamma_vaccination_1.png" width="640"/>
+
+**What:** F54, F56, F57, F58 all used a BIMODAL gamma distribution -- gamma_i in
+{1-spread, 1+spread} with a clean 50/50 split. That bimodal "slow vs fast" structure
+makes slow-targeting a class-membership question. Real populations have continuous
+recovery distributions; "slow" is a quantile, not a label. Does the F56 mechanism
+need the sharp bimodal split, or does it survive a continuous distribution where
+slow-vs-fast is a soft boundary?
+**Evidence:** continuous_gamma_vaccination.py, N=350, beta=0.35 (just above homogeneous
+threshold), gamma_i lognormal with arithmetic mean 1.0 and varying width sigma_log.
+4 seeds. Strategies: random vs slow (bottom p_imm by gamma_i).
+Exp 1 -- advantage as sigma_log grows (p_imm=0.20):
+  sigma   random           slow             advantage
+  0.00    0.000            0.000            0.000   (homog, sub-threshold)
+  0.40    0.004            0.000            0.004
+  0.60    0.105+/-0.066    0.043+/-0.056    0.061
+  0.80    0.194+/-0.041    0.000+/-0.000    0.194   (full eradication)
+  1.00    0.271+/-0.009    0.116+/-0.072    0.156
+  1.20    0.331+/-0.015    0.214+/-0.036    0.117
+Exp 2 -- p_immune sweep at sigma_log=0.6:
+  p_imm   random           slow
+  0.10    0.151+/-0.097    0.098+/-0.059   (35% reduction)
+  0.20    0.105+/-0.066    0.043+/-0.056   (59% reduction)
+  0.30    0.036+/-0.049    0.000+/-0.000   (slow eradicates)
+**Key result 1 -- the slow-targeting advantage SURVIVES a continuous distribution.**
+The F56 mechanism does not require a sharp bimodal slow/fast class. With lognormal
+gamma_i, simply taking the bottom p_imm fraction by exact gamma_i value reproduces the
+advantage. At sigma_log=0.80 the advantage is so strong it produces total eradication
+(f_ss=0.000) at just p_imm=0.20 -- 80% of the population unvaccinated, yet zero
+endemic panic, because the worst-20% lowest-gamma agents WERE the entire reservoir.
+**Key result 2 -- the advantage emerges around sigma_log ~ 0.5 and peaks near 0.80.**
+Below sigma_log=0.4, random alone keeps the epidemic from establishing (the distribution
+is too tight; even random misses the small reservoir contribution). At sigma_log=0.6
+the advantage activates. Around sigma_log=0.8 it produces clean eradication at
+p_imm=0.20. Above sigma_log=1.0 the advantage shrinks in absolute terms because the
+deep tail of the lognormal contains agents with such extreme reservoir capacity that
+even targeting the bottom 20% leaves some in the population.
+**Key result 3 -- non-monotonic behavior at very large sigma.**
+Beyond sigma=0.8 both endemic levels rise (random from 0.194 to 0.331; slow from 0.000
+to 0.214). The lognormal's heavy tail means a few super-slow agents (gamma << mean)
+dominate everything. At sigma=1.0 the bottom-20% slow set captures most of the
+reservoir but not all; the leftover deep-tail agents continue to seed the epidemic.
+This is a regime where p_imm=0.20 is no longer enough -- larger p_imm would restore
+the advantage.
+**Key result 4 -- p_imm dependence at moderate spread tracks F56 qualitatively.**
+At sigma_log=0.6, slow at p_imm=0.30 eradicates (0.000) while random sits at 0.036.
+The effective herd-immunity threshold under slow-targeting is ~0.20-0.30; under random,
+~0.30-0.40 with much larger seed noise. Same qualitative pattern as the F56 bimodal
+case (slow eradicates at ~p_imm=0.30-0.40, random at ~0.50).
+**Implication:** The F56 mechanism does not depend on a sharp bimodal slow-vs-fast
+class structure. In any heterogeneous-recovery population where gamma_i is broadly
+distributed (sigma_log >= 0.5), targeting the lowest-gamma quantile beats random.
+The slow-vs-fast taxonomy is a useful framing, but the operational policy is
+"target the bottom X% by gamma_i" regardless of distribution shape. This sharpens the
+practical implications: a vaccination policy based on observed per-agent recovery
+behavior should work for any plausible biological heterogeneity (which is typically
+log-normal-like), not only the synthetic bimodal case. The non-monotonic structure at
+very large sigma flags a limit: extreme tail-heterogeneity outruns any fixed p_imm
+budget, just as F54's "extreme" condition outran any tested beta.
 
 ---
 

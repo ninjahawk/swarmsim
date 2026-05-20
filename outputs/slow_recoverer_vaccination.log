@@ -1,0 +1,44 @@
+Exp 1: vaccination sweep with heterogeneous gamma (bimodal {0.2, 1.8})
+  beta=0.30, 4 seeds
+  -- random --
+     p_imm=0.00  f_ss=0.376 +/- 0.018
+     p_imm=0.10  f_ss=0.306 +/- 0.011
+     p_imm=0.20  f_ss=0.233 +/- 0.036
+     p_imm=0.30  f_ss=0.189 +/- 0.011
+     p_imm=0.40  f_ss=0.095 +/- 0.020
+     p_imm=0.50  f_ss=0.016 +/- 0.020
+     p_imm=0.60  f_ss=0.006 +/- 0.009
+  -- slow --
+     p_imm=0.00  f_ss=0.376 +/- 0.018
+     p_imm=0.10  f_ss=0.258 +/- 0.017
+     p_imm=0.20  f_ss=0.115 +/- 0.069
+     p_imm=0.30  f_ss=0.027 +/- 0.027
+     p_imm=0.40  f_ss=0.000 +/- 0.000
+     p_imm=0.50  f_ss=0.000 +/- 0.000
+     p_imm=0.60  f_ss=0.000 +/- 0.000
+  -- fast --
+     p_imm=0.00  f_ss=0.376 +/- 0.018
+     p_imm=0.10  f_ss=0.371 +/- 0.020
+     p_imm=0.20  f_ss=0.315 +/- 0.028
+     p_imm=0.30  f_ss=0.305 +/- 0.009
+     p_imm=0.40  f_ss=0.265 +/- 0.014
+     p_imm=0.50  f_ss=0.246 +/- 0.018
+     p_imm=0.60  f_ss=0.146 +/- 0.010
+  -- degree --
+     p_imm=0.00  f_ss=0.376 +/- 0.018
+     p_imm=0.10  f_ss=0.300 +/- 0.026
+     p_imm=0.20  f_ss=0.262 +/- 0.008
+     p_imm=0.30  f_ss=0.185 +/- 0.025
+     p_imm=0.40  f_ss=0.076 +/- 0.061
+     p_imm=0.50  f_ss=0.055 +/- 0.035
+     p_imm=0.60  f_ss=0.017 +/- 0.020
+
+Exp 2: localisation among non-immune slow/fast at p_imm=0.20
+  random    slow_f=0.487  fast_f=0.102
+  slow      slow_f=0.292  fast_f=0.054
+  fast      slow_f=0.552  fast_f=0.128
+  degree    slow_f=0.548  fast_f=0.106
+
+  --> figures/slow_recoverer_vaccination_1.png
+
+Slow-recoverer vaccination analysis complete.

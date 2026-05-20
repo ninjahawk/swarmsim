@@ -1,0 +1,23 @@
+F59: continuous lognormal gamma vaccination
+  E[gamma]=1.0, beta=0.35 (above homogeneous threshold), 4 seeds
+
+Exp 1: advantage vs spread, p_imm=0.20, beta=0.35
+  sigma=0.00  random=0.000+/-0.000  slow=0.000+/-0.000  advantage=0.000
+  sigma=0.20  random=0.002+/-0.004  slow=0.000+/-0.000  advantage=0.002
+  sigma=0.40  random=0.004+/-0.007  slow=0.000+/-0.000  advantage=0.004
+  sigma=0.60  random=0.105+/-0.066  slow=0.043+/-0.056  advantage=0.061
+  sigma=0.80  random=0.194+/-0.041  slow=0.000+/-0.000  advantage=0.194
+  sigma=1.00  random=0.271+/-0.009  slow=0.116+/-0.072  advantage=0.156
+  sigma=1.20  random=0.331+/-0.015  slow=0.214+/-0.036  advantage=0.117
+
+Exp 2: p_immune sweep at sigma_log=0.6, beta=0.35
+  p_imm=0.00  random=0.231+/-0.055  slow=0.231+/-0.055
+  p_imm=0.10  random=0.151+/-0.097  slow=0.098+/-0.059
+  p_imm=0.20  random=0.105+/-0.066  slow=0.043+/-0.056
+  p_imm=0.30  random=0.036+/-0.049  slow=0.000+/-0.000
+  p_imm=0.40  random=0.004+/-0.008  slow=0.000+/-0.000
+  p_imm=0.50  random=0.001+/-0.001  slow=0.000+/-0.000
+
+  --> figures/continuous_gamma_vaccination_1.png
+
+F59 complete.
