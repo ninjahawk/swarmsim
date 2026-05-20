@@ -1,0 +1,20 @@
+F61: rare-reservoir slow-recoverer vaccination
+  beta=0.30, mean gamma=1.00, gamma_slow=0.10, 4 seeds
+
+Exp 1: p_imm = f_slow (target exactly the reservoir size)
+  f_slow=0.05 gamma_fast=1.047 p_imm=0.05  random=0.129+/-0.055  slow=0.000+/-0.000
+  f_slow=0.10 gamma_fast=1.100 p_imm=0.10  random=0.143+/-0.035  slow=0.000+/-0.000
+  f_slow=0.20 gamma_fast=1.225 p_imm=0.20  random=0.144+/-0.024  slow=0.000+/-0.000
+  f_slow=0.30 gamma_fast=1.386 p_imm=0.30  random=0.176+/-0.026  slow=0.000+/-0.000
+  f_slow=0.50 gamma_fast=1.900 p_imm=0.50  random=0.150+/-0.015  slow=0.000+/-0.000
+
+Exp 2: p_imm = 0.30 fixed (F56-budget across rarity sweep)
+  f_slow=0.05  random=0.000+/-0.000  slow=0.000+/-0.000
+  f_slow=0.10  random=0.000+/-0.000  slow=0.000+/-0.000
+  f_slow=0.20  random=0.081+/-0.030  slow=0.000+/-0.000
+  f_slow=0.30  random=0.169+/-0.020  slow=0.000+/-0.000
+  f_slow=0.50  random=0.294+/-0.022  slow=0.135+/-0.018
+
+  --> figures/rare_reservoir_vaccination_1.png
+
+F61 complete.

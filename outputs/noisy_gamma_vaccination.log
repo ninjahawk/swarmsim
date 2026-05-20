@@ -1,0 +1,20 @@
+F60: noisy gamma vaccination -- robustness of slow-targeting to obs noise
+  beta=0.30, true gamma bimodal {0.20, 1.80}, 4 seeds
+  p_immune fixed at 0.30
+  sigma_obs= 0.00  f_ss=0.013 +/- 0.019  slow_hit_rate=1.000
+  sigma_obs= 0.10  f_ss=0.039 +/- 0.044  slow_hit_rate=1.000
+  sigma_obs= 0.20  f_ss=0.039 +/- 0.044  slow_hit_rate=1.000
+  sigma_obs= 0.40  f_ss=0.039 +/- 0.044  slow_hit_rate=1.000
+  sigma_obs= 0.60  f_ss=0.035 +/- 0.029  slow_hit_rate=0.986
+  sigma_obs= 0.80  f_ss=0.024 +/- 0.027  slow_hit_rate=0.952
+  sigma_obs= 1.00  f_ss=0.045 +/- 0.039  slow_hit_rate=0.893
+  sigma_obs= 1.50  f_ss=0.077 +/- 0.046  slow_hit_rate=0.793
+  sigma_obs= 2.00  f_ss=0.102 +/- 0.068  slow_hit_rate=0.726
+  sigma_obs=100.00  f_ss=0.150 +/- 0.039  slow_hit_rate=0.533
+
+Random baseline (same p_imm=0.30, same gamma seeds):
+  random f_ss=0.164 +/- 0.032
+
+  --> figures/noisy_gamma_vaccination_1.png
+
+F60 complete.

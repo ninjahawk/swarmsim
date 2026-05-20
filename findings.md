@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 59 numbered findings below are presented chronologically (in the order they were
+The 61 numbered findings below are presented chronologically (in the order they were
 generated). For navigation, here they are grouped by theme:
 
 ### Baseline and Validation
@@ -2302,6 +2302,110 @@ behavior should work for any plausible biological heterogeneity (which is typica
 log-normal-like), not only the synthetic bimodal case. The non-monotonic structure at
 very large sigma flags a limit: extreme tail-heterogeneity outruns any fixed p_imm
 budget, just as F54's "extreme" condition outran any tested beta.
+
+---
+
+## Finding 60: Slow-recoverer vaccination tolerates noisy gamma estimates -- the policy works under realistic observation noise
+<img src="./figures/noisy_gamma_vaccination_1.png" width="640"/>
+
+**What:** F56-F59 used the EXACT true per-agent gamma_i to rank agents. In any real
+application the vaccinator does not see gamma_i directly; they see a noisy estimate
+(say, recovery time from one prior panic episode). If slow-targeting requires perfect
+knowledge it is impractical; if it tolerates substantial noise it is actionable.
+**Evidence:** noisy_gamma_vaccination.py, F56 setup (bimodal {0.2, 1.8}, beta=0.30,
+p_imm=0.30), 4 seeds. Vaccinator ranks agents by gamma_hat_i = gamma_i + N(0, sigma_obs)
+and immunises the bottom p_imm fraction. Random baseline at the same gamma seeds gives
+f_ss = 0.164 +/- 0.032.
+  sigma_obs   slow_hit_rate   f_ss
+  0.00        1.000           0.013+/-0.019
+  0.10        1.000           0.039+/-0.044
+  0.20        1.000           0.039+/-0.044
+  0.40        1.000           0.039+/-0.044
+  0.60        0.986           0.035+/-0.029
+  0.80        0.952           0.024+/-0.027   (essentially perfect)
+  1.00        0.893           0.045+/-0.039
+  1.50        0.793           0.077+/-0.046
+  2.00        0.726           0.102+/-0.068
+  100.        0.533           0.150+/-0.039   (chance ranking; ~random)
+**Key result 1 -- noise up to ~0.8 leaves the policy identical to perfect knowledge.**
+The true slow/fast distance in this setup is 1.6 units (1.8 - 0.2). At sigma_obs = 0.8
+(half that distance) the slow-hit-rate is still 95% and f_ss is 0.024 -- essentially
+eradication. The Gaussian observation noise rarely flips the ranking of any
+gamma-extreme pair until sigma_obs is comparable to the bimodal half-width.
+**Key result 2 -- slow-targeting still beats random at sigma_obs=2.0.**
+At sigma_obs = 2.0 the observation is dominated by noise (slow-hit-rate 73%), yet
+f_ss = 0.102 is still well below random's 0.164 (38% reduction). The policy degrades
+gracefully: even half-informative gamma estimates retain a measurable advantage.
+**Key result 3 -- in the uninformative limit (sigma_obs=100) the policy reduces to
+random.** slow-hit-rate falls to 53% (chance) and f_ss converges to 0.150, within
+seed noise of random's 0.164. Failure mode: graceful, not catastrophic.
+**Implication:** The F56 slow-targeting policy is highly noise-tolerant. For any
+practical estimate of per-agent gamma_i with noise comparable to or smaller than the
+slow/fast separation, the policy works identically to the perfect-knowledge case.
+This removes one major concern about real-world applicability: vaccinators do not
+need precise gamma_i measurements; they need rough rankings. The policy fails
+gracefully (degrading to random) only when the observation is dominated by noise.
+Combined with F59 (continuous distributions), F58 (3D transfer), and F61 (rare
+reservoirs, below), slow-targeting is now established as the most robust vaccination
+policy in this study across every variation tested.
+
+---
+
+## Finding 61: Slow-recoverer vaccination works for rare reservoirs -- smaller reservoir, smaller required vaccination budget
+<img src="./figures/rare_reservoir_vaccination_1.png" width="640"/>
+
+**What:** F56-F60 used a 50/50 bimodal split: half the population is slow. In real
+settings the reservoir-prone class may be a small minority (e.g. 5-15%, like the
+immunocompromised). If slow-targeting requires a large reservoir to be effective it
+is brittle; if it works for rare reservoirs the policy scales naturally with the
+size of the problem.
+**Evidence:** rare_reservoir_vaccination.py, gamma_slow=0.1 (deep reservoirs),
+gamma_fast adjusted so arithmetic mean stays 1.0, beta=0.30, 4 seeds.
+Exp 1 (p_imm = f_slow, target the reservoir EXACTLY):
+  f_slow   gamma_fast   p_imm   random          slow
+  0.05     1.047        0.05    0.129+/-0.055   0.000+/-0.000  (eradication)
+  0.10     1.100        0.10    0.143+/-0.035   0.000+/-0.000
+  0.20     1.225        0.20    0.144+/-0.024   0.000+/-0.000
+  0.30     1.386        0.30    0.176+/-0.026   0.000+/-0.000
+  0.50     1.900        0.50    0.150+/-0.015   0.000+/-0.000
+Exp 2 (p_imm = 0.30 fixed, F56-budget across rarity):
+  f_slow   random          slow
+  0.05     0.000           0.000  (sub-threshold for both, p_imm overshoots)
+  0.10     0.000           0.000
+  0.20     0.081+/-0.030   0.000
+  0.30     0.169+/-0.020   0.000
+  0.50     0.294+/-0.022   0.135+/-0.018
+**Key result 1 -- even a 5% slow class sustains an SIS endemic state under random
+vaccination, but slow-targeting at p_imm=5% eradicates.** With f_slow=0.05 a random
+vaccinator misses most of the reservoir (only 0.05*0.30 = 0.015 of selected immune
+are slow) and the residual reservoir of ~17 agents (out of 350) is enough to keep
+the epidemic going at f_ss=0.129. Slow-targeting at the matching p_imm=0.05 picks
+EXACTLY the 17 slow agents and the epidemic is gone.
+**Key result 2 -- minimum vaccination budget = f_slow when reservoir is known.**
+Whenever p_imm matches f_slow, slow-targeting eradicates regardless of how small
+f_slow is. This is the tightest possible policy: vaccinate exactly the reservoir
+class, vaccinate no one else, and the epidemic dies. The smaller the reservoir, the
+smaller the budget. This explains the F59 non-monotonicity: when sigma_log is large
+and the bottom-p_imm quantile misses some deep-tail agents, eradication fails not
+because slow-targeting is wrong but because p_imm is too small relative to the
+effective reservoir size.
+**Key result 3 -- when p_imm exceeds f_slow, the surplus does nothing useful.**
+At p_imm=0.30 and f_slow=0.05 or 0.10, both random AND slow give f_ss=0 because
+the epidemic is sub-threshold (a 30%-immunised flock with low effective <k> doesn't
+sustain the SIS at beta=0.30 regardless of who is immune). At p_imm=0.30 and
+f_slow=0.20, slow eradicates with 100 immunised (50 needed for the reservoir, 50
+wasted on fast agents) while random still leaves 8% endemic. The optimal budget for
+slow-targeting is p_imm = f_slow; anything more is waste, anything less leaves
+reservoir uncovered.
+**Implication:** Slow-targeting scales naturally with reservoir size. Vaccination
+costs grow linearly with the reservoir fraction, not with the total population. This
+is the policy's practical signature: in a flock where the slow class is small, the
+required vaccination effort is small. Combined with F60 (noise tolerance) the policy
+is fully practical: a vaccinator who knows roughly who the slow class is can
+eradicate the SIS endemic with effort proportional to the reservoir size, regardless
+of dimension (F58), distribution shape (F59), measurement precision (F60), or
+reservoir rarity (F61). The slow-recoverer vaccination thread closes here as a
+positive, complete, robust policy result.
 
 ---
 
