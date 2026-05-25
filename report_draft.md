@@ -2873,6 +2873,68 @@ are inapplicable in their standard form: only a dynamic vaccination strategy app
 in real time during the epidemic, tracking current agent positions, could exploit the
 spatial-clustering mechanism that inflates the threshold.
 
+The later vaccination work (Sections 4.36-4.46) resolves this apparent dead end with a
+positive result. The degree- and spatial-targeting failures share a common cause -- both
+target a property that kinematic mixing erases (graph position, physical position) -- but
+they exhaust only the EXTERNAL, system-level descriptions of an agent. Heterogeneous
+recovery (Section 4.36) introduces a third class of hub: an internal-state invariant, the
+per-agent recovery rate gamma_i. Slow recoverers act as reservoirs that lower the epidemic
+threshold by the SPREAD of gamma, not its mean, and crucially the slow label travels with
+the agent and cannot be scrambled by reorganization. Targeting it is therefore the first
+strategy in the study to beat random vaccination, and it does so across two and three
+dimensions, bimodal and continuous distributions, noisy estimates, and rare reservoirs
+(Sections 4.38-4.43). The boundary conditions are as informative as the result: the policy
+requires the slow CLASS to be durable on the epidemic timescale (Section 4.44 -- a recovery
+rate that drifts faster than the outbreak self-averages away, removing both the reservoir
+and the need to target it), it is robust but not unique once a second heterogeneity axis is
+added (Section 4.45 -- infectiousness targeting is also effective but not robust, because
+the transmission engine and the reservoir can be different populations), and at a budget
+matching the reservoir fraction it converts the otherwise-irreversible combined
+predator+contagion damage of Section 4.16 into fully reversible damage (Section 4.46). The
+unifying statement across the predator, contagion, and vaccination threads is that lasting
+damage to the flock requires a surviving reservoir, and the reservoir is the slow-recoverer
+class.
+
+The three-dimensional extension (Sections 4.23-4.34) shows which results are dimensional
+and which are intrinsic. The equilibrium-speed law, the smooth crossover, the vaccination
+nulls, and the segregation mechanism all transfer to 3D, but encirclement does not: no
+point-predator strategy disrupts a 3D flock at all (Section 4.47 generalizes the original
+encirclement-specific finding to naive and transecting predators at any count or speed).
+The mechanism is that the 3D flock, at neighbor-matched parameters, fills its volume nearly
+uniformly and has no spatial perimeter to seal or interior to transect, so finite-range
+predators perturb a vanishing fraction while the alignment graph heals the wake. Disrupting
+a 3D flock requires attacking alignment per agent -- which is exactly what contagion does,
+explaining why the contagion results transfer to 3D while the predator results do not. A
+recurring methodological theme runs through the 3D work and the Section 5 self-tests: three
+interpretive predictions (topological alignment slowing mixing, contact-graph freezing
+rescuing targeting, the third dimension speeding mixing) were tested and falsified rather
+than assumed, and a sign error in the early 3D predator code was caught and corrected. The
+corrected picture is cleaner than the original conjectures.
+
+The predator-prey arms-race sequence (Sections 4.48-4.53) asks what changes when each side
+is given access to a global summary of the other. A predator that anticipates the flock's
+mean velocity (predictive encirclement) is the first predator-side adaptation to beat fixed
+encirclement substantially, and the gain comes entirely from placing the ring where the
+flock is heading; adapting the ring radius adds nothing once placement is anticipatory, so
+placement is the dominant lever. The robustness of this predator intelligence contrasts
+sharply with the vaccination intelligence: the predator's signal is a single global vector
+used for forward projection, so it tolerates zero-mean observation noise only gradually and
+collapses under even small delay (a stale heading is a systematic error), whereas the
+vaccination signal is a per-agent ranking buoyed by N-sample averaging that tolerates
+substantial noise and has no delay problem at all because the rate is stationary. The
+statistical footprint of an "intelligent" disruption signal -- per-agent invariant versus
+fast-changing global statistic -- governs its real-world robustness as much as its
+information content does. Finally, giving the prey the dual global signal (flee the predator
+centroid) defeats predictive encirclement completely, but only above a force threshold set
+by the alignment strength, and only because a single SHARED escape vector aligns with the
+flocking force; a weak escape force, or a locally-sensed per-agent escape direction
+(Section 4.53), competes with alignment rather than reinforcing it and helps little or not
+at all. The flock can act collectively only on signals that are already global or shared --
+the same shared-heading principle that produces coherent flocking in the first place --
+which is why the arms race resolves not as a simple stronger-signal-wins contest but as a
+structure in which the predator's own anticipatory massing supplies the very directional
+signal that committed, coordinated prey need to escape.
+
 ---
 
 ## 7. Conclusions
