@@ -6,55 +6,68 @@ Started 2026-05-08
 ## Index by Theme
 
 The 61 numbered findings below are presented chronologically (in the order they were
-generated). For navigation, here they are grouped by theme:
+generated). The F-numbers here match the headings in the body of this file, in
+`report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
+cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
+3D Extension and Section 5 Self-Tests). For navigation, grouped by theme:
 
 ### Baseline and Validation
 - F1  Equilibrium cruise speed v_eq = v0 + alpha/mu (exact)
-- F2  Solid-to-fluid transition appears continuous (preliminary)
+- F2  Solid-to-fluid transition in repulsion-only system (appears continuous; preliminary)
 - F3  Low threshold for flock formation (alpha ~ 0.05)
 - F4  Full model robust to noise up to eta ~ 10
-- F9  Solid-to-fluid is a crossover, not a phase transition (finite-size scaling)
+- F8  Solid-to-fluid transition is a crossover, not a phase transition (finite-size scaling)
+- F12 Crossover persists across compactness -- no phase transition in this model
 - F17 No phase transition at any intermediate compactness (C = 0.15-0.60)
 
 ### Predator Strategy (2D)
 - F5  Flocking maintains coherence under predator pressure (Phi ~ 1.0)
 - F6  Flock coherence robust to predator aggression
 - F7  Dilution effect: larger flocks expose smaller fractions
-- F8  Naive multi-predator co-localizes at CoM (mechanism diagnosed)
-- F10 Coordinated predators spread out but cannot break the flock (Phi > 0.92)
-- F11 Encirclement disrupts the flock (Phi = 0.77 at n_pred = 6)
-- F14 Encirclement floor: angular coverage is the key variable
-- F15 Encirclement works by flock division, not dissolution
-- F16 Minimum viable flock size (Phi = 0.9 crosses between N = 18-25)
-- F22 Sub-flock reunion in ~10 tu after predator removal
-- F25 Predator sensing threshold at r_sense ~ flock radius
-- F31 R_enc/Rg ~ 0.5 universal optimum (size-invariant encirclement scaling)
+- F9  Flock elongates with predator pressure and with stronger alpha
+- F10 Multiple predators elongate the flock without breaking coherence
+- F11 Evasion distance increases because predators co-localize at prey CoM
+- F13 Coordinated predators spread out but cannot break the flock (Phi > 0.92)
+- F14 Encirclement breaks coherence -- first strategy to substantially disrupt (Phi = 0.77 at n_pred = 6)
+- F15 Encirclement threshold does not scale with N -- convergence to a common floor
+- F16 Encirclement divides the flock into coherent sub-flocks, not random walkers
+- F19 Predator sensing threshold at r_sense ~ flock radius; limited sensing slightly worsens encirclement
+- F21 Minimum viable flock size (Phi = 0.9 crosses between N = 18-25)
+- F22 Encirclement fragmentation fully transient -- sub-flocks reunite within ~10 tu of predator removal
+- F28 Encirclement floor rises at very large N -- F15's "common floor" is N-dependent
+- F31 Encirclement scaling collapses on R_enc/Rg ~ 0.5 -- size-invariant (refines F28)
 - F32 Long-time encirclement: intermittent merge/split steady state
-- F33 Incomplete encirclement non-monotonic (5-active gap most disruptive)
+- F33 Incomplete encirclement is mostly less disruptive; the flock doesn't escape through the gap
 - F35 Adaptive R_enc = 0.5*Rg outperforms fixed (validates F31 dynamically)
 - F53 Prey fatigue does not make encirclement damage irreversible (align-fatigue deepens attack)
 
 ### Contagion and Vaccination
-- F12 Static panic does not propagate (calm Phi ~ 1.0 at 20% panic)
-- F18 (retracted; superseded by F23)
-- F23 SI contagion saturates flock at any beta > 0
-- F24 SIS contagion has clean epidemic threshold at beta/gamma ~ 1
-- F26 Combined predation + contagion: contagion dominates
-- F27 No spatial segregation from v0 contrast alone
-- F29 Sub-threshold SIS + encirclement: compression doubles panic peak (mild)
-- F30 Alpha-contrast produces real segregation via local clustering
+- F18 Static panic does not propagate -- calm agents stay coherent even at 20% panic fraction
+- F20 Panic contagion saturates the flock at any non-zero rate (SI) -- no epidemic threshold
+- F23 Combined predation + contagion -- contagion dominates; encirclement cannot rescue the calm sub-flock
+- F24 Active/passive mixed populations do not spatially segregate (v0 contrast alone)
+- F25 SIS contagion has a clean epidemic threshold at beta/gamma ~ 1; flock disruption tracks it
+- F26 Encirclement amplifies but does not tip sub-threshold contagion -- partial coupling
+- F27 Alpha-contrast populations segregate via local clustering, not heading-axis separation
+- F29 Encirclement shifts the SIS epidemic threshold leftward by ~4%
+- F30 Herd-immunity threshold in the flock is ~2x larger than mean-field predicts (p_c ~ 0.46)
 - F34 Outbreak persistence: epidemic outlasts predator removal by 100+ tu
-- F36 Targeted (degree-based) vaccination null result
-- F37 Spatial vaccination null result
-- F29 Critical-shift: encirclement lowers epidemic threshold by ~4%
-- F30 Herd-immunity threshold p_c ~ 0.46 (2x mean-field)
+- F36 Targeted (degree-based) vaccination null -- contact network is not hub-dominated
+- F37 Spatial vaccination null -- kinematic mixing erases spatial targeting
+- F54 Heterogeneous recovery rates lower the SIS threshold -- slow recoverers are reservoirs
+- F55 Heterogeneous infectiousness does NOT shift the threshold -- super-spreaders are messengers
+- F56 Targeting slow recoverers beats random by 2-3x -- F54 prediction confirmed (first strategy in study to beat random)
+- F57 Spatial vaccination null transfers to the het-recovery regime -- advantage is internal, not spatial
+- F59 Slow-recoverer advantage survives continuous (lognormal) gamma distributions
+- F60 Slow-recoverer vaccination tolerates noisy gamma estimates
+- F61 Slow-recoverer vaccination works for rare reservoirs (smaller reservoir, smaller budget)
 
 ### Phase Transition (Diagnosis Thread)
-- F9, F17 (above)
-- F38 Repulsion hardness null result (n = 1.5-12 identical)
-- F39 Langevin thermostat satisfies FDT (KE/N = kT to 1%)
+- F8, F12, F17 (above) -- no transition anywhere; smooth crossover
+- F38 Repulsion hardness null (n = 1.5-12 identical) -- non-equilibrium forcing is the cause
+- F39 Langevin thermostat satisfies FDT (KE/N = kT to 1%) but KE/N cannot detect KTHNY melting
 - F40 Hexatic order parameter |psi6| flat: soft repulsion cannot crystallize
-- F50 Hard repulsion (n = 12, 24) also flat: higher exponent shrinks the core, not hardens
+- F50 Hard repulsion (n = 12, 24) also flat: higher exponent shrinks the core, does not harden it
 
 ### 3D Extension
 - F41 Flocking generalizes to 3D; v_eq exact
@@ -63,16 +76,15 @@ generated). For navigation, here they are grouped by theme:
 - F44 3D encirclement fails at every predator count 1-50 (Phi>=0.99) [corrected -- predator sign bug]
 - F45 3D adaptive encirclement also does nothing (Phi=0.9998) [corrected -- predator sign bug]
 - F46 Vaccination targeting fails in 3D too; kinematic mixing is dimension-independent
-- F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
-- F48 Freezing the contact graph does not rescue targeting; degree-targeting null is structural
 - F49 3D encirclement fails under any arrangement (sphere/planar) [corrected -- predator sign bug]
-- F50 Hard repulsion does not crystallize; higher exponent shrinks the core, not hardens it
 - F51 3D alpha-contrast segregation: matches 2D at moderate contrast, diluted at high contrast
 - F52 3D mixes ~1.8x SLOWER than 2D at matched degree; "mixing aid" theme falsified
+- F58 Slow-recoverer vaccination transfers to 3D unchanged (per-agent rate mechanism is dimension-independent)
 
-### Floor and Scaling
-- F20 Encirclement floor is N-dependent at fixed R_enc (mid-N artifact)
-- F31 With R_enc/Rg scaling, encirclement is size-invariant
+### Section 5 Self-Tests (predictions tested and corrected, not assumed)
+- F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
+- F48 Freezing the contact graph does not rescue targeting; degree-targeting null is structural
+- F52 3D mixes slower, not faster (above); the "third dimension is a mixing aid" theme is falsified
 
 ---
 

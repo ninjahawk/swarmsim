@@ -112,6 +112,7 @@ The experiments follow a logical arc, each motivated by the result before it:
 | **21. Section 5 self-tests** | Does topological alignment slow mixing? Does freezing contacts rescue targeting? | `contagion/topological_mixing.py` → `contagion/contact_freezing.py` |
 | **22. Phase-transition closure** | Does hard repulsion crystallize? | `phase/langevin_hexatic_hard.py` |
 | **23. Agent memory** | Does fatigue make encirclement damage irreversible? Do heterogeneous recovery rates shift the SIS threshold? | `predator/fatigue.py` → `contagion/recovery_heterogeneity.py` |
+| **24. Heterogeneity & targeted vaccination** | Does infectiousness spread shift the threshold? Can vaccinating slow recoverers preferentially beat random — in 2D, 3D, under continuous γ, with noisy estimates, and for rare reservoirs? | `contagion/infectiousness_heterogeneity.py` → `contagion/slow_recoverer_vaccination.py` → `contagion/het_recovery_spatial.py` → `3d/flocking3d_slow_vaccination.py` → `contagion/continuous_gamma_vaccination.py` → `contagion/noisy_gamma_vaccination.py` → `contagion/rare_reservoir_vaccination.py` |
 
 ---
 
@@ -165,14 +166,14 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-54 findings documented — full evidence and figures: [`findings.md`](findings.md)
+61 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
 | # | Finding |
 |---|---------|
 | 1 | Cruise speed is **v_eq = v₀ + α/μ** (exact analytical result, not just v₀) |
-| 2 | Solid-to-fluid transition is a smooth crossover at all compactness values — no true phase transition |
+| 8 | Solid-to-fluid transition is a smooth crossover at all compactness values — no true phase transition |
 | 5 | Flocking prey maintain Φ ≈ 1.0 under predator pressure; non-flocking scatter to Φ ≈ 0.1 |
 | 11 | Multiple naive predators co-localize at CoM, self-undermining — paradoxically helps flock |
 | 14 | Encirclement (fixed-angle targets) is the **only strategy** to substantially disrupt the flock: Φ = 0.77 at n=6 |
@@ -199,6 +200,12 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 | 52 | **"3D mixes faster" theme FALSIFIED**: at matched contact degree, 3D rewires at ~0.56× the 2D rate — 3D mixes ~1.8× SLOWER |
 | 53 | **Prey fatigue null**: encirclement damage stays reversible even with per-agent fatigue Q; align-mode fatigue deepens during-attack disruption (F27 echo), speed-mode doesn't (F24 echo) |
 | 54 | **Heterogeneous SIS recovery**: spread in per-agent γ at fixed mean lowers β_c by ~2.5× (0.385 → 0.155); slow recoverers are reservoirs (1.5–2× more panic than fast); reframes vaccination toward slow recoverers |
+| 55 | **Heterogeneous infectiousness does NOT shift the threshold**: super-spreaders source 74–97% of transmissions but γ stays homogeneous, so no stock asymmetry — the vaccination target is γ_i, not β_i |
+| 56 | **Slow-recoverer vaccination beats random by 2–3×** — the *first* targeting strategy in this study (of ~15) to beat random. At p=0.40 slow-targeting eradicates (0.000) vs random 0.095. The hub label lives in per-agent γ_i, which kinematic mixing cannot scramble |
+| 58 | **Slow-targeting transfers to 3D** unchanged: at p=0.50 slow eradicates (0.000) vs random 0.282; the per-agent-rate mechanism is dimension-independent |
+| 59 | **Slow-targeting survives continuous (lognormal) γ** — no bimodal class structure needed; "vaccinate the bottom X% by γ_i" works for any plausible distribution |
+| 60 | **Slow-targeting tolerates noisy γ estimates**: identical to perfect knowledge up to σ_obs ≈ 0.8, still beats random at σ_obs = 2.0 |
+| 61 | **Slow-targeting works for rare reservoirs**: even a 5% slow class sustains the epidemic under random vaccination; targeting it at a matched budget eradicates |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
@@ -219,10 +226,10 @@ Experiments live in four theme subfolders. Each script is self-contained, has an
 
 | Folder | Theme | Representative scripts |
 |--------|-------|------------------------|
-| `predator/` | predator strategies, encirclement, fragmentation, reunion, sensing, adaptive radius, prey fatigue (F5–F16, F20–F35, F53) | `encirclement_scaling.py`, `adaptive_encirclement.py`, `fragmentation.py`, `long_encirclement.py`, `fatigue.py` |
-| `contagion/` | panic, SI/SIS contagion, vaccination, segregation, mixing, heterogeneous recovery (F18–F37, F47, F48, F52, F54) | `contagion_sis.py`, `targeted_immunity.py`, `spatial_vaccination.py`, `topological_mixing.py`, `recovery_heterogeneity.py` |
-| `phase/` | finite-size scaling, hard repulsion, Langevin, hexatic order parameter (F2, F9, F17, F38–F40, F50) | `phase_transition.py`, `langevin_repulsion.py`, `langevin_hexatic.py`, `langevin_hexatic_hard.py` |
-| `3d/` | three-dimensional flocking, predators, vaccination, segregation (F41–F46, F49, F51) | `flocking3d.py`, `flocking3d_predator.py`, `flocking3d_vaccination.py`, `flocking3d_segregation.py` |
+| `predator/` | predator strategies, encirclement, fragmentation, reunion, sensing, adaptive radius, prey fatigue (F5–F16, F19, F21–F22, F28, F31–F35, F53) | `encirclement_scaling.py`, `adaptive_encirclement.py`, `fragmentation.py`, `long_encirclement.py`, `fatigue.py` |
+| `contagion/` | panic, SI/SIS contagion, vaccination, segregation, mixing, heterogeneous recovery, slow-recoverer targeting (F18–F37, F47–F48, F52, F54–F57, F59–F61) | `contagion_sis.py`, `targeted_immunity.py`, `spatial_vaccination.py`, `recovery_heterogeneity.py`, `slow_recoverer_vaccination.py` |
+| `phase/` | finite-size scaling, hard repulsion, Langevin, hexatic order parameter (F2, F8, F12, F17, F38–F40, F50) | `phase_transition.py`, `langevin_repulsion.py`, `langevin_hexatic.py`, `langevin_hexatic_hard.py` |
+| `3d/` | three-dimensional flocking, predators, vaccination, segregation, slow-recoverer targeting (F41–F46, F49, F51, F58) | `flocking3d.py`, `flocking3d_predator.py`, `flocking3d_vaccination.py`, `flocking3d_slow_vaccination.py` |
 
 A complete file-by-file index lives in the per-finding evidence sections of [`findings.md`](findings.md). A predator-force sign bug in the 3D scripts was found and fixed in May 2026 (commit `30ead1c`); F43/F44/F45/F49 were rerun with the corrected sign and write-ups updated.
 
@@ -234,7 +241,7 @@ A complete file-by-file index lives in the per-finding evidence sections of [`fi
 | `build_report.py` | Generates `report_draft.pdf` from `report_draft.md` using reportlab |
 | `sim_demo.html` | Interactive browser simulation (open locally or via htmlpreview link above) |
 | `logs.html` | Time log and research log — open in browser |
-| `findings.md` | Running notes on all 54 findings with figures |
+| `findings.md` | Running notes on all 61 findings with figures |
 | `report_draft.md` | Full research report in Markdown |
 
 ---
@@ -270,11 +277,20 @@ python contagion/contact_freezing.py
 python contagion/mixing_dimension.py
 python contagion/recovery_heterogeneity.py
 
+# Heterogeneity and slow-recoverer vaccination (F55-F61)
+python contagion/infectiousness_heterogeneity.py
+python contagion/slow_recoverer_vaccination.py
+python contagion/het_recovery_spatial.py
+python contagion/continuous_gamma_vaccination.py
+python contagion/noisy_gamma_vaccination.py
+python contagion/rare_reservoir_vaccination.py
+
 # 3D extension
 python 3d/flocking3d.py
 python 3d/flocking3d_predator.py
 python 3d/flocking3d_vaccination.py
 python 3d/flocking3d_segregation.py
+python 3d/flocking3d_slow_vaccination.py
 ```
 
 For the full set of scripts and what each tests, see the per-finding sections of [`findings.md`](findings.md).
