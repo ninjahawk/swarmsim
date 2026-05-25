@@ -1,0 +1,24 @@
+3D transect predator -- is encirclement failure (F43) specific to sealing?
+  N=350  N_SEEDS=3  N_ITER=4000  v0_prey=0.02
+
+Exp A: strategy comparison {naive, encircle, transect}
+  naive     n_pred= 3  Phi=1.000+/-0.000  Rg=0.430
+  naive     n_pred= 6  Phi=1.000+/-0.000  Rg=0.430
+  naive     n_pred=10  Phi=1.000+/-0.000  Rg=0.431
+  encircle  n_pred= 3  Phi=1.000+/-0.000  Rg=0.430
+  encircle  n_pred= 6  Phi=1.000+/-0.000  Rg=0.434
+  encircle  n_pred=10  Phi=1.000+/-0.000  Rg=0.437
+  transect  n_pred= 3  Phi=1.000+/-0.000  Rg=0.431
+  transect  n_pred= 6  Phi=1.000+/-0.000  Rg=0.431
+  transect  n_pred=10  Phi=1.000+/-0.000  Rg=0.432
+
+Exp B: transect predator-speed sweep at n_pred=10
+  v0_pred=0.05  Phi=1.000+/-0.000  Rg=0.431
+  v0_pred=0.10  Phi=1.000+/-0.000  Rg=0.431
+  v0_pred=0.20  Phi=1.000+/-0.000  Rg=0.431
+  v0_pred=0.40  Phi=1.000+/-0.000  Rg=0.432
+  v0_pred=0.80  Phi=1.000+/-0.000  Rg=0.450
+
+  --> figures/flocking3d_transect_1.png
+
+3D transect predator analysis complete.

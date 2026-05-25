@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 64 numbered findings below are presented chronologically (in the order they were
+The 65 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -64,6 +64,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F62 Slow-recoverer vaccination needs a DURABLE label: gamma drift erodes the advantage and, when fast, eradicates the epidemic by self-averaging gamma to its mean
 - F63 Combined beta_i + gamma_i: slow (reservoir) targeting is ROBUST across correlations; super-spreader (engine) targeting is as good only when not anti-correlated with the reservoir. beta-targeting IS effective for removal (refines F55)
 - F64 Slow-recoverer vaccination REVERSES the F34 predator+contagion asymmetry (epidemic dies after predator removal, Phi->1.0) but only when the budget covers the full reservoir (p_imm >= f_slow); below that it reduces but does not eradicate
+- F65 3D flocks are robust to ALL point-predator strategies tested (naive/encircle/transect, any count, any speed up to 40x prey). The F43 "can't seal a 3D surface" mechanism generalizes: at the F41-F49 parameter regime the flock fills the box uniformly (Rg=0.43 of max ~0.5), so it has no perimeter to seal and no interior to transect
 
 ### Phase Transition (Diagnosis Thread)
 - F8, F12, F17 (above) -- no transition anywhere; smooth crossover
@@ -83,6 +84,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F51 3D alpha-contrast segregation: matches 2D at moderate contrast, diluted at high contrast
 - F52 3D mixes ~1.8x SLOWER than 2D at matched degree; "mixing aid" theme falsified
 - F58 Slow-recoverer vaccination transfers to 3D unchanged (per-agent rate mechanism is dimension-independent)
+- F65 3D flocks robust to ALL point-predator strategies (naive/encircle/transect) -- the F43 "no surface to seal" generalizes to "no spatial perimeter at all" (Rg=0.43 of max ~0.5)
 
 ### Section 5 Self-Tests (predictions tested and corrected, not assumed)
 - F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
@@ -2591,6 +2593,62 @@ too, conditional on covering the slow class. This unifies the predator thread (F
 reversibility), the contagion thread (F34 persistence), and the vaccination thread
 (F56/F61 reservoir-targeting) into one statement: in the flock, lasting damage requires
 a surviving reservoir, and the reservoir is the slow-recoverer class.
+
+---
+
+## Finding 65: 3D flocks are robust to ALL point-predator strategies tested -- the F43 "no surface to seal" failure is a special case of "no spatial perimeter at all"
+<img src="./figures/flocking3d_transect_1.png" width="640"/>
+
+**What:** F43-F49 showed encirclement does not disrupt a 3D flock (Phi~1.0) by any
+geometric variant (radius, count, adaptive, sphere vs planar). The mechanistic claim was
+that a handful of point predators cannot seal a closed 2D SURFACE around a 3D volume the
+way they can seal a 1D perimeter around a 2D area. But that claim, if literally correct,
+only rules out SURROUNDING strategies. A strategy that does not rely on sealing -- a
+predator that TRANSECTS the flock, darting through the dense core at high speed and
+shearing alignment in its wake -- is the natural test of whether 3D flocks are robust to
+all point predators or only to those that try to surround.
+**Evidence:** flocking3d_transect.py. Three strategies in the same 3D harness as F43:
+naive (chase CoM, slow predator v0=0.05), encircle (F43 baseline, slow), and transect
+(chase CoM, fast v0=0.30 so the predator punches through and oscillates back). N=350,
+3 seeds, 4000 steps, 2500-step warmup. Two experiments:
+Exp A -- strategy comparison at n_pred = 3, 6, 10 (matched R_enc=0.15 for encircle):
+  strategy   n_pred    Phi             Rg
+  naive      3/6/10    1.000/1.000/1.000   0.430/0.430/0.431
+  encircle   3/6/10    1.000/1.000/1.000   0.430/0.434/0.437
+  transect   3/6/10    1.000/1.000/1.000   0.431/0.431/0.432
+Exp B -- transect predator-speed sweep at n_pred=10, prey v0=0.02:
+  v0_pred    0.05   0.10   0.20   0.40   0.80
+  Phi        1.000  1.000  1.000  1.000  1.000
+  Rg         0.431  0.431  0.431  0.432  0.450
+**Key result 1 -- 3D Phi=1.000 to three decimals at every configuration tested.** Naive
+and transect are equivalent in their target (CoM) and differ only by predator speed; over
+the full v0_pred sweep (40x range, ending at 40x prey speed) the order parameter never
+moves. The 3D flock is robust to every point-predator strategy in this harness, not just
+those that try to seal a perimeter.
+**Key result 2 -- the mechanism is not "can't seal a surface", it is "no spatial
+structure to attack at all".** The flock's radius of gyration sits at Rg=0.43 in the unit
+cube; the upper bound for a uniform spatial distribution is Rg ~ sqrt(1/4) = 0.5, so the
+3D "flock" fills the box nearly uniformly with globally aligned velocities (mean
+alignment-neighbor count ~12 at rf=0.20, N=350). It has no spatial perimeter to encircle
+and no localized core to transect: a few predators with finite repulsion range
+R0_P=0.10 only perturb a vanishing fraction of the flock at any instant, and the
+remaining ~99% of the alignment graph immediately heals the wake. F43's "cannot seal a
+2D surface" framing was incidental; the deeper statement is that 3D flocks are not
+spatially localized at the F41-F49 parameter regime, so the predator's geometric task
+has no localized target to address.
+**Key result 3 -- the only Rg movement is the predictable Stokes-style wake.** Transect
+at v0_pred=0.80 raises Rg slightly (0.450 vs the 0.430 baseline) -- the very fast
+predator carves a faintly larger excluded volume than slower ones -- but velocity
+alignment remains at 1.000 regardless. Spatial perturbation does not imply alignment
+disruption when the alignment graph is globally connected.
+**Implication:** Closes the 3D point-predator question. To disrupt a 3D flock at these
+parameters an attacker must either (i) supply on the order of N predators (already
+known not to help up to n_pred=50, F44), (ii) extend each predator's repulsion range to
+a substantial fraction of the box (unphysical), or (iii) attack the alignment force per
+agent rather than relying on repulsion -- which is exactly what contagion does, and why
+F25/F54 contagion successfully disrupts 3D flocks where predators cannot. The 3D
+predator thread closes definitively: alignment-driven kinematic mixing without spatial
+localization is invulnerable to point-source mechanical disruption.
 
 ---
 

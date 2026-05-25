@@ -166,7 +166,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-64 findings documented — full evidence and figures: [`findings.md`](findings.md)
+65 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
@@ -209,6 +209,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 | 62 | **Slow-targeting needs a *durable* recovery-rate label**: if γ_i drifts (state, not trait), mild drift erodes the advantage and fast drift eradicates the epidemic outright by self-averaging γ to its mean (undoing F54's threshold cut). The policy is valid exactly as long as the slow *class* persists on the epidemic timescale (~1/γ_slow) |
 | 63 | **Combined β_i + γ_i heterogeneity**: targeting slow recoverers (the reservoir) is the *robust* vaccine across all correlations; targeting super-spreaders (the transmission engine) is equally good only when they aren't anti-correlated with slow recovery — when supers are fast recoverers, only slow-targeting eradicates. β-targeting *is* effective for removal, refining F55's "target γ not β" to a robustness statement |
 | 64 | **Reservoir-targeting reverses the predator+contagion damage asymmetry**: F34's "contagion is the worst stressor" (epidemic outlasts predator removal) holds only while the reservoir survives. Vaccinating the slow class at a budget matching the reservoir fraction (p≥f_slow) eradicates the epidemic *and* lets the flock reunite to Φ≈1.0 — fully reversible combined damage. Below that budget the epidemic persists for every strategy |
+| 65 | **3D flocks are robust to *all* point-predator strategies, not only sealing**: a fast transecting predator that punches through the core gives Φ=1.000 at every count and speed up to 40× prey speed — same as encirclement (F43). The 3D flock fills the box near-uniformly (Rg=0.43 of ~0.5 max), so it has no perimeter to seal AND no interior to transect; finite-range predators perturb a vanishing fraction while the alignment graph heals the wake. Refines F43's mechanism: it's "no spatial localization," not "no surface to seal." Disrupting 3D needs a per-agent alignment attack (contagion does this) |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
@@ -232,7 +233,7 @@ Experiments live in four theme subfolders. Each script is self-contained, has an
 | `predator/` | predator strategies, encirclement, fragmentation, reunion, sensing, adaptive radius, prey fatigue (F5–F16, F19, F21–F22, F28, F31–F35, F53) | `encirclement_scaling.py`, `adaptive_encirclement.py`, `fragmentation.py`, `long_encirclement.py`, `fatigue.py` |
 | `contagion/` | panic, SI/SIS contagion, vaccination, segregation, mixing, heterogeneous recovery, slow-recoverer targeting (F18–F37, F47–F48, F52, F54–F64) | `contagion_sis.py`, `targeted_immunity.py`, `spatial_vaccination.py`, `recovery_heterogeneity.py`, `slow_recoverer_vaccination.py` |
 | `phase/` | finite-size scaling, hard repulsion, Langevin, hexatic order parameter (F2, F8, F12, F17, F38–F40, F50) | `phase_transition.py`, `langevin_repulsion.py`, `langevin_hexatic.py`, `langevin_hexatic_hard.py` |
-| `3d/` | three-dimensional flocking, predators, vaccination, segregation, slow-recoverer targeting (F41–F46, F49, F51, F58) | `flocking3d.py`, `flocking3d_predator.py`, `flocking3d_vaccination.py`, `flocking3d_slow_vaccination.py` |
+| `3d/` | three-dimensional flocking, predators, vaccination, segregation, slow-recoverer targeting, transect-predator robustness (F41–F46, F49, F51, F58, F65) | `flocking3d.py`, `flocking3d_predator.py`, `flocking3d_vaccination.py`, `flocking3d_slow_vaccination.py` |
 
 A complete file-by-file index lives in the per-finding evidence sections of [`findings.md`](findings.md). A predator-force sign bug in the 3D scripts was found and fixed in May 2026 (commit `30ead1c`); F43/F44/F45/F49 were rerun with the corrected sign and write-ups updated.
 
@@ -297,6 +298,7 @@ python 3d/flocking3d_predator.py
 python 3d/flocking3d_vaccination.py
 python 3d/flocking3d_segregation.py
 python 3d/flocking3d_slow_vaccination.py
+python 3d/flocking3d_transect.py
 ```
 
 For the full set of scripts and what each tests, see the per-finding sections of [`findings.md`](findings.md).
