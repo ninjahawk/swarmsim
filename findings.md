@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 65 numbered findings below are presented chronologically (in the order they were
+The 66 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -40,6 +40,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F33 Incomplete encirclement is mostly less disruptive; the flock doesn't escape through the gap
 - F35 Adaptive R_enc = 0.5*Rg outperforms fixed (validates F31 dynamically)
 - F53 Prey fatigue does not make encirclement damage irreversible (align-fatigue deepens attack)
+- F66 Predictive encirclement (predators anticipate via CoM + lead*v_mean) deepens F14 to Phi=0.530 at lead~2 tu -- first predator adaptation to substantially beat F14
 
 ### Contagion and Vaccination
 - F18 Static panic does not propagate -- calm agents stay coherent even at 20% panic fraction
@@ -85,6 +86,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F52 3D mixes ~1.8x SLOWER than 2D at matched degree; "mixing aid" theme falsified
 - F58 Slow-recoverer vaccination transfers to 3D unchanged (per-agent rate mechanism is dimension-independent)
 - F65 3D flocks robust to ALL point-predator strategies (naive/encircle/transect) -- the F43 "no surface to seal" generalizes to "no spatial perimeter at all" (Rg=0.43 of max ~0.5)
+- F66 PREDICTIVE encirclement (predators target CoM + lead*v_mean) deepens F14 disruption: optimum at lead~2 tu gives Phi=0.530 vs F14 baseline 0.77-0.83 and F35-adaptive 0.713. First predator-side adaptation in the study to substantially beat F14
 
 ### Section 5 Self-Tests (predictions tested and corrected, not assumed)
 - F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
@@ -2649,6 +2651,59 @@ agent rather than relying on repulsion -- which is exactly what contagion does, 
 F25/F54 contagion successfully disrupts 3D flocks where predators cannot. The 3D
 predator thread closes definitively: alignment-driven kinematic mixing without spatial
 localization is invulnerable to point-source mechanical disruption.
+
+---
+
+## Finding 66: Predictive encirclement (predators target CoM + lead*v_mean) deepens F14 disruption substantially -- the first predator-side adaptation in this study to beat F14
+<img src="./figures/predictive_encirclement_1.png" width="640"/>
+
+**What:** F33 found the flock does not steer toward gaps -- it has no global escape-route
+detection. The symmetric, untested question is whether PREDATORS can detect and exploit
+the flock's heading direction. The simplest predator intelligence is anticipation: each
+predator's target is CoM + lead_time * v_mean (with v_mean the flock's mean velocity),
+so the encirclement ring is placed where the flock WILL be rather than where it is.
+At lead_time=0 this reproduces F14 (Phi~0.77 at n_pred=6, R_enc=0.15). For lead_time>0
+the ring shifts in the flock's heading direction.
+**Evidence:** predictive_encirclement.py, slow-prey regime (v0=0.02, ramp=0.1), N=350,
+n_pred=6, R_enc=0.15, 4 seeds, 1000-step warmup then 4000 steps of encirclement, Phi
+averaged over the attack phase (first 500 transient steps dropped).
+  lead_time (tu)   mean Phi    cross-seed std   intra-run std
+  0.0              0.825       0.127            0.159
+  0.5              0.675       0.049            0.212
+  1.0              0.687       0.082            0.210
+  2.0              0.530       0.074            0.257
+  5.0              0.908       0.143            0.091
+  10.0             0.891       0.064            0.069
+**Key result 1 -- predictive encirclement deepens disruption substantially below F14 and
+F35.** At the optimum lead_time=2 tu, Phi=0.530 -- well below F14's baseline (0.77-0.83
+here) and below F35's adaptive R_enc result (0.713). This is the first predator-side
+adaptation in the study that substantially beats F14 at the same predator count and
+radius. The improvement comes purely from PLACEMENT: predators do not change R_enc, do
+not change n_pred, do not coordinate beyond all using the same v_mean -- they merely
+lead the flock by lead_time*v_mean.
+**Key result 2 -- the optimum has a clear geometric explanation.** Mean prey speed
+v_mean ~ v_eq = v0 + alpha/mu = 0.02 + 0.1 = 0.12 per F1. At lead_time=2 tu the lead
+distance is 2*0.12 = 0.24, larger than R_enc = 0.15. The ring of predators is therefore
+sitting where the flock will be in ~2 tu, and the flock's heading direction is now
+inside the ring rather than open. At lead_time=5-10 tu the lead distance is 0.6-1.2,
+predators overshoot beyond the flock's reach within the attack window, and the flock
+turns away -- the ring is now irrelevant. Disruption is non-monotonic in lead_time with
+a clear optimum near R_enc / v_mean.
+**Key result 3 -- intra-run std grows in the disruptive regime.** At lead_time = 0.5-2,
+intra-run Phi std rises to 0.21-0.26 (vs 0.09 at lead=5-10 and 0.16 at lead=0). This is
+the F32 intermittent merge/split steady state, sharpened by predictive placement:
+predators repeatedly intercept the leading sub-flock, fragment it, and the fragments
+re-form before being intercepted again. Predictive placement makes the flock visit the
+encirclement ring more often per unit time than fixed placement does.
+**Implication:** Opens the predator-learning thread. Adapting POSITION (F66, lead the
+flock) is complementary to adapting RADIUS (F35, R_enc/Rg). The two are independent
+levers and could be combined; the natural follow-up is "predictive + adaptive" predators
+that scale R_enc with live Rg AND lead by v_mean. This also flips the F33 asymmetry:
+the flock cannot detect global escape directions, but predators CAN detect the flock's
+global heading (mean velocity is the dual of "where the gap is for the flock"). Predator
+intelligence is informationally easier than prey escape intelligence in this model,
+because v_mean is a global summary statistic that is well-defined for the flock even
+when the flock cannot use it itself.
 
 ---
 

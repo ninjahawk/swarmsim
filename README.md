@@ -166,7 +166,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-65 findings documented — full evidence and figures: [`findings.md`](findings.md)
+66 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
@@ -210,6 +210,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 | 63 | **Combined β_i + γ_i heterogeneity**: targeting slow recoverers (the reservoir) is the *robust* vaccine across all correlations; targeting super-spreaders (the transmission engine) is equally good only when they aren't anti-correlated with slow recovery — when supers are fast recoverers, only slow-targeting eradicates. β-targeting *is* effective for removal, refining F55's "target γ not β" to a robustness statement |
 | 64 | **Reservoir-targeting reverses the predator+contagion damage asymmetry**: F34's "contagion is the worst stressor" (epidemic outlasts predator removal) holds only while the reservoir survives. Vaccinating the slow class at a budget matching the reservoir fraction (p≥f_slow) eradicates the epidemic *and* lets the flock reunite to Φ≈1.0 — fully reversible combined damage. Below that budget the epidemic persists for every strategy |
 | 65 | **3D flocks are robust to *all* point-predator strategies, not only sealing**: a fast transecting predator that punches through the core gives Φ=1.000 at every count and speed up to 40× prey speed — same as encirclement (F43). The 3D flock fills the box near-uniformly (Rg=0.43 of ~0.5 max), so it has no perimeter to seal AND no interior to transect; finite-range predators perturb a vanishing fraction while the alignment graph heals the wake. Refines F43's mechanism: it's "no spatial localization," not "no surface to seal." Disrupting 3D needs a per-agent alignment attack (contagion does this) |
+| 66 | **Predictive encirclement** (predators target CoM + lead_time · v̄) is the *first predator-side adaptation* in this study to substantially beat F14: Φ drops to **0.530** at lead=2 tu (vs F14's 0.77 and F35-adaptive's 0.713), non-monotonic with optimum near lead ~ R_enc/v̄ where the lead distance matches the encirclement radius. Inverts the F33 asymmetry — the flock can't detect global escape directions, but predators can detect v̄. Adapting *position* (F66) is independent of adapting *radius* (F35) |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
@@ -230,7 +231,7 @@ Experiments live in four theme subfolders. Each script is self-contained, has an
 
 | Folder | Theme | Representative scripts |
 |--------|-------|------------------------|
-| `predator/` | predator strategies, encirclement, fragmentation, reunion, sensing, adaptive radius, prey fatigue (F5–F16, F19, F21–F22, F28, F31–F35, F53) | `encirclement_scaling.py`, `adaptive_encirclement.py`, `fragmentation.py`, `long_encirclement.py`, `fatigue.py` |
+| `predator/` | predator strategies, encirclement, fragmentation, reunion, sensing, adaptive radius, prey fatigue, predictive encirclement (F5–F16, F19, F21–F22, F28, F31–F35, F53, F66) | `encirclement_scaling.py`, `adaptive_encirclement.py`, `fragmentation.py`, `long_encirclement.py`, `fatigue.py` |
 | `contagion/` | panic, SI/SIS contagion, vaccination, segregation, mixing, heterogeneous recovery, slow-recoverer targeting (F18–F37, F47–F48, F52, F54–F64) | `contagion_sis.py`, `targeted_immunity.py`, `spatial_vaccination.py`, `recovery_heterogeneity.py`, `slow_recoverer_vaccination.py` |
 | `phase/` | finite-size scaling, hard repulsion, Langevin, hexatic order parameter (F2, F8, F12, F17, F38–F40, F50) | `phase_transition.py`, `langevin_repulsion.py`, `langevin_hexatic.py`, `langevin_hexatic_hard.py` |
 | `3d/` | three-dimensional flocking, predators, vaccination, segregation, slow-recoverer targeting, transect-predator robustness (F41–F46, F49, F51, F58, F65) | `flocking3d.py`, `flocking3d_predator.py`, `flocking3d_vaccination.py`, `flocking3d_slow_vaccination.py` |
@@ -271,6 +272,7 @@ python predator/encirclement_scaling.py
 python predator/adaptive_encirclement.py
 python predator/long_encirclement.py
 python predator/fatigue.py
+python predator/predictive_encirclement.py
 
 # Contagion, vaccination, mixing
 python contagion/contagion_sis.py

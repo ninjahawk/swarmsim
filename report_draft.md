@@ -2353,6 +2353,49 @@ disruption.
 
 ---
 
+### 4.48 Predictive Encirclement: Adapting Predator Position Deepens Disruption Below the F14 / F35 Floor (Finding 66)
+
+Section 4.15 (Finding 33) found that the flock does not steer toward gaps in an
+incomplete encirclement -- it has no global escape-route detection. The symmetric and
+previously untested question is whether predators can detect and exploit the flock's
+heading direction. The simplest predator intelligence is anticipation: each predator
+targets CoM + lead_time * v_mean, with v_mean the flock's mean velocity, so the
+encirclement ring is placed where the flock will be rather than where it is. At
+lead_time = 0 the strategy reproduces the F14 baseline (Phi ~ 0.77 at n_pred = 6,
+R_enc = 0.15).
+
+![figures/predictive_encirclement_1.png](figures/predictive_encirclement_1.png)
+
+Sweeping lead_time from 0 to 10 time units gives a non-monotonic curve with a clear
+minimum: Phi = 0.530 at lead_time = 2 tu, well below the F14 reproduction here (0.825)
+and below the F35 adaptive-R_enc result (0.713). The improvement comes purely from
+placement -- predator count, encirclement radius, and coordination beyond a shared
+v_mean are all unchanged from F14. The optimum has a simple geometric explanation:
+v_mean is approximately v_eq = v0 + alpha/mu = 0.12, so at lead_time = 2 the lead
+distance is 0.24, larger than R_enc = 0.15. The ring of predators therefore sits where
+the flock will be in two time units, and the flock's heading direction is inside the
+ring rather than open. At lead_time = 5-10 the lead distance is 0.6-1.2 -- predators
+overshoot beyond the flock's reach within the attack window and the flock turns away;
+the ring becomes irrelevant. Optimal disruption sits near lead_time ~ R_enc / v_mean,
+which makes the lead distance match the encirclement radius.
+
+Intra-run Phi variability also grows in the disruptive regime (std 0.21-0.26 at
+lead_time = 0.5-2 vs 0.09 at lead_time = 5-10), sharpening the Finding 32 intermittent
+merge/split steady state: predictive predators repeatedly intercept the leading
+sub-flock, fragment it, and the fragments re-form before being intercepted again, so the
+flock visits the encirclement ring more often per unit time than under fixed placement.
+
+This is the first predator-side adaptation in the study that substantially beats Finding
+14 at the same predator count and radius, and it opens the predator-learning thread.
+Adapting POSITION (this section) is complementary to adapting RADIUS (Section 4.17 /
+Finding 35); the two are independent levers and could be combined. The result also
+inverts the Finding 33 asymmetry: the flock cannot detect global escape directions, but
+predators can detect the flock's global heading -- v_mean is well-defined as a summary
+statistic for the flock even though the flock cannot use it itself. Predator
+intelligence is informationally easier than prey escape intelligence in this model.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -2608,7 +2651,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced thirty-five main results (selecting the most general across 65 findings):
+This study produced thirty-six main results (selecting the most general across 66 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -2956,6 +2999,20 @@ This study produced thirty-five main results (selecting the most general across 
     while the rest of the alignment graph heals the wake. Disrupting a 3D flock requires
     a per-agent attack on alignment itself (which is what contagion provides) rather
     than a geometric placement of point predators.
+
+36. **Predictive encirclement is the first predator-side adaptation to substantially
+    beat F14:** Letting predators target CoM + lead_time * v_mean (anticipating the
+    flock's heading direction) gives a non-monotonic Phi(lead_time) with a clear minimum
+    at lead_time = 2 tu, where Phi drops to 0.530 -- well below the F14 reproduction
+    here (0.825) and below the F35 adaptive-R_enc floor (0.713). The optimum sits near
+    lead_time ~ R_enc / v_mean, which makes the lead distance match the encirclement
+    radius and places the ring exactly where the flock is headed. At larger lead times
+    the predators overshoot beyond reach and the flock turns away. The result inverts
+    Finding 33's asymmetry: the flock cannot detect global escape directions, but
+    predators CAN detect the flock's mean velocity, so predator intelligence is
+    informationally easier than prey escape intelligence in this model. Adapting
+    POSITION (this result) is independent of adapting RADIUS (Finding 35); the two
+    levers could be combined.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
