@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 61 numbered findings below are presented chronologically (in the order they were
+The 62 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -61,6 +61,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F59 Slow-recoverer advantage survives continuous (lognormal) gamma distributions
 - F60 Slow-recoverer vaccination tolerates noisy gamma estimates
 - F61 Slow-recoverer vaccination works for rare reservoirs (smaller reservoir, smaller budget)
+- F62 Slow-recoverer vaccination needs a DURABLE label: gamma drift erodes the advantage and, when fast, eradicates the epidemic by self-averaging gamma to its mean
 
 ### Phase Transition (Diagnosis Thread)
 - F8, F12, F17 (above) -- no transition anywhere; smooth crossover
@@ -2421,26 +2422,92 @@ positive, complete, robust policy result.
 
 ---
 
+## Finding 62: Slow-recoverer vaccination needs a DURABLE recovery-rate label -- drift erodes the targeting advantage, and fast drift eradicates the epidemic by self-averaging gamma
+<img src="./figures/drifting_gamma_vaccination_1.png" width="640"/>
+
+**What:** F56-F61 all held per-agent gamma_i STATIONARY. That stationarity is the
+single load-bearing assumption of the whole positive result: the synthesis explains
+slow-targeting's success by saying the "hub" label lives in gamma_i, a FIXED property
+of the individual that kinematic mixing cannot scramble. This experiment makes gamma_i
+a fluctuating STATE rather than a trait and asks whether the policy survives.
+**Evidence:** drifting_gamma_vaccination.py, bimodal gamma {0.2, 1.8}, beta=0.30,
+4 seeds. Vaccinate the slow agents ONCE at t=0 from a snapshot, then let each agent's
+slow/fast identity decorrelate by symmetric two-state resampling at rate r_drift
+(identity autocorrelation time ~ 1/r_drift). The bimodal marginal and 50/50 split are
+preserved at all times; only WHICH individuals are slow drifts. Baseline (no
+vaccination, drift-independent): f_ss = 0.376.
+  p_imm=0.20         r_drift:  0.0     0.1     0.3     1.0    3.0   10.0
+    random f_ss             0.233   0.178   0.166   0.000  0.000  0.000
+    slow   f_ss             0.115   0.180   0.147   0.049  0.000  0.000
+    advantage (rand-slow)  +0.118  -0.002  +0.019  -0.049  0.000  0.000
+  p_imm=0.40
+    random f_ss             0.095   0.070   0.023   0.000  0.000  0.000
+    slow   f_ss             0.000   0.000   0.028   0.000  0.000  0.000
+**Key result 1 -- the slow advantage requires a durable label and is gone by mild
+drift.** At r_drift=0 slow beats random as F56 says (+0.118 at p_imm=0.20). By
+r_drift=0.1/tu the advantage has collapsed to ~0: random IMPROVES (0.233->0.178) while
+slow WORSENS (0.115->0.180) and they converge. The one-shot vaccine is wasted as
+vaccinated slow agents drift to fast and unvaccinated agents drift into the reservoir.
+This is the predicted erosion of a snapshot policy when the targeted property is not
+durable -- and is distinct from F60 (static observation noise), which the policy
+tolerates: drift is noise that grows with time.
+**Key result 2 -- fast drift ERADICATES the epidemic regardless of strategy.** At
+r_drift>=1/tu both random and slow give f_ss=0. This is the deeper result: fast drift
+does not merely defeat targeting, it removes the heterogeneity that made the epidemic
+supercritical. F54 showed the threshold reduction comes from the SPREAD of gamma; when
+gamma decorrelates faster than the recovery timescale, every agent recovers at the
+time-averaged mean (gamma=1.0), restoring the HOMOGENEOUS threshold (F54 homog
+beta_c=0.385). At beta=0.30 < 0.385 the system is subcritical and the outbreak dies on
+its own. The crossover (r_drift ~ 0.2-1/tu) matches the reservoir-memory timescale
+1/gamma_slow = 1/0.2 = 5 tu: the reservoir survives drift only when 1/r_drift exceeds it.
+**Key result 3 -- the policy's domain of usefulness exactly coincides with the regime
+where the reservoir is real.** Where slow-targeting helps (durable label), the epidemic
+is endemic and needs intervention; where it stops helping (fast drift), there is no
+reservoir to target AND no threshold reduction, so no targeting is needed. The
+per-agent-invariance argument is thus confirmed in its STRONG form: slow-targeting is
+not a fragile trick defeated by dynamics -- it is exactly as valid as the reservoir it
+exploits is durable.
+**Implication:** Reframes F54-F61. The operative requirement is not "gamma_i is
+measurable" (F60) but "the slow CLASS is a stable population on the epidemic timescale".
+A recovery rate that is a persistent individual trait (chronic condition, age) is
+targetable; one that is a transient state (a passing illness shorter than the outbreak)
+is not -- but in that case the reservoir self-averages away and the epidemic is milder.
+The F53/F54 heterogeneity dichotomy is sharpened: heterogeneity the dynamics homogenize
+on a fast timescale is neither a lasting threshold-shifter NOR a targetable hub.
+
+---
+
 ## Open Questions / Next Directions
-1. 3D flocking thread COMPLETE (F41-F46):
-   - F41: v_eq=v0+alpha/mu exact in 3D; basic noise sweep
-   - F42: smooth crossover at ramp~15-25; chi_peak drifts up with N; same as 2D qualitatively
-   - F43: 3D encirclement fails; R_enc/Rg~0.5 optimum is 2D-specific
-   - F44: 3D predator-count scaling -- disruption non-monotonic, hard floor Phi~0.91
-   - F45: 3D adaptive encirclement null -- tracking damps the disruptive fluctuations
-   - F46: 3D vaccination null -- kinematic mixing defeats targeting in 3D too
-2. 3D predator thread is fully closed. Encirclement cannot be rescued in 3D by radius
-   tuning (F43), predator count (F44), or adaptive geometry (F45).
-3. Section 5 self-test COMPLETE (F47, F48): the topological-alignment prediction was
-   FALSIFIED (F47), and freezing the contact graph still does not rescue targeting (F48).
-   The vaccination story is fully resolved: degree-targeting fails structurally (no
-   hubs), spatial-targeting fails kinematically (mixing erases coverage). Section 5
-   revised to separate the two mechanisms. No open escape route remains.
-4. Alternative research directions:
-   - A 3D-effective predator strategy that is NOT encirclement: exploit the
-     compression-induced density gradient (F44), or attack alignment coupling directly.
-     Would validate the F44/F45 mechanistic claim.
-   - Phase transition in 3D (hard repulsion Langevin in 3D)
-   - Segregation in 3D
-   - Agent memory / fatigue models
+*(updated through F62; the F41-F46-era list that lived here was stale -- it predated
+F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
+
+All primary threads are CLOSED:
+- **Predator strategy (2D + 3D)**: F5-F16, F19-F35, F43-F45, F49, F53. 3D encirclement
+  does NOT disrupt the flock at all (Phi~1.0) by any variant -- strictly 2D-specific
+  (F43/F44/F45/F49 corrected after the predator-force sign bug). Prey fatigue does not
+  make damage irreversible (F53).
+- **Phase transition**: F2, F8, F12, F17, F38-F40, F50. No exponent of the base_r^n
+  repulsion crystallizes; KTHNY needs a true inverse-power-law/hard-disc force.
+- **Contagion / vaccination / kinematic mixing**: F10-F37, F47-F48, F52, F54-F62.
+  Degree-targeting fails STRUCTURALLY (no hubs, F48); spatial fails KINEMATICALLY
+  (mixing erases coverage, F37). Slow-recoverer targeting (F56) is the first and only
+  strategy to beat random -- valid in 2D (F56), 3D (F58), under continuous (F59) and
+  bimodal gamma, with noisy estimates (F60), for rare reservoirs (F61), and exactly as
+  long as the slow CLASS is durable on the epidemic timescale (F62).
+- **3D extension**: F41-F46, F49, F51, F52, F58. 3D mixes ~1.8x SLOWER than 2D (F52);
+  the "mixing aid" theme was falsified.
+
+Remaining exploratory directions:
+1. **Combined beta_i + gamma_i heterogeneity with slow-targeting (F63, in progress):**
+   does the F55 flat-threshold compose with F56 slow-targeting? Do anti-correlated
+   super-spreaders (high beta, fast gamma) escape a gamma-based vaccine and leak the
+   epidemic?
+2. Predator + slow-targeted vaccination combined: F26 showed epidemic damage outlasts
+   kinematic damage; does slow-targeting reverse that asymmetry so contagion stops
+   being the worst combined stressor?
+3. A 3D-effective predator strategy that is NOT encirclement (attack alignment coupling
+   directly rather than relying on geometric perimeter sealing).
+4. Agent memory beyond fatigue: learned predator avoidance, heritable behavior.
+5. Phase transition / segregation already extended to 3D (F50-context, F51); a true
+   hard-disc potential would be the only way to revisit the KTHNY question.
 

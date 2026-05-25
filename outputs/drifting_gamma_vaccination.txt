@@ -1,0 +1,57 @@
+Drifting-gamma vaccination -- testing the stationarity assumption of F56
+  bimodal {0.2, 1.8}, beta=0.30, 4 seeds
+
+Baseline (no vaccination):
+  f_ss = 0.376 +/- 0.018
+
+=== p_immune = 0.20 ===
+  -- random --
+     r_drift= 0.00  f_ss=0.233 +/- 0.036
+     r_drift= 0.10  f_ss=0.178 +/- 0.025
+     r_drift= 0.30  f_ss=0.166 +/- 0.015
+     r_drift= 1.00  f_ss=0.000 +/- 0.000
+     r_drift= 3.00  f_ss=0.000 +/- 0.000
+     r_drift=10.00  f_ss=0.000 +/- 0.000
+  -- slow --
+     r_drift= 0.00  f_ss=0.115 +/- 0.069
+     r_drift= 0.10  f_ss=0.180 +/- 0.043
+     r_drift= 0.30  f_ss=0.147 +/- 0.026
+     r_drift= 1.00  f_ss=0.049 +/- 0.086
+     r_drift= 3.00  f_ss=0.000 +/- 0.000
+     r_drift=10.00  f_ss=0.000 +/- 0.000
+
+=== p_immune = 0.40 ===
+  -- random --
+     r_drift= 0.00  f_ss=0.095 +/- 0.020
+     r_drift= 0.10  f_ss=0.070 +/- 0.029
+     r_drift= 0.30  f_ss=0.023 +/- 0.025
+     r_drift= 1.00  f_ss=0.000 +/- 0.000
+     r_drift= 3.00  f_ss=0.000 +/- 0.000
+     r_drift=10.00  f_ss=0.000 +/- 0.000
+  -- slow --
+     r_drift= 0.00  f_ss=0.000 +/- 0.000
+     r_drift= 0.10  f_ss=0.000 +/- 0.000
+     r_drift= 0.30  f_ss=0.028 +/- 0.028
+     r_drift= 1.00  f_ss=0.000 +/- 0.000
+     r_drift= 3.00  f_ss=0.000 +/- 0.000
+     r_drift=10.00  f_ss=0.000 +/- 0.000
+
+Advantage of slow over random (random_f_ss - slow_f_ss):
+  p_immune=0.20:
+     r_drift= 0.00  random=0.233  slow=0.115  advantage=+0.118
+     r_drift= 0.10  random=0.178  slow=0.180  advantage=-0.002
+     r_drift= 0.30  random=0.166  slow=0.147  advantage=+0.019
+     r_drift= 1.00  random=0.000  slow=0.049  advantage=-0.049
+     r_drift= 3.00  random=0.000  slow=0.000  advantage=+0.000
+     r_drift=10.00  random=0.000  slow=0.000  advantage=+0.000
+  p_immune=0.40:
+     r_drift= 0.00  random=0.095  slow=0.000  advantage=+0.095
+     r_drift= 0.10  random=0.070  slow=0.000  advantage=+0.070
+     r_drift= 0.30  random=0.023  slow=0.028  advantage=-0.004
+     r_drift= 1.00  random=0.000  slow=0.000  advantage=+0.000
+     r_drift= 3.00  random=0.000  slow=0.000  advantage=+0.000
+     r_drift=10.00  random=0.000  slow=0.000  advantage=+0.000
+
+  --> figures/drifting_gamma_vaccination_1.png
+
+Drifting-gamma vaccination analysis complete.
