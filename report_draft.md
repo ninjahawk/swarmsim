@@ -2168,6 +2168,145 @@ scales naturally with the problem.
 
 ---
 
+### 4.44 Slow-Recoverer Vaccination Requires a Durable Recovery-Rate Label: Drift Erodes the Advantage and Self-Averages the Threshold (Finding 62)
+
+Findings 56 through 61 all held the per-agent recovery rate gamma_i stationary. That
+stationarity is the single load-bearing assumption behind the whole positive result:
+the synthesis explains slow-targeting's success by arguing that the reservoir "hub"
+label lives in gamma_i, a fixed property of the individual that kinematic mixing cannot
+scramble. This experiment makes gamma_i a fluctuating state rather than a trait. Slow
+agents are vaccinated once from a t=0 snapshot, then each agent's slow/fast identity is
+resampled by a symmetric two-state process at rate r_drift (identity autocorrelation
+time ~ 1/r_drift); the bimodal marginal {0.2, 1.8} and the 50/50 split are preserved at
+all times, so only *which* individuals are slow drifts.
+
+![figures/drifting_gamma_vaccination_1.png](figures/drifting_gamma_vaccination_1.png)
+
+At zero drift the F56 result reappears (slow beats random, advantage +0.118 at
+p_immune = 0.20). But the advantage is fragile to drift: by r_drift = 0.1 per time unit
+it has already collapsed to zero, as random *improves* (0.233 to 0.178) while slow
+*worsens* (0.115 to 0.180) and the two converge -- the one-shot vaccine is wasted as
+vaccinated agents drift to fast and unvaccinated agents drift into the reservoir. This
+is distinct from the static observation noise of Finding 60, which the policy tolerates:
+drift is noise that grows with elapsed time. The deeper result appears at faster drift:
+for r_drift >= 1 per time unit the epidemic is eradicated for *every* strategy
+(f_ss = 0). Fast drift does not merely defeat targeting -- it removes the heterogeneity
+that made the epidemic supercritical. Finding 54 showed the threshold reduction comes
+from the *spread* of gamma; when gamma decorrelates faster than the recovery timescale,
+every agent recovers at the time-averaged mean (gamma = 1.0), restoring the homogeneous
+threshold (beta_c = 0.385 > 0.30) and rendering the system subcritical. The crossover at
+r_drift ~ 0.2-1 per time unit matches the reservoir-memory timescale 1/gamma_slow = 5
+time units.
+
+The result confirms the per-agent-invariance argument in its strong form: slow-targeting
+is valid exactly as long as the slow *class* is durable on the epidemic timescale. The
+operative requirement is not that gamma_i is measurable (Finding 60) but that the
+recovery rate is a persistent trait (a chronic condition, age) rather than a transient
+state shorter than the outbreak. In the transient case the reservoir self-averages away
+and the epidemic is milder anyway, so the policy's domain of usefulness exactly coincides
+with the regime where the reservoir is real. This sharpens the Finding 53/54 dichotomy:
+heterogeneity the dynamics homogenize on a fast timescale is neither a lasting
+threshold-shifter nor a targetable hub.
+
+---
+
+### 4.45 Combined Infectiousness and Recovery Heterogeneity: Reservoir-Targeting Is Robust, Engine-Targeting Is Not (Finding 63)
+
+Finding 55 found that heterogeneous infectiousness (per-agent beta_i) does not shift the
+SIS threshold and concluded "target gamma_i, not beta_i." Finding 56 found that targeting
+slow recoverers beats random. Both were studied in isolation. This experiment layers both
+heterogeneities -- bimodal gamma {0.2, 1.8} (50/50) and bimodal beta {0.15, 0.90} (20%
+super-spreaders, arithmetic mean 0.30) with source-weighted transmission -- and varies
+their correlation, asking the adversarial question: if super-spreaders are *fast*
+recoverers (high beta, high gamma), they escape a gamma-based vaccine; do they leak the
+epidemic and defeat slow-targeting? Four strategies are compared: random, slow (smallest
+gamma), super (largest beta), and combo (half budget each).
+
+![figures/het_beta_gamma_vaccination_1.png](figures/het_beta_gamma_vaccination_1.png)
+
+Under independent correlation, super-spreader targeting is the *strongest* single
+strategy (f_ss = 0.025 at p_immune = 0.20, versus 0.120 for slow). This does not
+contradict Finding 55. Finding 55 is a statement about where criticality sits as a
+function of beta-spread at fixed mean; vaccination instead *removes* agents entirely, and
+the 20% super-spreaders at beta = 0.90 source roughly 60% of total infectivity
+(0.2 * 0.9 / 0.30), so deleting them slashes transmission capacity. Source-side
+heterogeneity is event-level for the threshold but exploitable for removal -- two
+different questions with two different answers.
+
+The decisive comparison is the correlation sweep at p_immune = 0.30. The reservoir that
+sustains the endemic state (the slow class, Finding 54) and the transmission engine (the
+super-spreaders) are in general different populations, and only reservoir-targeting is
+robust. When the two coincide or are uncorrelated, hitting super-spreaders works because
+the engine overlaps the reservoir (positive correlation: super f_ss = 0.000; independent:
+0.003). But in the adversarial anti-correlated case -- super-spreaders are fast recoverers
+-- removing the engine leaves the slow reservoir intact to re-sustain the outbreak, and
+super-targeting leaves f_ss = 0.017 while slow-targeting *eradicates* (0.000). Slow-
+targeting wins or ties in all three regimes; super-targeting fails relative to slow
+exactly when infectiousness is anti-correlated with recovery rate. Correlation also sets
+baseline severity: with no vaccination, co-locating high spread and slow recovery in the
+same agents is the worst epidemic (f_ss = 0.445), and separating them is the mildest
+(0.225).
+
+This completes the vaccination-target taxonomy. Degree-targeting fails structurally
+(Sections 4.18, 4.30: no hubs); spatial-targeting fails kinematically (Section 4.20:
+mixing erases coverage); slow-recoverer targeting succeeds and is robust because the
+reservoir label is a per-agent invariant (Sections 4.38-4.44); and infectiousness
+targeting is effective for removal but *not robust*, because it targets the transmission
+engine rather than the reservoir, and the two can be decoupled. The operational guidance
+is to target the reservoir (slow gamma) when forced to choose one axis, and to add
+super-spreader targeting only when they are known not to be fast recoverers. The Finding
+55 slogan "target gamma, not beta" is correct as a robustness statement, not because
+beta-targeting is ineffective.
+
+---
+
+### 4.46 Reservoir-Targeted Vaccination Reverses the Predator+Contagion Damage Asymmetry (Finding 64)
+
+Finding 34 established the sharpest asymmetry in this study. After an encirclement-driven
+SIS outbreak, removing the predators lets the kinematic damage reverse within ~10 time
+units (sub-flocks reunite, Finding 22) but the epidemic persists for 100+ time units, so
+contagion was "the worst combined stressor" -- its damage outlasts the event that caused
+it. That experiment used homogeneous recovery. Findings 54-63 established that endemic
+persistence is set by the slow-recoverer reservoir and that vaccinating it is the robust
+policy. This experiment asks whether reservoir-targeted vaccination, applied before the
+attack, lets the post-removal epidemic die -- converting irreversible contagion damage
+into reversible damage and overturning Finding 34.
+
+The three-phase protocol of Section 4.16 is reused (warmup / six-predator encirclement +
+SIS / predators removed) in the slow-prey predator regime, now with bimodal recovery
+gamma {0.5, 3.5} (mean 2.0, matching Finding 34's mean, so the slow class is a reservoir
+at beta/gamma_slow = 3.0) and a vaccination arm (none / random / slow) applied at t=0.
+
+![figures/predator_slow_vaccination_1.png](figures/predator_slow_vaccination_1.png)
+
+For no vaccination, and for random or slow vaccination at p_immune <= 0.30, the panic
+fraction after predator removal is within noise of its value during the attack
+(none: 0.572 vs 0.586; slow at 0.30: 0.206 vs 0.225). Removing the predators does not
+lower the endemic level: with heterogeneous gamma the reservoir makes the outbreak
+supercritical on its own, so compression is not needed to sustain it and removal cannot
+reverse it. The Finding 34 asymmetry stands. The reversal appears only at p_immune = 0.50,
+where slow-targeting vaccinates the entire 50% slow reservoir. The remaining fast agents
+have beta/gamma_fast = 0.43 < 1 and cannot sustain the epidemic, so the panic fraction is
+zero both during and after the attack and the order parameter recovers to 0.997 -- full
+reunion. Random vaccination at the same budget leaves roughly half the reservoir intact
+and remains endemic at 0.175 with the order parameter only at 0.737. This is the Finding
+61 "budget equals reservoir fraction" law operating inside the combined predator +
+contagion regime. Below the reservoir budget, slow-targeting still beats random on both
+axes -- lower endemic level and faster coherence recovery, because fewer panicked agents
+disrupt alignment -- but it cannot eradicate.
+
+The result resolves the Finding 34 conclusion. Contagion is the worst stressor only while
+the reservoir survives. Reservoir-targeted vaccination at a budget matching the reservoir
+fraction makes the combined predator + contagion damage fully reversible: the epidemic is
+eradicated and the flock reunites to coherence near unity. The kinematic stressor was
+always reversible (Finding 22); Finding 64 shows the epidemic stressor becomes reversible
+too, conditional on covering the slow class. The predator thread (reversibility), the
+contagion thread (persistence), and the vaccination thread (reservoir-targeting) thus
+unify into one statement: in this flock, lasting damage requires a surviving reservoir,
+and the reservoir is the slow-recoverer class.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -2423,7 +2562,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced thirty-one main results (selecting the most general across 61 findings):
+This study produced thirty-four main results (selecting the most general across 64 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -2728,6 +2867,36 @@ This study produced thirty-one main results (selecting the most general across 6
     observations, large and small reservoirs) and scales linearly with the size of
     the problem -- a practical, complete vaccination policy and the only positive
     targeting result in the study.
+
+32. **Slow-targeting requires a durable recovery-rate label:** The slow-targeting
+    advantage depends on gamma_i being a fixed trait, not a fluctuating state. When
+    per-agent gamma decorrelates at rate r_drift, mild drift (~0.1 per time unit) erases
+    the targeting advantage as the one-shot vaccine is wasted, and fast drift (>= 1 per
+    time unit) eradicates the epidemic outright for every strategy by time-averaging
+    gamma to its mean and restoring the homogeneous (subcritical) threshold. The policy
+    is valid exactly as long as the slow class is durable on the epidemic timescale
+    (~1/gamma_slow); this sharpens the heterogeneity dichotomy of results 28-31 -- a
+    rate the dynamics homogenize quickly is neither a threshold-shifter nor a target.
+
+33. **Under combined infectiousness and recovery heterogeneity, reservoir-targeting is
+    the robust choice:** Layering per-agent infectiousness beta_i on the recovery
+    heterogeneity, super-spreader targeting is the strongest single strategy when
+    infectiousness is uncorrelated with recovery (removing 20% of agents deletes ~60% of
+    transmission capacity -- so beta-targeting is effective for removal even though
+    beta-spread does not move the threshold). But only slow-recoverer targeting is robust:
+    in the adversarial case where super-spreaders are fast recoverers, only removing the
+    slow reservoir eradicates, because the reservoir and the transmission engine are
+    different populations. The "target gamma, not beta" guidance is a robustness statement.
+
+34. **Reservoir-targeted vaccination reverses the predator+contagion damage asymmetry:**
+    The persistence of contagion after predator removal (result 11's "worst stressor")
+    holds only while the reservoir survives. With heterogeneous recovery, vaccinating the
+    slow class at a budget matching the reservoir fraction (p_immune = f_slow) eradicates
+    the epidemic both during and after the attack and lets the flock reunite to coherence
+    near unity -- making the combined predator + contagion damage fully reversible.
+    Below that budget the epidemic persists for every strategy. The predator, contagion,
+    and vaccination threads thus unify: in this flock, lasting damage requires a surviving
+    reservoir, and the reservoir is the slow-recoverer class.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

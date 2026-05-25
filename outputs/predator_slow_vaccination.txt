@@ -1,0 +1,15 @@
+Predator + slow-recoverer vaccination -- does it reverse the F34 asymmetry?
+beta=1.50, bimodal gamma {0.5,3.5} mean 2.0, 4 seeds
+encirclement steps 1000..5000, removed 5000..10000
+
+  none    p_imm=0.00 :  f_during=0.586+/-0.009  f_post=0.572+/-0.009  Phi_post=0.139
+  random  p_imm=0.20 :  f_during=0.425+/-0.013  f_post=0.419+/-0.009  Phi_post=0.311
+  slow    p_imm=0.20 :  f_during=0.342+/-0.019  f_post=0.358+/-0.008  Phi_post=0.376
+  random  p_imm=0.30 :  f_during=0.350+/-0.009  f_post=0.334+/-0.024  Phi_post=0.417
+  slow    p_imm=0.30 :  f_during=0.225+/-0.012  f_post=0.206+/-0.025  Phi_post=0.665
+  random  p_imm=0.50 :  f_during=0.173+/-0.010  f_post=0.175+/-0.007  Phi_post=0.737
+  slow    p_imm=0.50 :  f_during=0.000+/-0.000  f_post=0.000+/-0.000  Phi_post=0.997
+
+  --> figures/predator_slow_vaccination_1.png
+
+Predator + slow-recoverer vaccination analysis complete.

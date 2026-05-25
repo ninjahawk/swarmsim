@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 63 numbered findings below are presented chronologically (in the order they were
+The 64 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -63,6 +63,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F61 Slow-recoverer vaccination works for rare reservoirs (smaller reservoir, smaller budget)
 - F62 Slow-recoverer vaccination needs a DURABLE label: gamma drift erodes the advantage and, when fast, eradicates the epidemic by self-averaging gamma to its mean
 - F63 Combined beta_i + gamma_i: slow (reservoir) targeting is ROBUST across correlations; super-spreader (engine) targeting is as good only when not anti-correlated with the reservoir. beta-targeting IS effective for removal (refines F55)
+- F64 Slow-recoverer vaccination REVERSES the F34 predator+contagion asymmetry (epidemic dies after predator removal, Phi->1.0) but only when the budget covers the full reservoir (p_imm >= f_slow); below that it reduces but does not eradicate
 
 ### Phase Transition (Diagnosis Thread)
 - F8, F12, F17 (above) -- no transition anywhere; smooth crossover
@@ -2534,6 +2535,62 @@ be decoupled. Operational guidance: when forced to choose ONE axis, target the
 reservoir (slow gamma); target super-spreaders additionally only when they are known
 not to be fast recoverers. The F55 "target gamma not beta" slogan is correct as a
 ROBUSTNESS statement, not because beta-targeting is ineffective.
+
+---
+
+## Finding 64: Slow-recoverer vaccination reverses the F34 damage asymmetry -- but only when the budget covers the full reservoir
+<img src="./figures/predator_slow_vaccination_1.png" width="640"/>
+
+**What:** F34 found the study's sharpest asymmetry: after an encirclement-driven SIS
+outbreak, predator removal lets the KINEMATIC damage reverse fast (~10 tu, F22) but the
+EPIDEMIC persists 100+ tu -- so contagion was "the worst combined stressor", with damage
+that outlasts the event. That experiment used homogeneous gamma. F54-F63 established
+that endemic persistence is set by the slow-recoverer reservoir and that vaccinating it
+(F56) is the robust policy. Pointed question: does vaccinating the slow class before the
+attack let the post-removal epidemic DIE, converting irreversible contagion damage into
+reversible damage and overturning F34?
+**Evidence:** predator_slow_vaccination.py, slow-prey predator regime (v0=0.02), three
+phases (warmup 0-10 tu / 6-predator encirclement + SIS 10-50 tu / predators removed
+50-100 tu). Bimodal gamma {0.5, 3.5}, mean 2.0 (== F34's mean), so the slow class is a
+reservoir (beta/gamma_slow = 3.0) while the mean matches F34; beta=1.5; 4 seeds.
+Vaccination at t=0 (immune never panic); strategies none/random/slow at matched p_imm.
+  strategy   p_imm   f_during   f_post    Phi_post
+  none       0.00    0.586      0.572     0.139
+  random     0.20    0.425      0.419     0.311
+  slow       0.20    0.342      0.358     0.376
+  random     0.30    0.350      0.334     0.417
+  slow       0.30    0.225      0.206     0.665
+  random     0.50    0.173      0.175     0.737
+  slow       0.50    0.000      0.000     0.997
+**Key result 1 -- the epidemic persists after predator removal for every strategy
+EXCEPT full-reservoir slow-targeting.** For none/random/slow at p_imm<=0.30, f_post is
+within noise of f_during: removing the predators does not lower the endemic level. This
+reproduces and strengthens F34 -- with heterogeneous gamma the reservoir makes the
+outbreak supercritical on its own (beta/gamma_slow=3.0), so compression is not even
+needed to sustain it, and removal cannot reverse it. The F34 asymmetry stands.
+**Key result 2 -- slow-targeting reverses the asymmetry once the budget covers the
+reservoir (p_imm >= f_slow = 0.50).** At p_imm=0.50 slow-targeting vaccinates all 175
+slow agents (the entire reservoir); the remaining fast agents have beta/gamma_fast =
+1.5/3.5 = 0.43 < 1 (subcritical), so the epidemic cannot sustain -- f_ss=0.000 during
+AND after the attack, and Phi recovers to 0.997 (full F22 reunion). Both damage channels
+are now reversible: contagion is no longer the worst stressor. Random vaccination at the
+same p_imm=0.50 leaves ~87 slow agents, the reservoir persists, and f_post=0.175 remains
+endemic with Phi only 0.737. This is the F61 "budget = reservoir fraction" law operating
+inside the combined predator+contagion regime.
+**Key result 3 -- below the reservoir budget, slow-targeting still helps on both axes.**
+At every p_imm slow beats random in endemic level (0.358 vs 0.419 at 0.20; 0.206 vs
+0.334 at 0.30) AND in kinematic recovery (Phi_post 0.665 vs 0.417 at 0.30), because
+fewer panicked agents means less alignment disruption. So slow-targeting monotonically
+improves the combined-stressor outcome even when it cannot eradicate.
+**Implication:** Resolves the F34 "contagion always wins" conclusion. Contagion is the
+worst stressor only while the reservoir survives; reservoir-targeted vaccination at a
+budget matching the reservoir fraction makes the combined predator+contagion damage
+FULLY reversible (epidemic eradicated, flock reunites to Phi~1.0). The kinematic
+stressor was always reversible (F22); F64 shows the epidemic stressor becomes reversible
+too, conditional on covering the slow class. This unifies the predator thread (F22
+reversibility), the contagion thread (F34 persistence), and the vaccination thread
+(F56/F61 reservoir-targeting) into one statement: in the flock, lasting damage requires
+a surviving reservoir, and the reservoir is the slow-recoverer class.
 
 ---
 
