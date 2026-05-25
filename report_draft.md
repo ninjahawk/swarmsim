@@ -2534,6 +2534,50 @@ its key signal is a stationary per-agent invariant or a fast-changing global sta
 
 ---
 
+### 4.52 Collective Escape Intelligence Counters Predictive Encirclement Above a Threshold -- and the Predator's Own Forward-Massing Creates the Prey's Opening (Finding 70)
+
+Sections 4.48-4.51 gave the predator a global signal (v_mean) and showed predictive
+placement deepens disruption. The symmetric, arms-race question is whether the prey can
+use the dual global signal -- the predator centroid -- to flee collectively. Under
+symmetric F14 encirclement the predator centroid coincides with the flock CoM, so "flee
+the centroid" has no gradient; but under predictive encirclement the predators mass ahead
+of the flock, displacing the centroid in the heading direction and defining a backward
+escape. Each prey adds a force w_escape times the unit vector from the predator centroid
+toward the CoM -- the prey-side dual of v_mean, a global signal shared by the whole flock.
+
+![figures/collective_escape_1.png](figures/collective_escape_1.png)
+
+The result is non-monotonic, with a threshold at the alignment strength alpha = 1.0. At
+w_escape >= 2 the order parameter returns to 1.000 with near-zero fluctuation: the flock
+flees the predator mass as a coherent unit and outruns the trap, and because every prey
+is pushed the same way the unified escape direction reinforces alignment. Committed prey
+global intelligence decisively beats predator global intelligence. But at w_escape = 0.25
+the order parameter drops to 0.275, below the no-escape value of 0.530 -- an escape force
+too weak to move the flock instead competes with the alignment force, tearing the flock
+between aligning with neighbors and weakly fleeing the centroid, fragmenting it more than
+the predators alone. A little escape intelligence is worse than none; the benefit
+threshold is w_escape comparable to alpha.
+
+The deeper observation is that the escape counter works specifically because predictive
+encirclement masses predators ahead of the flock, which is the very feature that made
+predictive placement effective in Section 4.48. The predator's forward projection is
+self-defeating against committed escape-intelligent prey: it hands the flock a clean
+directional signal that symmetric encirclement never provides. The arms race is therefore
+not a simple symmetric contest but has a rock-paper-scissors structure -- fixed
+encirclement gives no escape signal but is only weakly disruptive, predictive encirclement
+is strongly disruptive but legible to escape intelligence, and committed escape
+intelligence neutralizes the predictive predator.
+
+The non-monotonicity is the transferable lesson: adding a competing global drive to an
+alignment-dominated flock is harmful unless it is strong enough to take over the heading,
+echoing the competing-force results of Sections 4.12 and the segregation experiments,
+where competing drives in the flock resolve by domination rather than blending. This
+closes the predator-prey arms-race arc (Sections 4.48-4.52). The natural next questions
+are partial or local escape sensing and explicit co-adaptation dynamics, which are beyond
+the present scope.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -2789,7 +2833,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced thirty-nine main results (selecting the most general across 69 findings):
+This study produced forty main results (selecting the most general across 70 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -3197,6 +3241,23 @@ This study produced thirty-nine main results (selecting the most general across 
     intelligent disruption strategy depends on whether its key signal is a stationary
     per-agent invariant or a fast-changing global statistic. Closes the predator-learning
     thread.
+
+40. **Collective escape intelligence counters predictive encirclement above a threshold,
+    and the predator's own intelligence creates the prey's opening:** Giving the prey the
+    dual global signal -- flee the predator centroid with weight w_escape -- restores the
+    order parameter to 1.000 at w_escape >= 2 (twice the alignment strength), because a
+    unified escape direction reinforces alignment and the flock outruns the trap. But the
+    response is non-monotonic: at w_escape = 0.25 the order parameter drops to 0.275,
+    below the no-escape value, because a weak escape force competes with alignment and
+    fragments the flock without achieving escape. The benefit threshold is w_escape
+    comparable to the alignment strength. The counter works only because predictive
+    encirclement masses predators ahead of the flock, displacing their centroid from the
+    CoM and defining the escape direction -- symmetric encirclement provides no such
+    signal. The predator's forward projection is thus self-defeating against committed
+    escape-intelligent prey, and the arms race has a rock-paper-scissors structure rather
+    than a simple winner. The non-monotonicity echoes results 16 and 19: competing global
+    drives in an alignment-dominated flock resolve by domination, not blending. Closes the
+    predator-prey arms-race arc.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

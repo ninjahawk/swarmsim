@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 69 numbered findings below are presented chronologically (in the order they were
+The 70 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -93,6 +93,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F67 Predictive (F66) and adaptive R_enc (F35) do NOT compose. Combined predictive-adaptive Phi=0.535, within noise of predictive-fixed (0.530). Predictive placement is the dominant lever; angular spread becomes secondary once the heading is blocked
 - F68 Predictive encirclement (F66) degrades GRACEFULLY but GRADED with noisy v_mean (sigma_obs=0,0.03,0.06,0.12,0.24,0.48 -> Phi=0.530,0.629,0.670,0.709,0.770,0.804). Less robust than F60's slow-targeting (graded from sigma=0 vs F60's plateau). Global summary statistics are single-shot and noise-sensitive; per-agent invariants benefit from N-sample averaging
 - F69 Predictive encirclement under DELAYED v_mean (delay 0,0.25,0.5,1,2.5,5 tu -> Phi=0.530,0.774,0.636,0.849,0.824,0.880). FAR more sensitive to delay than noise: advantage mostly gone by 0.25 tu, fully gone (>=F14) by 1 tu. Delay is a systematic bias on a forward-projected value; v_mean decorrelates sub-tu under disruption. F66-F69 thread: predator intelligence needs CURRENT low-noise global heading
+- F70 Collective escape intelligence (prey flee predator centroid, weight w) COUNTERS predictive encirclement -- but only above threshold w~alpha. w=0,0.25,0.5,1,2,5 -> Phi=0.530,0.275,0.762,0.932,1.000,1.000. NON-MONOTONIC: weak escape (w=0.25) is WORSE than none (competes with alignment); strong escape (w>=2) fully escapes (a unified flee reinforces alignment). The predator's own forward-massing creates the asymmetry prey exploit -- predictive encirclement is self-defeating vs committed escape-intelligent prey
 
 ### Section 5 Self-Tests (predictions tested and corrected, not assumed)
 - F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
@@ -2880,6 +2881,65 @@ strategy depends on whether its key signal is a stationary per-agent invariant o
 fast-changing global statistic. The predator-learning thread closes: any further gain
 requires the predator to FILTER its heading estimate over time (a Kalman-style observer),
 which is a different model.
+
+---
+
+## Finding 70: Collective escape intelligence counters predictive encirclement above a threshold -- but weak escape is WORSE than none, and the predator's own forward-massing creates the signal the prey exploit
+<img src="./figures/collective_escape_1.png" width="640"/>
+
+**What:** F66-F69 gave the predator a global signal (v_mean) and showed predictive
+placement deepens disruption. The symmetric, arms-race question is whether the PREY can
+use the dual global signal -- the predator centroid -- to flee collectively. F33 showed
+the flock cannot detect escape directions on its own. Crucially, under SYMMETRIC
+encirclement (F14) the predator centroid coincides with the flock CoM, so "flee the
+centroid" has no gradient; but under PREDICTIVE encirclement (F66) the predators mass
+AHEAD of the flock, displacing the centroid in the heading direction and making a
+backward escape well-defined. Each prey adds a force w_escape * e_hat with e_hat the unit
+vector from the predator centroid toward the flock CoM -- the prey-side dual of v_mean,
+a global signal shared by the whole flock.
+**Evidence:** collective_escape.py vs the F66 predator (predictive, lead=2 tu), N=350,
+n_pred=6, 4 seeds. Prey alignment strength alpha=1.0 sets the force scale.
+  w_escape   mean Phi    cross-seed std   intra-run std
+  0.00       0.530       0.074            0.257
+  0.25       0.275       0.048            0.190
+  0.50       0.762       0.150            0.179
+  1.00       0.932       0.028            0.134
+  2.00       1.000       0.000            0.003
+  5.00       1.000       0.000            0.000
+**Key result 1 -- strong escape intelligence fully defeats predictive encirclement.** At
+w_escape >= 2 (>= 2x the alignment strength) Phi returns to 1.000 with near-zero
+fluctuation (intra-std 0.003): the flock flees the predator mass as a coherent rigid unit
+and outruns the trap. A unified escape direction REINFORCES alignment -- every prey is
+pushed the same way -- so the fleeing flock is perfectly ordered. Prey global
+intelligence decisively beats predator global intelligence when the prey commit.
+**Key result 2 -- weak escape intelligence is WORSE than none (non-monotonic).** At
+w_escape=0.25 Phi DROPS to 0.275, below the no-escape value 0.530. An escape force too
+weak to actually move the flock instead COMPETES with the alignment force: the flock is
+torn between aligning with neighbors and weakly fleeing the centroid, and the two
+directional drives partially cancel, fragmenting the flock more than the predators alone.
+"A little escape intelligence is dangerous" -- it spoils alignment without achieving
+escape. The threshold for benefit is w_escape ~ alpha (the alignment strength): below it,
+escape loses the tug-of-war and only adds conflict; above it, escape wins and the flock
+both aligns and evades.
+**Key result 3 -- the predator's intelligence creates the prey's opening.** The escape
+counter works specifically because predictive encirclement masses predators AHEAD of the
+flock, displacing their centroid from the CoM and defining a backward escape direction.
+Against symmetric F14 encirclement the centroid coincides with the CoM and the escape
+force vanishes (no gradient). So the predator's forward projection -- the very thing that
+made F66 effective -- is self-defeating against committed escape-intelligent prey: it
+hands the flock a clean directional signal. The arms race is not symmetric in the naive
+sense; it has a rock-paper-scissors structure (fixed encirclement gives no escape signal
+but is weakly disruptive; predictive encirclement is strongly disruptive but legible to
+escape intelligence).
+**Implication:** Closes the predator-prey arms-race arc (F66-F70). When both sides have
+their global signal, committed prey escape wins, because a collective flee is constructive
+with alignment whereas predator placement must fight it. The non-monotonicity is the
+deeper lesson: adding a competing global drive to an alignment-dominated flock is harmful
+unless it is strong enough to take over the heading -- echoing F16/F24/F27 (competing
+forces in the flock resolve by domination, not blending). The natural next questions are
+partial/local escape sensing (does the result survive if prey sense only nearby
+predators?) and co-adaptation dynamics (both sides updating), which are beyond the present
+scope.
 
 ---
 

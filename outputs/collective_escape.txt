@@ -1,0 +1,16 @@
+Collective escape intelligence vs predictive encirclement (F66 lead=2 tu)
+  N=350  n_pred=6  4 seeds  prey flee the predator centroid with weight w_escape
+  Reference: w=0 is F66 (Phi=0.530); prey alignment force alpha=1.0 sets the scale
+
+  w_escape=0.00  Phi=0.530 +/- 0.074  intra-std=0.257
+  w_escape=0.25  Phi=0.275 +/- 0.048  intra-std=0.190
+  w_escape=0.50  Phi=0.762 +/- 0.150  intra-std=0.179
+  w_escape=1.00  Phi=0.932 +/- 0.028  intra-std=0.134
+  w_escape=2.00  Phi=1.000 +/- 0.000  intra-std=0.003
+  w_escape=5.00  Phi=1.000 +/- 0.000  intra-std=0.000
+
+  Highest Phi at w_escape=5.00 (Phi=1.000 vs w=0 Phi=0.530)
+
+  --> figures/collective_escape_1.png
+
+Collective escape intelligence analysis complete.
