@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 66 numbered findings below are presented chronologically (in the order they were
+The 67 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -41,6 +41,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F35 Adaptive R_enc = 0.5*Rg outperforms fixed (validates F31 dynamically)
 - F53 Prey fatigue does not make encirclement damage irreversible (align-fatigue deepens attack)
 - F66 Predictive encirclement (predators anticipate via CoM + lead*v_mean) deepens F14 to Phi=0.530 at lead~2 tu -- first predator adaptation to substantially beat F14
+- F67 Predictive (F66) + adaptive R_enc (F35) do NOT compose: predictive-adaptive Phi=0.535 ~= predictive-fixed 0.530. Placement is dominant; angular spread secondary once heading is blocked
 
 ### Contagion and Vaccination
 - F18 Static panic does not propagate -- calm agents stay coherent even at 20% panic fraction
@@ -87,6 +88,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F58 Slow-recoverer vaccination transfers to 3D unchanged (per-agent rate mechanism is dimension-independent)
 - F65 3D flocks robust to ALL point-predator strategies (naive/encircle/transect) -- the F43 "no surface to seal" generalizes to "no spatial perimeter at all" (Rg=0.43 of max ~0.5)
 - F66 PREDICTIVE encirclement (predators target CoM + lead*v_mean) deepens F14 disruption: optimum at lead~2 tu gives Phi=0.530 vs F14 baseline 0.77-0.83 and F35-adaptive 0.713. First predator-side adaptation in the study to substantially beat F14
+- F67 Predictive (F66) and adaptive R_enc (F35) do NOT compose. Combined predictive-adaptive Phi=0.535, within noise of predictive-fixed (0.530). Predictive placement is the dominant lever; angular spread becomes secondary once the heading is blocked
 
 ### Section 5 Self-Tests (predictions tested and corrected, not assumed)
 - F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
@@ -2704,6 +2706,60 @@ global heading (mean velocity is the dual of "where the gap is for the flock"). 
 intelligence is informationally easier than prey escape intelligence in this model,
 because v_mean is a global summary statistic that is well-defined for the flock even
 when the flock cannot use it itself.
+
+---
+
+## Finding 67: Predictive (F66) and adaptive R_enc (F35) do NOT compose -- predictive placement is the dominant lever and angular spread becomes secondary once the heading is blocked
+<img src="./figures/predictive_adaptive_encirclement_1.png" width="640"/>
+
+**What:** F66 closed by noting that adapting predator POSITION (predictive lead) and
+adapting predator RADIUS (adaptive R_enc = 0.5*live_Rg, F35) are independent geometric
+levers and predicted they would compose multiplicatively. The natural one-step test is
+the four-condition matrix at matched n_pred=6: fixed-fixed (F14 reproduction), fixed-
+adaptive (F35 reproduction), predictive-fixed (F66 reproduction, lead=2 tu), and the new
+predictive-adaptive combined.
+**Evidence:** predictive_adaptive_encirclement.py, slow-prey regime, N=350, n_pred=6,
+4 seeds, 1000-step warmup then 4000 attack steps, Phi averaged over the attack phase
+(first 500 transient steps dropped). Adaptive uses R_enc = 0.5*Rg (F35 universal
+optimum); predictive uses lead = 2 tu (F66 optimum).
+  condition              mean Phi   cross-seed std   intra-run std
+  fixed-fixed            0.825      0.127            0.159
+  fixed-adaptive         0.866      0.055            0.123
+  predictive-fixed       0.530      0.074            0.257
+  predictive-adaptive    0.535      0.059            0.228
+**Key result 1 -- the two adaptations DO NOT COMPOSE.** Predictive-adaptive (0.535) is
+within seed noise of predictive-fixed (0.530); the combined predator is no more
+disruptive than the predictive-only predator. The F66 prediction that the two levers
+would compose multiplicatively is falsified.
+**Key result 2 -- placement dominates radius once the heading is blocked.** Under
+encirclement the compressed flock has Rg ~ 0.05-0.10, so adaptive R_enc = 0.5*Rg gives
+a ring radius of only ~0.025-0.05, while the predictive lead distance is 0.24 (= 2 tu *
+v_mean 0.12). Six predators at a 0.03 ring radius placed 0.24 ahead of CoM cluster into
+what is geometrically a near-point predator in the heading direction -- they are no
+longer surrounding anything. Yet the combined Phi (0.535) is statistically the same as
+the proper predictive ring at R_enc = 0.15 (0.530). The implication is that once the
+flock's heading direction is blocked by predators at the right distance, the angular
+spread of the predator configuration does not matter much: a single dense block in front
+is as effective as a six-fold spread around the lead point. Encirclement's geometric
+identity dissolves under predictive placement -- it becomes equivalent to a one-sided
+interception.
+**Key result 3 -- the F35 single-lever advantage is fragile in this harness.** Fixed-
+adaptive (0.866) is no better than fixed-fixed (0.825) here, the opposite of F35's
+reported 0.778 -> 0.713 improvement. The cross-seed std (0.055-0.127) is comparable to
+the mean difference, so the F35 effect may be within the noise of this harness's 4-seed
+estimate; F35 used a different aggregation metric (frac_above_0.85, which dropped 0.56
+to 0.37). I do not claim F35 is wrong, but note that the adaptive-radius single-lever
+effect is small or noise-level on the mean-Phi metric used here, while the predictive
+single-lever effect (0.825 -> 0.530) is large and consistent across seeds.
+**Implication:** Refines F66's "two independent levers" interpretation. Placement (where
+the ring is) is the dominant geometric degree of freedom for predator-side adaptation;
+radius (how big the ring is) is at best secondary and may be redundant once placement
+is anticipatory. Closes the immediate predator-learning thread: the predator's
+informational advantage (access to global v_mean) buys ~0.3 in Phi reduction; further
+geometric tuning beyond that yields diminishing returns. The next questions are
+predator-side INFORMATIONAL: e.g., what if predators have noisy v_mean estimates, or
+delayed updates, or only see a subset of the flock? These are the F60-analog stress
+tests for the F66 mechanism.
 
 ---
 

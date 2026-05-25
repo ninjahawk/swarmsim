@@ -1,0 +1,16 @@
+Predictive + adaptive encirclement -- do the two predator adaptations compose?
+  N=350  n_pred=6  4 seeds  lead_predictive=2.0 tu  R_enc/Rg=0.50 (adaptive)
+
+  fixed-fixed             Phi=0.825 +/- 0.127  intra-std=0.159
+  fixed-adaptive          Phi=0.866 +/- 0.055  intra-std=0.123
+  predictive-fixed        Phi=0.530 +/- 0.074  intra-std=0.257
+  predictive-adaptive     Phi=0.535 +/- 0.059  intra-std=0.228
+
+  Best: predictive-fixed  (Phi=0.530)
+  Combined vs F14 fixed-fixed:        +0.290
+  Combined vs F35 fixed-adaptive:     +0.331
+  Combined vs F66 predictive-fixed:   -0.004
+
+  --> figures/predictive_adaptive_encirclement_1.png
+
+Predictive + adaptive encirclement analysis complete.

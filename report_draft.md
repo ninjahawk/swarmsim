@@ -2396,6 +2396,51 @@ intelligence is informationally easier than prey escape intelligence in this mod
 
 ---
 
+### 4.49 Predictive Placement and Adaptive Radius Do Not Compose: Placement Is the Dominant Predator-Side Lever (Finding 67)
+
+Section 4.48 closed by predicting that the two predator-side adaptations -- predictive
+position (Section 4.48) and adaptive radius (Section 4.17, Finding 35) -- are independent
+geometric degrees of freedom and should compose multiplicatively. The natural one-step
+test is the four-condition matrix at n_pred = 6 and matched seeds: fixed-fixed
+(F14 reproduction), fixed-adaptive (F35 reproduction), predictive-fixed (F66
+reproduction at lead_time = 2 tu), and the new predictive-adaptive combined predator.
+
+![figures/predictive_adaptive_encirclement_1.png](figures/predictive_adaptive_encirclement_1.png)
+
+The composition prediction is falsified. Predictive-adaptive gives Phi = 0.535,
+statistically indistinguishable from predictive-fixed (0.530); the combined predator is
+no more disruptive than the predictive-only predator. The mechanism is clear in
+hindsight: under encirclement the compressed flock has Rg ~ 0.05-0.10, so adaptive
+R_enc = 0.5 * Rg gives a ring radius of only ~0.03, while the predictive lead distance
+is 0.24. Six predators at a 0.03 ring radius placed 0.24 ahead of CoM cluster into what
+is geometrically a near-point predator in the heading direction -- they no longer
+surround anything. Yet the combined Phi is statistically the same as the proper
+predictive ring at R_enc = 0.15. Once the flock's heading direction is blocked by
+predators at the right distance, the angular spread of the predator configuration does
+not matter much: a single dense block in front is as effective as a six-fold spread
+around the lead point. The encirclement geometry dissolves under predictive placement
+into a one-sided interception that works equally well.
+
+A side observation: in this harness fixed-adaptive (Phi = 0.866) is not better than
+fixed-fixed (0.825), the opposite of Finding 35's reported 0.778 -> 0.713 improvement.
+The cross-seed std (0.055-0.127) is comparable to the mean difference, so the F35
+effect appears to be within the noise of this 4-seed mean-Phi estimate. Finding 35
+reported its improvement primarily as frac_above_0.85 (0.56 -> 0.37), a different
+aggregation. I do not claim Finding 35 is wrong, but note that the radius-only lever is
+small or noise-level on mean Phi in this harness, while the predictive position lever
+(0.825 -> 0.530) is large and consistent across seeds.
+
+The result refines Section 4.48's "two independent levers" reading. Placement is the
+dominant predator-side adaptation; radius tuning is at best secondary and may be
+redundant once placement is anticipatory. The immediate predator-learning thread closes:
+the predator's informational advantage (access to global v_mean) buys roughly 0.3 in
+Phi reduction; further geometric tuning beyond that yields diminishing returns. The
+remaining open questions are predator-side INFORMATIONAL rather than geometric: what
+happens with noisy v_mean estimates, delayed updates, or partial flock visibility --
+the F60 analog stress tests for the F66 mechanism.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -2651,7 +2696,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced thirty-six main results (selecting the most general across 66 findings):
+This study produced thirty-seven main results (selecting the most general across 67 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -3013,6 +3058,23 @@ This study produced thirty-six main results (selecting the most general across 6
     informationally easier than prey escape intelligence in this model. Adapting
     POSITION (this result) is independent of adapting RADIUS (Finding 35); the two
     levers could be combined.
+
+37. **The two predator-side adaptations do not compose: placement dominates radius:**
+    The natural follow-up to results 35 and 36 -- "predictive AND adaptive" predators
+    that lead by v_mean AND scale R_enc with live Rg -- gives Phi = 0.535, statistically
+    indistinguishable from predictive-fixed alone (0.530). The composition prediction is
+    falsified. Under encirclement the compressed flock has Rg ~ 0.05-0.10, so adaptive
+    R_enc = 0.5 * Rg shrinks the ring to ~0.03 while the predictive lead distance is
+    0.24; six predators at that radius placed 0.24 ahead of CoM degenerate into a
+    near-point predator in the heading direction, yet are as disruptive as a proper
+    predictive ring at R_enc = 0.15. Once the flock's heading is blocked by predators
+    at the right distance, the angular spread of the configuration becomes secondary;
+    a dense block in front is as effective as a spread ring around the lead point.
+    Placement is the dominant predator-side lever, radius tuning is at best redundant
+    once placement is anticipatory, and the encirclement geometry's identity dissolves
+    under predictive placement into one-sided interception. The remaining open questions
+    are predator-side informational (noisy v_mean, delayed updates, partial visibility)
+    rather than geometric.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
