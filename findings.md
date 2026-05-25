@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 68 numbered findings below are presented chronologically (in the order they were
+The 69 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -43,6 +43,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F66 Predictive encirclement (predators anticipate via CoM + lead*v_mean) deepens F14 to Phi=0.530 at lead~2 tu -- first predator adaptation to substantially beat F14
 - F67 Predictive (F66) + adaptive R_enc (F35) do NOT compose: predictive-adaptive Phi=0.535 ~= predictive-fixed 0.530. Placement is dominant; angular spread secondary once heading is blocked
 - F68 Predictive encirclement degrades gracefully but GRADED under noisy v_mean estimates. Less noise-tolerant than F60's slow-targeting -- a global summary statistic (one number per step) has no N-sample averaging
+- F69 Predictive encirclement is FAR more sensitive to DELAY than to noise: a 0.25 tu lag erases most of the advantage, by 1 tu it is gone (Phi>=F14). Delay = systematic (biased) error on a value used for forward projection; noise = zero-mean. v_mean decorrelates on sub-tu timescales under disruption
 
 ### Contagion and Vaccination
 - F18 Static panic does not propagate -- calm agents stay coherent even at 20% panic fraction
@@ -91,6 +92,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F66 PREDICTIVE encirclement (predators target CoM + lead*v_mean) deepens F14 disruption: optimum at lead~2 tu gives Phi=0.530 vs F14 baseline 0.77-0.83 and F35-adaptive 0.713. First predator-side adaptation in the study to substantially beat F14
 - F67 Predictive (F66) and adaptive R_enc (F35) do NOT compose. Combined predictive-adaptive Phi=0.535, within noise of predictive-fixed (0.530). Predictive placement is the dominant lever; angular spread becomes secondary once the heading is blocked
 - F68 Predictive encirclement (F66) degrades GRACEFULLY but GRADED with noisy v_mean (sigma_obs=0,0.03,0.06,0.12,0.24,0.48 -> Phi=0.530,0.629,0.670,0.709,0.770,0.804). Less robust than F60's slow-targeting (graded from sigma=0 vs F60's plateau). Global summary statistics are single-shot and noise-sensitive; per-agent invariants benefit from N-sample averaging
+- F69 Predictive encirclement under DELAYED v_mean (delay 0,0.25,0.5,1,2.5,5 tu -> Phi=0.530,0.774,0.636,0.849,0.824,0.880). FAR more sensitive to delay than noise: advantage mostly gone by 0.25 tu, fully gone (>=F14) by 1 tu. Delay is a systematic bias on a forward-projected value; v_mean decorrelates sub-tu under disruption. F66-F69 thread: predator intelligence needs CURRENT low-noise global heading
 
 ### Section 5 Self-Tests (predictions tested and corrected, not assumed)
 - F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
@@ -2821,6 +2823,63 @@ it (F67), and the lever degrades gracefully but graded with observation noise (F
 predator now has all the geometric and informational degrees of freedom that one global
 statistic can buy; further improvement requires temporal filtering or partial-observation
 modelling, which is beyond the scope of the present study.
+
+---
+
+## Finding 69: Predictive encirclement is FAR more sensitive to DELAY than to noise -- a stale heading is a systematic error on a forward-projected quantity
+<img src="./figures/predictive_delayed_encirclement_1.png" width="640"/>
+
+**What:** F68 tested observation NOISE on v_mean (the F60 analog). The companion
+informational stress test is DELAY: real sensing and processing introduce lag, so the
+predator may act on v_mean from some time ago rather than the current value. At the F66
+optimum lead_time = 2 tu, replace the current v_mean with v_mean from delay_steps
+timesteps in the past and sweep the delay from 0 to 5 tu (comparable to the attack
+duration).
+**Evidence:** predictive_delayed_encirclement.py, slow-prey regime, N=350, n_pred=6,
+R_enc=0.15, lead=2 tu, 4 seeds, circular buffer of past v_mean.
+  delay (tu)   mean Phi    cross-seed std   intra-run std
+  0.00         0.530       0.074            0.257
+  0.25         0.774       0.120            0.211
+  0.50         0.636       0.108            0.226
+  1.00         0.849       0.147            0.102
+  2.50         0.824       0.078            0.144
+  5.00         0.880       0.108            0.090
+**Key result 1 -- delay destroys the predictive advantage much faster than noise does.**
+A delay of just 0.25 tu (one eighth of the lead time, 25 steps) lifts Phi from 0.530 to
+0.774 -- losing about 83% of the F66 advantage over F14. By delay = 1 tu the advantage is
+entirely gone (Phi = 0.849 >= the F14 baseline of 0.825). Compare F68, where 100%
+observation noise (sigma = |v_mean|) still retained ~40% of the advantage. Delay is far
+more damaging. (The non-monotonic dip at 0.5 tu, 0.636, is within the 4-seed cross-seed
+std of ~0.11; the trend -- sharp loss of advantage by ~0.25-1 tu -- is unambiguous.)
+**Key result 2 -- delay >= 1 tu is slightly WORSE than no prediction.** At delay = 1-5 tu
+Phi (0.82-0.88) sits at or above the F14 fixed-encirclement baseline (0.825). A stale
+lead steers predators toward where the flock was heading, which under the merge/split
+dynamics is often no longer where it is heading, so the predators partially un-block the
+current escape direction relative to a symmetric fixed ring. Bad information is worse
+than no information for this mechanism.
+**Key result 3 -- the asymmetry between noise and delay is mechanistic.** Noise (F68) is
+a ZERO-MEAN error: over many timesteps the perturbations to the predator's target average
+out, and the predator still spends most of its time roughly in the right place. Delay is
+a SYSTEMATIC error: the predator consistently aims where the flock was going, and because
+v_mean is used for FORWARD projection (target = CoM + lead*v_mean), a directional bias in
+v_mean translates directly into a directional bias in placement. Under encirclement the
+flock fragments and reorients, so v_mean decorrelates on sub-tu timescales; a delay
+comparable to that correlation time (~0.25-0.5 tu) already makes the stale heading
+nearly independent of the true heading. Intra-run std also collapses at long delay
+(0.257 -> 0.090), confirming the predator no longer tracks the flock's heading and the
+F32 intermittent interception cycle disappears.
+**Implication:** Completes the predator-side informational suite (F66-F69). Predictive
+encirclement requires CURRENT, LOW-NOISE access to the flock's global heading: it
+tolerates moderate observation noise (F68) but not delay (F69), because the quantity is
+used for forward projection and a stale value is systematically rather than randomly
+wrong. This is the dual of the F60/F68 contrast: F60's per-agent rate is both
+noise-robust (N-sample averaging) and intrinsically stationary (no delay problem,
+because the rate does not change), whereas the predator's global heading is both
+noise-sensitive AND delay-sensitive. The robustness of an "intelligent" disruption
+strategy depends on whether its key signal is a stationary per-agent invariant or a
+fast-changing global statistic. The predator-learning thread closes: any further gain
+requires the predator to FILTER its heading estimate over time (a Kalman-style observer),
+which is a different model.
 
 ---
 

@@ -1,0 +1,14 @@
+Predictive encirclement under DELAYED v_mean -- companion stress test to F68
+  N=350  n_pred=6  R_enc=0.15  lead=2.0 tu  4 seeds
+  Reference: F66/F68 (delay=0) Phi=0.530; F14 baseline Phi=0.825
+
+  delay=   0 steps (0.00 tu)   Phi=0.530 +/- 0.074  intra-std=0.257
+  delay=  25 steps (0.25 tu)   Phi=0.774 +/- 0.120  intra-std=0.211
+  delay=  50 steps (0.50 tu)   Phi=0.636 +/- 0.108  intra-std=0.226
+  delay= 100 steps (1.00 tu)   Phi=0.849 +/- 0.147  intra-std=0.102
+  delay= 250 steps (2.50 tu)   Phi=0.824 +/- 0.078  intra-std=0.144
+  delay= 500 steps (5.00 tu)   Phi=0.880 +/- 0.108  intra-std=0.090
+
+  --> figures/predictive_delayed_encirclement_1.png
+
+Predictive encirclement delay-tolerance analysis complete.

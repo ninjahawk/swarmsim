@@ -2490,6 +2490,50 @@ beyond the scope of the present study.
 
 ---
 
+### 4.51 Predictive Encirclement Is Far More Sensitive to Delay Than to Noise: Stale Heading Is a Systematic Error (Finding 69)
+
+Section 4.50 tested observation noise on v_mean. The companion informational stress test
+is delay: real sensing and processing introduce lag, so the predator may act on v_mean
+from some time ago rather than the current value. At the F66 optimum lead_time = 2 tu,
+the current v_mean is replaced by v_mean from a fixed delay in the past, and the delay is
+swept from 0 to 5 time units.
+
+![figures/predictive_delayed_encirclement_1.png](figures/predictive_delayed_encirclement_1.png)
+
+Delay destroys the predictive advantage far faster than noise does. A delay of only 0.25
+time units -- one eighth of the lead time -- lifts Phi from 0.530 to 0.774, losing about
+83% of the F66 advantage over F14. By delay = 1 time unit the advantage is entirely gone
+(Phi = 0.849, at or above the F14 baseline of 0.825), and at longer delays Phi sits at
+0.82-0.88, slightly worse than no prediction at all: a stale lead steers predators toward
+where the flock was heading, which under the merge/split dynamics is often no longer
+where it is heading, so the predators partially un-block the current escape direction
+relative to a symmetric fixed ring. (The non-monotonic dip at 0.5 tu is within the
+four-seed cross-seed standard deviation of about 0.11; the trend is unambiguous.)
+
+The contrast with noise is mechanistic. Observation noise (Section 4.50) is a zero-mean
+error: over many timesteps the perturbations average out and the predator still spends
+most of its time roughly in the right place. Delay is a systematic error: the predator
+consistently aims where the flock was going, and because v_mean enters the target as a
+forward projection (target = CoM + lead * v_mean), a directional bias in v_mean
+translates directly into a directional bias in placement. Under encirclement the flock
+fragments and reorients, so v_mean decorrelates on sub-time-unit timescales, and a delay
+comparable to that correlation time already makes the stale heading nearly independent of
+the true heading. Intra-run Phi variability collapses at long delay (0.257 at delay = 0
+to 0.090 at delay = 5), confirming that the predator no longer tracks the heading and the
+F32 intermittent interception cycle disappears.
+
+This completes the predator-side informational suite. Predictive encirclement requires
+current, low-noise access to the flock's global heading: it tolerates moderate
+observation noise but not delay, because the quantity is used for forward projection and
+a stale value is systematically rather than randomly wrong. This is the dual of the
+Finding 60 / Finding 68 contrast: the per-agent recovery rate is both noise-robust (via
+N-sample averaging) and intrinsically free of any delay problem (the rate does not
+change), whereas the predator's global heading is both noise-sensitive and
+delay-sensitive. The robustness of an intelligent disruption strategy depends on whether
+its key signal is a stationary per-agent invariant or a fast-changing global statistic.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -2745,7 +2789,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced thirty-eight main results (selecting the most general across 68 findings):
+This study produced thirty-nine main results (selecting the most general across 69 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -3138,8 +3182,21 @@ This study produced thirty-eight main results (selecting the most general across
     N-sample averaging (the order survives noise as long as noise is smaller than the
     separation), while predictive encirclement's signal is a single global vector per
     timestep with no averaging buffer. Per-agent intelligence is intrinsically robust to
-    observation noise; global-summary intelligence requires temporal filtering. Closes
-    the predator-learning thread.
+    observation noise; global-summary intelligence requires temporal filtering.
+
+39. **Predictive encirclement is far more sensitive to delay than to noise:** Acting on
+    a delayed v_mean (stale heading) destroys the F66 advantage much faster than noise --
+    a 0.25 time-unit lag (one eighth of the lead time) loses ~83% of the advantage, and
+    by a 1 time-unit lag the advantage is gone and slightly negative (the stale lead
+    partially un-blocks the current escape direction). The asymmetry is mechanistic:
+    noise is a zero-mean error that averages out, while delay is a systematic directional
+    bias on a quantity used for forward projection, and the global heading decorrelates
+    on sub-time-unit timescales under disruption. This is the dual of result 31 -- the
+    per-agent recovery rate is both noise-robust and delay-free (stationary), whereas the
+    predator's global heading is both noise- and delay-sensitive; the robustness of an
+    intelligent disruption strategy depends on whether its key signal is a stationary
+    per-agent invariant or a fast-changing global statistic. Closes the predator-learning
+    thread.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
