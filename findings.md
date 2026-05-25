@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 70 numbered findings below are presented chronologically (in the order they were
+The 71 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -94,6 +94,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F68 Predictive encirclement (F66) degrades GRACEFULLY but GRADED with noisy v_mean (sigma_obs=0,0.03,0.06,0.12,0.24,0.48 -> Phi=0.530,0.629,0.670,0.709,0.770,0.804). Less robust than F60's slow-targeting (graded from sigma=0 vs F60's plateau). Global summary statistics are single-shot and noise-sensitive; per-agent invariants benefit from N-sample averaging
 - F69 Predictive encirclement under DELAYED v_mean (delay 0,0.25,0.5,1,2.5,5 tu -> Phi=0.530,0.774,0.636,0.849,0.824,0.880). FAR more sensitive to delay than noise: advantage mostly gone by 0.25 tu, fully gone (>=F14) by 1 tu. Delay is a systematic bias on a forward-projected value; v_mean decorrelates sub-tu under disruption. F66-F69 thread: predator intelligence needs CURRENT low-noise global heading
 - F70 Collective escape intelligence (prey flee predator centroid, weight w) COUNTERS predictive encirclement -- but only above threshold w~alpha. w=0,0.25,0.5,1,2,5 -> Phi=0.530,0.275,0.762,0.932,1.000,1.000. NON-MONOTONIC: weak escape (w=0.25) is WORSE than none (competes with alignment); strong escape (w>=2) fully escapes (a unified flee reinforces alignment). The predator's own forward-massing creates the asymmetry prey exploit -- predictive encirclement is self-defeating vs committed escape-intelligent prey
+- F71 LOCAL escape sensing (per-prey flee in-range predators) only PARTIALLY counters predictive encirclement: Phi peaks at 0.829 at r_sense~0.20 (vs F70 global 1.000), never full escape. Non-monotonic; too-global local sensing CANCELS (surrounded, F33 echo). F70's full escape requires a globally SHARED escape vector (aligns with flocking); per-prey local vectors don't align. Honest caveat on F70
 
 ### Section 5 Self-Tests (predictions tested and corrected, not assumed)
 - F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
@@ -2940,6 +2941,63 @@ forces in the flock resolve by domination, not blending). The natural next quest
 partial/local escape sensing (does the result survive if prey sense only nearby
 predators?) and co-adaptation dynamics (both sides updating), which are beyond the present
 scope.
+
+---
+
+## Finding 71: Local escape sensing only PARTIALLY counters predictive encirclement -- the F70 full escape required a globally SHARED escape direction, not merely escape information
+<img src="./figures/local_escape_1.png" width="640"/>
+
+**What:** F70 gave every prey the global predator centroid and showed a committed
+collective flee (w_escape >= alpha) fully defeats predictive encirclement (Phi -> 1.0).
+That assumes each prey knows where all predators are. This experiment replaces the global
+signal with a realistic per-prey LOCAL rule (the prey-side analog of F19's predator
+sensing threshold): prey i flees the summed direction away from predators within a
+sensing radius r_sense, escape_i = normalize(sum over in-range k of unit(pos_i - pos_k)),
+and feels no escape force if none are in range. w_escape is fixed at 2.0 (the F70 value
+that gave full escape with global sensing); r_sense is swept from 0.05 to 1.0.
+**Evidence:** local_escape.py vs the F66 predator, N=350, n_pred=6, 4 seeds.
+  r_sense   mean Phi    cross-seed std   intra-run std
+  0.05      0.679       0.014            0.223
+  0.10      0.709       0.044            0.229
+  0.20      0.829       0.039            0.111
+  0.40      0.778       0.009            0.111
+  1.00      0.691       0.003            0.055
+**Key result 1 -- local escape never reaches full escape.** Every r_sense gives Phi in
+0.68-0.83, well above F66's 0.530 (some protection) but far below F70's 1.000 (no full
+escape). Even at r_sense=1.0 (sensing range exceeding the flock) the flock does not
+coherently outrun the trap. The difference from F70 is not the amount of information but
+its STRUCTURE: F70's escape direction is a single shared vector (CoM toward away-from-
+centroid) identical for all prey, so it ALIGNS with the flocking force and produces a
+unified flee; F71's per-prey direction depends on each prey's own position relative to
+the predators, so different prey flee different ways, the escape forces do not align
+across the flock, and they compete with the alignment force instead of reinforcing it.
+A globally shared escape vector is constructive with flocking; a locally computed one is
+not.
+**Key result 2 -- non-monotonic with an optimal sensing radius ~0.20.** Phi peaks at
+r_sense=0.20 (0.829, about the F14 baseline) and falls off on both sides. Too local
+(0.05-0.10): prey react only to nearly-touching predators, little better than plain
+repulsion. Optimal (0.20 ~ R_enc+flock scale): prey sense the encircling ring and push
+outward with enough coherence to reach baseline. Too global (0.40-1.0): each prey senses
+predators on ALL sides of the (near-symmetric) ring, the unit vectors away from them
+roughly cancel, and the escape force shrinks -- the F33 "surrounded, no net escape
+direction" problem returns at the individual level. So extending local sensing range is
+counterproductive past the ring scale.
+**Key result 3 -- honest caveat on F70.** The dramatic F70 full-escape result is partly
+an artifact of giving the flock a single globally-shared escape vector. With realistic
+local sensing the counter is real but modest: it lifts Phi from 0.53 to at best ~0.83,
+restoring the flock to roughly the disruption level of plain (non-predictive) F14
+encirclement, not to full coherence. Predictive encirclement remains effective against
+locally-sensing prey.
+**Implication:** Sharpens the F70 lesson. What defeats predictive encirclement is not
+escape information per se but a COMMON escape direction that the alignment force can
+amplify -- the same principle that makes the flock coherent in the first place (a shared
+heading) is what makes collective escape work. Local sensing cannot manufacture a common
+direction under symmetric surrounding because each prey's local view points a different
+way. This unifies F70/F71 with F16 (alignment homogenizes a shared quantity) and F33 (no
+global escape-route detection from local information): the flock can act collectively
+only on signals that are already global/shared, and a locally-sensed predator field is
+not one of them. Closes the escape-sensing question: the F70 counter requires
+flock-level coordination of the escape direction, which local perception does not provide.
 
 ---
 

@@ -166,7 +166,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-70 findings documented — full evidence and figures: [`findings.md`](findings.md)
+71 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
@@ -215,6 +215,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 | 68 | **Predictive encirclement is *less* noise-tolerant than slow-targeting**: noisy v̄ estimates degrade Φ monotonically and gracefully — but *graded from σ=0*, no plateau (0.530→0.629→0.709→0.804 as σ_obs goes 0→25%→100%→400% of \|v̄\|). Unlike F60's slow-targeting, which is identical to perfect knowledge up to σ ≈ half the signal separation. Statistical reason: per-agent rankings are buoyed by N-sample averaging; global summary statistics (one vector per step) have no averaging buffer |
 | 69 | **Predictive encirclement is *far* more sensitive to delay than noise**: acting on a *stale* v̄ destroys the advantage fast — a 0.25 tu lag loses ~83%, by 1 tu it's gone (Φ≥F14). Delay is a *systematic* directional bias on a forward-projected quantity (vs noise's zero-mean error), and v̄ decorrelates sub-tu under disruption. Dual of F60: a per-agent invariant is both noise-robust *and* delay-free; a global heading is both noise- *and* delay-sensitive. Closes the predator-learning thread (F66–F69) |
 | 70 | **The arms-race step: collective escape intelligence beats predictive encirclement — if committed**. Giving prey the dual global signal (flee the predator centroid, weight w) is *non-monotonic*: weak escape (w=0.25) is *worse* than none (Φ=0.275, competes with alignment), but strong escape (w≥2) fully restores Φ=1.000 — a unified flee reinforces alignment and outruns the trap. Threshold ≈ alignment strength. Elegantly, the counter works *only because* predictive predators mass ahead (defining the escape direction) — **the predator's own intelligence creates the prey's opening; predictive encirclement is self-defeating vs committed escape-intelligent prey** |
+| 71 | **But the F70 escape needs a globally *shared* direction, not just escape info**: with realistic *local* per-prey sensing (flee predators within r_sense), escape only partially works — Φ peaks at ~0.83 near the ring scale, never the full 1.000, even at global range. Per-prey escape vectors point different ways and *compete* with alignment instead of reinforcing it; too-large r_sense sees the symmetric ring and cancels (F33 echo). Honest caveat on F70: full escape is partly an artifact of a shared signal; the flock acts collectively only on already-shared signals |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
@@ -235,7 +236,7 @@ Experiments live in four theme subfolders. Each script is self-contained, has an
 
 | Folder | Theme | Representative scripts |
 |--------|-------|------------------------|
-| `predator/` | predator strategies, encirclement, fragmentation, reunion, sensing, adaptive radius, prey fatigue, predictive encirclement, collective escape (F5–F16, F19, F21–F22, F28, F31–F35, F53, F66–F70) | `encirclement_scaling.py`, `adaptive_encirclement.py`, `fragmentation.py`, `long_encirclement.py`, `fatigue.py` |
+| `predator/` | predator strategies, encirclement, fragmentation, reunion, sensing, adaptive radius, prey fatigue, predictive encirclement, collective/local escape (F5–F16, F19, F21–F22, F28, F31–F35, F53, F66–F71) | `encirclement_scaling.py`, `adaptive_encirclement.py`, `fragmentation.py`, `long_encirclement.py`, `fatigue.py` |
 | `contagion/` | panic, SI/SIS contagion, vaccination, segregation, mixing, heterogeneous recovery, slow-recoverer targeting (F18–F37, F47–F48, F52, F54–F64) | `contagion_sis.py`, `targeted_immunity.py`, `spatial_vaccination.py`, `recovery_heterogeneity.py`, `slow_recoverer_vaccination.py` |
 | `phase/` | finite-size scaling, hard repulsion, Langevin, hexatic order parameter (F2, F8, F12, F17, F38–F40, F50) | `phase_transition.py`, `langevin_repulsion.py`, `langevin_hexatic.py`, `langevin_hexatic_hard.py` |
 | `3d/` | three-dimensional flocking, predators, vaccination, segregation, slow-recoverer targeting, transect-predator robustness (F41–F46, F49, F51, F58, F65) | `flocking3d.py`, `flocking3d_predator.py`, `flocking3d_vaccination.py`, `flocking3d_slow_vaccination.py` |
@@ -281,6 +282,7 @@ python predator/predictive_adaptive_encirclement.py
 python predator/predictive_noisy_encirclement.py
 python predator/predictive_delayed_encirclement.py
 python predator/collective_escape.py
+python predator/local_escape.py
 
 # Contagion, vaccination, mixing
 python contagion/contagion_sis.py

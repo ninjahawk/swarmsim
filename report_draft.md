@@ -2578,6 +2578,50 @@ the present scope.
 
 ---
 
+### 4.53 Local Escape Sensing Only Partially Counters Predictive Encirclement: The F70 Full Escape Required a Globally Shared Direction (Finding 71)
+
+Section 4.52 gave every prey the global predator centroid. The natural robustness check
+is the prey-side analog of the predator sensing threshold (Section 4.9): replace the
+global signal with a realistic per-prey local rule in which prey i flees the summed
+direction away from predators within a sensing radius r_sense, with no escape force if
+none are in range. The escape weight is fixed at the F70 value that produced full escape
+with global sensing (w_escape = 2), and r_sense is swept from 0.05 to 1.0.
+
+![figures/local_escape_1.png](figures/local_escape_1.png)
+
+Local escape never reaches the full escape of Section 4.52. Every sensing radius yields
+an order parameter between 0.68 and 0.83 -- above the no-escape value of 0.530 (real but
+modest protection) and far below the global result of 1.000. Even at r_sense = 1.0,
+exceeding the flock's spatial extent, the flock does not coherently outrun the trap. The
+difference from F70 is not the amount of information but its structure. F70's escape
+direction is a single shared vector identical for all prey, so it aligns with the
+flocking force and produces a unified flee; the local rule gives each prey its own
+direction based on its position relative to the predators, so different prey flee
+different ways, the escape forces fail to align across the flock, and they compete with
+alignment rather than reinforcing it. A globally shared escape vector is constructive
+with flocking; a locally computed one is not.
+
+The dependence on r_sense is non-monotonic, peaking at r_sense = 0.20 (order parameter
+0.829, about the F14 baseline). Too local a radius (0.05-0.10) makes the escape little
+more than reactive repulsion; the optimum near the ring scale lets prey sense the
+encircling predators and push outward coherently; and too global a radius (0.40-1.0)
+makes each prey sense predators on all sides of the near-symmetric ring, so the
+unit-vector sum roughly cancels and the escape force shrinks -- the "surrounded, no net
+escape direction" problem of Section 4.15 reappearing at the individual level. Extending
+local sensing past the ring scale is therefore counterproductive.
+
+The result is an honest caveat on Section 4.52: the dramatic full-escape there is partly
+an artifact of granting the flock a single globally shared escape vector. With realistic
+local sensing the counter is real but modest, restoring the flock only to roughly the
+disruption level of non-predictive encirclement, not to full coherence. The deeper lesson
+unifies the escape results with Sections 4.10 and 4.15: the flock can act collectively
+only on signals that are already global or shared -- the same shared-heading principle
+that makes flocking coherent is what makes collective escape work -- and a locally sensed
+predator field is not such a signal. The escape direction must be coordinated at the
+flock level, which local perception under symmetric surrounding does not provide.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -2833,7 +2877,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced forty main results (selecting the most general across 70 findings):
+This study produced forty-one main results (selecting the most general across 71 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -3258,6 +3302,22 @@ This study produced forty main results (selecting the most general across 70 fin
     than a simple winner. The non-monotonicity echoes results 16 and 19: competing global
     drives in an alignment-dominated flock resolve by domination, not blending. Closes the
     predator-prey arms-race arc.
+
+41. **Collective escape requires a globally shared direction, not just escape
+    information:** Replacing the global predator centroid of result 40 with realistic
+    per-agent local sensing (each prey flees predators within a radius) only partially
+    counters predictive encirclement -- the order parameter peaks at ~0.83 near a sensing
+    radius matching the ring scale and never reaches the full escape of 1.0, even at
+    global sensing range. The reason is structural: a single shared escape vector aligns
+    with the flocking force and produces a unified flee, whereas locally computed escape
+    directions point different ways for different prey, fail to align, and compete with
+    alignment. The dependence on sensing radius is non-monotonic -- too large a radius
+    makes each prey sense the surrounding ring symmetrically and the escape force cancels
+    (the result-15 "no net escape direction" problem at the individual level). This is an
+    honest caveat on result 40: full escape is partly an artifact of a globally shared
+    signal; with local perception the counter is real but modest. The flock can act
+    collectively only on signals that are already global or shared -- the same
+    shared-heading principle that makes flocking coherent.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

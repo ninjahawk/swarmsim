@@ -1,0 +1,13 @@
+Local escape sensing vs predictive encirclement (prey-side analog of F19)
+  N=350  n_pred=6  w_escape=2.0 (F70 winning value)  lead=2.0  4 seeds
+  Reference: F70 global escape (w=2) Phi=1.000; no escape (F66) Phi=0.530
+
+  r_sense=0.05  Phi=0.679 +/- 0.014  intra-std=0.223
+  r_sense=0.10  Phi=0.709 +/- 0.044  intra-std=0.229
+  r_sense=0.20  Phi=0.829 +/- 0.039  intra-std=0.111
+  r_sense=0.40  Phi=0.778 +/- 0.009  intra-std=0.111
+  r_sense=1.00  Phi=0.691 +/- 0.003  intra-std=0.055
+
+  --> figures/local_escape_1.png
+
+Local escape sensing analysis complete.
