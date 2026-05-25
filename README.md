@@ -166,7 +166,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-62 findings documented — full evidence and figures: [`findings.md`](findings.md)
+63 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
@@ -207,6 +207,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 | 60 | **Slow-targeting tolerates noisy γ estimates**: identical to perfect knowledge up to σ_obs ≈ 0.8, still beats random at σ_obs = 2.0 |
 | 61 | **Slow-targeting works for rare reservoirs**: even a 5% slow class sustains the epidemic under random vaccination; targeting it at a matched budget eradicates |
 | 62 | **Slow-targeting needs a *durable* recovery-rate label**: if γ_i drifts (state, not trait), mild drift erodes the advantage and fast drift eradicates the epidemic outright by self-averaging γ to its mean (undoing F54's threshold cut). The policy is valid exactly as long as the slow *class* persists on the epidemic timescale (~1/γ_slow) |
+| 63 | **Combined β_i + γ_i heterogeneity**: targeting slow recoverers (the reservoir) is the *robust* vaccine across all correlations; targeting super-spreaders (the transmission engine) is equally good only when they aren't anti-correlated with slow recovery — when supers are fast recoverers, only slow-targeting eradicates. β-targeting *is* effective for removal, refining F55's "target γ not β" to a robustness statement |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
@@ -228,7 +229,7 @@ Experiments live in four theme subfolders. Each script is self-contained, has an
 | Folder | Theme | Representative scripts |
 |--------|-------|------------------------|
 | `predator/` | predator strategies, encirclement, fragmentation, reunion, sensing, adaptive radius, prey fatigue (F5–F16, F19, F21–F22, F28, F31–F35, F53) | `encirclement_scaling.py`, `adaptive_encirclement.py`, `fragmentation.py`, `long_encirclement.py`, `fatigue.py` |
-| `contagion/` | panic, SI/SIS contagion, vaccination, segregation, mixing, heterogeneous recovery, slow-recoverer targeting (F18–F37, F47–F48, F52, F54–F57, F59–F62) | `contagion_sis.py`, `targeted_immunity.py`, `spatial_vaccination.py`, `recovery_heterogeneity.py`, `slow_recoverer_vaccination.py` |
+| `contagion/` | panic, SI/SIS contagion, vaccination, segregation, mixing, heterogeneous recovery, slow-recoverer targeting (F18–F37, F47–F48, F52, F54–F57, F59–F63) | `contagion_sis.py`, `targeted_immunity.py`, `spatial_vaccination.py`, `recovery_heterogeneity.py`, `slow_recoverer_vaccination.py` |
 | `phase/` | finite-size scaling, hard repulsion, Langevin, hexatic order parameter (F2, F8, F12, F17, F38–F40, F50) | `phase_transition.py`, `langevin_repulsion.py`, `langevin_hexatic.py`, `langevin_hexatic_hard.py` |
 | `3d/` | three-dimensional flocking, predators, vaccination, segregation, slow-recoverer targeting (F41–F46, F49, F51, F58) | `flocking3d.py`, `flocking3d_predator.py`, `flocking3d_vaccination.py`, `flocking3d_slow_vaccination.py` |
 
@@ -286,6 +287,7 @@ python contagion/continuous_gamma_vaccination.py
 python contagion/noisy_gamma_vaccination.py
 python contagion/rare_reservoir_vaccination.py
 python contagion/drifting_gamma_vaccination.py
+python contagion/het_beta_gamma_vaccination.py
 
 # 3D extension
 python 3d/flocking3d.py

@@ -1,0 +1,56 @@
+Combined beta_i + gamma_i heterogeneity with vaccination targeting
+  gamma {0.2,1.8} 50/50 ; beta {0.15,0.90} 20% super (mean 0.30) ; 4 seeds
+
+Exp 1: p_immune sweep (independent correlation)
+  -- random --
+     p_imm=0.00  f_ss=0.373 +/- 0.016
+     p_imm=0.10  f_ss=0.256 +/- 0.017
+     p_imm=0.20  f_ss=0.219 +/- 0.011
+     p_imm=0.30  f_ss=0.139 +/- 0.056
+     p_imm=0.40  f_ss=0.090 +/- 0.056
+     p_imm=0.50  f_ss=0.021 +/- 0.025
+  -- slow --
+     p_imm=0.00  f_ss=0.373 +/- 0.016
+     p_imm=0.10  f_ss=0.240 +/- 0.028
+     p_imm=0.20  f_ss=0.120 +/- 0.036
+     p_imm=0.30  f_ss=0.032 +/- 0.028
+     p_imm=0.40  f_ss=0.001 +/- 0.001
+     p_imm=0.50  f_ss=0.000 +/- 0.000
+  -- super --
+     p_imm=0.00  f_ss=0.373 +/- 0.016
+     p_imm=0.10  f_ss=0.159 +/- 0.070
+     p_imm=0.20  f_ss=0.025 +/- 0.031
+     p_imm=0.30  f_ss=0.003 +/- 0.005
+     p_imm=0.40  f_ss=0.001 +/- 0.001
+     p_imm=0.50  f_ss=0.000 +/- 0.000
+  -- combo --
+     p_imm=0.00  f_ss=0.373 +/- 0.016
+     p_imm=0.10  f_ss=0.206 +/- 0.067
+     p_imm=0.20  f_ss=0.009 +/- 0.012
+     p_imm=0.30  f_ss=0.005 +/- 0.009
+     p_imm=0.40  f_ss=0.000 +/- 0.000
+     p_imm=0.50  f_ss=0.001 +/- 0.001
+
+Exp 2: fixed p_immune=0.30, strategy x correlation
+  == correlation: independent ==
+     random   f_ss=0.139 +/- 0.056
+     slow     f_ss=0.032 +/- 0.028
+     super    f_ss=0.003 +/- 0.005
+     combo    f_ss=0.005 +/- 0.009
+     none     f_ss=0.373 +/- 0.016
+  == correlation: pos ==
+     random   f_ss=0.244 +/- 0.039
+     slow     f_ss=0.020 +/- 0.034
+     super    f_ss=0.000 +/- 0.000
+     combo    f_ss=0.000 +/- 0.000
+     none     f_ss=0.445 +/- 0.009
+  == correlation: neg ==
+     random   f_ss=0.062 +/- 0.042
+     slow     f_ss=0.000 +/- 0.000
+     super    f_ss=0.017 +/- 0.014
+     combo    f_ss=0.022 +/- 0.028
+     none     f_ss=0.225 +/- 0.026
+
+  --> figures/het_beta_gamma_vaccination_1.png
+
+Combined beta_i + gamma_i vaccination analysis complete.

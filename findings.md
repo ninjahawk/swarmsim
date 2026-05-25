@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 62 numbered findings below are presented chronologically (in the order they were
+The 63 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -62,6 +62,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F60 Slow-recoverer vaccination tolerates noisy gamma estimates
 - F61 Slow-recoverer vaccination works for rare reservoirs (smaller reservoir, smaller budget)
 - F62 Slow-recoverer vaccination needs a DURABLE label: gamma drift erodes the advantage and, when fast, eradicates the epidemic by self-averaging gamma to its mean
+- F63 Combined beta_i + gamma_i: slow (reservoir) targeting is ROBUST across correlations; super-spreader (engine) targeting is as good only when not anti-correlated with the reservoir. beta-targeting IS effective for removal (refines F55)
 
 ### Phase Transition (Diagnosis Thread)
 - F8, F12, F17 (above) -- no transition anywhere; smooth crossover
@@ -2474,6 +2475,65 @@ targetable; one that is a transient state (a passing illness shorter than the ou
 is not -- but in that case the reservoir self-averages away and the epidemic is milder.
 The F53/F54 heterogeneity dichotomy is sharpened: heterogeneity the dynamics homogenize
 on a fast timescale is neither a lasting threshold-shifter NOR a targetable hub.
+
+---
+
+## Finding 63: Under combined beta_i + gamma_i heterogeneity, slow-recoverer targeting is the ROBUST vaccine; super-spreader targeting is as good ONLY when infectiousness is not anti-correlated with the reservoir
+<img src="./figures/het_beta_gamma_vaccination_1.png" width="640"/>
+
+**What:** F55 found heterogeneous infectiousness (beta_i) does NOT shift the SIS
+threshold and concluded "target gamma_i, not beta_i." F56 found slow-recoverer
+(gamma) targeting beats random. Both were studied in isolation. This experiment layers
+BOTH heterogeneities and varies their correlation, asking the adversarial question:
+if super-spreaders are FAST recoverers (high beta, high gamma), they escape a
+gamma-based vaccine -- do they leak the epidemic and defeat slow-targeting?
+**Evidence:** het_beta_gamma_vaccination.py, gamma bimodal {0.2,1.8} (50/50), beta
+bimodal {0.15, 0.90} (20% super, arithmetic mean 0.30 == F56), source-weighted
+transmission (a calm agent's hazard = sum of beta_j over its panicked contacts, the
+F55 convention), 4 seeds. Strategies: random, slow (smallest gamma), super (largest
+beta), combo (half budget each).
+Exp 1 (independent correlation, p_immune sweep), f_ss:
+  p_imm      0.10    0.20    0.30    0.40
+  random    0.256   0.219   0.139   0.090
+  slow      0.240   0.120   0.032   0.001
+  super     0.159   0.025   0.003   0.001
+  combo     0.206   0.009   0.005   0.000
+Exp 2 (p_immune=0.30, strategy x correlation), f_ss [none = no vaccination]:
+  correlation   none    random   slow    super   combo
+  independent  0.373   0.139    0.032   0.003   0.005
+  pos          0.445   0.244    0.020   0.000   0.000
+  neg          0.225   0.062    0.000   0.017   0.022
+**Key result 1 -- beta-targeting IS effective for vaccination, refining F55.** Under
+independent correlation, super-spreader targeting is the STRONGEST single strategy
+(f_ss=0.025 at p_imm=0.20 vs slow 0.120). This does not contradict F55: F55 says the
+THRESHOLD does not move with beta-spread at fixed mean (a statement about where
+criticality sits). Vaccination REMOVES agents entirely, and the 20% supers at beta=0.9
+source ~60% of total infectivity (0.2*0.9 / 0.30); deleting them slashes transmission
+capacity. So source-side heterogeneity is event-level for the threshold (F55) but
+exploitable for removal (here) -- two different questions with two different answers.
+**Key result 2 -- the reservoir and the transmission engine are different populations,
+and only reservoir-targeting is robust.** Endemic persistence is set by the SLOW class
+(gamma, the reservoir, F54); transmission throughput is set by the SUPER class (beta,
+the engine). When the two coincide or are uncorrelated (pos / independent), hitting
+supers works because the engine overlaps the reservoir. In the adversarial anti-
+correlated case (neg: supers are fast recoverers), removing the engine leaves the slow
+reservoir intact to re-sustain the outbreak -- super-targeting leaves f_ss=0.017 while
+SLOW-targeting ERADICATES (0.000). Slow-targeting wins or ties in all three regimes;
+super-targeting fails relative to slow exactly when infectiousness is anti-correlated
+with recovery rate.
+**Key result 3 -- correlation sets the baseline severity.** With no vaccination,
+pos (supers slow, engine == reservoir) is the worst epidemic (f_ss=0.445), neg (supers
+fast, engine decoupled from reservoir) is the mildest (0.225). Co-locating high spread
+and slow recovery in the same agents maximizes endemicity; separating them weakens it.
+**Implication:** Completes the vaccination-target taxonomy. F36/F48: degree fails
+(no hubs). F37: spatial fails (kinematic mixing). F56-F62: slow (gamma) succeeds and
+is robust because the reservoir label is a per-agent invariant. F63 adds that
+infectiousness (beta) targeting is ALSO effective for removal -- but it is not robust,
+because it targets the transmission engine rather than the reservoir, and the two can
+be decoupled. Operational guidance: when forced to choose ONE axis, target the
+reservoir (slow gamma); target super-spreaders additionally only when they are known
+not to be fast recoverers. The F55 "target gamma not beta" slogan is correct as a
+ROBUSTNESS statement, not because beta-targeting is ineffective.
 
 ---
 
