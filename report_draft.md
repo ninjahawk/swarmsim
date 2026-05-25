@@ -2441,6 +2441,55 @@ the F60 analog stress tests for the F66 mechanism.
 
 ---
 
+### 4.50 Predictive Encirclement Degrades Gracefully but Graded Under Noisy v_mean: A Statistical Contrast with Slow-Targeting (Finding 68)
+
+Section 4.49 closed by identifying the remaining open questions as predator-side
+informational rather than geometric. The cleanest variant is the F60 analog: how robust
+is the F66 predictive mechanism to observation noise on v_mean? At the F66 optimum
+lead_time = 2 tu, the true v_mean is replaced by v_mean_hat = v_mean + N(0, sigma_obs)
+per step (independent Gaussian noise per component) and sigma_obs is swept from zero
+(perfect knowledge, F66 reproduction) to four times the magnitude of v_mean.
+
+![figures/predictive_noisy_encirclement_1.png](figures/predictive_noisy_encirclement_1.png)
+
+The degradation is monotonic, graceful, and graded -- Phi rises from 0.530 at sigma = 0
+through 0.629 at 25% noise, 0.709 at noise equal to the signal magnitude, and 0.804 in
+the high-noise limit, approaching the F14 baseline of 0.825. The advantage over F14
+decays from 0.295 at sigma = 0 to 0.221 at 25% noise (about three quarters retained),
+0.155 at 50% noise (about half), 0.116 at 100% noise (about 40%), and 0.021 at 400%
+noise (about 7%). The policy never fails outright but loses roughly a quarter of its
+advantage for each step up the noise scale.
+
+The contrast with slow-targeting (Section 4.42, Finding 60) is the deeper observation.
+Finding 60 showed that slow-recoverer vaccination is identical to perfect knowledge up
+to sigma_obs equal to about half the slow/fast separation, with a clear noise-tolerant
+plateau before graceful degradation. Predictive encirclement here degrades immediately
+from sigma = 0 with no plateau. The mechanism is statistical: Finding 60's signal is a
+PER-AGENT ranking, and noise on individual gamma estimates does not change the overall
+ordering as long as noise is smaller than the separation, because the bottom quantile of
+350 agents is stable under noise applied independently per agent. Predictive
+encirclement's signal is a SINGLE GLOBAL VECTOR per timestep -- one number per
+component, with no averaging across many independent samples within a step, so
+observation noise enters predator targeting directly. The kind of intelligence matters
+not only for its content but for its statistical footprint: per-agent invariants are
+intrinsically buoyed by N-sample averaging and tolerate substantial noise, while global
+summary statistics carry the same informational content per step but as a single sample,
+so they are noise-sensitive without an averaging buffer.
+
+Intra-run Phi variability also drops with sigma_obs at high noise (0.257 at sigma = 0,
+0.133 at sigma = 0.48). The high-noise regime smooths the F32 intermittent merge/split
+state into a steadier but milder disruption, because the noisy predictor no longer locks
+on the flock's heading and the flock is not repeatedly intercepted from the same side.
+
+The result closes the predator-learning thread. Predictive placement is the dominant
+predator-side lever, radius adaptation does not compose with it, and the lever degrades
+gracefully but graded with observation noise. The predator now has all the geometric
+and informational degrees of freedom that one global statistic can buy; further
+improvement requires temporal filtering or partial-observation modelling, which is
+beyond the scope of the present study.
+
+---
+
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
 
 Several of the strongest results in this study — the failure of spatial vaccination
@@ -2696,7 +2745,7 @@ spatial-clustering mechanism that inflates the threshold.
 
 ## 7. Conclusions
 
-This study produced thirty-seven main results (selecting the most general across 67 findings):
+This study produced thirty-eight main results (selecting the most general across 68 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -3075,6 +3124,22 @@ This study produced thirty-seven main results (selecting the most general across
     under predictive placement into one-sided interception. The remaining open questions
     are predator-side informational (noisy v_mean, delayed updates, partial visibility)
     rather than geometric.
+
+38. **Predictive encirclement is less noise-tolerant than slow-targeting; a statistical
+    contrast between per-agent and global-summary intelligence:** Replacing the true
+    v_mean with a noisy estimate v_mean_hat = v_mean + N(0, sigma_obs) degrades the F66
+    placement monotonically and gracefully -- Phi rises from 0.530 (perfect) through
+    0.709 (noise equal to signal magnitude) to 0.804 in the high-noise limit, retaining
+    a quarter of the original advantage at sigma_obs = 50% of |v_mean| and about 40% at
+    sigma_obs = 100%. Crucially, the degradation is GRADED from sigma = 0 with no
+    plateau -- unlike Finding 31's slow-targeting, which is identical to perfect
+    knowledge up to noise equal to half the slow/fast separation. The contrast is
+    statistical: slow-targeting's signal is a per-agent ranking that benefits from
+    N-sample averaging (the order survives noise as long as noise is smaller than the
+    separation), while predictive encirclement's signal is a single global vector per
+    timestep with no averaging buffer. Per-agent intelligence is intrinsically robust to
+    observation noise; global-summary intelligence requires temporal filtering. Closes
+    the predator-learning thread.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

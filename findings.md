@@ -5,7 +5,7 @@ Started 2026-05-08
 
 ## Index by Theme
 
-The 67 numbered findings below are presented chronologically (in the order they were
+The 68 numbered findings below are presented chronologically (in the order they were
 generated). The F-numbers here match the headings in the body of this file, in
 `report_draft.md`, and in `README.md`. A few findings touch more than one theme and are
 cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 under both
@@ -42,6 +42,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F53 Prey fatigue does not make encirclement damage irreversible (align-fatigue deepens attack)
 - F66 Predictive encirclement (predators anticipate via CoM + lead*v_mean) deepens F14 to Phi=0.530 at lead~2 tu -- first predator adaptation to substantially beat F14
 - F67 Predictive (F66) + adaptive R_enc (F35) do NOT compose: predictive-adaptive Phi=0.535 ~= predictive-fixed 0.530. Placement is dominant; angular spread secondary once heading is blocked
+- F68 Predictive encirclement degrades gracefully but GRADED under noisy v_mean estimates. Less noise-tolerant than F60's slow-targeting -- a global summary statistic (one number per step) has no N-sample averaging
 
 ### Contagion and Vaccination
 - F18 Static panic does not propagate -- calm agents stay coherent even at 20% panic fraction
@@ -89,6 +90,7 @@ cross-listed (e.g. F8/F12/F17 under both Baseline and Phase Transition; F52 unde
 - F65 3D flocks robust to ALL point-predator strategies (naive/encircle/transect) -- the F43 "no surface to seal" generalizes to "no spatial perimeter at all" (Rg=0.43 of max ~0.5)
 - F66 PREDICTIVE encirclement (predators target CoM + lead*v_mean) deepens F14 disruption: optimum at lead~2 tu gives Phi=0.530 vs F14 baseline 0.77-0.83 and F35-adaptive 0.713. First predator-side adaptation in the study to substantially beat F14
 - F67 Predictive (F66) and adaptive R_enc (F35) do NOT compose. Combined predictive-adaptive Phi=0.535, within noise of predictive-fixed (0.530). Predictive placement is the dominant lever; angular spread becomes secondary once the heading is blocked
+- F68 Predictive encirclement (F66) degrades GRACEFULLY but GRADED with noisy v_mean (sigma_obs=0,0.03,0.06,0.12,0.24,0.48 -> Phi=0.530,0.629,0.670,0.709,0.770,0.804). Less robust than F60's slow-targeting (graded from sigma=0 vs F60's plateau). Global summary statistics are single-shot and noise-sensitive; per-agent invariants benefit from N-sample averaging
 
 ### Section 5 Self-Tests (predictions tested and corrected, not assumed)
 - F47 Topological (k-NN) alignment does not slow mixing; the §5 prediction is falsified
@@ -2760,6 +2762,65 @@ geometric tuning beyond that yields diminishing returns. The next questions are
 predator-side INFORMATIONAL: e.g., what if predators have noisy v_mean estimates, or
 delayed updates, or only see a subset of the flock? These are the F60-analog stress
 tests for the F66 mechanism.
+
+---
+
+## Finding 68: Predictive encirclement degrades gracefully but GRADED under noisy v_mean -- less noise-tolerant than F60's slow-targeting because a global statistic has no N-sample averaging
+<img src="./figures/predictive_noisy_encirclement_1.png" width="640"/>
+
+**What:** F67 closed by flagging the next open question as predator-side INFORMATIONAL --
+the F60 analog for the F66 predictive mechanism. The cleanest variant is observation
+noise on the predator's estimate of v_mean. Real predators do not have instantaneous
+access to the flock's mean velocity; they estimate it with error. At the F66 optimum
+lead_time = 2 tu, replace the true v_mean with v_mean_hat = v_mean + N(0, sigma_obs)
+per step (independent Gaussian noise per component) and sweep sigma_obs from 0 (perfect
+knowledge, F66 reproduction) up to 4x the magnitude of v_mean.
+**Evidence:** predictive_noisy_encirclement.py, slow-prey regime, N=350, n_pred=6,
+R_enc=0.15, lead=2 tu, 4 seeds, 1000-step warmup then 4000 attack steps, Phi averaged
+over the attack phase (first 500 transient steps dropped). |v_mean| ~ v_eq = 0.12
+(F1), so sigma_obs = 0.12 means observation noise equal in magnitude to the signal.
+  sigma_obs   sigma/|v_mean|   mean Phi   cross-seed std   intra-run std
+  0.00        0%               0.530      0.074            0.257
+  0.03        25%              0.629      0.128            0.191
+  0.06        50%              0.670      0.084            0.255
+  0.12        100%             0.709      0.062            0.181
+  0.24        200%             0.770      0.071            0.181
+  0.48        400%             0.804      0.110            0.133
+**Key result 1 -- graceful but graded degradation, no cliff and no plateau.** Phi rises
+monotonically with sigma_obs from 0.530 to 0.804 (approaching the F14 baseline of
+0.825 in the high-noise limit). The advantage over F14 (0.825 - Phi) decays from 0.295
+at sigma=0 to 0.221 at sigma=0.03 (75% of original advantage retained), 0.155 at sigma
+=0.06 (52%), 0.116 at sigma=0.12 (39%), 0.055 at sigma=0.24 (19%), and 0.021 at
+sigma=0.48 (7%). The policy never fails outright but loses about a quarter of its
+advantage for each step up the noise scale.
+**Key result 2 -- predictive is LESS noise-tolerant than F60's slow-targeting.** F60
+showed that slow-recoverer vaccination is identical to perfect knowledge up to
+sigma_obs ~ half the slow/fast separation, then graceful below. Here predictive
+degrades immediately from sigma=0, with no plateau. The contrast is mechanistic: F60's
+signal is a PER-AGENT ranking. Noise on individual gamma estimates does not change the
+overall ordering as long as noise < separation, because the population N=350 has many
+agents and the bottom quantile is stable under noise applied independently per agent
+(an N-sample averaging argument). F68's signal is a SINGLE GLOBAL VECTOR per timestep.
+Each noisy estimate is one number; there is no averaging across many independent
+samples within a step, and noise enters predator targeting directly.
+**Key result 3 -- intra-run std drops with sigma_obs at high noise.** Intra-run Phi
+std falls from 0.257 at sigma=0 to 0.133 at sigma=0.48. The high-noise regime smooths
+the F32 intermittent merge/split state into a steadier (but milder) disruption, because
+the noisy predictor no longer locks on the flock's heading and instead jiggles the ring
+direction randomly -- the flock no longer gets repeatedly intercepted from the same side.
+**Implication:** Refines the synthesis on what makes "intelligent" disruption robust.
+The statistical footprint of the intelligence matters as much as its content. Per-agent
+invariants (gamma_i, F56-F61) are intrinsically buoyed by N-sample averaging and tolerate
+substantial observation noise. Global summary statistics (v_mean, F66) carry the same
+informational content per step but as one number, so they are noise-sensitive without an
+averaging buffer. To make predator intelligence robust, the predator would need to AVERAGE
+v_mean estimates over time (a Kalman-style filter), which is a different model and a
+different open question. Closes the predator-learning thread (F66-F68): predictive
+placement is the dominant predator-side lever, radius adaptation does not compose with
+it (F67), and the lever degrades gracefully but graded with observation noise (F68). The
+predator now has all the geometric and informational degrees of freedom that one global
+statistic can buy; further improvement requires temporal filtering or partial-observation
+modelling, which is beyond the scope of the present study.
 
 ---
 
