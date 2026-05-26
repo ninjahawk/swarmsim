@@ -2829,6 +2829,53 @@ only regime in which the flock decides quickly but wrongly is the one in which l
 overcome the flock's own spontaneous heading, the temporal face of the threshold that the informed
 fraction must clear to steer at all.
 
+### 4.58 Leadership Is a Signal, Not an Identity: Rotating the Informed Set Never Hurts and Faster Rotation Helps (Finding 76)
+
+Every leadership experiment so far used a fixed informed set. The contagion thread provides a sharp
+point of contrast: slow-recoverer vaccination fails once the per-agent recovery-rate label drifts
+(Section 4.44), because there the exploitable quantity is a durable per-agent identity. Leadership ought
+to be the opposite kind of signal -- the flock follows a shared direction rather than particular
+individuals -- so rotating which agents are informed, while holding the goal direction fixed, should not
+degrade steering, because the total injected directed force is unchanged regardless of who carries it.
+The test holds the informed fraction and the goal fixed but re-draws at random which agents are informed
+every tau time units. A rotation period of infinity recovers the fixed-leader case; a very short period
+smears the bias across all agents, each informed a fraction of the time, so the time-averaged force is a
+weak uniform push on everyone.
+
+![figures/rotate_leaders_1.png](figures/rotate_leaders_1.png)
+
+Rotation never hurts. At every rotation period the directional accuracy equals or exceeds the
+fixed-leader baseline, at both informed fractions tested. Steering does not depend on which individuals
+are informed at any instant, only on the presence of enough of them pushing the shared direction. This is
+the direct opposite of the drifting-label result in the contagion thread, and the contrast is mechanistic:
+contagion targeting exploits a durable per-agent invariant, so identity must persist, whereas leadership
+transmits a shared global direction through alignment, so only the direction must persist, not the
+messenger. The same decision currency -- the total pull of count times strength -- is delivered whether it
+rests on a fixed set or rotates across the whole flock.
+
+More than that, faster rotation actively improves steering and sharply reduces its variance. As the
+rotation period falls from fixed to a tenth of a time unit, accuracy rises -- from 0.86 to 0.94 at the
+lower informed fraction and from 0.97 to 0.99 at the higher -- and the cross-seed scatter collapses, by
+roughly a factor of two at the lower fraction and a factor of five at the higher. Fast rotation spreads the
+same total pull uniformly over all agents, and a weak uniform bias on everyone steers more reliably than a
+strong bias concentrated on a fixed subset: a fixed informed set can cluster or drift to the flock's edge
+and must propagate its bias through alignment, adding lag and seed-to-seed variance, whereas a smeared bias
+acts everywhere at once with no propagation bottleneck. Distributing the directed force beats concentrating
+it. Throughout, the order parameter stays between 0.997 and unity, so rotating leadership costs no coherence.
+
+The result completes the question of what makes a collective-control target exploitable, which runs through
+the whole study. Degree targeting fails because the flock has no durable hubs, a structural null; spatial
+targeting fails because motion erases coverage, a kinematic null; slow-recoverer targeting succeeds because
+the recovery rate is a durable per-agent invariant, but only as long as it stays durable. Leadership sits at
+the opposite pole: it works precisely because it relies on no persistent identity. The signal is a shared
+direction held collectively, any agent can carry it at any moment, and rotating the carriers distributes the
+same total pull more evenly and improves both accuracy and reliability. A collective control that depends on
+a persistent per-agent label is fragile to that label changing; one that depends only on a shared global
+quantity is robust to, and even helped by, turning over the individuals who supply it. The finding also
+nuances the earlier null that distributing immunization spatially does not help: distribution is irrelevant
+when removing nodes but beneficial when injecting a directional force, because a force applied everywhere
+needs no propagation while a removed node's effect is local in either case.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3205,6 +3252,21 @@ beginning to form, and the flock, caught between them, takes longest to decide p
 decision is hardest. The collective behaviours catalogued in this study -- flocking, escape, steering,
 and voting -- are thus unified not only by the alignment force that carries shared signals but by the
 bistable, threshold-governed way that force resolves competition among them.
+
+The rotation experiment (Section 4.58) settles what kind of thing a leadership signal is, and in doing so
+closes a question that has run through the entire study: what makes a collective-control target
+exploitable. The contagion thread answered it from one side -- degree targeting fails for lack of durable
+hubs, spatial targeting fails because motion erases coverage, and slow-recoverer targeting succeeds only
+because the recovery rate is a durable per-agent invariant, an advantage that itself evaporates once that
+label drifts. Leadership answers it from the other side. Rotating which agents are informed never degrades
+steering and, when fast, improves it, because the flock follows a shared direction rather than particular
+individuals; the same total directed force delivered through a constantly changing cast steers as well as
+or better than a fixed one. A control that rests on a persistent per-agent label is fragile to that label
+changing, while a control that rests on a shared global quantity is robust to -- even helped by -- turnover
+in who supplies it. The two threads therefore meet at a single axis: the durability a signal requires is the
+durability of whatever the signal is attached to, an individual's hidden state in the contagion case and a
+collectively held direction in the leadership case, and only the former can be undone by mixing the
+individuals.
 
 ---
 

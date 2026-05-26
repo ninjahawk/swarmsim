@@ -3263,6 +3263,65 @@ which is the temporal face of the F72 threshold (rho needs to clear a floor to s
 
 ---
 
+## Finding 76: Leadership is a SIGNAL, not an IDENTITY -- rotating which agents are informed never hurts steering and FASTER rotation improves it. The exact opposite of F62's durable-label requirement
+<img src="./figures/rotate_leaders_1.png" width="640"/>
+
+**What:** F72 used a FIXED informed set. F62 (contagion thread) showed slow-recoverer vaccination
+FAILS once the per-agent gamma label drifts, because there the targetable thing was a durable
+per-agent IDENTITY. Leadership should be the opposite kind of signal: the flock follows a shared
+DIRECTION, not particular individuals, so rotating which agents are informed -- while keeping the
+goal g_hat=+x fixed -- should not hurt, because the total injected directed force (rho*N*w, the F74
+"pull") is unchanged regardless of who carries it. Test: keep informed fraction rho and goal fixed,
+but every tau time units re-draw at random which rho*N agents are informed. tau=inf is F72 (fixed);
+tau->0 smears the bias across all agents (each informed a fraction rho of the time, time-averaged
+uniform force rho*w*g_hat on everyone).
+**Evidence:** collective/rotate_leaders.py, N=350, pure-flock, w_lead=1.0, 5 seeds.
+  rho     tau (tu)     accuracy            Phi
+  0.05    0.1        +0.943 +/- 0.065     1.000
+  0.05    0.5        +0.935 +/- 0.070     0.999
+  0.05    2.0        +0.894 +/- 0.108     0.998
+  0.05   10.0        +0.872 +/- 0.127     0.997
+  0.05   fixed       +0.864 +/- 0.136     0.997
+  0.10    0.1        +0.994 +/- 0.007     1.000
+  0.10    0.5        +0.991 +/- 0.010     1.000
+  0.10    2.0        +0.981 +/- 0.022     0.999
+  0.10   10.0        +0.970 +/- 0.035     0.998
+  0.10   fixed       +0.966 +/- 0.040     0.998
+**Key result 1 -- rotation never hurts: leadership is a signal, not an identity.** At every
+rotation period the accuracy equals or EXCEEDS the fixed-leader baseline. Steering does not care
+which individuals are informed at any moment, only that some rho*N of them are pushing the shared
+direction. This is the direct opposite of F62, where rotating (drifting) the per-agent recovery-rate
+label destroyed the vaccination advantage within ~0.1/tu. The distinction is sharp and mechanistic:
+contagion targeting exploits a DURABLE PER-AGENT INVARIANT (gamma_i), so identity must persist;
+leadership transmits a SHARED GLOBAL DIRECTION through alignment, so only the direction must persist,
+not the messenger. The same decision currency (F74 total pull = count x strength) is delivered
+whether it sits on a fixed set or rotates across the whole flock.
+**Key result 2 -- FASTER rotation actively IMPROVES steering and sharply reduces variance.** As tau
+falls from fixed to 0.1 tu, accuracy rises (0.864 -> 0.943 at rho=0.05; 0.966 -> 0.994 at rho=0.10)
+and the cross-seed std collapses (0.136 -> 0.065 at rho=0.05; 0.040 -> 0.007 at rho=0.10). Fast
+rotation smears the same total pull uniformly over all N agents (each informed a fraction rho of the
+time), and a weak uniform bias on everyone steers more reliably than a strong bias concentrated on a
+fixed subset. A fixed informed set can cluster or drift to the flock edge and must propagate its bias
+through alignment, which adds lag and seed-to-seed variance; a smeared bias acts everywhere at once,
+with no propagation bottleneck. Distributing the directed force beats concentrating it.
+**Key result 3 -- still cohesion-free.** Phi stays 0.997-1.000 at every tau and rho, as in F72.
+Rotating leadership does not stress the flock's coherence at all.
+**Implication.** Completes the "what is the targetable invariant" arc that runs through the whole
+study. Degree-targeting fails because the flock has no durable hubs (F36/F48, STRUCTURAL); spatial
+targeting fails because motion erases coverage (F37, KINEMATIC); slow-recoverer targeting SUCCEEDS
+because gamma_i is a durable per-agent invariant (F56) -- but only as long as it stays durable (F62).
+Leadership now sits at the opposite pole: it works precisely because it does NOT rely on any
+persistent identity. The "signal" is a shared direction held collectively, and any agent can carry it
+at any time; rotating the carriers, far from degrading it, distributes the same total pull more evenly
+and improves both accuracy and reliability. The unifying axis: a collective control that depends on a
+persistent per-agent label is fragile to that label changing (F62), while one that depends only on a
+shared global quantity (direction) is robust to -- even helped by -- turning over the individuals who
+supply it. This also nuances the F37 "distribution doesn't help" null: distribution is irrelevant when
+you are REMOVING nodes (vaccination) but beneficial when you are INJECTING a directional force, because
+a force applied everywhere needs no propagation while a removed node's effect is local either way.
+
+---
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*

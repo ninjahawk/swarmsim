@@ -1,0 +1,23 @@
+Is leadership a SIGNAL or an IDENTITY? Rotating the informed set (goal fixed at +x)
+  N=350  pure-flock  5 seeds  w_lead=1.0
+
+  Prediction: accuracy ~ independent of rotation period tau (total pull rho*N*w fixed),
+  the OPPOSITE of F62 where drifting the per-agent label destroyed the advantage.
+
+== rho=0.05 (18 informed at any instant) ==
+   tau= 0.1 tu   accuracy=+0.943 +/- 0.065  Phi=1.000
+   tau= 0.5 tu   accuracy=+0.935 +/- 0.070  Phi=0.999
+   tau= 2.0 tu   accuracy=+0.894 +/- 0.108  Phi=0.998
+   tau=10.0 tu   accuracy=+0.872 +/- 0.127  Phi=0.997
+   fixed (F72)   accuracy=+0.864 +/- 0.136  Phi=0.997
+
+== rho=0.10 (35 informed at any instant) ==
+   tau= 0.1 tu   accuracy=+0.994 +/- 0.007  Phi=1.000
+   tau= 0.5 tu   accuracy=+0.991 +/- 0.010  Phi=1.000
+   tau= 2.0 tu   accuracy=+0.981 +/- 0.022  Phi=0.999
+   tau=10.0 tu   accuracy=+0.970 +/- 0.035  Phi=0.998
+   fixed (F72)   accuracy=+0.966 +/- 0.040  Phi=0.998
+
+  --> figures/rotate_leaders_1.png
+
+Rotating-leaders analysis complete.
