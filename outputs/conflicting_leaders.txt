@@ -1,0 +1,24 @@
+Conflicting leaders: two informed subgroups pulling in different directions
+  N=350  pure-flock (v0=1.0)  6 seeds  w_lead=1.0
+
+== Exp 1: ANGLE sweep (equal subgroups, rho=0.05 each) ==
+   g1 = +x (0 deg); g2 rotated by theta. Midpoint heading = theta/2.
+   theta=  0  midpoint=  0.0  heading=  +8.6 +/- 19.1  Phi=0.996  split_frac=0.000
+   theta= 30  midpoint= 15.0  heading= +19.1 +/- 19.9  Phi=0.995  split_frac=0.139
+   theta= 60  midpoint= 30.0  heading= +33.4 +/- 20.7  Phi=0.992  split_frac=0.050
+   theta= 90  midpoint= 45.0  heading= +44.7 +/- 22.3  Phi=0.986  split_frac=0.055
+   theta=120  midpoint= 60.0  heading= +36.8 +/- 56.7  Phi=0.971  split_frac=0.052
+   theta=150  midpoint= 75.0  heading= +41.4 +/- 66.2  Phi=0.968  split_frac=0.064
+   theta=180  midpoint= 90.0  heading= +33.4 +/- 73.6  Phi=0.958  split_frac=0.161
+
+== Exp 2: SIZE-RATIO sweep (theta=180 deg, direct opposition) ==
+   subgroup 1 -> +x, subgroup 2 -> -x. Total informed fixed at 0.10.
+   rho1=0.05 rho2=0.05 (n1= 18 n2= 18)  accuracy_to_g1=+0.201 +/- 0.406  Phi=0.958  split=0.161
+   rho1=0.06 rho2=0.04 (n1= 21 n2= 14)  accuracy_to_g1=+0.423 +/- 0.368  Phi=0.960  split=0.074
+   rho1=0.07 rho2=0.03 (n1= 25 n2= 10)  accuracy_to_g1=+0.627 +/- 0.293  Phi=0.964  split=0.041
+   rho1=0.08 rho2=0.02 (n1= 28 n2=  7)  accuracy_to_g1=+0.759 +/- 0.204  Phi=0.975  split=0.020
+   rho1=0.10 rho2=0.00 (n1= 35 n2=  0)  accuracy_to_g1=+0.925 +/- 0.101  Phi=0.995  split=0.000
+
+  --> figures/conflicting_leaders_1.png
+
+Conflicting-leaders analysis complete.

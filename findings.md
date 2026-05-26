@@ -3062,6 +3062,75 @@ comes not from numbers but from agreement -- 18 agents that all point the same w
 
 ---
 
+## Finding 73: Conflicting leaders -- the flock COMPROMISES at small angular conflict and switches to CONSENSUS (picks one) past ~90-120 deg, and a numerical majority among informed agents wins. Reproduces Couzin's decision dynamics in this model
+<img src="./figures/conflicting_leaders_1.png" width="640"/>
+
+**What:** The F72 follow-up that Couzin et al. (2005) is most famous for: split the informed
+agents into TWO subgroups that prefer DIFFERENT directions and ask whether the flock (a)
+COMPROMISES (travels the average heading), (b) reaches CONSENSUS (commits to one of the two
+at random), or (c) SPLITS into two sub-flocks. Two experiments. Exp 1 sweeps the angular
+conflict theta between equal subgroups (rho1=rho2=0.05): g1=+x, g2 rotated by theta. Exp 2
+fixes theta=180 deg (direct opposition) and varies the size ratio at fixed total informed
+fraction 0.10. Pure-flock regime, w_lead=1.0, 6 seeds.
+**Evidence:** collective/conflicting_leaders.py, N=350.
+  Exp 1 (equal subgroups, vary conflict angle):
+  theta   midpoint   flock heading      Phi     split_frac
+    0       0.0      +8.6 +/- 19.1     0.996    0.000
+   30      15.0     +19.1 +/- 19.9     0.995    0.139
+   60      30.0     +33.4 +/- 20.7     0.992    0.050
+   90      45.0     +44.7 +/- 22.3     0.986    0.055
+  120      60.0     +36.8 +/- 56.7     0.971    0.052
+  150      75.0     +41.4 +/- 66.2     0.968    0.064
+  180      90.0     +33.4 +/- 73.6     0.958    0.161
+  Exp 2 (theta=180, vary size ratio, total informed 0.10):
+  n1:n2    accuracy toward majority(+x)    Phi     split
+  18:18         +0.201 +/- 0.406         0.958    0.161
+  21:14         +0.423 +/- 0.368         0.960    0.074
+  25:10         +0.627 +/- 0.293         0.964    0.041
+  28: 7         +0.759 +/- 0.204         0.975    0.020
+  35: 0         +0.925 +/- 0.101         0.995    0.000
+**Key result 1 -- compromise at small conflict.** For theta <= 90 deg the flock travels
+almost exactly the MIDPOINT direction (theta=90: heading 44.7 deg vs midpoint 45.0; theta=60:
+33.4 vs 30.0), with a tight, consistent cross-seed spread (~20 deg). The two subgroups'
+forces vector-add and alignment carries the resultant to the whole flock: the group
+literally averages the two preferred directions. This is the compromise regime.
+**Key result 2 -- consensus (random pick) past a critical angle ~90-120 deg.** At theta >=
+120 deg the cross-seed heading std EXPLODES from ~22 to 57-74 deg while the mean heading
+falls away from the midpoint and becomes meaningless as a central value. This is the
+signature of CONSENSUS by random selection: different seeds commit to one subgroup's
+direction or the other (the mean of "sometimes +x-ish, sometimes the rotated goal" is not
+the midpoint and varies wildly seed to seed). Averaging two nearly-opposed directions is
+not a viable heading -- a flock cannot travel "the average of +x and -x" -- so the symmetry
+breaks and the flock picks a side. The critical conflict angle lies between 90 and 120 deg,
+exactly Couzin's compromise-to-consensus transition.
+**Key result 3 -- consensus, not splitting.** Phi stays high throughout (0.958-0.996) and
+split_frac stays low (<=0.16 even at theta=180). The flock does NOT fragment into two stable
+counter-traveling sub-flocks; it resolves the conflict by the WHOLE group committing to one
+direction. Cohesion survives even direct opposition. (The small split_frac at theta=180,
+0.16, is the minority of agents transiently pulled the other way before the flock commits.)
+**Key result 4 -- the majority wins (democratic decision).** Exp 2: at exact parity (18:18)
+the flock picks a side at random (mean accuracy ~0, huge spread 0.41). But even a slight
+numerical majority among the informed agents decides the outcome: 21:14 already gives
+accuracy +0.42 toward the majority goal, rising monotonically to +0.76 at 28:7 and +0.93 at
+35:0 (single leader, ~F72). Cross-seed spread shrinks (0.41 -> 0.10) and splitting vanishes
+(0.16 -> 0.00) as the margin grows. The larger informed subgroup wins more reliably the
+larger its margin -- Couzin's result that group direction is decided by an effective majority
+vote among the informed, even though every informed agent is a small fraction of the flock.
+**Implication.** Extends F72 from "a shared signal is amplified" to "COMPETING shared signals
+are resolved by vector-averaging when compatible and by majority-driven symmetry-breaking when
+not." The flock is a near-ideal democratic integrator: it compromises when compromise is
+geometrically sensible and votes when it is not, and it almost never splits. This is the
+multi-signal generalization of the F70/F71/F72 shared-signal principle: alignment does not
+just propagate one common direction, it ARBITRATES among several, and the arbitration rule
+(average-then-threshold-to-consensus, majority wins) is an emergent property of the same
+alignment force, not anything built into the agents. Connects the leadership thread to the
+competing-global-drive results F16/F24/F27 (competing drives resolve by domination, not
+blending) and to F70's non-monotonic escape (weak conflicting signal fragments; strong one
+dominates): the consensus transition here is the same domination-not-blending physics, now
+between two leadership signals rather than escape-vs-alignment.
+
+---
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*

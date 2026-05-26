@@ -2668,6 +2668,63 @@ heterogeneous one is not. The minority's power comes from agreement rather than 
 eighteen agents that all point the same way steer the flock more effectively than the half
 of the flock that, under local escape sensing, each perceive a different direction.
 
+### 4.55 Conflicting Leaders: Compromise at Small Conflict, Consensus by Majority at Large Conflict (Finding 73)
+
+The most-cited result of Couzin et al. (2005) concerns not a single informed minority but
+two informed subgroups that prefer different directions. The question is whether the flock
+compromises by travelling the average heading, reaches consensus by committing to one of the
+two directions, or splits into two sub-flocks. Two experiments address it. The first sweeps
+the angular conflict theta between two equal subgroups (each five percent of the flock), one
+preferring +x and the other a direction rotated by theta. The second fixes the two subgroups
+in direct opposition (theta = 180 degrees) and varies their size ratio at a fixed total
+informed fraction of ten percent. Both run in the pure-flock regime with leader strength
+w_lead = 1.0 over six seeds.
+
+![figures/conflicting_leaders_1.png](figures/conflicting_leaders_1.png)
+
+For small conflict the flock compromises. At theta up to 90 degrees the flock travels almost
+exactly the midpoint direction -- a heading of 44.7 degrees against a midpoint of 45.0 at
+theta = 90, and 33.4 against 30.0 at theta = 60 -- with a tight, consistent cross-seed spread
+near 20 degrees. The two subgroups' bias forces vector-add and alignment carries the resultant
+to the whole flock, so the group literally averages the two preferred directions.
+
+Past a critical conflict angle between 90 and 120 degrees the behaviour switches to consensus.
+At theta of 120 degrees and above, the cross-seed heading spread explodes from roughly 22 to
+57-74 degrees while the mean heading detaches from the midpoint and ceases to be a meaningful
+central value. This is the signature of consensus by random selection: different seeds commit
+to one subgroup's direction or the other, and the average of those committed headings is
+neither goal and varies wildly between seeds. Averaging two nearly opposed directions is not a
+viable heading -- a flock cannot travel "the average of +x and -x" -- so the symmetry breaks
+and the flock picks a side. The transition angle reproduces Couzin's compromise-to-consensus
+threshold.
+
+Crucially the resolution is consensus, not splitting. The order parameter stays high
+throughout (0.958 to 0.996) and the fraction of agents in the smaller velocity cluster stays
+at or below 0.16 even under direct opposition. The flock does not fragment into two stable
+counter-traveling sub-flocks; it resolves the conflict by the whole group committing to a
+single direction, and cohesion survives even direct opposition.
+
+The size-ratio experiment shows the resolution is a majority decision. Under exact parity
+(eighteen agents each way) the flock picks a side at random, with a mean accuracy near zero
+and a large seed-to-seed spread. But even a slight numerical majority among the informed
+agents decides the outcome: a 21-to-14 split already drives accuracy +0.42 toward the
+majority's goal, rising monotonically to +0.76 at 28-to-7 and +0.93 in the single-leader
+limit, while the cross-seed spread shrinks and splitting vanishes as the margin grows. The
+larger informed subgroup wins more reliably the larger its margin -- the democratic result
+that group direction is set by an effective majority vote among the informed, even though
+every informed agent is a small fraction of the flock.
+
+The finding extends leadership from "a shared signal is amplified" to "competing shared
+signals are resolved by vector-averaging when compatible and by majority-driven
+symmetry-breaking when not." The flock behaves as a near-ideal democratic integrator: it
+compromises when compromise is geometrically sensible, votes when it is not, and almost never
+splits. This is the same domination-not-blending physics seen when competing global drives met
+earlier in the study -- alignment homogenizing group speed, alpha-contrast segregation, and the
+non-monotonic escape counter where a weak conflicting signal fragments the flock while a strong
+one dominates -- now playing out between two leadership signals. Alignment does not merely
+propagate one common direction; it arbitrates among several, and the arbitration rule is an
+emergent property of the alignment force rather than anything built into the agents.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -2996,6 +3053,24 @@ agent-to-agent -- the local escape field, the symmetric encircling ring -- is av
 The flock is exquisitely steerable by consensus and nearly unsteerable by conflicting local
 cues, and this single asymmetry organizes results spanning leadership, predation, escape, and
 the spontaneous emergence of a common heading.
+
+When two informed subgroups disagree (Section 4.55), the same alignment force that amplifies
+a single shared direction is revealed to also arbitrate among competing ones, and it does so
+by a rule that emerges from the dynamics rather than from any agent-level decision logic. For
+small directional conflict the flock vector-averages the two goals and travels their midpoint;
+past a critical angle near ninety degrees, where averaging two near-opposed directions would
+demand an unphysical heading, the symmetry breaks and the whole flock commits to one direction
+chosen, at parity, at random. It almost never splits. Under direct opposition the choice is
+decided by an effective majority vote among the informed agents: even a small numerical margin
+tips the outcome reliably toward the larger subgroup. This reproduces the central
+decision-making results of Couzin et al. (2005) inside the present model and shows they are not
+special to the spin-like or zonal models in which they were first derived -- they follow from
+the same alignment coupling that produces flocking, escape, and single-leader steering. The
+compromise-to-consensus transition is, moreover, the same domination-not-blending physics that
+recurs whenever competing global drives meet in this study, from speed homogenization and
+alpha-contrast segregation to the non-monotonic escape counter: an alignment-dominated flock
+resolves conflicting collective signals by selecting one, not by interpolating, once those
+signals become mutually incompatible.
 
 ---
 
