@@ -1,0 +1,14 @@
+Adversarial leadership: denial vs capture (true leaders +x at rho=0.10 vs saboteurs -x)
+  N=350  pure-flock  w_lead=1.0  6 seeds
+
+   rho_sab=0.000 ( 0 sab vs 35 true)  acc_to_goal=+0.921 +/- 0.106  Phi=0.995  [GOAL]
+   rho_sab=0.025 ( 9 sab vs 35 true)  acc_to_goal=+0.779 +/- 0.201  Phi=0.965  [GOAL]
+   rho_sab=0.050 (18 sab vs 35 true)  acc_to_goal=+0.599 +/- 0.250  Phi=0.945  [GOAL]
+   rho_sab=0.100 (35 sab vs 35 true)  acc_to_goal=+0.112 +/- 0.245  Phi=0.917  [DENIED/deadlock]
+   rho_sab=0.150 (52 sab vs 35 true)  acc_to_goal=-0.262 +/- 0.207  Phi=0.894  [DENIED/deadlock]
+   rho_sab=0.200 (70 sab vs 35 true)  acc_to_goal=-0.558 +/- 0.133  Phi=0.880  [CAPTURED(trap)]
+   rho_sab=0.300 (105 sab vs 35 true)  acc_to_goal=-0.823 +/- 0.010  Phi=0.883  [CAPTURED(trap)]
+
+  --> figures/adversarial_leaders_1.png
+
+Adversarial-leadership analysis complete.

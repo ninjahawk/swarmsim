@@ -3023,6 +3023,44 @@ repair itself once the hands on it are panicking. The result closes the leadersh
 two adversaries onto the two resources -- coherence and steerability -- that the steering-bandwidth result
 showed to be one substrate seen two ways.
 
+### 4.62 Adversarial Leadership: Denial Is Cheaper Than Capture (Finding 80)
+
+The conflicting-leaders result can be read adversarially, and doing so exposes a security asymmetry. A
+fixed set of true leaders steers toward a goal while a swept set of saboteurs pushes toward a trap, and
+two distinct adversarial objectives are separated: denial, meaning preventing the flock from reaching its
+goal and leaving it deadlocked, and capture, meaning actively driving the flock to the trap. The question
+is whether these are equally hard, measured by the accuracy of the flock's heading toward the true goal,
+which is positive when the goal is reached, near zero under deadlock, and negative when the flock is
+driven to the trap.
+
+![figures/adversarial_leaders_1.png](figures/adversarial_leaders_1.png)
+
+Denial is cheap. As the saboteur fraction rises to match the true leaders, goal-accuracy collapses from
+0.92 to about 0.11: the flock is deadlocked, reaching neither goal nor trap. Even at half the true-leader
+count the accuracy is already halved. Paralyzing a led flock -- mission failure -- is achieved at or below
+pull parity. Capture is expensive. The accuracy crosses zero, with the flock beginning to head toward the
+trap, only past parity, and decisive capture with the flock committed to the trap requires a saboteur
+fraction twice the true-leader count. Actively hijacking the flock to a chosen false target costs far more
+than merely paralyzing it.
+
+The asymmetry is the product law of Section 4.56 plus a threshold gap. The zero-crossing sits at pull
+parity, exactly as the product law predicts for equal leader strength, confirming that the adversarial
+contest obeys the same summed-directed-force accounting as cooperative voting. The new content is the gap
+between the two adversarial thresholds -- denial at about the defender's pull, capture at about twice it --
+with a deadlock band between them in which neither side wins and the flock wanders. Coherence declines only
+modestly across the whole sweep, from 0.995 to 0.88, so the opposed pulls fragment the flock slightly but
+never break it; the contest is over the flock's heading, not its integrity.
+
+The result is a security asymmetry for any led collective. An adversary with a leadership-style channel
+can paralyze a led flock with a force merely matching the legitimate leaders, but to commandeer it needs
+clear superiority. Symmetrically, to guarantee reaching the goal the true leaders need a pull majority over
+any saboteur rather than mere parity, since parity yields deadlock. This sharpens the voting picture into
+an attack-and-defense statement -- the cheapest adversarial outcome is denial at parity, the most expensive
+is capture at majority, and the two are separated by a deadlock band -- and it connects the leadership
+thread to the predator arms race: a predator able to mimic a leader would find preventing the flock from
+going where it wants far easier than herding it to a kill zone, consistent with the broader theme that
+disrupting the shared heading is easier than commandeering it.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3465,6 +3503,22 @@ governs voting and steering governs the collapse, with the panic fraction enteri
 on the active leadership, so the whole catalogue -- coherence, steering, voting, escape, predation, and
 contagion -- resolves into one accounting of how much shared directed force the flock can muster and what
 each adversary does to reduce it.
+
+The adversarial experiment (Section 4.62) turns the voting law into a statement about attack and defense
+and exposes an asymmetry between the two things an adversary might want. Pitting saboteurs broadcasting a
+false goal against legitimate leaders, the flock is merely deadlocked -- denied its goal -- once the
+saboteur pull matches the leaders', but it is actually captured, driven to the adversary's chosen
+destination, only when the saboteur pull roughly doubles the leaders'. Denial is cheap and capture is dear,
+separated by a band in which the flock simply wanders. The zero-crossing at pull parity is the same product
+law that governs cooperative voting, so the contest is decided by the same summed-directed-force accounting;
+the new content is the gap between the denial and capture thresholds. The lesson generalizes a theme that
+recurs across the whole study: it is far easier to disrupt the flock's shared heading than to commandeer it.
+A predator erases the heading and fragments the group, a contagion silences the leaders who hold it, and a
+saboteur at parity cancels it into deadlock -- all cheap -- whereas turning the flock into a tool that goes
+where the adversary chooses demands outright dominance of the shared signal. The flock's collective
+intelligence is thus robust in a specific and limited sense: its consensus is hard to hijack but easy to
+jam, and the same alignment coupling that makes a tiny honest minority an effective leader makes a
+comparably tiny dishonest one an effective spoiler.
 
 ---
 

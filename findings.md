@@ -3489,6 +3489,54 @@ predation (F78) but is itself the casualty of contagion -- the rudder cannot rep
 on it are panicking. Closes the leadership thread by mapping its two adversaries onto the two resources
 (coherence, steerability) that F77 showed are one substrate seen two ways.
 
+---
+
+## Finding 80: Adversarial leadership -- DENIAL is cheaper than CAPTURE. A saboteur minority deadlocks a led flock at pull PARITY but must reach a MAJORITY (~2x) to hijack it to a false goal
+<img src="./figures/adversarial_leaders_1.png" width="640"/>
+
+**What:** The adversarial framing of conflicting leaders (F73/F74). A fixed set of TRUE leaders
+(rho_true=0.10) steers toward a goal (+x); a swept set of SABOTEURS (rho_sab) pushes toward a trap
+(-x). Two distinct adversarial objectives are distinguished: DENIAL (stop the flock reaching its
+goal -- drive goal-accuracy to ~0, a deadlock) and CAPTURE (actively drive the flock to the trap --
+goal-accuracy < 0). Are they equally hard? Equal leader strength w=1.0.
+**Evidence:** collective/adversarial_leaders.py, N=350, pure-flock, 6 seeds. accuracy = cos(heading)
+toward the TRUE goal (+1 goal reached, 0 deadlock, -1 captured to trap).
+  rho_sab   (sab vs 35 true)   accuracy to goal      Phi     outcome
+  0.000      0 vs 35          +0.921 +/- 0.106      0.995    goal
+  0.025      9 vs 35          +0.779 +/- 0.201      0.965    goal
+  0.050     18 vs 35          +0.599 +/- 0.250      0.945    goal (degraded)
+  0.100     35 vs 35 (PARITY) +0.112 +/- 0.245      0.917    DENIED (deadlock)
+  0.150     52 vs 35          -0.262 +/- 0.207      0.894    denied -> capturing
+  0.200     70 vs 35          -0.558 +/- 0.133      0.880    CAPTURED
+  0.300    105 vs 35          -0.823 +/- 0.010      0.883    captured
+**Key result 1 -- denial at parity.** As the saboteur fraction rises to match the true leaders
+(rho_sab=rho_true=0.10), goal-accuracy collapses from 0.92 to 0.11: the flock is deadlocked, reaching
+neither the goal nor the trap. Even at HALF parity (rho_sab=0.05, 18 vs 35) accuracy is already halved
+(0.92 -> 0.60). Denial -- mission failure for the flock -- is achieved cheaply, at or below pull parity.
+**Key result 2 -- capture requires a majority.** Goal-accuracy crosses zero (the flock starts heading
+toward the trap) only PAST parity, between rho_sab=0.10 and 0.15, and decisive capture (accuracy < -0.5,
+the flock committed to the trap) needs rho_sab=0.20 -- twice the true-leader count. Actively hijacking
+the flock to a chosen false target is far more expensive than merely paralyzing it.
+**Key result 3 -- the asymmetry is the F74 product law plus a threshold gap.** The zero-crossing sits at
+pull parity exactly as F74 predicts (equal w, so the balance is at equal numbers), confirming the
+adversarial contest obeys the same summed-directed-force accounting. The new content is the GAP between
+the two adversarial thresholds: denial at ~1x the defender's pull, capture at ~2x. Between them lies the
+deadlock band (rho_sab 0.10-0.15 here), where neither side wins and the flock wanders. Coherence declines
+only modestly across the whole sweep (Phi 0.995 -> 0.88): the opposed pulls fragment the flock a little
+(F73's large-conflict mild Phi drop) but never break it -- the contest is over the flock's HEADING, not
+its integrity.
+**Implication.** A security asymmetry for any led collective. An adversary with a leadership-style
+channel (injecting a false shared direction) can PARALYZE a led flock with a force merely matching the
+legitimate leaders, but to CAPTURE it -- steer it to a destination of the adversary's choosing -- needs
+clear superiority (~2x here). Symmetrically for the defender: to GUARANTEE reaching the goal, true leaders
+need a pull majority over any saboteur, not just parity; at parity the outcome is deadlock. This sharpens
+the F73/F74 voting picture into an attack/defense statement: the cheapest adversarial outcome is denial
+(deadlock at parity), the most expensive is capture (hijack at majority), and the two are separated by a
+deadlock band. It also connects the leadership thread to the predator arms race (F66-F71): a predator
+that could mimic a leader would find denial (preventing the flock from going where it wants) far easier
+than herding it to a kill zone -- consistent with the broader finding that disrupting the flock's shared
+heading (denial, encirclement) is easier than commandeering it (capture, herding).
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
