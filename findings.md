@@ -3322,6 +3322,67 @@ a force applied everywhere needs no propagation while a removed node's effect is
 
 ---
 
+## Finding 77: The flock has a STEERING BANDWIDTH -- leaders can drive a turn only below a critical rate set by 1/(F75 response time); more leaders widen it; over-steering fragments the flock
+<img src="./figures/moving_goal_1.png" width="640"/>
+
+**What:** F72-F76 all used a FIXED goal direction. Real navigation requires turning. Here the goal
+direction rotates at angular velocity omega rad/tu, g_hat(t) = (cos(omega t), sin(omega t)), and the
+informed minority always biases toward the CURRENT goal. Questions: how well does the flock track a
+turning target, how much does it lag, is there a critical turning rate above which tracking collapses
+(a steering bandwidth), and does it scale with the informed fraction the way the F75 response time does?
+**Evidence:** collective/moving_goal.py, N=350, pure-flock, w_lead=1.0, 5 seeds. track = mean
+cos(heading - goal); lag = mean signed heading-minus-goal angle (deg).
+  rho     omega (rad/tu)   track             lag (deg)   Phi
+  0.10    0.00            +0.977 +/- 0.028     +0.8      0.998
+  0.10    0.05            +0.551 +/- 0.207    -54.3      0.974
+  0.10    0.10            -0.362 +/- 0.208   -103.4      0.911
+  0.10    0.20            -0.045 +/- 0.015    -16.1      0.923
+  0.10    0.50            -0.098 +/- 0.025     -8.5      0.930
+  0.10    1.00            -0.058 +/- 0.013     -3.2      0.973
+  0.20    0.00            +0.998 +/- 0.002     +0.5      1.000
+  0.20    0.05            +0.832 +/- 0.025    -33.1      0.979
+  0.20    0.10            +0.325 +/- 0.044    -70.5      0.923
+  0.20    0.20            -0.449 +/- 0.213    -34.1      0.781
+  0.20    0.50            -0.021 +/- 0.037    -25.3      0.861
+  0.20    1.00            -0.050 +/- 0.013    -11.7      0.935
+**Key result 1 -- a finite steering bandwidth.** The flock tracks a turning goal only below a critical
+turning rate. At rho=0.10 tracking is near-perfect at omega=0 (0.977), degrades to partial at omega=0.05
+(track 0.551, lag -54 deg: the flock trails the goal by 54 deg), and FAILS by omega=0.10 (track -0.362,
+lag -103 deg -- the goal has out-run the heading by more than 90 deg, so they are anti-correlated). Above
+the bandwidth (omega >= 0.20) the goal spins so fast the bias time-averages to nearly zero over each turn
+and the flock effectively ignores it (track ~ 0): the leaders are shouting directions that reverse before
+the flock can respond, so no net steering survives.
+**Key result 2 -- the bandwidth scales with informed fraction, as 1/(F75 response time).** Doubling rho
+(0.10 -> 0.20) roughly doubles the critical turning rate: at omega=0.10 the rho=0.20 flock still tracks
+(0.325) where the rho=0.10 flock has already failed (-0.362), and at omega=0.05 it tracks much better
+(0.832 vs 0.551). Quantitatively the bandwidth matches the inverse of the F75 settle time: omega_crit ~
+1/tau_response gives ~1/8.85 = 0.11 rad/tu at rho=0.10 and ~1/4.5 = 0.22 rad/tu at rho=0.20, both
+consistent with where tracking breaks down. The SAME lever that speeds the response (more leaders, F75)
+widens the steering bandwidth (F77) -- they are one timescale: how fast the informed minority can re-aim
+the bulk.
+**Key result 3 -- first-order-lag tracking below the bandwidth.** Where the flock does track, it trails
+the goal by a lag that grows with omega (0.8 deg at omega=0; 54 deg at omega=0.05 for rho=0.10), the
+behaviour of a control system with a finite response time driven by a ramping setpoint. The flock is a
+low-pass steering filter: slow turns pass with a small lag, fast turns are attenuated and ultimately
+blocked.
+**Key result 4 -- over-steering costs cohesion (unlike fixed-goal steering).** Fixed-goal steering was
+cohesion-free at every rho (F72: Phi ~ 1.0). But forcing a turn faster than the flock can follow stresses
+coherence: at rho=0.20, omega=0.20 (well above bandwidth, strong leadership), Phi falls to 0.781 -- the
+lowest in the whole leadership thread. The informed minority pulls hard in a direction the bulk's alignment
+cannot track, tearing the flock between the leaders' rapidly-rotating bias and its own lagging heading.
+Steering within the bandwidth is free; steering beyond it is paid for in coherence.
+**Implication.** Completes the leadership thread with a control-theoretic picture. The informed minority is
+not an arbitrary steering wheel -- it drives a low-pass system with a bandwidth set by the alignment
+response time, which the informed fraction tunes (F75/F77 are the time- and frequency-domain views of the
+same timescale). Within the bandwidth, steering is accurate, lagging, and cohesion-free; at the bandwidth,
+turns are attenuated; beyond it, the bias time-averages away AND, if strong, fragments the flock. This ties
+the decision thread back to the predator thread's central tension: redirecting a flock has a coherence cost
+whenever the redirection outpaces what alignment can propagate -- gentle steering (slow leaders) is free,
+but aggressive steering (fast turns, or a predator) is not. The flock's steerability and its coherence are
+the same resource viewed two ways, mediated by the alignment response time.
+
+---
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*

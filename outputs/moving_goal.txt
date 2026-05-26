@@ -1,0 +1,22 @@
+Steering a TURNING flock: goal rotates at angular velocity omega (rad/tu)
+  N=350  pure-flock  5 seeds  w_lead=1.0
+
+== rho=0.10 (35 informed) ==
+   omega=0.00 rad/tu  track=+0.977 +/- 0.028  lag=  +0.8 deg  Phi=0.998
+   omega=0.05 rad/tu  track=+0.551 +/- 0.207  lag= -54.3 deg  Phi=0.974
+   omega=0.10 rad/tu  track=-0.362 +/- 0.208  lag=-103.4 deg  Phi=0.911
+   omega=0.20 rad/tu  track=-0.045 +/- 0.015  lag= -16.1 deg  Phi=0.923
+   omega=0.50 rad/tu  track=-0.098 +/- 0.025  lag=  -8.5 deg  Phi=0.930
+   omega=1.00 rad/tu  track=-0.058 +/- 0.013  lag=  -3.2 deg  Phi=0.973
+
+== rho=0.20 (70 informed) ==
+   omega=0.00 rad/tu  track=+0.998 +/- 0.002  lag=  +0.5 deg  Phi=1.000
+   omega=0.05 rad/tu  track=+0.832 +/- 0.025  lag= -33.1 deg  Phi=0.979
+   omega=0.10 rad/tu  track=+0.325 +/- 0.044  lag= -70.5 deg  Phi=0.923
+   omega=0.20 rad/tu  track=-0.449 +/- 0.213  lag= -34.1 deg  Phi=0.781
+   omega=0.50 rad/tu  track=-0.021 +/- 0.037  lag= -25.3 deg  Phi=0.861
+   omega=1.00 rad/tu  track=-0.050 +/- 0.013  lag= -11.7 deg  Phi=0.935
+
+  --> figures/moving_goal_1.png
+
+Moving-goal (steering bandwidth) analysis complete.

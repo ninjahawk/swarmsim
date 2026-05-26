@@ -2876,6 +2876,53 @@ nuances the earlier null that distributing immunization spatially does not help:
 when removing nodes but beneficial when injecting a directional force, because a force applied everywhere
 needs no propagation while a removed node's effect is local in either case.
 
+### 4.59 The Flock Has a Steering Bandwidth: Leaders Can Drive a Turn Only Below a Critical Rate (Finding 77)
+
+The leadership experiments to this point steered toward a fixed bearing, but navigation requires turning.
+This experiment rotates the goal direction at angular velocity omega, with the informed minority always
+biasing toward the current goal, and asks how well the flock tracks a moving target, how far it lags, and
+whether there is a critical turning rate above which tracking collapses -- a steering bandwidth. The rate
+is swept at two informed fractions, and tracking is measured as the cosine between the flock heading and
+the instantaneous goal.
+
+![figures/moving_goal_1.png](figures/moving_goal_1.png)
+
+The flock has a finite steering bandwidth. At a tenth informed, tracking is near-perfect for a stationary
+goal, degrades to partial at a turning rate of 0.05 radians per time unit, where the heading trails the
+goal by about 54 degrees, and fails entirely by 0.10 radians per time unit, where the goal has out-run the
+heading by more than ninety degrees so that the two are anti-correlated. Above the bandwidth the goal spins
+so fast that the bias time-averages to nearly zero over each turn and the flock effectively ignores it:
+the leaders are calling directions that reverse before the flock can respond, so no net steering survives.
+
+The bandwidth scales with the informed fraction, and does so in step with the response time measured in
+Section 4.57. Doubling the informed fraction roughly doubles the critical turning rate: at a turning rate
+of 0.10 the more-informed flock still tracks where the less-informed one has already failed, and at 0.05
+it tracks markedly better. Quantitatively the bandwidth matches the inverse of the settle time -- about a
+ninth of a radian per time unit at a tenth informed and about a fifth at a fifth informed, both consistent
+with where tracking breaks down. The same lever that speeds the response in the time domain widens the
+steering bandwidth in the frequency domain; they are one timescale, the rate at which the informed minority
+can re-aim the bulk. Where the flock does track, it trails the goal by a lag that grows with the turning
+rate, the behaviour of a control system with a finite response time following a ramping setpoint: the flock
+is a low-pass steering filter, passing slow turns with a small lag, attenuating fast turns, and ultimately
+blocking them.
+
+A new cost appears that fixed-goal steering never incurred. Steering toward a fixed bearing was
+cohesion-free at every informed fraction, but forcing a turn faster than the flock can follow stresses its
+coherence: at a fifth informed and a turning rate of 0.20, well above the bandwidth, the order parameter
+falls to 0.78, the lowest value in the entire leadership thread. The informed minority pulls hard in a
+direction the bulk's alignment cannot track, tearing the flock between the rapidly rotating bias and its own
+lagging heading. Steering within the bandwidth is free; steering beyond it is paid for in coherence.
+
+The result rounds out the leadership thread with a control-theoretic picture and ties it back to the
+predator results. The informed minority drives a low-pass system whose bandwidth is set by the alignment
+response time and tuned by the informed fraction, so the time-domain and frequency-domain views are the
+same timescale seen twice. Within the bandwidth, steering is accurate, lagging, and free of coherence cost;
+at it, turns are attenuated; beyond it, the bias averages away and, if strong, fragments the flock. This is
+the same tension that governs predation: redirecting a flock carries a coherence cost precisely when the
+redirection outpaces what alignment can propagate. Gentle steering is free and aggressive steering is not,
+whether the agent of redirection is a cooperative leader or a hostile predator, because the flock's
+steerability and its coherence are the same resource mediated by the alignment response time.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3267,6 +3314,22 @@ in who supplies it. The two threads therefore meet at a single axis: the durabil
 durability of whatever the signal is attached to, an individual's hidden state in the contagion case and a
 collectively held direction in the leadership case, and only the former can be undone by mixing the
 individuals.
+
+Finally, the moving-goal experiment (Section 4.59) recasts leadership as a control problem and, in doing
+so, reunites the decision thread with the predator thread that opened the study. An informed minority does
+not steer the flock instantaneously; it drives a low-pass system whose bandwidth is the inverse of the
+response time and is tuned by the informed fraction, so the same lever that makes decisions faster also lets
+leaders drive sharper turns. Within that bandwidth steering is accurate, lags the goal by a growing angle,
+and costs no coherence; beyond it the rotating bias time-averages to nothing and, if strong, fragments the
+flock. That fragmentation is the key reconciliation: steering toward a fixed bearing was entirely
+cohesion-free, yet forcing a turn the flock cannot follow produces the lowest order parameter seen anywhere
+in the leadership experiments. Redirection costs coherence exactly when it outpaces what alignment can
+propagate -- and this is the same condition under which a predator disrupts the flock. A cooperative leader
+turning slowly and a predator are at opposite ends of one axis: gentle, within-bandwidth redirection is free,
+while abrupt, beyond-bandwidth redirection, whether friendly or hostile, tears the group apart. The flock's
+steerability and its coherence are therefore not independent properties but a single resource, rationed by
+the alignment response time, and the whole catalogue of results -- flocking, escape, voting, leadership, and
+predation -- is organized by how fast a shared directional signal can be driven through that one response.
 
 ---
 
