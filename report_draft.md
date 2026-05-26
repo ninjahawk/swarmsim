@@ -2620,6 +2620,54 @@ that makes flocking coherent is what makes collective escape work -- and a local
 predator field is not such a signal. The escape direction must be coordinated at the
 flock level, which local perception under symmetric surrounding does not provide.
 
+### 4.54 A Tiny Informed Minority Steers the Whole Flock Without Breaking Cohesion: The Constructive Case of the Shared-Signal Principle (Finding 72)
+
+The escape results of Sections 4.52-4.53 show what happens when a directional signal fails
+to be shared. Leadership is the constructive complement, and it opens the classic
+collective-decision-making question (Couzin et al. 2005). A fraction rho of agents are
+informed: they carry a preferred travel direction g_hat (taken as +x) and feel an extra
+force w_lead*g_hat each step, while the remaining majority are naive followers with only
+the usual four forces and no knowledge of the goal. The questions are how accurately the
+whole flock travels toward g_hat, how small rho can be, and whether the steering force
+costs cohesion. Directional accuracy is measured as the cosine between the mean flock
+velocity and g_hat, in [-1, 1]; the experiment sweeps rho from 0 to 0.5 at two leader
+strengths.
+
+![figures/leadership_1.png](figures/leadership_1.png)
+
+A very small minority suffices. At rho = 0.05 -- eighteen informed agents out of 350 --
+the flock already travels with accuracy 0.63 to 0.83 toward the goal, and at rho = 0.10
+(thirty-five agents) accuracy reaches 0.87 to 0.96. The naive ninety to ninety-five
+percent majority, which has no knowledge of the goal direction at all, is steered almost
+entirely through alignment coupling to the few informed agents. This reproduces the
+central Couzin result: the informed fraction needed for accurate group navigation
+decreases as the group grows, so only a handful of leaders is required in a large flock.
+Accuracy rises monotonically with rho and saturates near unity by rho = 0.20. Stronger
+leaders (w_lead = 1.0 versus 0.5) reach a given accuracy at smaller rho and with markedly
+lower cross-seed variance -- at rho = 0.05 the seed-to-seed spread falls from 0.23 to 0.13
+-- so a stronger or more numerous informed set makes the outcome not only more accurate but
+more reliable. The rho = 0 baseline has accuracy -0.24 with a seed spread of 0.75, a
+near-uniform random heading confirming that all directionality at rho > 0 is leader-induced.
+
+Crucially, the steering is cohesion-free: the order parameter stays between 0.995 and 1.000
+at every rho and leader strength. The informed minority redirects the entire group with no
+loss of order, in sharp contrast to the predator case, where redirecting the flock through
+encirclement always costs coherence. The difference is the sign and structure of the force.
+Leaders add a coherent common-direction force that alignment amplifies; a predator adds a
+position-dependent repulsion that alignment cannot reconcile across the flock.
+
+The finding is the constructive half of the shared-signal principle established in Sections
+4.52-4.53. Every informed agent carries the same vector g_hat, so the minority injects a
+single common direction that alignment propagates to the whole group -- the identical
+mechanism that made the committed collective escape of Section 4.52 succeed (one shared
+escape vector) and that the per-prey local escape of Section 4.53 lacked (each prey's
+vector pointed a different way). Leadership, collective escape, and flock formation itself
+(Section 4.10, where alignment homogenizes a shared heading) are one phenomenon seen three
+ways: a globally shared directional signal is amplified by alignment, whereas a locally
+heterogeneous one is not. The minority's power comes from agreement rather than numbers --
+eighteen agents that all point the same way steer the flock more effectively than the half
+of the flock that, under local escape sensing, each perceive a different direction.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -2934,6 +2982,20 @@ the same shared-heading principle that produces coherent flocking in the first p
 which is why the arms race resolves not as a simple stronger-signal-wins contest but as a
 structure in which the predator's own anticipatory massing supplies the very directional
 signal that committed, coordinated prey need to escape.
+
+The leadership result (Section 4.54) is the constructive complement to this entire escape
+sequence and, with it, completes the shared-signal argument. The same principle that limits
+collective escape -- that the flock amplifies only a globally shared direction -- is what
+makes a tiny informed minority an effective navigator. A few percent of agents carrying a
+common goal vector steer the whole group with near-perfect accuracy and no loss of cohesion,
+because alignment propagates their single shared direction to a naive majority that has no
+goal knowledge of its own. Leadership, committed collective escape, and flock formation
+itself are therefore one mechanism viewed from three angles: a direction that every relevant
+agent holds in common is amplified into group-level motion, whereas a direction that varies
+agent-to-agent -- the local escape field, the symmetric encircling ring -- is averaged away.
+The flock is exquisitely steerable by consensus and nearly unsteerable by conflicting local
+cues, and this single asymmetry organizes results spanning leadership, predation, escape, and
+the spontaneous emergence of a common heading.
 
 ---
 

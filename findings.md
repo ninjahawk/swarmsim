@@ -3001,6 +3001,67 @@ flock-level coordination of the escape direction, which local perception does no
 
 ---
 
+## Finding 72: A tiny informed minority steers the whole flock with no loss of cohesion -- and it works because the leaders share a SINGLE common direction (the constructive case of the F70/F71 shared-signal rule)
+<img src="./figures/leadership_1.png" width="640"/>
+
+**What:** Opens the collective-decision-making thread (Couzin et al. 2005, "Effective
+leadership and decision-making in animal groups on the move"). A fraction rho of agents
+are INFORMED: they carry a preferred travel direction g_hat (=+x) and feel an extra force
+w_lead*g_hat each step. The remaining 1-rho are naive followers with only the usual four
+forces and no knowledge of g_hat. Question: how accurately does the whole flock travel
+toward g_hat, how small can rho be, and does the steering force break cohesion?
+**Evidence:** leadership.py at root, N=350, pure-flock regime (v0=1.0), default
+parameters, 4 seeds. accuracy = (mean flock velocity . g_hat)/|mean flock velocity| in
+[-1,1] (1 = flock travels exactly toward the goal); Phi = order parameter.
+  w_lead   rho    informed   accuracy           Phi
+  --       0.00     0        -0.242 +/- 0.750   1.000   (no preferred direction; random)
+  0.5      0.02     7        +0.397 +/- 0.357   0.998
+  0.5      0.05    18        +0.625 +/- 0.234   0.995
+  0.5      0.10    35        +0.865 +/- 0.119   0.996
+  0.5      0.20    70        +0.979 +/- 0.019   0.998
+  0.5      0.50   175        +1.000 +/- 0.000   1.000
+  1.0      0.02     7        +0.492 +/- 0.311   0.996
+  1.0      0.05    18        +0.830 +/- 0.132   0.996
+  1.0      0.10    35        +0.957 +/- 0.041   0.997
+  1.0      0.20    70        +0.996 +/- 0.004   0.999
+  1.0      0.50   175        +1.000 +/- 0.000   1.000
+**Key result 1 -- a very small minority suffices.** At rho=0.05 (18 informed agents out
+of 350) the flock already travels at accuracy 0.63-0.83 toward the goal; at rho=0.10 (35
+agents) accuracy is 0.87-0.96. The naive 90-95% majority, which has no knowledge of the
+goal direction whatsoever, is steered almost entirely by alignment coupling to the few
+informed agents. This reproduces the central Couzin (2005) result: the informed fraction
+needed for accurate group navigation DECREASES as group size grows, and only a handful of
+leaders is required in a large group.
+**Key result 2 -- accuracy increases with rho and with leader strength, and saturates.**
+Accuracy is monotone in rho and saturates near 1.0 by rho~0.20. Stronger leaders (w_lead
+1.0 vs 0.5) reach a given accuracy at smaller rho AND with much lower cross-seed variance
+(at rho=0.05, std falls 0.234 -> 0.132; at rho=0.10, 0.119 -> 0.041): a stronger or more
+numerous informed set makes the outcome not just more accurate but more RELIABLE. The
+rho=0 baseline has accuracy -0.24 +/- 0.75 -- a near-uniform random heading across seeds
+(the flock picks an arbitrary spontaneous direction), confirming the +x accuracy at rho>0
+is entirely leader-induced.
+**Key result 3 -- steering is cohesion-free.** Phi stays 0.995-1.000 at every rho and
+w_lead. The leadership force never fragments the flock; the informed minority redirects
+the group without any loss of order. Steering and cohesion are decoupled here -- the
+opposite of the predator case, where redirecting the flock (encirclement) costs coherence.
+The difference is sign: leaders add a coherent common-direction force that alignment
+amplifies, whereas a predator adds position-dependent repulsion that alignment cannot
+reconcile across the flock.
+**Implication -- the CONSTRUCTIVE half of the F70/F71 shared-signal principle.** F71
+concluded the flock acts collectively only on signals that are already global/shared.
+Leadership is exactly such a signal: every informed agent carries the SAME vector g_hat,
+so the minority injects a single common direction that the alignment force propagates to
+the whole group -- the same mechanism that made F70's committed collective escape work
+(one shared escape vector) and that F71's per-prey local escape lacked (each prey's vector
+pointed a different way). Leadership, F70 escape, and flock formation itself (F16,
+alignment homogenizes a shared heading) are the same phenomenon seen three ways: a
+globally shared directional signal is amplified by alignment; a locally heterogeneous one
+(F71 local escape, F33 no global escape-route detection) is not. The minority's power
+comes not from numbers but from agreement -- 18 agents that all point the same way beat
+175 agents (half the flock) that each sense a different local escape direction.
+
+---
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*

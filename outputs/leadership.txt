@@ -1,0 +1,21 @@
+Informed-minority leadership: can a fraction rho steer the flock toward +x?
+  N=350  pure-flock regime (v0=1.0)  4 seeds  alpha=1.0
+
+  == w_lead=0.5 ==
+     rho=0.00 (  0 informed)  accuracy=-0.242 +/- 0.750  Phi=1.000
+     rho=0.02 (  7 informed)  accuracy=+0.397 +/- 0.357  Phi=0.998
+     rho=0.05 ( 18 informed)  accuracy=+0.625 +/- 0.234  Phi=0.995
+     rho=0.10 ( 35 informed)  accuracy=+0.865 +/- 0.119  Phi=0.996
+     rho=0.20 ( 70 informed)  accuracy=+0.979 +/- 0.019  Phi=0.998
+     rho=0.50 (175 informed)  accuracy=+1.000 +/- 0.000  Phi=1.000
+  == w_lead=1.0 ==
+     rho=0.00 (  0 informed)  accuracy=-0.242 +/- 0.750  Phi=1.000
+     rho=0.02 (  7 informed)  accuracy=+0.492 +/- 0.311  Phi=0.996
+     rho=0.05 ( 18 informed)  accuracy=+0.830 +/- 0.132  Phi=0.996
+     rho=0.10 ( 35 informed)  accuracy=+0.957 +/- 0.041  Phi=0.997
+     rho=0.20 ( 70 informed)  accuracy=+0.996 +/- 0.004  Phi=0.999
+     rho=0.50 (175 informed)  accuracy=+1.000 +/- 0.000  Phi=1.000
+
+  --> figures/leadership_1.png
+
+Informed-minority leadership analysis complete.
