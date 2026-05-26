@@ -1,0 +1,13 @@
+Leadership under spreading PANIC (SIS): does contagion collapse steerability?
+  N=350  pure-flock  rho=0.10  w_lead=1.0  gamma=1.0  ramp_panic=5.0  5 seeds
+
+   beta= 0.0 (beta/gamma= 0.0)  panic_frac=0.000  accuracy=+0.936 +/- 0.056  Phi=0.996
+   beta= 0.5 (beta/gamma= 0.5)  panic_frac=0.805  accuracy=+0.713 +/- 0.199  Phi=0.983
+   beta= 1.0 (beta/gamma= 1.0)  panic_frac=0.899  accuracy=+0.356 +/- 0.325  Phi=0.981
+   beta= 2.0 (beta/gamma= 2.0)  panic_frac=0.946  accuracy=-0.038 +/- 0.501  Phi=0.980
+   beta= 4.0 (beta/gamma= 4.0)  panic_frac=0.970  accuracy=-0.468 +/- 0.346  Phi=0.979
+   beta= 8.0 (beta/gamma= 8.0)  panic_frac=0.982  accuracy=-0.335 +/- 0.290  Phi=0.980
+
+  --> figures/panic_leadership_1.png
+
+Leadership-under-panic analysis complete.

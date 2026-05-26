@@ -2974,6 +2974,55 @@ steerability shown to be one resource in the previous section are here shown to 
 predator attacks, so predation and leadership pull on opposite ends of the single lever of shared
 alignment.
 
+### 4.61 Spreading Panic Collapses Steerability but Not Coherence: Contagion Severs the Rudder, Not the Hull (Finding 79)
+
+The previous section pitted leadership against a predator; this one pits it against a contagion, bringing
+the study's third major thread into the leadership setting. Encirclement attacks coherence and leadership
+repairs it, but panic attacks differently: it makes agents erratic, and a panicked leader cannot lead, so
+panic severs the shared signal at its source by intermittently silencing the very agents that carry it.
+The experiment runs an SIS panic process through the flock -- agents switch between calm and panicked,
+transmission scaling with the number of panicked flock-neighbors and recovery at a fixed rate -- while a
+tenth of the flock is informed of a goal direction; a panicked informed agent suspends its goal bias and
+gains erratic noise. The transmission rate is swept.
+
+![figures/panic_leadership_1.png](figures/panic_leadership_1.png)
+
+Coherence is untouched. The order parameter stays between 0.98 and 0.996 across the entire range of
+transmission rates, even when nearly the whole flock is panicked, because the panic noise sits below the
+melting threshold established early in the study, so the flock remains a tight, globally aligned group.
+Panic does not fragment it. Steerability, however, collapses. The steering accuracy falls monotonically
+from 0.94 with no panic through 0.71 and 0.36 to essentially zero once the transmission-to-recovery ratio
+reaches about two, beyond which it scatters with large seed-to-seed variance about zero. The flock stays
+coherent but loses its heading, becoming a tight flock flying an essentially random, leader-uncorrelated
+direction. Contagion destroys the flock's steerability, not its cohesion -- it severs the rudder while
+leaving the hull intact.
+
+The controlling quantity is the active-leader pull, the product law of Section 4.56 taxed by the panic
+fraction. Panic saturates even at the lowest transmission rate tested, because the spatial flock has a
+high contact degree, so the basic reproduction number far exceeds the transmission-to-recovery ratio and
+the outbreak is supercritical almost immediately, consistent with the earlier panic-contagion findings.
+The relevant axis is therefore not the epidemic threshold but the depth of saturation: at any instant a
+fraction of the leaders is panicked and silent, so the active leadership pull is the informed fraction
+times the leader strength scaled by the fraction not currently panicked, an effective informed fraction
+of one minus the panic fraction times the nominal one. When four-fifths of the flock is panicked, that
+effective fraction falls to about two percent, the weak-but-working leadership regime, and accuracy is
+still around 0.7; when nineteen-twentieths are panicked it falls below half a percent, beneath the
+leadership floor, and steering vanishes. Steerability tracks the active-leader pull exactly as the
+leadership and conviction findings predict, with panic acting as a multiplicative tax on the signal.
+
+Contagion and predation are thus complementary attacks on the two faces of the same shared heading.
+Encirclement attacks coherence, pushing sub-groups apart, and leadership restores it; panic attacks
+steerability, silencing the leaders, while coherence, which needs only local alignment and not the shared
+goal, survives untouched. A flock can fail in two distinct ways -- fragmented but aimable, the
+encirclement mode that leadership fixes, or coherent but rudderless, the panic mode that leadership cannot
+fix because the disease disables the leaders themselves. This is why contagion has been the most durable
+stressor in the whole study: an attack on coherence is reversible because the shared heading re-forms,
+but an attack that disables the carriers of the shared signal cannot be countered by that signal. The
+shared heading that is the antidote to predation is itself the casualty of contagion; the rudder cannot
+repair itself once the hands on it are panicking. The result closes the leadership thread by mapping its
+two adversaries onto the two resources -- coherence and steerability -- that the steering-bandwidth result
+showed to be one substrate seen two ways.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3399,6 +3448,23 @@ alignment force propagating a shared direction -- and in which the flock's coher
 its vulnerability to predators are three faces of that same shared heading: build it and the group is
 coherent, steerable, and predator-resistant; erase it and the group fragments, drifts, and falls to the
 ring.
+
+The contagion experiment (Section 4.61) completes that picture by showing the shared heading has two
+distinct vulnerabilities, attacked by the study's two adversary classes in complementary ways. A predator
+encircling the flock attacks its coherence, fragmenting the group, and a shared heading restores it; a
+panic contagion attacks its steerability, intermittently silencing the leaders who carry the heading,
+while the coherence that needs only local alignment survives almost perfectly. The flock under heavy panic
+is the mirror image of the flock under encirclement: coherent but rudderless rather than fragmented but
+aimable. And the two failure modes differ in repairability for a deep reason. Coherence can be rebuilt by
+the shared heading because the heading is external to the kinematics it organizes, but steerability cannot
+be rebuilt by the shared heading when the contagion is precisely what disables the heading's carriers. This
+is the structural explanation, arrived at from the leadership side, for why contagion has been the most
+durable stressor throughout the study: kinematic damage heals because the signal that heals it is intact,
+whereas an attack on the signal's carriers cannot be undone by the signal. The same product law that
+governs voting and steering governs the collapse, with the panic fraction entering as a multiplicative tax
+on the active leadership, so the whole catalogue -- coherence, steering, voting, escape, predation, and
+contagion -- resolves into one accounting of how much shared directed force the flock can muster and what
+each adversary does to reduce it.
 
 ---
 

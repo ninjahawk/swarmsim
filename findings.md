@@ -3436,6 +3436,59 @@ antidote. The flock's coherence and its steerability, shown to be one resource i
 shown to be the same resource a predator attacks -- predation and leadership pull on opposite ends
 of the single lever of shared alignment.
 
+---
+
+## Finding 79: Spreading panic collapses STEERABILITY without breaking COHERENCE -- contagion severs the rudder, not the hull (the complement of encirclement); steering tracks the active-leader pull (1-f)*rho
+<img src="./figures/panic_leadership_1.png" width="640"/>
+
+**What:** The third major thread (contagion) meets leadership. F78 showed encirclement attacks
+coherence and leadership restores it. Contagion attacks differently: SIS panic (book Sec 10.5) makes
+agents ERRATIC and a panicked leader cannot lead. So panic severs the shared signal at its SOURCE
+(intermittently silenced leaders) plus adds noise. Question: is there a contagion threshold for LOSS
+OF STEERABILITY, and does it hit coherence or steering? SIS panic among prey (calm<->panic, transmission
+beta per panicked flock-neighbor, recovery gamma=1); panicked agents get high noise (ramp 5) and, if
+informed, suspend their goal bias while panicked. rho=0.10 informed toward +x; sweep beta.
+**Evidence:** collective/panic_leadership.py, N=350, pure-flock, w_lead=1.0, 5 seeds.
+  beta/gamma   panic frac f_ss    steering accuracy      Phi
+  0.0          0.000             +0.936 +/- 0.056       0.996
+  0.5          0.805             +0.713 +/- 0.199       0.983
+  1.0          0.899             +0.356 +/- 0.325       0.981
+  2.0          0.946             -0.038 +/- 0.501       0.980
+  4.0          0.970             -0.468 +/- 0.346       0.979
+  8.0          0.982             -0.335 +/- 0.290       0.980
+**Key result 1 -- coherence is untouched.** Phi stays 0.980-0.996 across the ENTIRE beta range. Even
+when 98% of the flock is panicked, the order parameter barely moves: the panic noise (ramp 5) is below
+the melting threshold (F4, eta~10), so the flock remains a tight, globally aligned flock. Panic does
+not fragment the group.
+**Key result 2 -- steerability collapses.** Steering accuracy falls monotonically from 0.936 (no panic)
+through 0.713, 0.356 to ~0 by beta/gamma~2, then scatters with large cross-seed variance (std 0.3-0.5)
+about zero (the negative central values are within that spread). The flock stays coherent but loses its
+heading: it becomes a tight flock flying an essentially random, leader-uncorrelated direction. Contagion
+destroys the flock's STEERABILITY, not its COHESION -- it severs the rudder while leaving the hull intact.
+**Key result 3 -- the controlling quantity is the active-leader pull (1-f)*rho (the F74 law + SIS).**
+Panic SATURATES even at beta/gamma=0.5 (f=0.805) because the spatial flock has a high contact degree
+(mean flock-neighbors ~30 at N=350, rf=0.1), so R0 = beta*<k>/gamma >> beta/gamma and the outbreak is
+supercritical almost immediately (consistent with F18-F25). So the relevant axis is not the epidemic
+threshold but the DEPTH of saturation. At any instant a fraction f of leaders is panicked and silent, so
+the active leadership pull is (1-f)*rho*N*w (the F74 product law, taxed by the panic fraction), i.e. an
+effective informed fraction rho_eff = (1-f)*rho. At beta/gamma=0.5, f=0.805 gives rho_eff~0.02 -- the
+F72 weak-but-working regime (accuracy ~0.5-0.7, observed 0.71); at f>=0.95, rho_eff<=0.005, below the F72
+floor, so steering vanishes. Steerability tracks the active-leader pull exactly as F72/F74 predict;
+panic acts as a multiplicative tax (1-f) on the leadership signal.
+**Implication.** Contagion and predation are COMPLEMENTARY attacks on the two faces of the same shared
+heading (F77/F78). Encirclement (F78) attacks COHERENCE -- it pushes sub-groups apart, dropping Phi, and
+leadership restores it. Panic (F79) attacks STEERABILITY -- it silences the leaders, dropping accuracy,
+while coherence (which only needs local alignment, not the shared goal) survives untouched. A flock can
+therefore be in two distinct failure modes: fragmented-but-aimable (encirclement, fixable by leadership)
+or coherent-but-rudderless (panic, fixable only by suppressing the contagion, which leadership cannot do
+because the disease disables the leaders themselves). This also explains why contagion has been the
+study's most durable stressor (F22/F23/F34): kinematic attacks on coherence are reversible because the
+shared heading re-forms, but an attack that disables the carriers of the shared signal cannot be
+countered by that signal. The leadership thread's central object (a shared heading) is the antidote to
+predation (F78) but is itself the casualty of contagion -- the rudder cannot repair itself once the hands
+on it are panicking. Closes the leadership thread by mapping its two adversaries onto the two resources
+(coherence, steerability) that F77 showed are one substrate seen two ways.
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
