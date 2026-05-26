@@ -3383,6 +3383,59 @@ the same resource viewed two ways, mediated by the alignment response time.
 
 ---
 
+## Finding 78: An informed minority both RESTORES the coherence encirclement destroyed and STEERS the flock through the ring -- leadership counters predation by re-injecting the shared heading the predator removed (the two biggest threads meet)
+<img src="./figures/led_encirclement_1.png" width="640"/>
+
+**What:** The crossover of the study's two largest threads. F14 found encirclement (n_pred=6,
+R_enc=0.15) is the one predator strategy that breaks 2D coherence (fragmenting the flock into
+sub-flocks, F16); F72-F77 found a shared directional signal held by a minority steers the flock.
+Question: under ACTIVE encirclement, can an informed minority carrying a shared GOAL direction
+(+x -- NOT fleeing the predators, just committed to a heading) (a) restore the coherence
+encirclement destroyed, and (b) steer the flock toward the goal despite the surrounding predators?
+**Evidence:** collective/led_encirclement.py, self-contained, slow-prey predator regime (F14
+calibration: N=100, v0=0.02, ramp=0.1), n_pred=6, R_enc=0.15, w_lead=0.5, 6 seeds. Predator
+repulsion sign verified (prey pushed away). Two columns: predators off (pure leadership) and on.
+  rho    predators OFF: acc / Phi      predators ON: acc / Phi
+  0.00   -0.059 / 0.999               -0.054 / 0.793   (F14 baseline: encirclement broke Phi to 0.79)
+  0.05   +0.951 / 0.992               +0.564 / 0.832
+  0.10   +0.997 / 0.999               +0.746 / 0.805
+  0.20   +1.000 / 1.000               +0.936 / 0.895
+  0.40   +1.000 / 1.000               +0.980 / 0.939
+**Key result 1 -- leadership transfers to the slow-prey regime.** With no predators, the slow-prey
+flock (v0=0.02) is steered just as the fast-prey flock was (F72): rho=0.05 gives accuracy 0.95,
+rho>=0.10 gives ~1.0, Phi stays ~1.0. The F72 leadership result is regime-independent, so the
+encirclement comparison is on equal footing.
+**Key result 2 -- leaders STEER the flock through the ring.** Under active encirclement, accuracy
+toward the goal climbs from -0.05 (rho=0, no goal) to 0.936 (rho=0.20) and 0.980 (rho=0.40). The
+flock travels coherently toward +x even though six predators surround it. The predators re-center
+their ring on the moving CoM and keep pace (v0_pred=0.05 > v0=0.02), so the flock does not outrun
+them -- it travels toward the goal carrying the predator ring along with it. Encirclement fails to
+prevent a led flock from going where its leaders aim.
+**Key result 3 -- leaders RESTORE the coherence encirclement destroyed.** Phi rises from 0.793 at
+rho=0 (the F14 broken state) to 0.895 at rho=0.20 and 0.939 at rho=0.40. The shared goal direction
+re-aligns the fragmenting flock: leadership partially undoes encirclement's fragmentation. The
+mechanism is exactly complementary -- encirclement breaks coherence by REMOVING the flock's shared
+heading (pushing different sub-groups different ways, F16); leadership restores it by RE-INJECTING
+a shared heading. They are opposing forces on the same alignment substrate.
+**Key result 4 -- encirclement raises the leadership threshold (the quantitative cost).** It takes
+MORE leaders to steer under encirclement than without. Without predators rho=0.05 already gives
+accuracy 0.95; under encirclement rho=0.05 gives only 0.564, and rho~0.20-0.40 is needed for
+comparable steering. The predators compete with the leaders' signal, so the informed fraction
+required rises ~4-8x. Coherence is also not fully restored even at rho=0.40 (Phi 0.939 < 1.0):
+residual disruption persists, but leadership lifts the flock far above the F14 floor.
+**Implication.** Unifies the predator and decision threads and generalizes F70. F70 showed a shared
+ESCAPE direction defeats predictive encirclement; F78 shows a shared GOAL direction -- with no
+knowledge of the predators at all -- counters standard encirclement by restoring coherence and
+enabling travel. So it is not the CONTENT of the shared signal (flee-the-predator vs go-to-goal)
+that counters the predator, but the mere PRESENCE of any strong shared heading: encirclement works
+by destroying the flock's common direction, and anything that supplies one -- escape intelligence
+(F70) or oblivious leadership (F78) -- fights it. This is the constructive dual of the whole
+predator program: the predator's only successful 2D strategy (encirclement, F14) wins by erasing
+the shared heading, and the leadership thread's central object (a shared heading) is exactly its
+antidote. The flock's coherence and its steerability, shown to be one resource in F77, are here
+shown to be the same resource a predator attacks -- predation and leadership pull on opposite ends
+of the single lever of shared alignment.
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*

@@ -2923,6 +2923,57 @@ redirection outpaces what alignment can propagate. Gentle steering is free and a
 whether the agent of redirection is a cooperative leader or a hostile predator, because the flock's
 steerability and its coherence are the same resource mediated by the alignment response time.
 
+### 4.60 Leadership Counters Encirclement: An Informed Minority Restores Coherence and Steers Through the Ring (Finding 78)
+
+The previous section anticipated that leaders and predators pull on the same lever; this experiment
+puts them in direct opposition, joining the study's two largest threads. Encirclement is the one
+predator strategy that breaks two-dimensional coherence (Section 4.7), fragmenting the flock into
+sub-flocks, and the leadership thread has shown that a minority carrying a shared direction steers
+the flock. The question is whether, under active encirclement, an informed minority carrying a shared
+goal direction -- not fleeing the predators, merely committed to a heading -- can both restore the
+coherence the predators destroy and steer the flock toward the goal despite the surrounding ring. The
+test runs in the slow-prey predator regime that calibrates the encirclement findings, with six
+encircling predators, self-contained and with the predator force sign verified to push prey away, and
+sweeps the informed fraction with predators off and on.
+
+![figures/led_encirclement_1.png](figures/led_encirclement_1.png)
+
+Leadership first transfers cleanly to the slow-prey regime: with no predators, a twentieth of the
+flock informed already steers it to accuracy 0.95 and a tenth to near unity, with the order parameter
+at one, matching the fast-prey leadership result and putting the encirclement comparison on equal
+footing. Under active encirclement, leaders steer the flock through the ring. Accuracy toward the goal
+climbs from essentially zero with no leaders to 0.94 at a fifth informed and 0.98 at two fifths. The
+flock travels coherently toward the goal even though six predators surround it; the predators re-center
+their ring on the moving center of mass and keep pace, so the flock does not outrun them but instead
+travels toward the goal carrying the ring along with it. Encirclement fails to prevent a led flock from
+going where its leaders aim.
+
+At the same time, leaders restore the coherence encirclement destroyed. The order parameter rises from
+0.79 with no leaders -- the broken, fragmented state -- to 0.90 at a fifth informed and 0.94 at two
+fifths. The shared goal direction re-aligns the fragmenting flock, and the mechanism is exactly
+complementary: encirclement breaks coherence by removing the flock's shared heading, pushing different
+sub-groups in different directions, while leadership restores it by re-injecting a shared heading. They
+are opposing forces on the same alignment substrate.
+
+The cost of encirclement to the decision system is quantitative: it raises the leadership threshold.
+Steering that took only a twentieth of the flock without predators takes a fifth to two fifths under
+encirclement, because the predators compete with the leaders' signal, and coherence is not fully
+restored even at the largest informed fraction tested. But the qualitative outcome is unambiguous --
+a sufficient informed minority both holds the encircled flock together and drives it to its goal.
+
+The finding unifies the predator and decision threads and generalizes the escape result of Section
+4.52. There, a shared escape direction defeated predictive encirclement; here, a shared goal direction,
+carried by agents with no knowledge of the predators at all, counters standard encirclement by
+restoring coherence and enabling travel. It is therefore not the content of the shared signal, flee or
+go, that counters the predator, but the mere presence of any strong shared heading. Encirclement wins
+by destroying the flock's common direction, and anything that supplies one -- escape intelligence or
+oblivious leadership -- opposes it. This is the constructive dual of the entire predator program: the
+predator's only successful two-dimensional strategy wins by erasing the shared heading, and the
+leadership thread's central object, a shared heading, is precisely its antidote. The coherence and the
+steerability shown to be one resource in the previous section are here shown to be the same resource a
+predator attacks, so predation and leadership pull on opposite ends of the single lever of shared
+alignment.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3330,6 +3381,24 @@ while abrupt, beyond-bandwidth redirection, whether friendly or hostile, tears t
 steerability and its coherence are therefore not independent properties but a single resource, rationed by
 the alignment response time, and the whole catalogue of results -- flocking, escape, voting, leadership, and
 predation -- is organized by how fast a shared directional signal can be driven through that one response.
+
+The final experiment (Section 4.60) brings the two largest threads of the study into direct contact and
+resolves the tension just described. Placing an informed minority inside an actively encircled flock shows
+that leadership and predation are not merely analogous but literally opposed operations on the same
+quantity. Encirclement -- the only predator strategy that breaks two-dimensional coherence -- works by
+destroying the flock's shared heading, and a minority carrying any strong shared heading, even one wholly
+ignorant of the predators, both rebuilds the coherence the ring destroyed and drives the flock to its goal
+while the predators trail along behind. The predators exact a price, raising the informed fraction needed
+several-fold and leaving a residual loss of coherence, but they cannot stop a sufficiently led flock from
+going where it intends. This generalizes the earlier escape result, where it was a shared flight direction
+that defeated the predator: what defeats encirclement is not the content of the shared signal, flight or
+destination, but its mere existence. The predator wins by erasing the common direction; the leadership
+thread's central object, a common direction, is its antidote. The study thus closes on a single picture in
+which flocking, escape, voting, leadership, and predation are all expressions of one mechanism -- the
+alignment force propagating a shared direction -- and in which the flock's coherence, its steerability, and
+its vulnerability to predators are three faces of that same shared heading: build it and the group is
+coherent, steerable, and predator-resistant; erase it and the group fragments, drifts, and falls to the
+ring.
 
 ---
 
