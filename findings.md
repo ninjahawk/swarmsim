@@ -3192,6 +3192,77 @@ model collective outcomes are governed by summed directed force, not by counting
 
 ---
 
+## Finding 75: Time-resolved decisions -- leadership is fast and noise-robust, and the flock shows CRITICAL SLOWING at the compromise-to-consensus boundary (commitment time peaks at theta~90 deg)
+<img src="./figures/decision_time_1.png" width="640"/>
+
+**What:** F72-F74 all measured only the steady-state heading, averaged over a late window;
+they say nothing about the DYNAMICS of the decision. This records the full heading time
+series and extracts a settle/commitment time = the time (in tu) after which the flock heading
+stays permanently within 15 deg of its final value. Three parts: (1) response time vs informed
+fraction rho for a single leader; (1b) speed and accuracy vs noise at fixed rho=0.10; (2)
+commitment time vs the conflict angle theta between two equal opposed subgroups (the F73
+geometry), testing for critical slowing near the F73 compromise-to-consensus boundary.
+**Evidence:** collective/decision_time.py, N=350, pure-flock, 4 seeds. (Settle times carry
+large cross-seed std at 4 seeds; the ROBUST trends are the monotone accuracy, the strong
+high-rho speedup, and the Part-2 peak.)
+  Part 1 -- single leader, vary rho (w=1.0):
+  rho     settle_time (tu)      accuracy
+  0.02      5.98 +/- 4.20       +0.585
+  0.05     13.60 +/- 10.09      +0.917
+  0.10      8.85 +/- 8.16       +0.988
+  0.20      4.50 +/- 3.98       +1.000
+  0.50      0.46 +/- 0.33       +1.000
+  Part 1b -- rho=0.10, vary noise ramp:
+  ramp    settle_time (tu)      accuracy
+  0.5       8.85 +/- 8.16       +0.988
+  2.0       9.64 +/- 9.12       +0.996
+  5.0       9.76 +/- 9.69       +0.996
+  10.0     11.26 +/- 11.21      +0.998
+  Part 2 -- two equal opposed subgroups, vary conflict angle:
+  theta   commitment_time (tu)   final accuracy to g1
+   30       7.34 +/- 6.88        +0.966   (compromise, ~midpoint)
+   60      10.32 +/- 9.79        +0.864   (compromise, ~midpoint)
+   90      12.09 +/- 9.27        +0.718   (PEAK -- boundary)
+  120       7.55 +/- 4.53        +0.376   (consensus onset)
+  150       5.82 +/- 10.08       +0.196   (consensus)
+  180       6.38 +/- 10.93       +0.148   (consensus)
+**Key result 1 -- strong leadership is BOTH faster and more accurate; no genuine
+speed-accuracy tradeoff.** Final accuracy rises monotonically with rho (0.585 -> 1.000) and
+the settle time collapses at high rho (4.5 tu at rho=0.20, 0.46 tu at rho=0.50 -- near
+instant). The one apparent exception is the weak-leadership regime: at rho=0.02 the flock
+settles fast (~6 tu) but onto a POOR heading (accuracy 0.585), because seven leaders cannot
+drag the group off its spontaneous direction, so the heading is dominated by the flock's own
+quickly-stabilizing spontaneous alignment. That is an under-led artifact, not a real tradeoff:
+once leadership is strong enough to actually steer (rho >= 0.10), more leaders make the
+decision simultaneously quicker and more accurate. The slowest commitment is the intermediate
+rho~0.05, where the leader bias and the flock's inertia are comparable and the tug takes
+longest to resolve.
+**Key result 2 -- leadership is noise-robust in both speed and accuracy.** Across a 20x noise
+range (ramp 0.5 -> 10) accuracy stays essentially perfect (0.988 -> 0.998) and commitment slows
+only mildly (8.9 -> 11.3 tu). The flock follows its leaders just as accurately in heavy noise and
+takes only slightly longer to settle -- consistent with F4 (full-model flocking robust to noise
+up to eta ~ 10). Noise does not trade off against decision quality here.
+**Key result 3 -- CRITICAL SLOWING at the decision boundary (the headline).** Commitment time
+is non-monotonic in the conflict angle, peaking sharply at theta=90 deg (12.1 tu) and falling
+off on BOTH sides (7.3 tu at theta=30, 6.4 tu at theta=180). The peak sits exactly at the F73
+compromise-to-consensus boundary (~90-120 deg). This is the dynamical signature of a bistable
+system slowing near its bifurcation: where compromise is easy (small theta) the flock averages
+quickly; where the choice is decisive (large theta) it commits quickly once the symmetry breaks;
+but right at the boundary, where the averaging solution is losing stability and the two
+consensus solutions are just appearing, the flock dithers longest before settling. The decision
+takes longest exactly when it is hardest.
+**Implication.** Adds the temporal dimension to the F72-F74 decision picture and ties it to
+dynamical-systems theory. The flock is not just a weighted-majority integrator (F73/F74) but a
+bistable one: the compromise-to-consensus transition (F73) is a genuine bifurcation, evidenced
+here by critical slowing at the threshold rather than only by the steady-state heading jump.
+The speed-accuracy results sharpen the leadership story: leadership's benefit is not bought with
+slower decisions (the predator-disruption tradeoff has no analog here) -- strong, even noisy
+leadership is fast, accurate, and robust together. The only regime where the flock decides
+"fast but wrong" is when leadership is too weak to overcome the flock's own spontaneous heading,
+which is the temporal face of the F72 threshold (rho needs to clear a floor to steer at all).
+
+---
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*

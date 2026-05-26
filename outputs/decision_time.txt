@@ -1,0 +1,28 @@
+Time-resolved leadership decisions: how fast does the flock commit?
+  N=350  pure-flock  4 seeds  settle tol=15 deg
+
+== Part 1: RESPONSE TIME vs informed fraction (single leader, w=1.0) ==
+   rho=0.02 (  7 informed)  settle_time= 5.98 +/- 4.20 tu  accuracy=+0.585
+   rho=0.05 ( 18 informed)  settle_time=13.60 +/- 10.09 tu  accuracy=+0.917
+   rho=0.10 ( 35 informed)  settle_time= 8.85 +/- 8.16 tu  accuracy=+0.988
+   rho=0.20 ( 70 informed)  settle_time= 4.50 +/- 3.98 tu  accuracy=+1.000
+   rho=0.50 (175 informed)  settle_time= 0.46 +/- 0.33 tu  accuracy=+1.000
+
+== Part 1b: noise dependence (single leader, rho=0.10, w=1.0) ==
+   ramp= 0.5  settle_time= 8.85 +/- 8.16 tu  accuracy=+0.988
+   ramp= 2.0  settle_time= 9.64 +/- 9.12 tu  accuracy=+0.996
+   ramp= 5.0  settle_time= 9.76 +/- 9.69 tu  accuracy=+0.996
+   ramp=10.0  settle_time=11.26 +/- 11.21 tu  accuracy=+0.998
+
+== Part 2: COMMITMENT TIME vs conflict angle (equal 5%+5%, w=1.0) ==
+   critical slowing test: peak settle_time near the F73 compromise->consensus boundary?
+   theta= 30  settle_time= 7.34 +/- 6.88 tu  final_acc_to_g1=+0.966
+   theta= 60  settle_time=10.32 +/- 9.79 tu  final_acc_to_g1=+0.864
+   theta= 90  settle_time=12.09 +/- 9.27 tu  final_acc_to_g1=+0.718
+   theta=120  settle_time= 7.55 +/- 4.53 tu  final_acc_to_g1=+0.376
+   theta=150  settle_time= 5.82 +/- 10.08 tu  final_acc_to_g1=+0.196
+   theta=180  settle_time= 6.38 +/- 10.93 tu  final_acc_to_g1=+0.148
+
+  --> figures/decision_time_1.png
+
+Time-resolved decision analysis complete.

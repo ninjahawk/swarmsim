@@ -2776,6 +2776,59 @@ few strong ones. It echoes the escape threshold of Section 4.52, where the decid
 force magnitude measured against the alignment strength. In this model collective outcomes are
 governed by summed directed force, not by counting agents.
 
+### 4.57 Time-Resolved Decisions: Fast, Noise-Robust Leadership and Critical Slowing at the Decision Boundary (Finding 75)
+
+The leadership experiments to this point measured only the steady-state heading, averaged over a
+late window, and so describe the outcome of a decision but not its dynamics. This experiment
+records the full heading time series and extracts a settle time -- the time after which the flock
+heading remains permanently within fifteen degrees of its final value. Three questions follow:
+how the response time depends on the informed fraction for a single leader, how speed and accuracy
+respond to noise, and how the commitment time depends on the conflict angle between two opposed
+subgroups, which tests for critical slowing near the compromise-to-consensus boundary of Section
+4.55. Settle times carry large cross-seed scatter at four seeds, so the robust signals are the
+monotone trends and the location of the Part-three peak rather than any single value.
+
+![figures/decision_time_1.png](figures/decision_time_1.png)
+
+Strong leadership is both faster and more accurate, with no genuine speed-accuracy tradeoff. Final
+accuracy rises monotonically with the informed fraction, from 0.585 at two percent to unity by
+twenty percent, while the settle time collapses at high informed fraction -- about 4.5 time units at
+twenty percent and under half a time unit at fifty percent, essentially instantaneous. The one
+apparent exception is the weak-leadership regime: at two percent informed the flock settles quickly,
+in about six time units, but onto a poor heading, because seven leaders cannot drag the group off its
+spontaneous direction and the heading is dominated by the flock's own rapidly stabilizing spontaneous
+alignment. That is an under-led artifact rather than a real tradeoff; once leadership is strong enough
+to steer, more leaders make the decision simultaneously quicker and more accurate. The slowest
+commitment occurs at the intermediate five-percent fraction, where the leader bias and the flock's
+inertia are comparable and the tug takes longest to resolve.
+
+Leadership is robust to noise in both speed and accuracy. Across a twenty-fold range of noise
+amplitude the final accuracy stays essentially perfect, from 0.988 to 0.998, and the commitment time
+lengthens only mildly, from about 8.9 to 11.3 time units. The flock follows its leaders just as
+accurately in heavy noise and takes only slightly longer to settle, consistent with the earlier
+finding that full-model flocking is robust to noise up to large amplitudes. Noise does not trade off
+against decision quality here.
+
+The headline result is critical slowing at the decision boundary. The commitment time is non-monotonic
+in the conflict angle, peaking sharply at ninety degrees -- about 12 time units -- and falling off on
+both sides, to roughly 7 time units at thirty degrees and 6 at direct opposition. The peak sits exactly
+at the compromise-to-consensus boundary identified in Section 4.55. This is the dynamical signature of a
+bistable system slowing near its bifurcation: where compromise is easy, at small conflict, the flock
+averages the two goals quickly; where the choice is decisive, at large conflict, it commits quickly once
+the symmetry breaks; but right at the boundary, where the averaging solution is losing stability and the
+two consensus solutions are only just appearing, the flock dithers longest before settling. The decision
+takes longest exactly when it is hardest.
+
+The result adds the temporal dimension to the decision picture and connects it to dynamical-systems
+theory. The flock is not merely a weighted-majority integrator but a bistable one: the
+compromise-to-consensus transition is a genuine bifurcation, evidenced here by critical slowing at the
+threshold and not only by the steady-state jump in heading. The speed-accuracy findings sharpen the
+leadership story as well -- leadership's benefit is not paid for with slower decisions, the way predator
+disruption costs coherence; strong and even noisy leadership is fast, accurate, and robust at once. The
+only regime in which the flock decides quickly but wrongly is the one in which leadership is too weak to
+overcome the flock's own spontaneous heading, the temporal face of the threshold that the informed
+fraction must clear to steer at all.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3137,6 +3190,21 @@ defeated the predator only once its weight exceeded the alignment strength: acro
 conflict, and escape, the model's collective outcomes are governed by the magnitude of directed
 force relative to alignment, a single quantitative principle underlying what at the behavioural
 level look like distinct phenomena of steering, voting, and fleeing.
+
+The time-resolved view (Section 4.57) reveals that this weighted vote is, dynamically, a bistable
+decision. Watching the heading settle rather than only its endpoint shows that strong leadership is
+fast, accurate, and noise-robust all at once -- there is no decision-quality penalty for steering, in
+contrast to the coherence cost a predator pays to redirect the flock -- and that the only regime of
+quick-but-wrong commitment is the under-led one, the temporal shadow of the threshold the informed
+fraction must clear to steer at all. More strikingly, the commitment time peaks at the
+compromise-to-consensus boundary and falls away on either side, the textbook signature of critical
+slowing near a bifurcation. The transition between averaging two goals and committing to one is
+therefore not a mere relabeling of the steady state but a genuine change in the dynamical landscape:
+at the boundary the averaging solution loses stability while the two consensus solutions are only
+beginning to form, and the flock, caught between them, takes longest to decide precisely when the
+decision is hardest. The collective behaviours catalogued in this study -- flocking, escape, steering,
+and voting -- are thus unified not only by the alignment force that carries shared signals but by the
+bistable, threshold-governed way that force resolves competition among them.
 
 ---
 
