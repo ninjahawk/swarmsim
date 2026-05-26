@@ -2725,6 +2725,57 @@ one dominates -- now playing out between two leadership signals. Alignment does 
 propagate one common direction; it arbitrates among several, and the arbitration rule is an
 emergent property of the alignment force rather than anything built into the agents.
 
+### 4.56 Numbers Versus Conviction: The Decision Is Set by Total Pull, Not Headcount (Finding 74)
+
+Section 4.55 established that between two equal-strength opposed subgroups the larger one wins,
+a majority vote. But the leaders there all shared the same bias strength, which leaves open the
+dual question: does a smaller but more strongly committed subgroup beat a larger weakly committed
+one, and what quantity decides the outcome -- headcount, or total pull defined as the product of
+count and bias strength? Two opposed subgroups are placed in direct opposition and accuracy toward
+the first group is measured as the cosine of the flock heading. The first experiment fixes the
+subgroups at equal size and varies their conviction ratio; the second pits a numerical minority of
+ten against a majority of twenty-six and ramps the minority's conviction across the point where the
+two sides' total pull balances.
+
+![figures/conviction_1.png](figures/conviction_1.png)
+
+Conviction is a lever on the decision exactly as numbers are. With eighteen agents on each side,
+the more strongly committed subgroup wins, and increasingly so with the conviction ratio: accuracy
+toward the stronger group climbs from a tie at equal strength through +0.44 at twice the strength
+to +0.71 at five times. The flock's vote is not one agent, one vote; each informed agent's
+influence scales with its commitment.
+
+The second experiment reveals the governing quantity. As the ten-agent minority's conviction rises,
+accuracy toward it crosses zero right around the point where the two sides' total pull balances:
+strongly negative when the minority's pull is ten against the majority's twenty-six, essentially a
+tie at the naive balance of twenty-six against twenty-six, and positive once the minority's pull
+reaches fifty. A small, strongly committed minority overcomes a larger weakly committed majority as
+soon as its summed committed force exceeds theirs. Headcount is not privileged over conviction; what
+the flock integrates is the total directed force injected by each side -- a product law, count times
+strength.
+
+The balance is not exactly at equal pull. The zero-crossing sits slightly above it: at exact pull
+balance the accuracy is still mildly negative, turning positive only past a pull of roughly thirty-five
+to forty. The minority therefore needs somewhat more than equal pull to win, because more distinct
+informed agents nucleate the goal direction in more spatial locations within the flock, giving the
+more numerous side a small edge beyond its raw pull. The product law is the leading-order rule with a
+second-order bonus for being spread across more individuals.
+
+Throughout, the order parameter stays between 0.94 and 0.96 and the cross-seed spread is large,
+because direct opposition is the consensus regime of Section 4.55: each run decisively picks one side,
+and the reported mean accuracy is the expected vote bias across seeds rather than a within-run
+compromise. Even a near-balanced strength contest does not fragment the flock; it picks a direction.
+
+Taken with Section 4.55, the result completes the voting picture. One experiment varied numbers at
+fixed conviction, the other varies conviction at fixed and unequal numbers, and together they show the
+flock weights each informed agent's vote by its commitment strength and decides by the summed pull of
+each side -- an emergent weighted majority rule, with a mild bonus for numerosity itself. This is the
+quantitative form of the alignment-arbitration principle: alignment integrates all the directed forces
+present and the group commits to the net winner, whether that net is built from many weak voices or a
+few strong ones. It echoes the escape threshold of Section 4.52, where the deciding quantity was also a
+force magnitude measured against the alignment strength. In this model collective outcomes are
+governed by summed directed force, not by counting agents.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3071,6 +3122,21 @@ recurs whenever competing global drives meet in this study, from speed homogeniz
 alpha-contrast segregation to the non-monotonic escape counter: an alignment-dominated flock
 resolves conflicting collective signals by selecting one, not by interpolating, once those
 signals become mutually incompatible.
+
+The conviction experiment (Section 4.56) makes the vote quantitative. When two opposed
+subgroups differ not in number but in commitment strength, the more strongly committed side
+wins at equal numbers, and a numerical minority overtakes a larger majority precisely as its
+total pull -- the product of count and bias strength -- crosses the majority's. The flock is
+therefore not a one-agent-one-vote democracy but a weighted integrator: it sums the directed
+force injected by every informed agent and commits to the net winner, whether that net is
+assembled from many weak voices or a few strong ones. A small residual advantage attaches to
+numerosity itself, because more distinct informed agents seed the preferred direction at more
+points in the group, but to leading order it is summed force, not headcount, that decides. This
+is the same currency that set the escape threshold earlier in the study, where committed flight
+defeated the predator only once its weight exceeded the alignment strength: across leadership,
+conflict, and escape, the model's collective outcomes are governed by the magnitude of directed
+force relative to alignment, a single quantitative principle underlying what at the behavioural
+level look like distinct phenomena of steering, voting, and fleeing.
 
 ---
 

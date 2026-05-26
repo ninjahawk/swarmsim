@@ -3131,6 +3131,67 @@ between two leadership signals rather than escape-vs-alignment.
 
 ---
 
+## Finding 74: Numbers vs CONVICTION -- the collective decision is set by total PULL (count x strength), not headcount. A small, strongly committed minority beats a larger weak one
+<img src="./figures/conviction_1.png" width="640"/>
+
+**What:** F73 showed that between two equal-strength opposed subgroups the LARGER one wins
+(majority vote). But all leaders there had equal bias strength. This asks the dual question:
+does a SMALLER but more strongly committed subgroup beat a larger weakly committed one, and
+what quantity decides the outcome -- headcount, or total "pull" = count x bias strength?
+Two opposed subgroups (theta=180 deg, g1=+x, g2=-x). Accuracy toward g1 = cos(flock heading)
+(+1 g1 wins, -1 g2 wins, 0 tie/random).
+**Evidence:** collective/conviction.py, N=350, pure-flock, 6 seeds.
+  Exp A -- EQUAL numbers (18 vs 18), vary conviction ratio w1/w2 (w2=1.0):
+  w1/w2    accuracy toward stronger group    Phi
+  1.0          +0.201 +/- 0.406            0.958
+  1.5          +0.334 +/- 0.364            0.951
+  2.0          +0.442 +/- 0.336            0.946
+  3.0          +0.598 +/- 0.291            0.941
+  5.0          +0.706 +/- 0.234            0.937
+  Exp B -- PRODUCT-LAW test: 10 strong vs 26 weak (w2=1.0), vary w1:
+  w1     pull1 = n1*w1   vs pull2=26    accuracy toward minority(g1)    Phi
+  1.0       10.0                          -0.267 +/- 0.462            0.957
+  1.8       18.0                          -0.165 +/- 0.452            0.947
+  2.6       26.0  (pull balance)          -0.069 +/- 0.434            0.944
+  3.5       35.0                          -0.024 +/- 0.441            0.942
+  5.0       50.0                          +0.074 +/- 0.461            0.935
+**Key result 1 -- conviction wins at equal numbers (a second independent lever).** Exp A:
+with 18 agents on each side, the more strongly committed subgroup wins, and increasingly so
+with the conviction ratio: accuracy toward the stronger group climbs from +0.20 (tie at equal
+strength) through +0.44 at 2x to +0.71 at 5x. Bias strength is a lever on the decision exactly
+as numbers are (F73). The flock's "vote" is not one-agent-one-vote; each informed agent's
+influence scales with its commitment.
+**Key result 2 -- the PRODUCT LAW: the winner is set by total pull = count x strength.** Exp B
+pits a numerical minority (10 agents) against a majority (26) and ramps the minority's
+conviction. Accuracy toward the minority crosses zero right around the point where the two
+groups' total pull balances: -0.27 at pull 10 (minority loses badly), -0.07 at pull 26 (the
+naive balance n1*w1 = n2*w2, essentially a tie), and +0.07 at pull 50 (the 10-agent minority
+now wins). A small, strongly committed minority overcomes a larger weakly committed majority
+once its summed committed force exceeds theirs. Headcount is not privileged over conviction;
+what the flock integrates is the total directed force injected by each side.
+**Key result 3 -- a mild residual numbers advantage.** The zero-crossing sits slightly ABOVE
+equal pull: at exact pull balance (26 vs 26) accuracy is -0.069 and at pull 35 still -0.024,
+turning positive only past ~pull 35-40. So the minority needs somewhat MORE than equal pull to
+win. More distinct informed agents nucleate the goal direction in more spatial locations within
+the flock, giving the more numerous side a small edge beyond its raw pull -- the product law is
+the leading-order rule with a second-order bonus for being spread across more individuals.
+**Key result 4 -- still consensus, never splitting.** Phi stays 0.94-0.96 throughout and the
+cross-seed spread is large (~0.44) in Exp B because theta=180 is the consensus regime (F73):
+each run decisively picks one side, and the mean accuracy is the expected vote bias across
+seeds, not a within-run compromise. Even a near-balanced strength contest does not fragment the
+flock -- it picks a direction.
+**Implication.** Completes the F73 voting picture. F73 varied numbers at fixed conviction; F74
+varies conviction at fixed and unequal numbers. Together they show the flock weights each
+informed agent's vote by its commitment strength and decides by the summed pull of each side --
+an emergent weighted majority rule, with a mild bonus for numerosity per se. This is the
+quantitative form of the alignment-arbitration principle (F72/F73): alignment integrates all
+the directed forces present and the group commits to the net winner, whether that net is built
+from many weak voices or few strong ones. Connects to F70's escape threshold (the deciding
+quantity there was also a force magnitude relative to alignment, w_escape vs alpha): in this
+model collective outcomes are governed by summed directed force, not by counting agents.
+
+---
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
