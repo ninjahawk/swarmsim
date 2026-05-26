@@ -3191,6 +3191,72 @@ targeting must beat is not the graph the alignment force defines. A genuine
 escape would require freezing the *contact* graph itself — that is, suppressing
 the relative motion of agents — which is incompatible with a flock that moves.
 
+### 5.1 The Exploitable Invariant: Why Slow-Recoverer Targeting Is the One Strategy That Beats Random
+
+The kinematic-mixing argument explains a long run of targeting nulls, but the study also found
+exactly one targeting strategy that beats random, and it fits the same framework as the case that
+proves the rule. Across roughly fifteen experiments, degree-targeting failed structurally (no hubs)
+and spatial targeting failed kinematically (mixing erased coverage); both failures trace to the fact
+that the quantities they target — contact degree and spatial position — are either absent or shuffled.
+Heterogeneous recovery (Sections 4.36-4.46) introduced a third kind of target: the per-agent recovery
+rate. Unlike degree and position, an agent's recovery rate is an internal-state invariant that the
+kinematic motion cannot scramble, and targeting the slowest recoverers beats random by factors of two
+to three — the first and only strategy in the study to do so. It works in two and three dimensions,
+under continuous as well as bimodal rate distributions, with noisy estimates of the rate, and with
+small reservoirs, and it reverses the otherwise-durable predator-plus-contagion damage once the
+vaccination budget covers the reservoir.
+
+This is the same principle as the reversibility asymmetry, stated from the constructive side. Damage or
+advantage stored in positions and velocities is mixed away; damage or advantage stored in a durable
+per-agent label is not. The recovery rate is such a label, which is why targeting it succeeds where
+targeting mixed quantities fails — and the boundary is sharp: when the rate label is allowed to drift,
+the advantage erodes and then vanishes exactly as the label decorrelates (Section 4.44), and at fast
+drift the epidemic self-averages back to the homogeneous threshold. The exploitable target is therefore
+defined precisely: it is whatever the flock's motion cannot erase. Mixing rules out structural and
+spatial targets; only a stationary internal-state invariant survives as a handle, and the recovery rate
+is the one such handle this model contains.
+
+### 5.2 The Shared Heading: How Collective Direction Is Built, Contested, and Attacked
+
+A second unifying axis organizes the later threads — the arms race and the leadership experiments — and
+complements the mixing story rather than competing with it. Where kinematic mixing concerns what the
+flock cannot retain (any per-agent structure save a stationary internal label), the shared-heading
+principle concerns what the flock can act on collectively: a single direction held in common and
+amplified by the alignment force. Every result from the escape counter through adversarial leadership is
+a statement about this one quantity.
+
+The principle is that the alignment force amplifies a globally shared direction and averages away a
+locally heterogeneous one. Collective escape defeats a predictive predator only when the escape vector is
+shared by all prey (Section 4.52); per-prey local escape, in which each prey computes its own direction
+away from nearby predators, only partly works because those directions do not align (Section 4.53). The
+same asymmetry makes a tiny informed minority an effective leader: a few percent of agents carrying one
+common goal vector steer the whole group, because alignment propagates their single shared direction to a
+naive majority (Section 4.54). Leadership, committed escape, and the spontaneous emergence of a flock
+heading are thus one phenomenon. When two shared directions compete, the alignment force arbitrates them:
+it vector-averages compatible goals into a compromise and, past a critical conflict angle, breaks symmetry
+into a majority consensus (Section 4.55), with the decision set by the summed directed force of each side —
+count times conviction — rather than by headcount (Section 4.56). Time-resolved, the consensus transition
+is a genuine bifurcation, exhibiting critical slowing at the boundary (Section 4.57), and the steering it
+enables is a low-pass control channel whose bandwidth is the inverse of the alignment response time
+(Section 4.59).
+
+Two corollaries tie this axis back to the first. Because the signal is a shared direction and not an
+identity, rotating which agents carry it never hurts and, smeared over the whole flock, helps (Section
+4.58) — the exact opposite of the slow-recoverer label, which must persist to be useful. The shared
+heading is the one collective quantity that benefits from turnover, precisely because it is not stored per
+agent. And because coherence and steerability are the same shared heading seen two ways (Section 4.59),
+the flock's adversaries are unified as attacks on it: encirclement erases the heading by fragmenting the
+group, and a shared heading — escape or oblivious leadership — is its antidote (Sections 4.52, 4.60);
+panic severs the heading at its source by silencing the leaders, which leadership cannot repair because
+the disease disables the carriers (Section 4.61); and a saboteur injecting a false heading can deadlock
+the flock at pull parity but must dominate to commandeer it (Section 4.62). Across all of these the same
+accounting holds — the flock acts on the net shared directed force it can muster, each adversary subtracts
+from it differently, and disrupting that force is always cheaper than commandeering it. The two synthesis
+axes are therefore complementary: kinematic mixing says the flock retains no per-agent structure to
+exploit except a stationary internal label, and the shared-heading principle says the one thing the flock
+does build and act on collectively is a common direction, which is simultaneously the source of its
+coherence, the lever of its steering, and the target of every adversary that succeeds against it.
+
 ---
 
 ## 6. Discussion
