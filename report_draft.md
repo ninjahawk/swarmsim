@@ -3188,6 +3188,45 @@ collective's accuracy regardless of its size, so common-mode deception is cheape
 closes the many-wrongs sub-thread with a unifying statement: alignment is a directional averager whose
 collective accuracy is governed by the correlation structure of its inputs, not their number.
 
+### 4.66 The Noisy Minority: Informed-Minority Steering and the Wisdom of Crowds Are Distinct (Finding 84)
+
+The navigation literature keeps two effects apart that this study can now place in one setup. One is
+informed-minority steering, where a few agents with a preferred direction steer the whole group; the other is
+the many-wrongs principle, where many independent noisy estimates average to higher accuracy as the group
+grows. The exact-vector minority of the scaling self-test and the all-agents-noisy crowd of the many-wrongs
+section are the two pure cases; the bridging case is a fixed number of informed agents each carrying its own
+noisy estimate, with the rest naive followers. Here two scales pull in opposite directions as the group grows:
+the direction of the injected pull is the pooled estimate of the informed agents, whose error is fixed by
+their number and not by the group size, while the strength with which that pull is felt per agent dilutes with
+group size exactly as in the self-test.
+
+![figures/noisy_minority_1.png](figures/noisy_minority_1.png)
+
+The result is unambiguous: a fixed number of noisy leaders does not suffice as the group grows. The exact
+minority falls with size at every leader count, reproducing the self-test, and the noisy minority also fails
+-- at twenty leaders its accuracy falls from about nine-tenths at a hundred agents to below one half at five
+hundred, and at ten leaders it sits near the spontaneous-heading floor regardless of size. The internal
+averaging of the minority cannot rescue the dilution of the per-capita pull, because the pooled direction is
+at best a fixed accuracy set by the fixed leader number while the strength of its imposition weakens with the
+group. The noisy minority moreover sits at or below the exact minority everywhere, the penalty being the
+pooled-direction error: the leaders agree on a heading that is itself off the true goal by roughly eighteen
+degrees for ten leaders, and no amount of follower alignment can recover a target the leaders themselves get
+wrong. An exact minority points the flock exactly right but weakly; a noisy minority points it weakly and
+slightly wrong. Only growing the number of leaders at fixed group size recovers accuracy, climbing from about
+a fifth at five leaders to nine-tenths at eighty, because more leaders give both more per-capita pull and a
+better-pooled direction.
+
+This separates two mechanisms the literature often conflates. Informed-minority steering and the
+wisdom-of-crowds averaging are distinct and do not combine in a fixed minority: confining noisy estimates to a
+fixed cadre gives per-capita-diluted steering toward a fixed-accuracy pooled direction, strictly worse than an
+exact minority, while the square-root amplification of the many-wrongs section requires the informed fraction
+itself to grow. It is the sharp form of the self-test's correction -- the claim that a fixed number suffices
+holds for the many-wrongs crowd only when every agent is an estimator, never for a fixed informed minority.
+Taken together the four sections complete the thread's mechanistic map: alignment is a directional averager
+whose output accuracy is set by the per-capita pull, fraction times strength, toward a target whose own
+accuracy is set by the correlation structure of the estimates and the size of the estimating set, so number
+helps only when it grows the estimating fraction and never as a fixed minority.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism

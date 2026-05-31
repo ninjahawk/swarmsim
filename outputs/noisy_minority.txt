@@ -1,0 +1,26 @@
+Noisy minority: does a fixed NUMBER of noisy-informed agents suffice as N grows?
+  w_lead=1.0  8 seeds  pure-flock
+
+== Exp1: accuracy vs N at fixed n_lead (exact sigma=0 vs noisy sigma=1.0 rad) ==
+  -- EXACT (=F81) --
+     n_lead=10   N=100: +0.720   N=250: +0.573   N=500: +0.489   (frac 0.100->0.020)
+     n_lead=20   N=100: +0.976   N=250: +0.769   N=500: +0.586   (frac 0.200->0.040)
+
+  -- NOISY sigma=1.0 --
+     n_lead=10   N=100: +0.356   N=250: +0.376   N=500: +0.424   (frac 0.100->0.020)
+     n_lead=20   N=100: +0.861   N=250: +0.526   N=500: +0.425   (frac 0.200->0.040)
+
+  Reading: if accuracy FALLS with N at fixed n_lead, the NUMBER does not suffice
+  (per-capita pull dilution dominates, F81). Noisy should sit at or below exact.
+
+== Exp2: noisy minority (sigma=1.0 rad), sweep n_lead at N=250 ==
+   n_lead= 5 (frac=0.020)  accuracy=+0.224 +/- 0.646  Phi=0.991
+   n_lead=10 (frac=0.040)  accuracy=+0.376 +/- 0.703  Phi=0.982
+   n_lead=20 (frac=0.080)  accuracy=+0.526 +/- 0.616  Phi=0.971
+   n_lead=40 (frac=0.160)  accuracy=+0.867 +/- 0.229  Phi=0.967
+   n_lead=80 (frac=0.320)  accuracy=+0.905 +/- 0.219  Phi=0.947
+   (more leaders = more per-capita pull AND a better-pooled direction; both help)
+
+  --> figures/noisy_minority_1.png
+
+Noisy-minority analysis complete.

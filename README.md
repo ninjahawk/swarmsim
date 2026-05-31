@@ -166,7 +166,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-83 findings documented — full evidence and figures: [`findings.md`](findings.md)
+84 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
@@ -228,6 +228,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 | 81 | **(self-test) Steering is set by the informed *fraction*, not the absolute number — correcting F72's offhand Couzin attribution**. F72 cited Couzin (2005)'s "informed *number* needed drops as the group grows" but only ever swept ρ at one N. Varying N at *fixed* leader count n_lead, accuracy *falls* with N at every fixed n_lead (n_lead=20 → 0.96/0.76/0.48 at N=100/250/500); re-indexed by fraction the data collapses with no residual N trend. Steering delivers exactly the F74 product law **per capita** — total injected force n_lead·w divided by *all* N — so growing N at fixed n_lead dilutes the per-capita pull. The literature's number-suffices scaling comes from a *many-wrongs* preferred-direction-averaging amplification that **linear velocity alignment does not have**; this model delivers per-capita pull with no amplification. The fraction-based frame (F72/F78/F79/F80) is correct; the one number-based intuition is the exception removed here. A many-wrongs follower rule would be needed to recover the literature scaling — an open direction. Fourth self-test (cf. F47/F48/F52) |
 | 82 | **Many-wrongs navigation: noisy *private* goal estimates average to a 1/√N wisdom of crowds — recovering exactly the amplification F81 predicted but found absent for exact-shared vectors**. Give *every* agent its own goal estimate at per-agent angular error σ_pref and bias it toward its own: the flock's RMS heading error falls 16°→2° as N grows 30→250 (log-log slope **−0.52**, predict −0.5) and accuracy *rises* with N (0.96→0.999) — the clean inverse of F81. Each agent alone would err ~57°, but a flock of 250 navigates to within 2°. No contradiction with F81: alignment averages whatever signal the agents carry — an exact shared vector has no error to average (per-capita pull, F81), heterogeneous noise averages down as 1/√N (F82). Two limits: a ~2° **floor** (size-independent dynamical jitter) and a **noise ceiling** — past σ_pref≈1.3 rad the pooled estimate magnitude (~exp(−σ²/2)) collapses below the spontaneous-heading threshold and accuracy falls 0.99→0.58 with exploding seed scatter while Φ stays ~0.90 (the many-wrongs form of the F72/F74 pull threshold). Alignment is a directional averager: per-capita for shared signals, √N-amplifying for noisy ones |
 | 83 | **Correlated estimates: F81 and F82 are the two ends of *one* axis (error correlation ρ_c), and shared sensing error caps the wisdom of crowds**. Build each agent's goal error as √ρ_c·(shared) + √(1−ρ_c)·(private): at ρ_c=0 error falls 1/√N (F82), at ρ_c=1 it's *exactly* N-independent (68° at every N, Φ=1.0 — the F81 limit, all agents confidently agree on the same wrong heading). Any ρ_c>0 imposes an N-independent floor ≈σ√ρ_c that **no flock size can beat**: a mere 10% correlation pins accuracy at ~0.92 whether N=30 or 500. Bonus: correlation buys *coherence* (Φ 0.88→1.0) at the cost of *accuracy* (0.99→0.44) — a perfectly coherent flock can be unanimously wrong (consensus ≠ correctness, cf. F73). Ties to F80: an attacker who can't out-number the leaders can instead inject a single shared false cue and cap the collective's accuracy regardless of size — **common-mode deception is cheaper than majority capture**. Closes the many-wrongs sub-thread (F81–F83) |
+| 84 | **The noisy minority: informed-minority steering and the wisdom of crowds are *distinct* mechanisms that don't combine in a minority**. A fixed *number* of *noisy*-informed agents (rest naive) still fails as N grows — exactly F81, not F82: at n_lead=20 accuracy falls 0.86→0.43 as N=100→500, and noisy sits ≤ exact everywhere (the pooled-direction penalty σ/√n_lead — leaders agree on a heading ~18° off, which followers can't fix). Only growing n_lead recovers accuracy (0.22→0.91 at N=250). The 1/√N many-wrongs amplification (F82) needs the informed *fraction* to grow; confined to a fixed cadre it gives per-capita-diluted steering toward a fixed-accuracy pooled target — strictly worse than an exact minority. Separates Couzin (informed-minority) from Simons/Codling (many-wrongs) within one model. Completes the leadership mechanistic map (F72–F84): alignment is a directional averager whose accuracy = per-capita pull (fraction×strength) toward a target set by the estimates' correlation (F83) and sample size (F82/F84) |
 
 Full documentation, evidence, and figures for each finding: [`findings.md`](findings.md)
 
@@ -252,7 +253,7 @@ Experiments live in four theme subfolders. Each script is self-contained, has an
 | `contagion/` | panic, SI/SIS contagion, vaccination, segregation, mixing, heterogeneous recovery, slow-recoverer targeting (F18–F37, F47–F48, F52, F54–F64) | `contagion_sis.py`, `targeted_immunity.py`, `spatial_vaccination.py`, `recovery_heterogeneity.py`, `slow_recoverer_vaccination.py` |
 | `phase/` | finite-size scaling, hard repulsion, Langevin, hexatic order parameter (F2, F8, F12, F17, F38–F40, F50) | `phase_transition.py`, `langevin_repulsion.py`, `langevin_hexatic.py`, `langevin_hexatic_hard.py` |
 | `3d/` | three-dimensional flocking, predators, vaccination, segregation, slow-recoverer targeting, transect-predator robustness (F41–F46, F49, F51, F58, F65) | `flocking3d.py`, `flocking3d_predator.py`, `flocking3d_vaccination.py`, `flocking3d_slow_vaccination.py` |
-| `collective/` | collective decision-making — informed-minority leadership, conflicting leaders, compromise vs consensus, numbers-vs-conviction product law, time-resolved decisions & critical slowing, signal-vs-identity rotation, steering bandwidth, leadership-vs-encirclement, leadership-under-panic, adversarial leadership, fraction-not-number scaling self-test, many-wrongs wisdom-of-crowds navigation, correlated-estimate ceiling (F72–F83; `leadership.py` lives at root) | `conflicting_leaders.py`, `conviction.py`, `decision_time.py`, `rotate_leaders.py`, `moving_goal.py`, `led_encirclement.py`, `panic_leadership.py`, `adversarial_leaders.py`, `leader_scaling.py`, `many_wrongs.py`, `correlated_estimates.py` |
+| `collective/` | collective decision-making — informed-minority leadership, conflicting leaders, compromise vs consensus, numbers-vs-conviction product law, time-resolved decisions & critical slowing, signal-vs-identity rotation, steering bandwidth, leadership-vs-encirclement, leadership-under-panic, adversarial leadership, fraction-not-number scaling self-test, many-wrongs wisdom-of-crowds navigation, correlated-estimate ceiling, noisy-minority mechanism split (F72–F84; `leadership.py` lives at root) | `conflicting_leaders.py`, `conviction.py`, `decision_time.py`, `rotate_leaders.py`, `moving_goal.py`, `led_encirclement.py`, `panic_leadership.py`, `adversarial_leaders.py`, `leader_scaling.py`, `many_wrongs.py`, `correlated_estimates.py`, `noisy_minority.py` |
 
 A complete file-by-file index lives in the per-finding evidence sections of [`findings.md`](findings.md). A predator-force sign bug in the 3D scripts was found and fixed in May 2026 (commit `30ead1c`); F43/F44/F45/F49 were rerun with the corrected sign and write-ups updated.
 
@@ -264,7 +265,7 @@ A complete file-by-file index lives in the per-finding evidence sections of [`fi
 | `build_report.py` | Generates `report_draft.pdf` from `report_draft.md` using reportlab |
 | `sim_demo.html` | Interactive browser simulation (open locally or via htmlpreview link above) |
 | `logs.html` | Time log and research log — open in browser |
-| `findings.md` | Running notes on all 83 findings with figures |
+| `findings.md` | Running notes on all 84 findings with figures |
 | `report_draft.md` | Full research report in Markdown |
 
 ---
@@ -325,7 +326,7 @@ python 3d/flocking3d_segregation.py
 python 3d/flocking3d_slow_vaccination.py
 python 3d/flocking3d_transect.py
 
-# Collective decision-making / leadership (F72-F83)
+# Collective decision-making / leadership (F72-F84)
 python leadership.py
 python collective/conflicting_leaders.py
 python collective/conviction.py
@@ -338,6 +339,7 @@ python collective/adversarial_leaders.py
 python collective/leader_scaling.py
 python collective/many_wrongs.py
 python collective/correlated_estimates.py
+python collective/noisy_minority.py
 ```
 
 For the full set of scripts and what each tests, see the per-finding sections of [`findings.md`](findings.md).

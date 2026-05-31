@@ -3724,6 +3724,63 @@ cue) and cap the collective's accuracy regardless of its size -- common-mode dec
 majority capture. Remaining open: does the floor relax if agents can DETECT and down-weight correlated inputs
 (robust estimation), and how does rho_c interact with the F77 steering-bandwidth limit for a moving goal.
 
+---
+
+## Finding 84: NOISY MINORITY -- a fixed NUMBER of noisy-informed agents still fails as N grows (NOT many-wrongs); Couzin's informed-minority and the wisdom-of-crowds are DISTINCT mechanisms that do not combine in a minority
+<img src="./figures/noisy_minority_1.png" width="640"/>
+
+**What:** Closes the F81-F84 quartet by resolving which mechanism a NOISY MINORITY follows. The animal-
+navigation literature treats two effects as separate: Couzin et al. (2005) informed-minority steering (a few
+agents with a preferred direction steer the group) and the Simons (2004)/Codling et al. (2007) many-wrongs
+principle (many independent noisy estimates average to higher accuracy with group size). F81 (exact-vector
+minority, NUMBER fails) and F82 (all-agents noisy, NUMBER helps via 1/sqrt(N)) are the pure cases. The
+bridging case is a fixed NUMBER n_lead of informed agents EACH carrying a private noisy estimate
+(angle ~ N(0, sigma_pref)), the rest naive followers with no bias. Two scales pull opposite ways as N grows:
+the DIRECTION of the injected pull is the pooled estimate of the n_lead leaders (error ~ sigma/sqrt(n_lead),
+FIXED in N), while the MAGNITUDE of the pull per capita is n_lead*w/N (DILUTES in N, F81).
+**Evidence:** collective/noisy_minority.py, pure-flock, w_lead=1.0, 8 seeds.
+  Exp1 -- accuracy vs N at fixed n_lead, EXACT (sigma=0, reproduces F81) vs NOISY (sigma=1.0 rad):
+    EXACT n_lead=10:  N=100 +0.720  N=250 +0.573  N=500 +0.489   (falls with N)
+    EXACT n_lead=20:  N=100 +0.976  N=250 +0.769  N=500 +0.586   (falls with N)
+    NOISY n_lead=10:  N=100 +0.356  N=250 +0.376  N=500 +0.424   (flat/low, within seed scatter)
+    NOISY n_lead=20:  N=100 +0.861  N=250 +0.526  N=500 +0.425   (falls with N, below exact)
+  Exp2 -- noisy minority (sigma=1.0 rad), sweep n_lead at N=250:
+    n_lead= 5  acc +0.224 +/- 0.646  Phi 0.991
+    n_lead=10  acc +0.376 +/- 0.703  Phi 0.982
+    n_lead=20  acc +0.526 +/- 0.616  Phi 0.971
+    n_lead=40  acc +0.867 +/- 0.229  Phi 0.967
+    n_lead=80  acc +0.905 +/- 0.219  Phi 0.947
+**Key result 1 -- a fixed NUMBER of noisy leaders does NOT suffice as N grows.** The exact minority falls
+with N at every n_lead (F81 reproduced: n_lead=20 -> 0.976/0.769/0.586). The noisy minority also fails: at
+n_lead=20 it falls 0.861 -> 0.425, and at n_lead=10 it is stuck near the spontaneous-heading floor (~0.4,
+huge variance) regardless of N. The minority's internal averaging cannot rescue the per-capita pull dilution
+-- the pooled direction is at best a FIXED accuracy (error ~ sigma/sqrt(n_lead), set by the fixed n_lead, not
+by N), and the strength with which that direction is imposed weakens as n_lead*w/N. So a noisy minority is the
+F81 regime, NOT the F82 regime: number does not suffice.
+**Key result 2 -- noisy minority <= exact minority, always.** At every (n_lead, N) the noisy accuracy sits at
+or below the exact (n_lead=20: 0.861 vs 0.976 at N=100, 0.425 vs 0.586 at N=500). The penalty is the
+pooled-direction error sigma/sqrt(n_lead): the n_lead leaders agree on a direction that is itself off the true
+goal by ~18 deg for n_lead=10, and no amount of follower alignment can recover a target the leaders
+themselves get wrong. An exact-vector minority points the flock exactly right (just weakly); a noisy minority
+points it weakly AND slightly wrong.
+**Key result 3 -- only the FRACTION recovers accuracy (Exp2).** Growing n_lead at fixed N raises accuracy
+monotonically (0.224 -> 0.905 as n_lead 5 -> 80), because more leaders give BOTH more per-capita pull (F81/F74)
+AND a better-pooled direction (sigma/sqrt(n_lead) shrinks). This is the F82 amplification re-expressed: the
+1/sqrt(n_lead) wisdom-of-crowds averaging operates over the INFORMED set, so it helps only when the informed
+set GROWS -- which, at fixed N, means a larger fraction. The huge cross-seed std at small n_lead (0.65-0.70)
+is the F72/F75 under-led regime (the flock picks spontaneous headings).
+**Implication.** Separates, within one model, two mechanisms the literature often conflates. Couzin
+informed-minority steering and the many-wrongs wisdom of crowds are DISTINCT and do not combine in a fixed
+minority: confining noisy estimates to a fixed cadre gives per-capita-diluted steering toward a
+fixed-accuracy pooled direction (strictly worse than an exact minority, F81-like), while the 1/sqrt(N)
+many-wrongs amplification (F82) requires the informed FRACTION itself to grow. This is the sharp form of the
+F81 correction: "number suffices" is true for the many-wrongs crowd only when EVERY agent is a (noisy)
+estimator, never for a fixed informed minority. Completes the leadership thread's mechanistic map
+(F72-F84): alignment is a directional averager; its output accuracy is set by the per-capita pull (fraction x
+strength, F74/F81) toward a target whose own accuracy is set by the correlation structure (F83) and the
+sample size of the estimating set (F82/F84) -- number helps only when it grows the estimating fraction, never
+as a fixed minority.
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
