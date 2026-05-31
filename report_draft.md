@@ -3227,6 +3227,45 @@ whose output accuracy is set by the per-capita pull, fraction times strength, to
 accuracy is set by the correlation structure of the estimates and the size of the estimating set, so number
 helps only when it grows the estimating fraction and never as a fixed minority.
 
+### 4.67 Misinformation: A Crowd Averages Out Noise but Flips to a Coordinated Falsehood (Finding 85)
+
+The mechanistic map of the preceding sections carries a practical corollary worth testing directly. Because
+each agent contributes a unit vector to the directional average, its influence is bounded however wrong its
+heading, so the averaging should be intrinsically robust to outliers -- but only to uncorrelated ones, since
+the correlation section showed that shared error does not average away. This experiment contrasts two kinds of
+misinformation carried by a fraction of the flock against a well-informed majority that holds a tight estimate
+of the true goal. The misinformed members are either lost, pointing in uniform-random directions with no
+coordination among them, or adversarial, all pointing at a single false goal in the opposite direction. The
+prediction is that lost members cancel, their random unit votes summing to little against the aligned
+majority, so accuracy holds until they are very numerous, while adversarial members compete with the true
+majority vote for vote, so accuracy crosses zero at parity.
+
+![figures/misinformation_1.png](figures/misinformation_1.png)
+
+The contrast is stark. Uncoordinated misinformation is almost harmless: with lost members pointing every which
+way, the flock still navigates to the true goal at accuracy nine hundred and ninety-eight thousandths even
+when half its members are misinformed, and only slips to about ninety-eight hundredths when seven in ten are
+lost. The random votes cancel and the heading stays locked on the truth, the order parameter sagging only
+slightly as the lost members add a little incoherence. Coordinated misinformation of the very same prevalence
+is decisive: as the adversarial fraction climbs, accuracy falls to about six tenths at four in ten and
+crosses zero at parity, half the flock, then reverses to capture as the false consensus takes over. The
+zero-crossing at parity is the product law of the conviction and adversarial-leadership sections, equal
+per-agent strength balancing at equal numbers, and the coherence cost peaks exactly at the parity point, the
+lowest order parameter in the sweep, the heading-fight signature of a flock torn between two equal opposed
+consensuses before one wins. The damage is done not by the amount of error but by its correlation: the same
+number of equally-wrong agents is averaged away when independent and flips the whole flock when coordinated.
+A further check confirms the robustness is structural rather than a finite-size accident, the accuracy under a
+fixed fraction of lost members being essentially independent of flock size.
+
+This caps the many-wrongs arc with its security reading. A navigating collective is robust to noise but
+fragile to a coordinated falsehood of the same size: uncoordinated misinformation, lost or confused or
+independently erring members, is averaged out even at half the flock, while a coordinated false consensus
+captures the flock once it reaches parity. It is the constructive mirror of the adversarial-leadership result,
+where denial was cheaper than capture at parity, and it states the general lesson that runs through the
+adversarial, correlation, and misinformation findings: what threatens a collective's heading is never the
+amount of error but its correlation, because alignment averages out everything independent and is moved only
+by what is shared.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism

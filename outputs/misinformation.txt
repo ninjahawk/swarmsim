@@ -1,0 +1,36 @@
+Misinformation robustness: random (lost) vs coordinated (adversarial) misinformed members
+  N=250  w_bias=0.5  sigma_in=0.30 rad  8 seeds
+
+== mode=lost ==
+   f_mis=0.00  accuracy=+1.000 +/- 0.000  Phi=0.994
+   f_mis=0.10  accuracy=+1.000 +/- 0.000  Phi=0.987
+   f_mis=0.20  accuracy=+0.999 +/- 0.001  Phi=0.981
+   f_mis=0.30  accuracy=+0.998 +/- 0.001  Phi=0.973
+   f_mis=0.40  accuracy=+0.998 +/- 0.002  Phi=0.966
+   f_mis=0.50  accuracy=+0.998 +/- 0.001  Phi=0.956
+   f_mis=0.60  accuracy=+0.996 +/- 0.004  Phi=0.945
+   f_mis=0.70  accuracy=+0.983 +/- 0.014  Phi=0.936
+
+== mode=adversarial ==
+   f_mis=0.00  accuracy=+1.000 +/- 0.000  Phi=0.994
+   f_mis=0.10  accuracy=+0.999 +/- 0.001  Phi=0.991
+   f_mis=0.20  accuracy=+0.996 +/- 0.003  Phi=0.987
+   f_mis=0.30  accuracy=+0.945 +/- 0.052  Phi=0.963
+   f_mis=0.40  accuracy=+0.623 +/- 0.193  Phi=0.882
+   f_mis=0.50  accuracy=+0.105 +/- 0.318  Phi=0.775
+   f_mis=0.60  accuracy=-0.617 +/- 0.205  Phi=0.876
+   f_mis=0.70  accuracy=-0.899 +/- 0.075  Phi=0.942
+
+  Reading: lost (uncoordinated) votes cancel -> robust to large f; adversarial
+  (coordinated) competes vote-for-vote -> accuracy crosses zero near parity f=0.5.
+
+== Exp2: mode=lost, f_mis=0.40, sweep N ==
+   N=  60  accuracy=+0.987 +/- 0.024  Phi=0.928
+   N= 125  accuracy=+0.995 +/- 0.005  Phi=0.956
+   N= 250  accuracy=+0.998 +/- 0.002  Phi=0.966
+   N= 500  accuracy=+0.998 +/- 0.001  Phi=0.968
+   (if the crowd averages out lost members, accuracy ~ N-independent at fixed f)
+
+  --> figures/misinformation_1.png
+
+Misinformation-robustness analysis complete.

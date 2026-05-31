@@ -3781,6 +3781,66 @@ strength, F74/F81) toward a target whose own accuracy is set by the correlation 
 sample size of the estimating set (F82/F84) -- number helps only when it grows the estimating fraction, never
 as a fixed minority.
 
+---
+
+## Finding 85: MISINFORMATION robustness -- a navigating crowd is near-immune to UNCOORDINATED wrong members (votes cancel) but flips to a COORDINATED false consensus of equal size (parity at f=0.5); the error's correlation, not its presence, sets the damage
+<img src="./figures/misinformation_1.png" width="640"/>
+
+**What:** The many-wrongs map (F82-F84) says alignment is a directional averager whose accuracy is set by the
+CORRELATION structure of the estimates (F83), and because each agent contributes a UNIT vector its influence
+is bounded however wrong its angle -- so directional averaging should be intrinsically robust to outliers.
+This quantifies that robustness and contrasts two kinds of misinformation carried by a fraction f of the
+flock. A well-informed majority (fraction 1-f) holds a tight estimate (sigma_in=0.3 rad) of the true goal
+(+x). The misinformed fraction f is either LOST -- uniform-random directions, uncoordinated -- or ADVERSARIAL
+-- all pointing at a false goal (-x), coordinated (a shared false cue). Prediction: lost votes are unit
+vectors that cancel (~1/sqrt(fN) resultant), so accuracy holds until f is large; adversarial votes compete
+with the true majority vote-for-vote, so accuracy crosses zero at PARITY f=0.5 (the F80 product law).
+**Evidence:** collective/misinformation.py, N=250, w_bias=0.5, sigma_in=0.3 rad, 8 seeds.
+  Exp1 -- accuracy toward true goal vs misinformed fraction f:
+    f       LOST (uncoordinated)      ADVERSARIAL (coordinated)
+    0.00    +1.000  Phi 0.994         +1.000  Phi 0.994
+    0.10    +1.000  Phi 0.987         +0.999  Phi 0.991
+    0.20    +0.999  Phi 0.981         +0.996  Phi 0.987
+    0.30    +0.998  Phi 0.973         +0.945  Phi 0.963
+    0.40    +0.998  Phi 0.966         +0.623  Phi 0.882
+    0.50    +0.998  Phi 0.956         +0.105  Phi 0.775
+    0.60    +0.996  Phi 0.945         -0.617  Phi 0.876
+    0.70    +0.983  Phi 0.936         -0.899  Phi 0.942
+  Exp2 -- LOST mode at f=0.40, sweep N: accuracy +0.987/+0.995/+0.998/+0.998 at N=60/125/250/500 (N-independent).
+**Key result 1 -- a crowd is near-immune to UNCOORDINATED misinformation.** With lost members pointing in
+uniform-random directions, accuracy stays at 0.998 even when HALF the flock is misinformed (f=0.5), and only
+falls to 0.983 at f=0.7. The random unit-votes cancel: their resultant is ~sqrt(fN) in a random direction
+against ~(1-f)N aligned for the goal, so the net heading stays locked on the truth. The order parameter
+declines only gently (0.994 -> 0.936) -- the lost agents add a little incoherence but the flock stays tight
+and correct. Directional averaging shrugs off noise.
+**Key result 2 -- the same fraction of COORDINATED misinformation is decisive.** Adversarial members all
+pointing at the false goal drive accuracy down steeply: 0.945 at f=0.3, 0.623 at f=0.4, through ZERO at parity
+f=0.5 (acc=0.105), to capture (negative) beyond -- -0.617 at f=0.6, -0.899 at f=0.7. The zero-crossing at
+f=0.5 is exactly the F80/F74 product law (equal per-agent strength, so balance at equal numbers). The
+coherence cost peaks AT the parity point (Phi=0.775, the lowest in the sweep) and recovers as one side wins --
+the F80 heading-fight signature and the F73/F75 critical-slowing dip, here in the misinformation framing.
+**Key result 3 -- it is the CORRELATION of the error that does the damage, not its presence (ties F83).** At
+f=0.4 the two modes differ by 0.998 (lost) vs 0.623 (adversarial); at f=0.5, 0.998 vs 0.105. Same number of
+wrong agents, same per-agent wrongness magnitude -- the only difference is whether their errors are correlated
+(all -x) or independent (uniform). Uncoordinated error (rho_c->0, F83) averages away; coordinated error
+(rho_c->1, F83) competes and flips the consensus. F85 is the F83 correlation principle expressed as a
+robustness/security statement.
+**Key result 4 -- lost-robustness is scale-free (Exp2).** At fixed f=0.4 lost, accuracy is N-independent
+(0.987 at N=60 up to 0.998 at N=500, if anything improving as the random resultant cancels better at larger
+N). A crowd averages out a fixed fraction of lost members at any size -- the robustness is structural, not a
+finite-size accident.
+**Implication.** Caps the many-wrongs arc (F81-F85) with its practical payoff: a navigating collective is
+robust to NOISE but fragile to a coordinated FALSEHOOD of the same size. Uncoordinated misinformation -- lost,
+confused, or independently-erring members -- is averaged out even at 50% prevalence; a coordinated false
+consensus competes vote-for-vote and captures the flock once it reaches parity. This is the constructive-
+security mirror of the adversarial-leadership result (F80): there denial was cheaper than capture at parity;
+here the same parity threshold governs whether a shared false cue can hijack a navigating crowd, while
+uncorrelated noise of any prevalence cannot. The general lesson across F80/F83/F85: what threatens a
+collective's heading is never the AMOUNT of error but its CORRELATION -- alignment averages out everything
+independent and is moved only by what is shared. Closes the many-wrongs sub-thread (F81-F85). The leadership
+thread (F72-F85) is a complete arc; the next major direction is co-adaptation/evolution (heritable escape or
+estimate quality under selection), which requires a fitness model and is a fresh thread.
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
