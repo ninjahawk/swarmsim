@@ -1,0 +1,33 @@
+Many-wrongs navigation: do NOISY private estimates average to recover
+the 1/sqrt(N) wisdom-of-crowds scaling F81 found absent for exact vectors?
+  w_bias=0.5  8 seeds  pure-flock  alpha=1.0
+
+== Exp1: sweep N at sigma_pref=1.00 rad (57 deg) ==
+   (single-agent baseline RMS heading error would be ~57 deg)
+   N=  30  RMS heading err= 15.7 deg  accuracy=+0.963 +/- 0.056  Phi=0.877
+   N=  60  RMS heading err=  6.7 deg  accuracy=+0.993 +/- 0.008  Phi=0.922
+   N= 125  RMS heading err=  4.3 deg  accuracy=+0.997 +/- 0.003  Phi=0.945
+   N= 250  RMS heading err=  2.3 deg  accuracy=+0.999 +/- 0.001  Phi=0.953
+   N= 500  RMS heading err=  2.4 deg  accuracy=+0.999 +/- 0.001  Phi=0.955
+   N=1000  RMS heading err=  2.5 deg  accuracy=+0.999 +/- 0.001  Phi=0.959
+   --- 1/sqrt(N) prediction (normalised at N=30): ---
+   N=  30  predicted  15.7 deg   measured  15.7 deg
+   N=  60  predicted  11.1 deg   measured   6.7 deg
+   N= 125  predicted   7.7 deg   measured   4.3 deg
+   N= 250  predicted   5.4 deg   measured   2.3 deg
+   N= 500  predicted   3.8 deg   measured   2.4 deg
+   N=1000  predicted   2.7 deg   measured   2.5 deg
+   --> log-log slope d(log RMSerr)/d(log N) = -0.523  (many-wrongs predicts -0.5)
+
+== Exp2: sweep sigma_pref at N=250 ==
+   sigma_pref=0.00 rad (  0 deg)  RMS err=  0.1 deg  accuracy=+1.000 +/- 0.000  Phi=1.000
+   sigma_pref=0.25 rad ( 14 deg)  RMS err=  0.6 deg  accuracy=+1.000 +/- 0.000  Phi=0.996
+   sigma_pref=0.50 rad ( 29 deg)  RMS err=  1.1 deg  accuracy=+1.000 +/- 0.000  Phi=0.985
+   sigma_pref=1.00 rad ( 57 deg)  RMS err=  2.3 deg  accuracy=+0.999 +/- 0.001  Phi=0.953
+   sigma_pref=1.50 rad ( 86 deg)  RMS err= 57.8 deg  accuracy=+0.754 +/- 0.644  Phi=0.918
+   sigma_pref=2.00 rad (115 deg)  RMS err= 64.0 deg  accuracy=+0.582 +/- 0.584  Phi=0.902
+   (prediction: RMS err ~ sigma_pref/sqrt(N), i.e. linear in sigma_pref)
+
+  --> figures/many_wrongs_1.png
+
+Many-wrongs navigation analysis complete.

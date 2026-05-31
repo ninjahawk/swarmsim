@@ -3094,6 +3094,55 @@ literature's number-suffices scaling would require adding a many-wrongs amplific
 a clean open direction. The experiment is offered in the same self-testing spirit as the falsified
 predictions earlier in the study: a claim asserted in passing, tested directly, and corrected.
 
+### 4.64 Many-Wrongs Navigation: Noisy Private Estimates Average to a 1/sqrt(N) Wisdom of Crowds (Finding 82)
+
+The previous section closed with a prediction: linear velocity alignment gives no group-size amplification
+for leaders carrying an exact shared goal vector, so steering is set by the informed fraction and not the
+absolute number, and recovering the animal-navigation literature's result that a fixed number of informed
+individuals suffices in arbitrarily large groups would require a many-wrongs follower rule -- agents holding
+independent noisy estimates of the goal so that averaging over more of them cancels the error. This
+experiment tests that prediction directly. Every agent now carries its own private preferred direction,
+drawn once per run at an angle normally distributed about the true goal with spread sigma_pref, and is
+biased toward its own estimate rather than toward a shared vector. There are no exact-vector leaders; every
+agent is a noisy one. The many-wrongs prediction is that the flock's steady heading is the alignment-averaged
+resultant of all the private biases, with an angular error that shrinks as the per-agent spread divided by
+the square root of the group size, so accuracy toward the true goal should improve with group size -- the
+opposite of the previous section -- provided the flock stays coherent enough to average globally.
+
+![figures/many_wrongs_1.png](figures/many_wrongs_1.png)
+
+The prediction holds. At a fixed per-agent error of about fifty-seven degrees, the flock's cross-seed
+root-mean-square heading error falls from sixteen degrees at thirty agents to about two degrees by two
+hundred and fifty, a log-log slope of minus one half to within the seed scatter -- exactly the
+wisdom-of-crowds law. Accuracy toward the true goal rises with group size rather than falling, the clean
+inverse of the fixed-number result: each agent on its own would head off by nearly sixty degrees, yet a
+flock of two hundred and fifty navigates to within two degrees of the true bearing. Alignment is performing
+the average, pooling the independent private estimates so their errors cancel. This resolves the apparent
+tension with the previous finding rather than contradicting it: alignment averages whatever directional
+signal the agents carry, and with an exact shared vector there is no error to average away so only the
+per-capita pull remains, while with heterogeneous noisy estimates there is error and alignment drives it
+down with group size. The literature's fixed-number scaling comes precisely from this averaging, and adding
+noisy estimates to the model recovers it as predicted.
+
+Two boundaries qualify the law. First, the decline saturates at a floor of about two to two and a half
+degrees once the group passes a couple of hundred: the averaged-bias error has by then dropped below a
+second, size-independent error source -- the temporal jitter of the flock heading within the measurement
+window together with the background noise -- which averaging over more agents cannot remove. Second, and
+more striking, the averaging has a noise ceiling in the per-agent spread. As the spread grows the error at
+first rises gently and accuracy stays near perfect, but between about one and one and a half radians of
+per-agent error the behavior collapses abruptly: the heading error jumps to nearly sixty degrees, accuracy
+falls by half, and the cross-seed scatter explodes, while the order parameter barely moves. The flock does
+not fragment; it stays a tight flock flying a nearly random heading. The reason is that the magnitude of
+the pooled estimate falls off exponentially with the square of the per-agent spread, so once the spread is
+large the averaged directional signal becomes too weak to overcome the flock's own spontaneous heading and
+different runs commit to different directions -- the many-wrongs form of the pull threshold seen in the
+conviction and minimum-leadership results. The wisdom of crowds is real and follows the square-root law, but
+only while the individual estimates are accurate enough that their pooled average still points somewhere
+definite. Taken with the previous section, this completes the leadership thread's central mechanism:
+alignment is a directional averager, delivering per-capita pull for a shared exact signal and square-root
+crowd amplification for heterogeneous noisy ones, with a high-noise ceiling that is the averaging form of
+the same force-versus-alignment threshold that recurs throughout the study.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism

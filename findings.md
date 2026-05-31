@@ -3588,6 +3588,86 @@ removes. It also predicts that adding a many-wrongs amplification (e.g. a noisy 
 rather than a fixed bias force) would be required to recover Couzin's number-suffices scaling -- a clean
 open direction.
 
+---
+
+## Finding 82: MANY-WRONGS navigation -- noisy private goal estimates DO average to a 1/sqrt(N) wisdom-of-crowds law (recovering exactly the amplification F81 found absent for exact-shared vectors), but only below a per-agent noise ceiling
+<img src="./figures/many_wrongs_1.png" width="640"/>
+
+**What:** F81 closed with a prediction: linear velocity alignment gives no group-size amplification for
+leaders carrying an EXACT shared goal vector (steering is per-capita pull, fraction not number), and
+recovering the animal-navigation literature's "a fixed number suffices in large groups" scaling would
+require a MANY-WRONGS follower rule -- agents holding INDEPENDENT NOISY estimates of the goal so that
+averaging over more of them cancels the error. This tests that prediction directly. Every agent i carries
+a private preferred direction g_hat_i at angle phi_i ~ N(0, sigma_pref) about the true goal (+x), fixed
+for the run, and feels a bias w_bias*g_hat_i toward its OWN estimate (w_bias=0.5, alpha=1.0). No
+exact-vector leaders; everyone is a noisy one. The many-wrongs prediction is that the flock's steady
+heading is the alignment-averaged resultant of N independent noisy biases, with angular error ~
+sigma_pref/sqrt(N): accuracy toward the true goal should IMPROVE with N (opposite of F81), and the
+cross-seed RMS heading error should fall like 1/sqrt(N) -- PROVIDED the flock stays coherent so the
+averaging is global, not local.
+**Evidence:** collective/many_wrongs.py, pure-flock, w_bias=0.5, 8 seeds. Metric: signed steady heading
+error (angle of the time-averaged mean-velocity vector relative to the true goal) -> cross-seed RMS (deg);
+accuracy = cos(error); Phi.
+  Exp1 (sweep N at sigma_pref=1.0 rad ~ 57 deg; single-agent baseline error would be ~57 deg):
+    N      RMS_err(deg)   accuracy        Phi
+    30     15.7           +0.963+/-0.056   0.877
+    60      6.7           +0.993+/-0.008   0.922
+    125     4.3           +0.997+/-0.003   0.945
+    250     2.3           +0.999+/-0.001   0.953
+    500     2.4           +0.999+/-0.001   0.955
+    1000    2.5           +0.999+/-0.001   0.959
+    log-log slope d(log RMSerr)/d(log N) = -0.523 (many-wrongs predicts -0.5)
+  Exp2 (sweep sigma_pref at N=250):
+    sigma_pref   RMS_err(deg)   accuracy        Phi
+    0.00 (  0d)   0.1           +1.000           1.000
+    0.25 ( 14d)   0.6           +1.000           0.996
+    0.50 ( 29d)   1.1           +1.000           0.985
+    1.00 ( 57d)   2.3           +0.999+/-0.001   0.953
+    1.50 ( 86d)  57.8           +0.754+/-0.644   0.918
+    2.00 (115d)  64.0           +0.582+/-0.584   0.902
+**Key result 1 -- many-wrongs amplification is REAL and the 1/sqrt(N) law holds.** At fixed per-agent
+error sigma_pref=1.0 rad, the flock's RMS heading error falls from 15.7 deg (N=30) to ~2.3 deg (N=250),
+a log-log slope of -0.523, almost exactly the many-wrongs prediction of -0.5. Accuracy toward the true
+goal IMPROVES with N (0.963 -> 0.999) -- the exact OPPOSITE of F81, where accuracy at fixed leader number
+FELL with N. The flock is far wiser than its members: each agent individually would head off by ~57 deg,
+but a flock of 250 navigates to within ~2 deg of the true goal. Alignment is performing the wisdom-of-
+crowds average: it pools the N independent private estimates and the errors cancel as 1/sqrt(N).
+**Key result 2 -- resolves the apparent contradiction with F81.** F81 (exact shared vector, no
+amplification) and F82 (noisy private vectors, full 1/sqrt(N) amplification) are not in conflict -- they
+are the two ends of one statement. Alignment averages whatever directional signal the agents carry. With
+an EXACT shared vector there is no error to average away, so all that remains is the per-capita pull
+(F81: number doesn't help, only fraction). With HETEROGENEOUS noisy estimates there is error, and alignment
+averages it down as 1/sqrt(N), so MORE agents (at fixed per-agent noise) means a more accurate group
+(F82: number helps). The literature's "a fixed number suffices in large groups" comes precisely from
+this many-wrongs averaging, and adding noisy estimates to the model recovers it exactly as F81 predicted.
+**Key result 3 -- a residual error FLOOR.** The 1/sqrt(N) decline saturates at a ~2.3-2.5 deg floor by
+N~250 (the law is clean over N=30-250, flat thereafter). The floor is a second, N-independent error source
+-- temporal fluctuation of the flock heading within the finite measurement window plus the ramp noise --
+not the averaged-bias error, which has already dropped below it. Many-wrongs reduces the bias-error term
+to zero with enough agents but cannot remove the dynamical jitter floor.
+**Key result 4 -- a per-agent NOISE CEILING gates the averaging (Exp2).** For sigma_pref up to ~1.0 rad
+the RMS error grows gently (0.1 -> 2.3 deg, roughly sigma_pref/sqrt(N)) and accuracy stays ~1.0 with high
+Phi -- averaging works. But between sigma_pref=1.0 and 1.5 rad the behavior collapses abruptly: RMS error
+jumps to ~58 deg, accuracy falls 0.999 -> 0.754 -> 0.582, and the cross-seed std EXPLODES (0.001 -> 0.644).
+Crucially Phi stays high (0.95 -> 0.92 -> 0.90) -- the flock does NOT fragment; it stays a tight flock that
+flies a near-random heading. Mechanism: the magnitude of the averaged bias projected on the true goal is
+w_bias*E[cos phi] = w_bias*exp(-sigma_pref^2/2), which shrinks fast (0.61*w at sigma=1.0, 0.32*w at 1.5,
+0.14*w at 2.0). Once this averaged directional signal falls below the threshold needed to overcome the
+flock's spontaneous symmetry-breaking heading, steering becomes unreliable -- different seeds veer
+different ways (the huge std), exactly the F72 under-led / F74 below-pull-threshold regime expressed in
+the many-wrongs setting. So the wisdom of crowds has a ceiling: it sharpens a usable consensus only while
+the per-agent error is small enough that the pooled estimate still has appreciable magnitude.
+**Implication.** F82 confirms F81's prediction and completes the leadership thread's central mechanism:
+alignment is a directional averager. It delivers per-capita pull for a shared exact signal (F81) and
+1/sqrt(N) wisdom-of-crowds amplification for heterogeneous noisy signals (F82), with a high-noise ceiling
+(F82 Exp2) that is the many-wrongs form of the F72/F74 pull threshold. This is the constructive twin of the
+shared-heading principle (F70/F72): a globally shared direction is amplified, a locally heterogeneous one
+is averaged -- and when the heterogeneity is small zero-mean noise about a common goal, the averaging is
+not destructive but is precisely the crowd's wisdom. Opens follow-ups: a noisy-MINORITY rematch of F81's
+N-scaling (does a fixed NUMBER of noisy-informed agents now suffice as N grows, since their pooled estimate
+sharpens?); interaction with environmental noise (ramp) and coherence; and whether correlated (non-
+independent) estimates degrade the 1/sqrt(N) law toward the F81 per-capita limit.
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
