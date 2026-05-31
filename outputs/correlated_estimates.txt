@@ -1,0 +1,35 @@
+Correlated estimates: does shared sensing error cap the wisdom of crowds?
+  w_bias=0.5  sigma_pref=1.00 rad  12 seeds  pure-flock
+
+== correlation rho_c=0.00 ==
+   predicted N->inf floor = sigma*sqrt(rho_c) = 0.0 deg
+   N=  30  RMS err= 12.7 deg (predict  10.5)  accuracy=+0.976 +/- 0.039  Phi=0.882
+   N= 125  RMS err=  3.9 deg (predict   5.1)  accuracy=+0.998 +/- 0.002  Phi=0.944
+   N= 500  RMS err=  2.1 deg (predict   2.6)  accuracy=+0.999 +/- 0.001  Phi=0.955
+
+== correlation rho_c=0.10 ==
+   predicted N->inf floor = sigma*sqrt(rho_c) = 18.1 deg
+   N=  30  RMS err= 24.7 deg (predict  20.7)  accuracy=+0.911 +/- 0.115  Phi=0.895
+   N= 125  RMS err= 22.9 deg (predict  18.8)  accuracy=+0.922 +/- 0.076  Phi=0.948
+   N= 500  RMS err= 21.7 deg (predict  18.3)  accuracy=+0.930 +/- 0.066  Phi=0.959
+
+== correlation rho_c=0.30 ==
+   predicted N->inf floor = sigma*sqrt(rho_c) = 31.4 deg
+   N=  30  RMS err= 38.8 deg (predict  32.6)  accuracy=+0.788 +/- 0.217  Phi=0.912
+   N= 125  RMS err= 38.6 deg (predict  31.7)  accuracy=+0.789 +/- 0.201  Phi=0.957
+   N= 500  RMS err= 37.4 deg (predict  31.5)  accuracy=+0.801 +/- 0.190  Phi=0.967
+
+== correlation rho_c=1.00 ==
+   predicted N->inf floor = sigma*sqrt(rho_c) = 57.3 deg
+   N=  30  RMS err= 68.4 deg (predict  57.3)  accuracy=+0.437 +/- 0.535  Phi=1.000
+   N= 125  RMS err= 68.4 deg (predict  57.3)  accuracy=+0.437 +/- 0.536  Phi=1.000
+   N= 500  RMS err= 68.4 deg (predict  57.3)  accuracy=+0.437 +/- 0.536  Phi=1.000
+
+Reading: rho_c=0 reproduces F82 (error falls ~1/sqrt(N)); any rho_c>0 imposes
+an N-independent floor sigma*sqrt(rho_c) -- correlated error caps collective accuracy.
+rho_c=1 (every agent the same wrong direction) is the F81-like shared-signal limit:
+no group-size benefit at all.
+
+  --> figures/correlated_estimates_1.png
+
+Correlated-estimates analysis complete.

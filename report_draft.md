@@ -3143,6 +3143,51 @@ alignment is a directional averager, delivering per-capita pull for a shared exa
 crowd amplification for heterogeneous noisy ones, with a high-noise ceiling that is the averaging form of
 the same force-versus-alignment threshold that recurs throughout the study.
 
+### 4.65 Correlated Estimates: Shared Sensing Error Caps the Wisdom of Crowds (Finding 83)
+
+The previous two sections appear to reach opposite conclusions -- exact shared leadership gives no benefit
+from group size while independent noisy estimates give a square-root benefit -- but they are in fact the two
+ends of a single parameter, the correlation between the agents' estimate errors. Real collectives sit in
+between: animals reading the same misleading cue, or agents fed common misinformation, share part of their
+error. This experiment builds each agent's private preferred direction as a mixture of one shared error draw,
+common to the whole flock for that run, and an independent private draw, in proportions set by a correlation
+parameter, so that the per-agent error has fixed spread but tunable correlation. Zero correlation reproduces
+the independent-estimate case; unit correlation gives every agent the identical, shared but wrong, direction,
+which is the shared-signal case of the leadership sections. The prediction is that the alignment-averaged
+heading error splits into a private part that averages away with group size and a shared part that does not,
+leaving a floor equal to the per-agent spread times the square root of the correlation -- a floor no group
+size can beat.
+
+![figures/correlated_estimates_1.png](figures/correlated_estimates_1.png)
+
+The data confirm it cleanly. At zero correlation the error falls as the inverse square root of group size, from
+about thirteen degrees at thirty agents to about two at five hundred, reproducing the wisdom-of-crowds law. At
+unit correlation the error is exactly independent of group size -- the same sixty-eight degrees at thirty, a
+hundred and twenty-five, and five hundred agents -- with the order parameter at a perfect one, every agent
+carrying the identical wrong direction so the flock agrees completely and heads off by the shared offset. That
+is the no-amplification limit of the leadership sections, recovered as the high-correlation end of the same
+axis. In between, any positive correlation makes the error flat in group size: a mere ten-percent correlation
+holds the error near twenty-two degrees and the accuracy near nine-tenths whether the flock is thirty or five
+hundred strong, and thirty-percent correlation holds it near thirty-eight degrees. The shared component of the
+error does not average away no matter how many agents pool their estimates. The measured floors sit fifteen to
+twenty percent above the small-angle formula because the per-agent spread of one radian is not small, but the
+ordering and the group-size independence match exactly.
+
+A further point emerges from the order parameter, which rises with correlation from around nine-tenths at zero
+to a perfect one at unit correlation. More correlated goals make the flock agree more tightly -- but on an
+increasingly wrong heading, as the accuracy falls from nearly perfect to less than one half. Independent errors
+slightly loosen cohesion yet cancel for accuracy; shared error tightens cohesion onto a common mistake. This is
+the consensus-versus-correctness distinction in its sharpest form: a perfectly coherent flock can be
+confidently and unanimously wrong, and the large run-to-run scatter at high correlation is exactly that, each
+run's shared draw committing the whole flock to a different definite error. The practical content is a warning
+about the wisdom of crowds: it delivers square-root accuracy only for independent errors, while common-mode
+error from a shared cue or correlated sensors imposes a floor that more agents cannot lower. It also connects
+back to the adversarial result: an attacker who cannot field enough saboteurs to capture the flock can instead
+inject correlation into the legitimate agents' estimates with a single shared false cue and cap the
+collective's accuracy regardless of its size, so common-mode deception is cheaper than majority capture. This
+closes the many-wrongs sub-thread with a unifying statement: alignment is a directional averager whose
+collective accuracy is governed by the correlation structure of its inputs, not their number.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism

@@ -3668,6 +3668,62 @@ N-scaling (does a fixed NUMBER of noisy-informed agents now suffice as N grows, 
 sharpens?); interaction with environmental noise (ramp) and coherence; and whether correlated (non-
 independent) estimates degrade the 1/sqrt(N) law toward the F81 per-capita limit.
 
+---
+
+## Finding 83: CORRELATED estimates -- F81 and F82 are the two ends of ONE axis (error correlation), and any shared sensing error imposes an N-independent accuracy floor sigma*sqrt(rho_c) that no flock size can beat
+<img src="./figures/correlated_estimates_1.png" width="640"/>
+
+**What:** F81 (exact shared goal vector -> no group-size benefit, per-capita pull) and F82 (independent noisy
+estimates -> 1/sqrt(N) wisdom of crowds) look like opposite results. This shows they are the rho_c -> 1 and
+rho_c -> 0 limits of a SINGLE parameter: how CORRELATED the agents' goal-estimate errors are. Real collectives
+sit in between -- animals reading the same misleading environmental cue, or agents fed common misinformation,
+share part of their error. Each agent's preferred-direction angle is built as
+phi_i = sqrt(rho_c)*c + sqrt(1-rho_c)*e_i with c (one shared draw per run) and e_i (independent private draws)
+both ~ N(0, sigma_pref), so Var(phi_i)=sigma_pref^2 and Corr(phi_i,phi_j)=rho_c. rho_c=0 reproduces F82;
+rho_c=1 gives every agent the SAME (shared but wrong) direction, an F81-like shared signal.
+**Prediction (small-angle):** the alignment-averaged heading error has cross-seed variance
+rho_c*sigma^2 + (1-rho_c)*sigma^2/N, i.e. RMS heading error = sigma_pref*sqrt(rho_c + (1-rho_c)/N). The private
+part averages away as 1/sqrt(N); the shared part does NOT -- it is a FLOOR of sigma_pref*sqrt(rho_c) that no
+group size can beat. Crossover N* ~ 1/rho_c.
+**Evidence:** collective/correlated_estimates.py, pure-flock, w_bias=0.5, sigma_pref=1.0 rad, 12 seeds.
+  rho_c   N=30          N=125         N=500         predicted floor (deg)
+  0.00    12.7 deg      3.9 deg       2.1 deg       0.0   (falls ~1/sqrt(N), = F82)
+  0.10    24.7          22.9          21.7          18.1  (flat in N)
+  0.30    38.8          38.6          37.4          31.4  (flat in N)
+  1.00    68.4          68.4          68.4          57.3  (exactly N-independent, = F81 limit)
+  accuracy: rho_c=0 -> 0.976/0.998/0.999; rho_c=0.1 -> ~0.92 (flat); rho_c=0.3 -> ~0.79 (flat);
+            rho_c=1 -> 0.437 +/- 0.535 (flat). Phi: rises with rho_c (0.88-0.96 at rho_c=0 -> 1.000 at rho_c=1).
+**Key result 1 -- F81 and F82 are endpoints of one axis.** At rho_c=0 the error falls as 1/sqrt(N)
+(12.7 -> 2.1 deg, F82 reproduced). At rho_c=1 the error is EXACTLY N-independent (68.4 deg at every N) with
+Phi=1.000 -- every agent carries the identical wrong direction, the flock agrees perfectly and heads off by
+the shared offset, the F81 shared-signal / no-amplification limit. The single parameter rho_c interpolates
+continuously between the two findings that looked contradictory.
+**Key result 2 -- correlated sensing error caps the wisdom of crowds.** For ANY rho_c>0 the heading error is
+flat in N (rho_c=0.1: ~22 deg at N=30, 125, AND 500; rho_c=0.3: ~38 deg flat). The shared error component does
+not average away no matter how many agents pool their estimates. Even a modest 10% correlation collapses the
+collective from "arbitrarily accurate given enough agents" (accuracy -> 1 at rho_c=0) to a hard ceiling
+(accuracy ~0.92, N-independent). The floor ordering and N-independence match the prediction
+sigma*sqrt(rho_c) exactly; absolute values run ~15-20% above the linearized formula because sigma=1 rad is not
+in the small-angle regime (the vector-mean angle of a wide distribution has RMS somewhat above sigma) plus the
+~2 deg dynamical floor of F82 -- the scaling law is confirmed, the prefactor is approximate.
+**Key result 3 -- correlation buys COHERENCE at the cost of ACCURACY.** Phi RISES with rho_c (0.88-0.96 at
+rho_c=0 to a perfect 1.000 at rho_c=1): the more correlated the agents' goals, the more tightly the flock
+agrees. But that agreement is on an increasingly WRONG heading (accuracy 0.99 -> 0.44). Independent errors
+slightly loosen cohesion yet cancel for accuracy; shared error tightens cohesion onto a common mistake. This
+is the F73 consensus theme in the navigation setting -- consensus is not correctness; a perfectly coherent
+flock can be confidently, unanimously wrong. The huge cross-seed std at high rho_c (0.535 at rho_c=1) is
+exactly that: each run's shared draw sends the whole flock a different definite (wrong) way.
+**Implication.** Closes the many-wrongs sub-thread (F81-F83) with a unifying axis: alignment is a directional
+averager whose collective accuracy is set by the CORRELATION structure of the inputs, not their number. The
+practical content is a sharp warning about the wisdom of crowds -- it delivers 1/sqrt(N) accuracy only for
+INDEPENDENT errors; common-mode error (shared cue, shared misinformation, correlated sensors) imposes a floor
+sigma*sqrt(rho_c) that more agents cannot reduce, and drives the flock to confident consensus on the wrong
+heading. Connects the leadership thread back to the adversarial finding (F80): an attacker who cannot add
+enough saboteurs can instead INJECT CORRELATION into the legitimate agents' estimates (a single shared false
+cue) and cap the collective's accuracy regardless of its size -- common-mode deception is cheaper than
+majority capture. Remaining open: does the floor relax if agents can DETECT and down-weight correlated inputs
+(robust estimation), and how does rho_c interact with the F77 steering-bandwidth limit for a moving goal.
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
