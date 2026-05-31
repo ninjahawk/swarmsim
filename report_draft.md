@@ -3462,6 +3462,46 @@ exploit except a stationary internal label, and the shared-heading principle say
 does build and act on collectively is a common direction, which is simultaneously the source of its
 coherence, the lever of its steering, and the target of every adversary that succeeds against it.
 
+### 5.3 Alignment as a Directional Averager: How Accurate the Shared Heading Is
+
+The shared-heading principle of the previous axis establishes that the flock acts on one common direction;
+a final group of experiments asks how accurate that direction is, and the answer sharpens the principle into
+a quantitative law. The alignment force is a directional averager, and the accuracy of the heading it
+produces is governed not by the number of agents that hold an opinion but by the correlation structure of
+their estimates. This axis began as a self-correction. The first leadership result had attributed the
+minority's power to the animal-navigation literature's observation that a fixed number of informed
+individuals suffices in arbitrarily large groups, but a direct test of that scaling falsified it for this
+model: at a fixed number of exact-vector leaders the accuracy falls as the group grows, because the steering
+is the total injected force divided by all the agents, a per-capita pull set by the informed fraction
+(Section 4.63). The literature's number-suffices scaling, the same section predicted, would require a
+many-wrongs rule in which agents hold independent noisy estimates that average out — and adding exactly that
+recovers it, the flock's heading error falling as the inverse square root of the group size when every agent
+carries its own noisy estimate of the goal (Section 4.64).
+
+These two results, which look opposite, are the endpoints of a single parameter: the correlation between the
+agents' estimate errors (Section 4.65). With perfectly correlated errors, an exact shared vector, there is
+nothing to average and only the per-capita pull remains; with independent errors the average concentrates as
+the square root of the sample; and any intermediate correlation imposes a floor on collective accuracy that
+no group size can beat, equal to the per-agent error times the square root of the correlation. Confining the
+noisy estimates to a fixed minority does not invoke the averaging at all, because the minority's pooled
+direction has a fixed accuracy while its per-capita pull dilutes with the group, so a noisy minority fails as
+the group grows exactly as an exact one does and sits below it — which separates, within one model, the
+informed-minority mechanism from the many-wrongs mechanism that the literature often runs together (Section
+4.66). The practical face of the law is a robustness result: because each agent contributes a bounded unit
+vote, a navigating crowd averages away uncoordinated misinformation even when half its members are lost, but
+a coordinated falsehood of the same prevalence competes with the truth vote for vote and captures the flock
+at parity (Section 4.67).
+
+This third axis closes the loop with the second. The shared-heading principle says the flock acts on its net
+common direction; the directional-averager law says how good that direction is — set by the correlation of
+the inputs, not their count — and it reproduces the same parity threshold and product law that governed the
+adversarial heading-fights of the second axis, now in the language of estimate accuracy. The unifying
+statement across both is that correlation is the only currency the alignment force recognizes: it amplifies
+what is shared and averages away what is independent, so the collective's heading is built, made accurate,
+contested, and attacked entirely through the correlation structure of the directions its members carry. The
+number of members enters only insofar as it enlarges the fraction that shares a direction or sharpens the
+average of those that do not.
+
 ---
 
 ## 6. Discussion
