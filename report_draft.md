@@ -3061,6 +3061,39 @@ thread to the predator arms race: a predator able to mimic a leader would find p
 going where it wants far easier than herding it to a kill zone, consistent with the broader theme that
 disrupting the shared heading is easier than commandeering it.
 
+### 4.63 A Self-Test: Steering Is Set by the Informed Fraction, Not the Absolute Number (Finding 81)
+
+The first leadership result cited the animal-groups literature for the claim that the informed fraction
+needed for accurate navigation decreases as the group grows, but that claim was only ever asserted from a
+single group size. This experiment tests it directly by varying the flock size while fixing the absolute
+number of informed agents. If a fixed handful of leaders suffices in arbitrarily large groups, accuracy at
+fixed leader number should be independent of size; if instead the fraction governs steering, accuracy at
+fixed number should fall as the group grows.
+
+![figures/leader_scaling_1.png](figures/leader_scaling_1.png)
+
+A fixed number of leaders does not suffice as the group grows. At every fixed leader count the accuracy
+decreases with flock size: twenty leaders steer a flock of a hundred almost perfectly but barely steer a
+flock of five hundred, and ten leaders fall from steering well at a hundred to near-random at five hundred.
+The absolute number of informed agents needed to reach a given accuracy grows with the group. Re-indexing
+the same data by fraction rather than number collapses it far better: accuracy is approximately a function
+of the informed fraction across all three sizes, with no monotonic size trend within the substantial
+cross-seed scatter. Steering accuracy is governed by the fraction because the mean-velocity steering is the
+total injected directed force divided by all the agents -- the product law of Section 4.56 read per capita.
+Growing the group at fixed leader number dilutes the per-capita pull, and steering weakens.
+
+This corrects the earlier offhand attribution. In this model the fraction needed is roughly constant, not
+decreasing, and equivalently the number needed grows with size, the opposite of the simplest reading of the
+fixed-number result in the literature. That result arises from explicit preferred-direction averaging with
+noise -- the many-wrongs principle -- which amplifies a sparse informed signal in large groups; the linear
+alignment force used here has no such amplification and delivers exactly the per-capita pull, so accuracy
+tracks the fraction. The correction sharpens the product law rather than overturning it: total pull decides,
+but read relative to the group size, which is the fraction. All the fraction-based leadership results stand
+as the correct frame, the one number-based intuition is the exception this test removes, and recovering the
+literature's number-suffices scaling would require adding a many-wrongs amplification to the follower rule --
+a clean open direction. The experiment is offered in the same self-testing spirit as the falsified
+predictions earlier in the study: a claim asserted in passing, tested directly, and corrected.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism

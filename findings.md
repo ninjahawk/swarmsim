@@ -3537,6 +3537,57 @@ that could mimic a leader would find denial (preventing the flock from going whe
 than herding it to a kill zone -- consistent with the broader finding that disrupting the flock's shared
 heading (denial, encirclement) is easier than commandeering it (capture, herding).
 
+---
+
+## Finding 81 (SELF-TEST/CORRECTION): Steering accuracy is set by the informed FRACTION, not the absolute number -- a fixed handful of leaders does NOT suffice as the group grows, correcting F72's offhand Couzin attribution
+<img src="./figures/leader_scaling_1.png" width="640"/>
+
+**What:** F72 cited Couzin et al. (2005) for the claim that "the informed fraction needed decreases as
+the group grows," but only ever swept rho at a single N=350. This directly tests the scaling: vary the
+flock size N and fix the informed NUMBER n_lead. If a fixed handful of leaders suffices in arbitrarily
+large groups (the simplest reading of Couzin), accuracy at fixed n_lead should be N-independent. If
+instead the FRACTION controls steering, accuracy at fixed number should FALL as N grows.
+**Evidence:** collective/leader_scaling.py, pure-flock, w_lead=1.0, 4 seeds.
+  N      n_lead   fraction    accuracy
+  100     5       0.050      +0.356 +/- 0.396
+  100    10       0.100      +0.735 +/- 0.202
+  100    20       0.200      +0.957 +/- 0.068
+  250     5       0.020      +0.470 +/- 0.667
+  250    10       0.040      +0.586 +/- 0.554
+  250    20       0.080      +0.755 +/- 0.366
+  500     5       0.010      +0.149 +/- 0.770
+  500    10       0.020      +0.236 +/- 0.701
+  500    20       0.040      +0.479 +/- 0.502
+**Key result 1 -- a fixed NUMBER of leaders does not suffice as N grows.** At every fixed n_lead, accuracy
+DECREASES with N: at n_lead=20, accuracy falls 0.957 (N=100) -> 0.755 (N=250) -> 0.479 (N=500); at
+n_lead=10, 0.735 -> 0.586 -> 0.236. Twenty leaders that steer a flock of 100 almost perfectly barely steer
+a flock of 500. The absolute number of informed agents needed to reach a given accuracy GROWS with N.
+**Key result 2 -- the controlling variable is the FRACTION (the F74 per-capita pull law).** Re-indexing by
+fraction collapses the data far better than number: at fraction ~0.04-0.05 the accuracy is ~0.36-0.59
+across N=100/250/500 (no monotonic N trend within the large noise), and at fraction 0.08-0.10 it is
+~0.74-0.76. Steering accuracy is a function of the informed fraction, because the mean-velocity steering is
+the total injected directed force n_lead*w divided by all N agents -- the F74 product law normalized per
+capita. Growing N at fixed n_lead dilutes the per-capita pull and steering weakens.
+**Key result 3 -- corrects F72's Couzin attribution.** F72's remark that "the informed fraction needed
+decreases as the group grows" is NOT borne out in this model: the fraction needed is roughly CONSTANT
+(accuracy collapses on fraction, not on number), and equivalently the absolute number needed grows
+linearly with N. Couzin's "a fixed number suffices in large groups" arises from explicit
+preferred-direction-averaging-with-noise mechanisms (the many-wrongs principle) that amplify a sparse
+informed signal in large groups; this model's LINEAR alignment force has no such amplification -- it
+delivers exactly the per-capita pull, so accuracy tracks the fraction. (Cross-seed std is large at low
+fraction, the F73/F75 consensus/random regime where the flock picks a spontaneous heading, and small at
+high fraction.)
+**Implication.** A self-test in the tradition of F47/F48/F52: a claim asserted in passing (F72's Couzin
+citation) is tested directly and corrected. The honest statement is that THIS model's leadership obeys a
+per-capita pull law -- steering is set by the informed fraction times leader strength -- and does not
+reproduce the group-size amplification of Couzin's averaging models. It sharpens the F74 product law:
+"total pull decides" must be read as "total pull RELATIVE TO N," i.e. per-capita directed force, which is
+the fraction. All the fraction-based leadership findings (F72, F78, F79, F80) are therefore the correct
+frame; the one number-based intuition (a fixed handful suffices at any size) is the exception this test
+removes. It also predicts that adding a many-wrongs amplification (e.g. a noisy preferred-direction average
+rather than a fixed bias force) would be required to recover Couzin's number-suffices scaling -- a clean
+open direction.
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*

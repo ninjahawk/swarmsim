@@ -1,0 +1,21 @@
+Leadership scaling with group size: does a fixed NUMBER of leaders suffice as N grows?
+  pure-flock  w_lead=1.0  4 seeds
+
+== N=100 ==
+   n_lead= 5 (frac=0.050)  accuracy=+0.356 +/- 0.396  Phi=0.978
+   n_lead=10 (frac=0.100)  accuracy=+0.735 +/- 0.202  Phi=0.984
+   n_lead=20 (frac=0.200)  accuracy=+0.957 +/- 0.068  Phi=0.992
+
+== N=250 ==
+   n_lead= 5 (frac=0.020)  accuracy=+0.470 +/- 0.667  Phi=0.994
+   n_lead=10 (frac=0.040)  accuracy=+0.586 +/- 0.554  Phi=0.991
+   n_lead=20 (frac=0.080)  accuracy=+0.755 +/- 0.366  Phi=0.989
+
+== N=500 ==
+   n_lead= 5 (frac=0.010)  accuracy=+0.149 +/- 0.770  Phi=0.996
+   n_lead=10 (frac=0.020)  accuracy=+0.236 +/- 0.701  Phi=0.993
+   n_lead=20 (frac=0.040)  accuracy=+0.479 +/- 0.502  Phi=0.989
+
+  --> figures/leader_scaling_1.png
+
+Leadership-scaling analysis complete.
