@@ -1,0 +1,44 @@
+Many-wrongs tracking of a MOVING goal: does noise cost steering bandwidth?
+  N=250  w_bias=0.5  8 seeds  pure-flock
+
+== sigma_pref=0.00 rad  (avg-bias magnitude factor exp(-s^2/2)=1.000) ==
+   omega=0.00 rad/tu  tracking acc=+1.000 +/- 0.000  Phi=1.000
+   omega=0.02 rad/tu  tracking acc=+0.999 +/- 0.000  Phi=1.000
+   omega=0.05 rad/tu  tracking acc=+0.993 +/- 0.000  Phi=1.000
+   omega=0.10 rad/tu  tracking acc=+0.973 +/- 0.000  Phi=1.000
+   omega=0.15 rad/tu  tracking acc=+0.940 +/- 0.000  Phi=1.000
+   omega=0.20 rad/tu  tracking acc=+0.890 +/- 0.000  Phi=1.000
+
+== sigma_pref=0.50 rad  (avg-bias magnitude factor exp(-s^2/2)=0.882) ==
+   omega=0.00 rad/tu  tracking acc=+1.000 +/- 0.000  Phi=0.985
+   omega=0.02 rad/tu  tracking acc=+0.999 +/- 0.001  Phi=0.985
+   omega=0.05 rad/tu  tracking acc=+0.994 +/- 0.002  Phi=0.985
+   omega=0.10 rad/tu  tracking acc=+0.972 +/- 0.004  Phi=0.986
+   omega=0.15 rad/tu  tracking acc=+0.935 +/- 0.006  Phi=0.986
+   omega=0.20 rad/tu  tracking acc=+0.880 +/- 0.009  Phi=0.987
+
+== sigma_pref=1.00 rad  (avg-bias magnitude factor exp(-s^2/2)=0.607) ==
+   omega=0.00 rad/tu  tracking acc=+0.999 +/- 0.001  Phi=0.951
+   omega=0.02 rad/tu  tracking acc=+0.998 +/- 0.002  Phi=0.953
+   omega=0.05 rad/tu  tracking acc=+0.990 +/- 0.006  Phi=0.953
+   omega=0.10 rad/tu  tracking acc=+0.956 +/- 0.013  Phi=0.956
+   omega=0.15 rad/tu  tracking acc=+0.894 +/- 0.019  Phi=0.958
+   omega=0.20 rad/tu  tracking acc=+0.787 +/- 0.026  Phi=0.962
+
+== sigma_pref=1.50 rad  (avg-bias magnitude factor exp(-s^2/2)=0.325) ==
+   omega=0.00 rad/tu  tracking acc=+0.769 +/- 0.605  Phi=0.918
+   omega=0.02 rad/tu  tracking acc=+0.821 +/- 0.448  Phi=0.921
+   omega=0.05 rad/tu  tracking acc=+0.909 +/- 0.128  Phi=0.926
+   omega=0.10 rad/tu  tracking acc=+0.830 +/- 0.050  Phi=0.928
+   omega=0.15 rad/tu  tracking acc=+0.596 +/- 0.112  Phi=0.925
+   omega=0.20 rad/tu  tracking acc=+0.086 +/- 0.245  Phi=0.918
+
+Bandwidth (largest omega with tracking acc >= 0.5), vs exp(-s^2/2) prediction:
+   sigma=0.00  bandwidth~0.20 rad/tu   exp(-s^2/2)-scaled prediction~0.20
+   sigma=0.50  bandwidth~0.20 rad/tu   exp(-s^2/2)-scaled prediction~0.18
+   sigma=1.00  bandwidth~0.20 rad/tu   exp(-s^2/2)-scaled prediction~0.12
+   sigma=1.50  bandwidth~0.15 rad/tu   exp(-s^2/2)-scaled prediction~0.06
+
+  --> figures/moving_goal_crowd_1.png
+
+Moving-goal crowd-tracking analysis complete.

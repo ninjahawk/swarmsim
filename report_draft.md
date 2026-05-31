@@ -3266,6 +3266,42 @@ adversarial, correlation, and misinformation findings: what threatens a collecti
 amount of error but its correlation, because alignment averages out everything independent and is moved only
 by what is shared.
 
+### 4.68 A Self-Test: A Noisy Crowd Tracks a Moving Goal at the Same Bandwidth as a Sharp Leader (Finding 86)
+
+The steering-bandwidth section established that a flock tracks a turning goal only below a critical rate set by
+its alignment response time, and the many-wrongs sections established that a crowd of noisy estimators
+navigates to an accurate heading by spatial averaging. This experiment combines them on the open question of
+how a noisy crowd tracks a moving goal: the goal direction rotates and every agent biases toward the current
+goal carrying its own fixed angular offset. Before running it I committed to a prediction -- that the many-
+wrongs average, being spatial and instantaneous, would add no lag, so the noise would lower the tracking
+bandwidth only by shrinking the magnitude of the averaged bias, which falls off as the exponential of minus
+half the squared per-agent spread, exactly the law found earlier for the static noise ceiling. In other words
+the bandwidth was predicted to scale with that magnitude factor.
+
+![figures/moving_goal_crowd_1.png](figures/moving_goal_crowd_1.png)
+
+The prediction is wrong, and instructively so. For per-agent spreads up to a radian the tracking-accuracy
+curves against turning rate lie almost on top of one another, and the bandwidth is unchanged even though the
+magnitude factor has fallen to six tenths. The many-wrongs noise costs essentially nothing for moving-goal
+tracking: a noisy crowd turns to follow the goal as well as a sharp leader does. The reason the magnitude
+reduction does not translate into lost bandwidth is that the per-agent offsets are static and rotate with the
+goal, so the averaged bias points cleanly at the current goal each step and adds no temporal lag, while the
+reduced magnitude still leaves the pull well above the threshold needed to steer, so the bandwidth, which is
+set by the response time rather than the pull magnitude in this range, does not move. The magnitude law bites
+only when it pushes the pull below threshold, and that is precisely the noise ceiling: at a per-agent spread of
+one and a half radians, past the ceiling found earlier, tracking does not degrade gracefully but collapses,
+the static case itself becoming unreliable with large run-to-run scatter and the fastest turn essentially
+untracked. Noise thus has a binary effect on moving-goal tracking -- free below the ceiling, catastrophic above
+it -- rather than a graded bandwidth cost.
+
+Offered as another self-test in the spirit of the falsified predictions earlier in the study, this corrects
+and sharpens the relationship between the two averaging notions. Steering bandwidth, a temporal property set by
+the alignment response time, and crowd accuracy, a spatial property set by the averaging of estimates, are
+independent resources: many-wrongs noise spends the second and not the first, so a noisy crowd tracks a turning
+goal at full bandwidth and pays only in steady accuracy until the noise ceiling, where the averaged signal
+collapses outright. It strengthens the directional-averager thesis by showing the average is recomputed afresh
+each timestep rather than integrated over time, and it closes the many-wrongs arc.
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism

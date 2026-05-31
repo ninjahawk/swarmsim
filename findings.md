@@ -3841,6 +3841,58 @@ independent and is moved only by what is shared. Closes the many-wrongs sub-thre
 thread (F72-F85) is a complete arc; the next major direction is co-adaptation/evolution (heritable escape or
 estimate quality under selection), which requires a fitness model and is a fresh thread.
 
+---
+
+## Finding 86 (SELF-TEST): Many-wrongs tracking of a MOVING goal -- spatial averaging (F82) and temporal bandwidth (F77) are INDEPENDENT; a noisy crowd tracks a turning goal at the SAME bandwidth as a sharp leader (my exp(-sigma^2/2) bandwidth-reduction prediction FALSIFIED)
+<img src="./figures/moving_goal_crowd_1.png" width="640"/>
+
+**What:** The open question left by F83/F77: does the many-wrongs average help a crowd track a MOVING goal, and
+does per-agent noise cost steering bandwidth? F77 found a finite steering bandwidth (a flock tracks a goal
+turning at rate omega only below omega_crit ~ 1/response-time). F82 found alignment averages noisy private
+estimates to a 1/sqrt(N) accurate heading. Here the goal direction rotates at omega and every agent biases
+toward the CURRENT goal carrying its own FIXED angular offset, g_hat_i(t)=rotate(goal(t), phi_i),
+phi_i~N(0,sigma_pref). PRE-REGISTERED PREDICTION: the many-wrongs average is SPATIAL (over agents,
+instantaneous each step) so it should add no lag; noise should lower the bandwidth ONLY by shrinking the
+averaged-bias MAGNITUDE w*exp(-sigma_pref^2/2) (the F82 Exp2 law), i.e. omega_crit ~ exp(-sigma_pref^2/2).
+**Evidence:** collective/moving_goal_crowd.py, N=250, w_bias=0.5, 8 seeds. Tracking accuracy =
+time-avg cos(flock heading - goal angle).
+  tracking accuracy vs omega (rad/tu), by per-agent noise sigma_pref:
+  sigma  exp(-s^2/2)   om=0.00  0.02    0.05    0.10    0.15    0.20
+  0.00   1.000         1.000    0.999   0.993   0.973   0.940   0.890
+  0.50   0.882         1.000    0.999   0.994   0.972   0.935   0.880
+  1.00   0.607         0.999    0.998   0.990   0.956   0.894   0.787
+  1.50   0.325         0.769*   0.821*  0.909   0.830   0.596   0.086   (* huge cross-seed std, F82 ceiling)
+  Phi ~ 1.000 (sigma=0) down to ~0.92 (sigma=1.5) across all omega -- coherence fine throughout.
+  Bandwidth (largest omega with acc>=0.5): sigma=0/0.5/1.0 all ~0.20; sigma=1.5 ~0.15 (unreliable).
+**Key result 1 -- spatial and temporal averaging are INDEPENDENT (prediction falsified).** For sigma_pref up
+to 1.0 rad the tracking-accuracy-vs-omega curves OVERLAY almost exactly (at omega=0.10: 0.973/0.972/0.956; at
+omega=0.15: 0.940/0.935/0.894). The bandwidth is flat at ~0.20 across sigma=0, 0.5, 1.0 even though the
+averaged-bias magnitude factor exp(-sigma^2/2) has fallen to 0.61. My pre-registered prediction that bandwidth
+~ exp(-sigma^2/2) is WRONG: the magnitude reduction does NOT translate into proportional bandwidth loss. The
+many-wrongs noise costs essentially nothing for moving-goal tracking -- a noisy crowd tracks a turning goal as
+well as a sharp leader.
+**Key result 2 -- why the prediction failed.** The per-agent offsets are STATIC and rotate WITH the goal, so
+the averaged bias points cleanly at the current goal each step and adds no temporal lag; the averaging is
+spatial and instantaneous, decoupled from the alignment response time that sets the bandwidth. And the
+magnitude reduction (0.61*w at sigma=1.0) leaves the effective pull well above the steering threshold, so the
+bandwidth -- set by the response time, not the pull magnitude in this range -- is unchanged. The magnitude law
+would only bite if it pushed the pull below threshold, which is exactly what happens at the F82 NOISE CEILING.
+**Key result 3 -- the ceiling, not a graceful bandwidth, is the failure mode.** At sigma_pref=1.5 (magnitude
+0.33, past the F82 Exp2 ceiling ~1.3 rad) tracking does not degrade gracefully -- it COLLAPSES: even the static
+omega=0 case gives accuracy 0.769 with std 0.605 (different seeds head different ways), and at omega=0.20
+accuracy is 0.086. The breakdown is the F82 ceiling (averaged signal too weak to overcome the spontaneous
+heading), not a lowered bandwidth. So noise has a binary effect on moving-goal tracking: free (no bandwidth
+cost) below the ceiling, catastrophic above it.
+**Implication.** A 5th self-test (cf. F47/F48/F52/F81): a pre-registered quantitative prediction tested
+directly and CORRECTED. Refines the F77/F82 relationship: steering BANDWIDTH (temporal, set by alignment
+response time) and crowd ACCURACY (spatial, set by estimate averaging) are independent resources -- many-wrongs
+noise spends the second, not the first, so a noisy crowd turns as fast as a sharp leader and only pays in
+steady accuracy, until the F82 noise ceiling where the averaged signal collapses outright. Strengthens the §5.3
+thesis (alignment is a directional averager) by showing the average is computed afresh each timestep, not
+integrated over time. Closes the many-wrongs sub-thread (F81-F86). Leadership thread (F72-F86) complete and
+PAUSED; the next major direction is co-adaptation/evolution, which needs a fitness model (a scientific choice
+to make deliberately, not by default).
+
 ## Open Questions / Next Directions
 *(updated through F62; the F41-F46-era list that lived here was stale -- it predated
 F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
