@@ -244,6 +244,8 @@ Full documentation, evidence, and figures for each finding: [`findings.md`](find
 |------|-------------|
 | `model.py` | **OOP foundation** — `Flock`, `Predator` classes; `flock.evolve()`; `simulate()` helper. Import this for new experiments. |
 | `flocking.py` | Procedural core — buffer zone, vectorized forces, run loop, order parameter. Used by legacy experiment scripts. |
+| `vectorized_predator.py` | Vectorized predator→prey repulsion force; reproduces `model.Predator.force_on_prey` exactly (self-test asserts 1e-17 agreement) at ~250× the speed. Additive helper. |
+| `vectorized_predator_prey.py` | Fast predictive-encirclement (F66) + collective-escape (F70) episode runner, `run_episode()`. Verified bit-identical to the legacy predator scripts; supports a per-agent escape weight and returns final state for downstream analysis. |
 
 ### Experiment scripts
 
