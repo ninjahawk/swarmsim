@@ -3419,14 +3419,14 @@ the questions: the first evolves only the predator against frozen no-escape prey
 capture selection alone favours; the second co-evolves both from no escape; the third co-evolves both from a
 seeded escaper population.
 
-Against frozen no-escape prey the predator lead converges tightly, across seeds, to about three time units —
-not the value near two that Finding 66 identified by hand as the most disruptive. The discrepancy is the
-point: Finding 66 measured disruption, the lead that fragments the flock and minimises the order parameter,
-whereas selection here optimises captures, and the capture-maximising lead is larger, because fragmenting
-the flock scatters the prey while a slightly longer lead intercepts the flock's path for more kills. Capture
-maximisation and coherence disruption are distinct objectives with distinct optima — a caution against
-reading a hand-found most-disruptive parameter as the one selection will favour. The two co-evolution runs
-then expose a deep asymmetry. From no escape the predator holds its high capture-optimal lead while the prey
+Against frozen no-escape prey the predator lead converges tightly, across seeds, to about three time units,
+somewhat above the value near two that Finding 66 identified by hand as the most disruptive. It is tempting
+to read this as evidence that capture selection favours a different lead than disruption — but the direct
+measurement of the next section (Finding 91) refutes that reading: the capture rate actually peaks at a lead
+of two, coinciding with the disruption optimum, and the evolutionary overshoot to three is an artifact of
+the small six-predator replace-the-worst selection scheme operating on a high-variance capture signal. The
+capture and disruption optima coincide; the evolved value is simply not at that optimum. The two
+co-evolution runs then expose the result that does not depend on the exact lead, a deep asymmetry. From no escape the predator holds its high capture-optimal lead while the prey
 climb only partway, escape never establishing within the run, so the predator wins; from seeded escape the
 prey escape weight goes essentially to fixation and the predator's lead trait drifts aimlessly across seeds,
 because committed escape yields no captures and therefore no selection signal on the predator at all — a
@@ -3444,6 +3444,30 @@ evolutionarily fragile defence — hard to originate, easy to lose to drift, yet
 lead-time trajectories are noisy at two to three seeds and predator selection acts on only six individuals;
 the signs and the tight frozen-prey result are robust, the co-evolution magnitudes less so.) (Figure:
 `figures/escape_coevolution_1.png`.)
+
+### 4.73 A Self-Test: The Capture Optimum Coincides with the Disruption Optimum (Finding 91)
+
+The previous section reported that the predator evolved a lead near three, and it was tempting to conclude
+that capture selection favours a longer lead than the value near two that most disrupts the flock — that
+catching prey and fragmenting the flock are different objectives. This section tests that conclusion
+directly rather than through the noisy evolutionary dynamics. Holding all six predators at a fixed common
+lead against frozen no-escape prey, the steady capture rate and the order parameter are measured as the lead
+is swept, with no evolution.
+
+The conclusion does not survive. The capture rate peaks at a lead of two — about ten captures per time unit,
+against seven at lead one and barely two at lead zero — and then falls steeply, to a noisy four at lead
+three and to almost nothing at leads four and five, where the predators overshoot the flock entirely. The
+order parameter is lowest, the flock most fragmented, at exactly the same lead of two. The lead that catches
+the most prey and the lead that most disrupts coherence are therefore the same, not different, and the
+evolved value of three from the preceding section is not a capture optimum at all: at lead three the capture
+rate is not only lower than at two but wildly variable from run to run, and the small six-predator
+replace-the-worst selection scheme, cloning whichever predator happened to capture most in a given window,
+chases that high-variance tail away from the true mean-rate optimum. The capture-versus-disruption
+distinction claimed in the previous section is thus withdrawn; the broader lesson survives only inverted,
+as a methodological caution that a tightly converged evolved trait under noisy selection in a small
+population need not sit at the trait's fitness optimum, and should be checked against a direct fitness
+measurement before being read as optimal. This is the sixth self-test of the study, and the only one to
+correct a result generated within the same body of work. (Figure: `figures/escape_capture_curve_1.png`.)
 
 ---
 
@@ -4014,7 +4038,7 @@ comparably tiny dishonest one an effective spoiler.
 
 ## 7. Conclusions
 
-This study produced fifty-five main results (selecting the most general across 90 findings):
+This study produced fifty-six main results (selecting the most general across 91 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -4602,19 +4626,31 @@ This study produced fifty-five main results (selecting the most general across 9
     flock escapes at all, so escape stabilises as a durable mixed strategy rather than
     sweeping to fixation.
 
-55. **The two-sided arms race is asymmetric, and capture is not disruption:** Letting the
-    predator co-evolve a heritable predictive lead time, selected on capture success, gives
-    two results. Against frozen no-escape prey the lead converges to about three rather than
-    the value near two that minimises coherence by hand — selection optimises captures, not
-    disruption, and the two objectives have different optima (fragmenting the flock scatters
-    the prey, whereas a longer lead intercepts its path for more kills). And the race is
-    asymmetric: the predator climbs to its optimum from any start, but the prey counter is
+55. **The two-sided arms race is asymmetric:** Letting the predator co-evolve a heritable
+    predictive lead time, selected on capture success, the race is fundamentally asymmetric.
+    (Against frozen no-escape prey the lead converges to about three; this overshoots the
+    true capture optimum, which the direct measurement of result 56 places at about two,
+    coinciding with the disruption optimum — the evolved value is a small-population
+    selection artifact, not a distinct capture optimum.) The asymmetry is the robust result:
+    the predator climbs to its optimum from any start, but the prey counter is
     origination-limited by the escape valley, so de-novo co-evolution favours the predator
     and escape establishes only when seeded — after which it is an uncounterable hard counter
     that collapses predator selection, the lead trait drifting once no captures remain to
     select on. Collective escape is thus a powerful but evolutionarily fragile defence: hard
-    to originate, easy to lose to drift, decisive once present. This closes the co-adaptation
-    thread.
+    to originate, easy to lose to drift, decisive once present.
+
+56. **A self-test: the capture optimum coincides with the disruption optimum:** Measuring
+    the capture rate and coherence directly against a fixed predator lead, rather than
+    inferring them from evolution, the capture rate peaks at a lead of two — exactly where
+    the flock is most fragmented — and falls away on both sides, vanishing by lead four where
+    the predators overshoot. The lead that catches the most prey is therefore the same as the
+    lead that most disrupts the flock, so the capture-versus-disruption distinction suggested
+    by the evolved lead of three is withdrawn: that value is a small-population selection
+    artifact, the noisy replace-the-worst scheme chasing a high-variance capture signal away
+    from its true optimum. The lesson survives inverted, as a caution that a tightly converged
+    evolved trait under noisy selection need not lie at its fitness optimum. The sixth
+    self-test of the study, and the only one to correct a result from the same body of work.
+    This closes the co-adaptation thread.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

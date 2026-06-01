@@ -4003,7 +4003,7 @@ a shared directional signal benefits non-contributors too, so contribution need 
 Caveats: 2 seeds (noisy at the few-percent level), fixed predator, N=150, one fitness model.
 evolution/escape_freerider.py
 
-## Finding 90: Two-sided co-evolution -- (i) capture-selection optimises the predator for CAPTURES, not coherence-disruption (evolved lead ~3.0, not the F66 most-disruptive ~2), and (ii) the arms race is ASYMMETRIC: the predator optimises freely while the prey counter is origination-limited, so escape wins only when already present
+## Finding 90: Two-sided co-evolution -- the arms race is ASYMMETRIC: the predator optimises its lead freely (no barrier) while the prey counter is origination-limited (F87), so de-novo co-evolution favours the predator and escape wins only when already present, then collapses predator selection [NOTE: the secondary "capture-optimal lead ~3 differs from disruption-optimal ~2" claim made here was FALSIFIED by the F91 direct measurement -- see the correction in the implication below and in F91]
 
 **Setup.** The true two-sided arms race (chosen trait: predator predictive lead_time; user decision,
 2026-06-01). Prey keep the F87 heritable escape weight under capture/removal; now each of the 6 predators
@@ -4015,20 +4015,24 @@ clean test of what capture-selection alone favours); Exp1 co-evolves both from n
 co-evolves both from a seeded f=0.5 escaper population. Reuses the validated per-step physics.
 
 **Result.** Exp0 (clean): against frozen no-escape prey the predator lead converges tightly to 3.03 +/-0.31
-(3 seeds) -- NOT the F66 hand-found most-disruptive value (~2). F66 measured DISRUPTION (the lead that
-fragments the flock and minimises Phi); selection here optimises CAPTURES, and the capture-maximising lead
-is larger (~3): fragmenting the flock scatters prey, whereas a slightly longer lead intercepts the flock's
-path for more kills. Capture-maximisation and coherence-disruption are distinct objectives with distinct
-optima. Exp1 (co-evolve from no escape): the predator lead stays high (3.2 +/-1.5) while the prey climb only
+(3 seeds), into the effective/disruptive lead range. I initially read this as evidence that capture-selection
+favours a LONGER lead (~3) than the F66 most-disruptive value (~2), i.e. that capture and disruption have
+distinct optima -- but a direct capture-vs-lead measurement (F91) FALSIFIED that: the capture rate actually
+peaks at lead~2, the SAME lead that most disrupts coherence, and the evolutionary overshoot to ~3 is a
+small-population selection artifact (see F91 and the corrected implication below). Exp1 (co-evolve from no escape): the predator lead stays high (3.2 +/-1.5) while the prey climb only
 partway (mean w~0.70, escaper fraction 0.47) -- escape is not established within 400 tu (the F87 origination
 brake), so the predator wins. Exp2 (co-evolve from seeded escape): escape FIXES (mean w~2.00, escaper
 fraction 0.99, Phi=1.000) and the predator's lead trait DRIFTS aimlessly (2.3 +/-2.3, i.e. essentially
 random across seeds) because committed escape (F70) yields no captures and so no selection signal on the
 predator -- a "use it or lose it" collapse of the predator trait under relaxed selection.
 
-**Implication.** Two results. (i) The evolutionarily optimal predator is tuned to its OWN fitness (captures),
-which need not coincide with the configuration that most disrupts the collective -- a caution against reading
-a hand-found "most disruptive" parameter (F66) as the one selection will favour. (ii) The arms race is
+**Implication.** (i) [CORRECTED by F91] I first inferred from the evolved lead (~3) that capture-selection
+favours a different lead than disruption (~2). The F91 direct sweep refutes this: the capture rate peaks at
+lead~2, coinciding with the disruption optimum, so capture and disruption do NOT have distinct optima; the
+evolved ~3 was an artifact of the noisy 6-predator replace-worst-with-best scheme (the capture rate at
+lead~3 is hugely variable, +/-5.6, and cloning the lucky best chases that unstable tail). The lesson survives
+in inverted form: a tightly-converged evolved-trait value under small-population noisy selection need not sit
+at the trait's fitness optimum. (ii) The robust result -- independent of (i) -- is that the arms race is
 fundamentally ASYMMETRIC. The predator can climb to its optimum from any start (no barrier), but the prey
 counter is origination-limited (F87/F88), so de-novo co-evolution favours the predator and escape establishes
 only when seeded -- after which it is an uncounterable hard counter (F70) that collapses predator selection
@@ -4040,8 +4044,39 @@ evolutionarily fragile defence -- hard to originate, easy to lose to drift, yet 
 Caveats: 2-3 seed noise (the Exp1/Exp2 lead std is large), predator selection on only 6 individuals, one
 fitness model, fixed prey alignment. evolution/escape_coevolution.py
 
+## Finding 91 (SELF-TEST): Direct measurement CORRECTS the F90 capture-vs-disruption claim -- the capture rate peaks at the SAME lead (~2) that most disrupts coherence, so the F90 evolved lead ~3 was a small-population selection artifact, not a distinct capture optimum
+
+**Setup.** F90 inferred from the evolved predator lead (~3) that capture-selection optimises a DIFFERENT
+lead than coherence-disruption (F66's ~2). This tests that inference directly rather than through the noisy
+evolutionary dynamics: against frozen no-escape prey, hold all six predators at a FIXED common lead and
+measure the steady capture rate and the order parameter, sweeping the lead over {0,1,2,3,4,5} tu, 3 seeds,
+no evolution. If captures peak near ~3 while Phi bottoms near ~2 the F90 distinction holds; if both
+extremise at the same lead it does not.
+
+**Result.** Both the capture rate and the disruption peak at the SAME lead, ~2. Capture rate (per tu): 2.2
+(lead 0), 7.0 (1), 9.6 (2, the maximum), 4.3 (3, but +/-5.6 -- wildly variable), 0.2 (4), 0.2 (5); order
+parameter Phi: 0.80, 0.60, 0.584 (minimum at lead 2), 0.835, 0.998, 0.999. The lead that catches the most
+prey (2) is exactly the lead that most fragments the flock (2). At lead 3 captures are already low and
+hugely variable run-to-run; at lead >= 4 the predators overshoot the flock and barely catch anything (the
+flock stays coherent, Phi ~ 1).
+
+**Implication.** F90's secondary claim -- that capture-maximisation and coherence-disruption are distinct
+objectives with distinct optima -- is FALSIFIED. The capture optimum and the disruption optimum coincide at
+lead ~2 (the F66 value). The F90 evolved lead of ~3 was therefore NOT a true capture optimum but an artifact
+of the small-population (6-predator), high-variance, replace-worst-with-best selection scheme: at lead ~3 the
+capture rate has enormous run-to-run variance (+/-5.6), and a rule that each window clones the single
+best-capturing predator chases lucky high-capture realisations into the unstable long-lead tail rather than
+tracking the mean-rate optimum at ~2. The robust F90 result -- the ASYMMETRY of the arms race (predator
+optimises freely, prey origination-limited; seeded escape wins and collapses predator selection) -- is
+unaffected, as it does not depend on the exact evolved lead. The broader lesson survives inverted: a
+tightly-converged evolved-trait value under noisy small-population selection need NOT sit at the trait's
+fitness optimum, so an evolved parameter should be checked against a direct fitness measurement before being
+read as optimal. A 6th self-test in the study's tradition (cf. F47/F48/F52/F81/F86) of registering a claim
+and testing it directly; the only one to correct a result from THIS session's own thread.
+evolution/escape_capture_curve.py
+
 ## Open Questions / Next Directions
-*(updated through F90.)*
+*(updated through F91.)*
 
 All primary threads are CLOSED:
 - **Predator strategy (2D + 3D)**: F5-F16, F19-F35, F43-F45, F49, F53. 3D encirclement

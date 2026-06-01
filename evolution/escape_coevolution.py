@@ -55,10 +55,13 @@ ESC_THRESH = 0.75
 N_SEEDS = 3
 
 
-def run_coevolution(prey_seed_frac, seed, evolve_prey=True):
+def run_coevolution(prey_seed_frac, seed, evolve_prey=True, evolve_pred=True, fixed_lead=None):
     """If evolve_prey is False the prey escape weight is frozen at its initial value
     (captured prey are still removed/replaced but inherit w=initial), so ONLY the
-    predator lead evolves -- a clean test of what capture-selection alone favours."""
+    predator lead evolves -- a clean test of what capture-selection alone favours.
+    If fixed_lead is given, all predators use that lead; with evolve_pred=False the
+    predators do not evolve (a static measurement of captures/coherence at one lead --
+    used by escape_capture_curve.py / F91)."""
     rng = np.random.RandomState(seed)
     p = BASE
     N, dt = p['N'], p['dt']
@@ -77,7 +80,10 @@ def run_coevolution(prey_seed_frac, seed, evolve_prey=True):
     pred_vx = np.zeros(N_PRED); pred_vy = np.zeros(N_PRED)
     ang = np.radians(np.arange(N_PRED) * 360.0 / N_PRED)
     cos_a, sin_a = np.cos(ang), np.sin(ang)
-    pred_lead = rng.uniform(0., 5., N_PRED)        # predator trait: random initial lead times
+    if fixed_lead is None:
+        pred_lead = rng.uniform(0., 5., N_PRED)    # predator trait: random initial lead times
+    else:
+        pred_lead = np.full(N_PRED, float(fixed_lead))
     pred_caps = np.zeros(N_PRED)                   # captures since last selection event
 
     rb = max(r0, rf); p_capture = CAPTURE_RATE * dt
@@ -165,7 +171,7 @@ def run_coevolution(prey_seed_frac, seed, evolve_prey=True):
                 cum_caps += cap_idx.size
 
             # periodic predator selection: worst lead -> mutated clone of best
-            if (i - N_WARMUP) > 0 and (i - N_WARMUP) % PRED_SELECT_EVERY == 0:
+            if evolve_pred and (i - N_WARMUP) > 0 and (i - N_WARMUP) % PRED_SELECT_EVERY == 0:
                 best = int(pred_caps.argmax()); worst = int(pred_caps.argmin())
                 if best != worst:
                     pred_lead[worst] = np.clip(pred_lead[best] + rng.normal(0., PRED_MUT),

@@ -1,0 +1,17 @@
+Capture rate and coherence vs FIXED predator lead (frozen no-escape prey) -- F90 diagnostic
+  N=150  n_pred=6  3 seeds  60 tu measurement per lead
+  F66 found lead~2 the most DISRUPTIVE (lowest Phi) by hand; F90 evolved lead~3 by CAPTURE selection.
+  Question: does the CAPTURE rate peak at a different lead than the coherence minimum?
+
+  lead=0.0 tu   capture rate=  2.15 /tu (+/-0.22)   mean Phi=0.800
+  lead=1.0 tu   capture rate=  7.03 /tu (+/-1.94)   mean Phi=0.600
+  lead=2.0 tu   capture rate=  9.62 /tu (+/-0.76)   mean Phi=0.584
+  lead=3.0 tu   capture rate=  4.29 /tu (+/-5.57)   mean Phi=0.835
+  lead=4.0 tu   capture rate=  0.23 /tu (+/-0.13)   mean Phi=0.998
+  lead=5.0 tu   capture rate=  0.18 /tu (+/-0.12)   mean Phi=0.999
+
+  -> Capture rate PEAKS at lead=2.0 tu; coherence is LOWEST (most disrupted) at lead=2.0 tu.
+     The two optima coincide or invert here -- F90's capture/disruption distinction is not
+     reproduced by this direct sweep; revisit the evolved-lead interpretation.
+
+  --> figures/escape_capture_curve_1.png
