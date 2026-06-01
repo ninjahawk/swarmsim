@@ -3302,6 +3302,50 @@ goal at full bandwidth and pays only in steady accuracy until the noise ceiling,
 collapses outright. It strengthens the directional-averager thesis by showing the average is recomputed afresh
 each timestep rather than integrated over time, and it closes the many-wrongs arc.
 
+### 4.69 Evolving the Escape Weight: The F70 Valley Is a Strong Evolutionary Brake (Finding 87)
+
+Every behavioral trait studied so far has been fixed by hand. This experiment opens a co-adaptation thread by
+making one trait — the collective-escape weight of Section 4.52 — heritable and placing it under predation
+selection. Each prey carries its own escape weight $w_i$, feeling a force $w_i\,\hat{e}$ along the shared unit
+vector $\hat{e}$ from the predator centroid toward the flock centre of mass (the Finding 70 signal), and $w_i$
+is inherited. The predators are the hardest found, predictive encirclement at a lead of two time units (Finding
+66), with six predators in the slow-prey regime at $N = 150$. The fitness model is capture and removal: an
+agent that comes within a kill radius $r_{\mathrm{kill}} = 0.03$ of any predator is captured at a hazard rate of
+three per time unit and replaced by a mutated clone of a random survivor, which inherits the parent's weight
+plus a small Gaussian mutation and is born at the parent's position and velocity. The population size is held
+fixed, a Moran-style continuous-replacement scheme. The question is the evolutionary form of the Finding 70
+valley: since a weak escape ($w \approx 0.25$) is worse than none and only $w \gtrsim \alpha = 1$ outruns the
+trap, does selection drive a cautious population across that valley to the escape regime, or does the valley
+trap it? The initial weight is swept over $\{0, 0.25, 0.5, 1, 2\}$.
+
+Over 150 time units the outcome is set sharply by the starting weight. A population seeded in the escape regime
+is evolutionarily stable and almost never caught: starting at $w_0 = 2$ it stays at $w = 2.00$ with about six
+captures and an order parameter of $1.000$, and starting at $w_0 = 1$ it holds $w = 1.00$ at an order parameter
+of $0.992$. A population seeded at or below the valley stalls far short of escape — $w_0 = 0$ rises only to
+$w \approx 0.27$ (order parameter $0.22$, $1804$ captures), $w_0 = 0.25$ to $0.49$, $w_0 = 0.5$ to $0.66$ — and
+the capture toll peaks precisely in the valley (about $1800$–$1900$ captures at $w_0 = 0$ and $0.25$) before
+collapsing to single digits at $w_0 = 2$. Predation cost is concentrated exactly where Finding 70 placed the
+valley. A longer run separates a true barrier from a slow brake: selection on the weight is directional and
+upward from every start — even $w_0 = 0$ drifts up — but the valley throttles the climb, so from no escape the
+mean weight crawls to only $\approx 0.13$ by 50 time units, $0.18$ by 150, and $0.51$ by 400, never reaching the
+escape threshold, while a start just past the worst of the valley ($w_0 = 0.5$) climbs faster, to $0.88$ by 400
+time units and accelerating. Neither low start crosses $w = 1$ within 400 time units.
+
+The Finding 70 force-versus-alignment threshold therefore has a population-genetic image: it is a strong
+evolutionary brake rather than an absolute barrier. Escape behaviour is trivial to maintain — stable,
+self-reinforcing, and nearly cost-free once $w \gtrsim \alpha$ — but very hard to evolve from scratch, because
+the only path there runs through the valley where escape is actively harmful, so selection pushes the weight up
+only weakly and the flock crawls for hundreds of time units without establishing escape. This is strong
+evolutionary hysteresis, a first-mover problem in which the basin a population occupies is set by where it
+starts and the cost-free escape optimum is effectively unreachable from rare. It is the domination-not-blending
+theme of Findings 16, 24, and 70 read at the evolutionary level: a globally shared escape direction pays off
+only once it is strong enough to beat alignment, so partial commitment is selected against, and the naive
+reading of Finding 70 — that escape wins — is inverted, escape winning only where it is already present. The
+result opens the co-adaptation thread with the predator side still fixed; the natural next steps are to let the
+predator's lead time or aggression co-evolve against the prey trait, to ask whether a seeded escape-carrying
+minority or a larger mutation step can jump the gap, and to confirm the brake under the alternative fitness
+models. (Figure: `figures/escape_evolution_1.png`.)
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3871,7 +3915,7 @@ comparably tiny dishonest one an effective spoiler.
 
 ## 7. Conclusions
 
-This study produced forty-one main results (selecting the most general across 71 findings):
+This study produced fifty-two main results (selecting the most general across 87 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -4419,6 +4463,21 @@ This study produced forty-one main results (selecting the most general across 71
     timestep rather than integrated. The fifth such self-test in the study, in which a
     prediction was registered and then corrected rather than assumed; closes the
     collective-navigation arc.
+
+52. **The escape-weight valley of result 40 is a strong evolutionary brake, not an
+    absolute barrier:** Making the collective-escape weight a heritable per-agent trait
+    under capture-and-removal selection against the predictive predator, escape behaviour
+    is evolutionarily stable and almost cost-free once present — a population seeded at
+    weight 2 stays there with a handful of captures and full coherence — but it does not
+    evolve from the no-escape state on any reasonable timescale. Selection on the weight is
+    directional and upward from every start, yet the valley throttles the climb so severely
+    that a population starting from no escape crawls to only about half the escape threshold
+    in 400 time units while suffering the heaviest predation, with captures peaking exactly
+    in the valley. The force-versus-alignment threshold of result 40 thus has a
+    population-genetic image — strong evolutionary hysteresis in which escape is easy to keep
+    but hard to evolve de novo, because the path to it runs through a region where partial
+    commitment is actively selected against. This opens a co-adaptation thread with the
+    predator still fixed.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

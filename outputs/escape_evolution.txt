@@ -1,0 +1,27 @@
+Evolution of the collective-escape weight under capture/removal selection
+  N=150  n_pred=6  lead=2.0 tu  r_kill=0.030  capture_rate=3.0/tu  mut_sigma=0.10
+  15000 evolution steps (=150 tu) after 800 warmup; 2 seeds per initial w0
+  Question: does selection drive low-w starts ACROSS the F70 valley (w~0.25 worse
+  than none) up to the winning regime (w>=alpha=1), or does the valley trap them?
+
+  w0=0.00 -> final mean w = 0.272 (pop median 0.213, max 1.08)  Phi_end=0.217  captures=1804
+  w0=0.25 -> final mean w = 0.494 (pop median 0.383, max 1.50)  Phi_end=0.617  captures=1886
+  w0=0.50 -> final mean w = 0.659 (pop median 0.672, max 1.37)  Phi_end=0.569  captures=1220
+  w0=1.00 -> final mean w = 1.001 (pop median 1.000, max 1.48)  Phi_end=0.992  captures=277
+  w0=2.00 -> final mean w = 1.999 (pop median 2.000, max 2.10)  Phi_end=1.000  captures=6
+
+  Over 150 tu the outcome is sharply set by the initial weight: high-w starts are
+  stable and nearly predation-free (w0=2 -> w~2.00, ~6 captures) while low/valley
+  starts stall well below the escape threshold (w0=0 -> w~0.27, ~1804 captures).
+
+Exp2: long run (400 tu) on low-w starts -- is the stall a true barrier or a slow brake?
+  w0=0.00 -> w(50tu)=0.127  w(150tu)=0.180  w(400tu)=0.507  end-slope=3.1e-04/tu  crossed w=1: False
+  w0=0.50 -> w(50tu)=0.482  w(150tu)=0.562  w(400tu)=0.876  end-slope=1.3e-03/tu  crossed w=1: False
+
+  -> Selection on w is directional-UPWARD from every start, but the F70 valley THROTTLES
+     the climb: from no escape the population only crawls to w~0.5 in 400 tu and never
+     reaches the escape regime (w>=1), while escape is stable and near-costless once present.
+     The valley is a strong evolutionary BRAKE (slow, hysteretic crossing), not an absolute
+     barrier -- the population-genetic image of the F70 force-versus-alignment threshold.
+
+  --> figures/escape_evolution_1.png

@@ -3893,6 +3893,52 @@ integrated over time. Closes the many-wrongs sub-thread (F81-F86). Leadership th
 PAUSED; the next major direction is co-adaptation/evolution, which needs a fitness model (a scientific choice
 to make deliberately, not by default).
 
+## Finding 87: EVOLUTION of the collective-escape weight under capture/removal selection -- the F70 "dangerous valley" is a strong evolutionary BRAKE (escape is stable and near-costless once present, but evolves only by a slow, hysteretic crawl from the no-escape state), not an absolute barrier
+
+**Setup.** First experiment of the co-adaptation thread, and the first in this study where a behavioral
+trait is HERITABLE and under selection rather than fixed by hand. Each prey carries a per-agent
+collective-escape weight w_i (the F70 trait: prey i feels w_i * e_hat, with e_hat the shared unit vector
+from the predator centroid toward the flock CoM), and w_i is heritable. Predators run F66 predictive
+encirclement at lead=2 tu (the hardest predator found), n_pred=6, slow-prey regime, N=150. The FITNESS
+MODEL is a deliberate scientific choice (capture/removal): an agent within r_kill=0.03 of any predator is
+captured at hazard rate 3.0/tu and replaced by a mutated clone of a random survivor (inherits w + Gaussian
+mutation sigma=0.10, clamped to [0,5], spawned at the parent's position/velocity with small jitter), holding
+N fixed (a Moran-style continuous-replacement scheme). The question F70 poses to evolution: F70 found a
+"dangerous valley" where a weak escape (w~0.25) is WORSE than none -- it competes with alignment and
+fragments the flock without escaping -- and only w >= alpha = 1 restores coherence and outruns the trap.
+Does selection drive a low-w population ACROSS that valley to the winning regime, or does the valley trap
+it? Initial weight w0 swept over {0, 0.25, 0.5, 1, 2}, 2 seeds, 150 tu; plus a 400-tu long run on the low
+starts to distinguish a true barrier from a slow brake. The predictive-predator + collective-escape
+dynamics are the validated, bit-identical harness (vectorized_predator_prey.py).
+
+**Result.** The 150-tu outcome is sharply set by the initial weight. Populations seeded in the escape
+regime are evolutionarily STABLE and nearly predation-free: w0=2.0 stays at w=2.00 with only ~6 captures
+and Phi=1.000; w0=1.0 stays at w=1.00 (277 captures, Phi=0.992). Populations seeded at or below the valley
+stall well short of escape: w0=0.0 -> mean w=0.27 (Phi=0.22, 1804 captures), w0=0.25 -> 0.49, w0=0.5 ->
+0.66. Captures PEAK in the valley region (1886 at w0=0.25, 1804 at w0=0.0) and collapse to single digits at
+w0=2.0 -- predation cost is concentrated exactly where F70 placed the valley. The long run resolves the
+mechanism: selection on w is directional-UPWARD from every start (even w0=0 drifts up), but the valley
+THROTTLES the climb. From no escape the mean weight crawls 0 -> 0.13 (50 tu) -> 0.18 (150 tu) -> 0.51
+(400 tu), end-slope ~3e-4/tu, and never reaches the escape threshold w=1; a start past the worst of the
+valley (w0=0.5) climbs faster (0.88 at 400 tu, slope ~1.3e-3/tu, accelerating). Neither crosses w=1 within
+400 tu.
+
+**Implication.** The F70 force-versus-alignment threshold has a population-genetic image: it is a strong
+evolutionary BRAKE, not an absolute barrier. Escape behavior is trivial to MAINTAIN -- stable,
+self-reinforcing, near-zero predation once w >= alpha -- but very hard to EVOLVE DE NOVO from the no-escape
+state, because the path there runs through the valley where escape is actively harmful (highest capture,
+lowest coherence), so selection pushes w upward only weakly and the crowd crawls for hundreds of time units
+without establishing escape. This is strong evolutionary hysteresis, a first-mover problem: which basin a
+population occupies is set by where it starts, and the costless escape optimum is not reachable on realistic
+timescales from rare. It is the domination-not-blending theme (F16/F24/F70) read at the evolutionary level
+-- a globally shared escape direction pays off only once it is strong enough to beat alignment, so partial
+commitment is selected against -- and it inverts the naive reading of F70's "escape wins": escape wins only
+where it is already present. Opens the co-adaptation thread; the predator side is still fixed (natural next
+step: let predator lead_time or aggression co-evolve against the prey trait, and test whether a larger
+mutation step or a seeded escape-carrying minority can jump the gap). Caveats: one fitness model
+(capture/removal), fixed predator, N=150, mutation sigma=0.10 -- the brake's steepness depends on these.
+evolution/escape_evolution.py
+
 ## Open Questions / Next Directions
 *(updated through F86.)*
 
@@ -3937,25 +3983,16 @@ predator (F65 -- no point strategy works; a 3D-effective attack must target the 
 coupling per agent, which is exactly what contagion does).
 
 Remaining exploratory directions:
-1. **Co-adaptation / evolution of escape weight (the proposed next major thread).** F70
-   found a "dangerous valley": a weak prey escape weight (w~0.25) is WORSE than none
-   before strong escape (w>=alpha) wins. Does selection drive a heritable escape weight
-   ACROSS that valley to the winning regime, or does the valley trap a population that
-   starts cautious? This needs: a vectorized predictive predator (F66) + collective escape
-   (F70), a per-agent heritable escape-weight trait, discrete generations, and a per-agent
-   fitness rule. **The fitness model is a real scientific decision the student must own
-   (professor's rule) -- to discuss before building, not to assume.** Candidate fitness
-   definitions, each with a different bias:
-   - *Proximity survival:* an agent's fitness decreases with time spent within some radius
-     of a predator (continuous, smooth selection gradient; no explicit "death").
-   - *Capture/removal:* agents inside a kill radius are removed and replaced by offspring of
-     survivors (sharp selection, but couples population size to the dynamics and needs a
-     replacement rule).
-   - *Energy budget:* escape force costs energy; fitness = survival minus a metabolic cost
-     proportional to w (directly builds in the cost that creates the valley, so it tests the
-     trade-off rather than assuming it).
-   Implementation note: model.py's Predator force sign is correct but its per-step Python
-   loop is too slow for many generations -- a vectorized predator is a prerequisite.
+1. **Co-adaptation / evolution of escape weight -- OPENED (F87).** Fitness model chosen
+   (capture/removal); first result: the F70 "dangerous valley" is a strong evolutionary
+   BRAKE, not a barrier -- escape (w>=alpha) is stable and near-costless once present but
+   evolves only by a slow hysteretic crawl from the no-escape state, which stalls in the
+   valley (w~0.5 after 400 tu, never reaching w=1). Prerequisites built and validated:
+   vectorized_predator.py + vectorized_predator_prey.py. Natural follow-ups: (a) co-evolve
+   the PREDATOR side (lead_time / aggression) against the prey trait -- a true arms race;
+   (b) does a seeded escape-carrying minority, or a larger mutation step, let the population
+   jump the gap? (c) the other two fitness models (proximity-survival, energy-budget) as
+   robustness checks on the brake; (d) heritable alignment strength alpha under predation.
 2. **Agent memory beyond fatigue:** learned predator avoidance with internal state
    (e.g. a per-agent threat estimate that decays), distinct from the static fatigue of F53.
 3. **Robust estimation against the F83 floor:** can agents detect and down-weight
