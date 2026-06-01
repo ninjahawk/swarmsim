@@ -1,0 +1,24 @@
+Two-sided co-evolution: prey escape weight (capture/removal) vs predator lead_time (capture success)
+  N=150  n_pred=6  400 tu co-evolution  predator selection every 20 tu  3 seeds
+  Predators start at RANDOM lead times in [0,5]; F66 found lead~2 most disruptive by hand.
+
+Exp0 -- predator-only (prey FROZEN at w=0): does capture-selection find the F66 disruption optimum (~2)?
+  frozen : predator lead 2.35 -> 3.03+/-0.31   prey mean w_end=0.00 (escaper frac 0.00)   Phi_end=1.00
+
+Exp1 -- full co-evolution, no-escape prey start (w0=0): asymmetry test.
+  co w0=0: predator lead 2.35 -> 3.21+/-1.50   prey mean w_end=0.70 (escaper frac 0.47)   Phi_end=0.80
+
+Exp2 -- full co-evolution, seeded escaper prey (f=0.5): can any evolved lead recover capture?
+  co seed: predator lead 2.35 -> 2.27+/-2.26   prey mean w_end=2.00 (escaper frac 0.99)   Phi_end=1.00
+
+  -> Q1: against FROZEN no-escape prey the predator lead evolves to ~3.0 tu. Capture-selection
+     optimises for CAPTURES, which need NOT match the F66 most-DISRUPTIVE value (~2 tu): the lead that catches
+     the most prey and the lead that most reduces coherence are NOT the same objective.
+  -> Q2 (arms-race ASYMMETRY): from no escape, prey stay low (w~0.70, the F87 origination brake) so
+     the predator wins by optimising lead; from seeded escape, escape dominates (w~2.00) and the
+     predator cannot recover -- its lead trait even DECAYS to ~2.3 under relaxed selection (no
+     captures to select on). The race is ASYMMETRIC: the predator optimises freely from any start,
+     the prey counter is origination-limited, so de-novo co-evolution favours the predator and the
+     prey only win when escape is already present (F70/F87/F88). 2-3 seed noise; signs are robust.
+
+  --> figures/escape_coevolution_1.png

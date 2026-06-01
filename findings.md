@@ -4003,8 +4003,45 @@ a shared directional signal benefits non-contributors too, so contribution need 
 Caveats: 2 seeds (noisy at the few-percent level), fixed predator, N=150, one fitness model.
 evolution/escape_freerider.py
 
+## Finding 90: Two-sided co-evolution -- (i) capture-selection optimises the predator for CAPTURES, not coherence-disruption (evolved lead ~3.0, not the F66 most-disruptive ~2), and (ii) the arms race is ASYMMETRIC: the predator optimises freely while the prey counter is origination-limited, so escape wins only when already present
+
+**Setup.** The true two-sided arms race (chosen trait: predator predictive lead_time; user decision,
+2026-06-01). Prey keep the F87 heritable escape weight under capture/removal; now each of the 6 predators
+also carries a heritable lead_time and they are selected on CAPTURE SUCCESS -- every 20 tu the
+worst-capturing predator is replaced by a mutated clone of the best (the small-population analogue of the
+prey's Moran scheme; captures are credited to the nearest predator). Predators start at RANDOM leads in
+[0,5]. Three experiments, 3 seeds, 400 tu: Exp0 evolves ONLY the predator against FROZEN no-escape prey (a
+clean test of what capture-selection alone favours); Exp1 co-evolves both from no escape (w0=0); Exp2
+co-evolves both from a seeded f=0.5 escaper population. Reuses the validated per-step physics.
+
+**Result.** Exp0 (clean): against frozen no-escape prey the predator lead converges tightly to 3.03 +/-0.31
+(3 seeds) -- NOT the F66 hand-found most-disruptive value (~2). F66 measured DISRUPTION (the lead that
+fragments the flock and minimises Phi); selection here optimises CAPTURES, and the capture-maximising lead
+is larger (~3): fragmenting the flock scatters prey, whereas a slightly longer lead intercepts the flock's
+path for more kills. Capture-maximisation and coherence-disruption are distinct objectives with distinct
+optima. Exp1 (co-evolve from no escape): the predator lead stays high (3.2 +/-1.5) while the prey climb only
+partway (mean w~0.70, escaper fraction 0.47) -- escape is not established within 400 tu (the F87 origination
+brake), so the predator wins. Exp2 (co-evolve from seeded escape): escape FIXES (mean w~2.00, escaper
+fraction 0.99, Phi=1.000) and the predator's lead trait DRIFTS aimlessly (2.3 +/-2.3, i.e. essentially
+random across seeds) because committed escape (F70) yields no captures and so no selection signal on the
+predator -- a "use it or lose it" collapse of the predator trait under relaxed selection.
+
+**Implication.** Two results. (i) The evolutionarily optimal predator is tuned to its OWN fitness (captures),
+which need not coincide with the configuration that most disrupts the collective -- a caution against reading
+a hand-found "most disruptive" parameter (F66) as the one selection will favour. (ii) The arms race is
+fundamentally ASYMMETRIC. The predator can climb to its optimum from any start (no barrier), but the prey
+counter is origination-limited (F87/F88), so de-novo co-evolution favours the predator and escape establishes
+only when seeded -- after which it is an uncounterable hard counter (F70) that collapses predator selection
+entirely. This also RECONCILES F89: the ~60% free-rider equilibrium requires a persistently EFFECTIVE
+predator to sustain it; once the predator is allowed to become ineffective (co-evolving against winning
+prey), predation collapses and escape fixes (0.99 here vs 0.6 under the fixed effective predator of F89). The
+co-adaptation arc (F87-F90) thus closes with a clear picture: collective escape is a powerful but
+evolutionarily fragile defence -- hard to originate, easy to lose to drift, yet decisive once present.
+Caveats: 2-3 seed noise (the Exp1/Exp2 lead std is large), predator selection on only 6 individuals, one
+fitness model, fixed prey alignment. evolution/escape_coevolution.py
+
 ## Open Questions / Next Directions
-*(updated through F89.)*
+*(updated through F90.)*
 
 All primary threads are CLOSED:
 - **Predator strategy (2D + 3D)**: F5-F16, F19-F35, F43-F45, F49, F53. 3D encirclement
@@ -4055,11 +4092,13 @@ Remaining exploratory directions:
    establishes escape (mixed ~60% equilibrium, a shared-signal free-rider effect), and a
    single mutational jump sigma~0.3-0.6 clears the valley; mutation-/variation-limited.
    Prerequisites built + validated: vectorized_predator.py + vectorized_predator_prey.py.
-   Natural follow-ups: (a) CO-EVOLVE the PREDATOR (heritable lead_time / aggression selected
-   on capture success) -- a true two-sided arms race, the obvious next step; (b) the other
-   two fitness models (proximity-survival, energy-budget) as robustness checks on the brake;
-   (c) heritable alignment strength alpha under predation; (d) why does escape settle at a
-   ~60% mixed equilibrium rather than fixing -- map the free-rider equilibrium vs predator strength.
+   F90: two-sided co-evolution (predator lead_time heritable, selected on captures) -- (i) the
+   capture-optimal lead (~3) differs from the F66 most-disruptive lead (~2); (ii) the arms race
+   is ASYMMETRIC (predator optimises freely, prey counter origination-limited), escape wins only
+   when seeded, then collapses predator selection (drift). Remaining: (a) the other two fitness
+   models (proximity-survival, energy-budget) as robustness checks -- a student-owned model choice;
+   (b) heritable alignment strength alpha under predation; (c) co-evolve a 2-trait predator
+   (lead + aggression); (d) why the capture-optimal lead is ~3 not ~2 (capture vs scatter geometry).
 2. **Agent memory beyond fatigue:** learned predator avoidance with internal state
    (e.g. a per-agent threat estimate that decays), distinct from the static fatigue of F53.
 3. **Robust estimation against the F83 floor:** can agents detect and down-weight
