@@ -12,6 +12,9 @@ Emails From Professor.txt
 # Claude Code context file (internal AI instructions, not part of the public repo)
 CLAUDE.md
 
+# Local context-management archive (verbose material trimmed from CLAUDE.md; detail also lives in findings.md)
+archive/
+
 # OS / editor junk
 .DS_Store
 Thumbs.db
