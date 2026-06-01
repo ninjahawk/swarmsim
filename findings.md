@@ -3974,8 +3974,37 @@ relaxes selection on them. The public-good nature of the shared escape direction
 the F70/F72 shared-signal rule) prevents escape from going to fixation even as it dominates. Caveats: still
 one fitness model (capture/removal), fixed predator, N=150. evolution/escape_invasion.py
 
+## Finding 89: The collective-escape free-rider equilibrium is ROBUST -- predation pressure shifts it only weakly and escape never fixes (a sticky public-goods mixed strategy)
+
+**Setup.** Maps the F88 mixed escaper equilibrium against predation pressure -- a pure parameter sweep in
+the same capture/removal model, no new mechanism. Each run starts from a seeded f=0.5 escaper population
+(so escape is established) and the capture rate (the predation hazard while within the kill radius) is swept
+over {1, 2, 3, 5, 8}/tu; the steady escaper fraction is the mean over the last third of a 200-tu run.
+Prediction: stronger predation should erode the free-rider advantage (riders get caught more) and push the
+escaper fraction toward fixation. A convergence check starts f=0.3 and f=0.7 at one rate to test whether the
+value is a genuine attractor.
+
+**Result.** The prediction holds in direction but is weak in magnitude. The steady escaper fraction rises
+only from 0.56 (rate 1/tu) to 0.66 (rate 8/tu) across an eightfold range of predation, with the mean escape
+weight staying in the escape regime (w~1.1-1.35) and Phi~0.73-0.84 throughout. It never approaches fixation:
+even at the strongest predation about a third of the flock rides the shared escape as protected free-riders.
+The convergence check settles f=0.3 and f=0.7 into a similar band (0.67, 0.77) -- escape persists as a
+substantial-but-not-fixed majority from either side -- with some residual start-dependence and 2-seed noise.
+
+**Implication.** The F88 mixed free-rider equilibrium is a robust, sticky feature, not a knife-edge: across
+an eightfold range of predation pressure escape neither collapses nor fixes, settling around a 0.55-0.77
+escaper majority. This confirms the public-goods reading -- the shared escape direction is a non-excludable
+benefit, so a protected free-rider fraction persists as long as the flock escapes at all, and intensifying
+predation only mildly raises the cost of riding. The result reinforces the F87/F88 hysteresis theme (some
+start-dependence remains within the band) and bounds the evolutionary outcome of the chosen capture/removal
+model: escape, once established, is a durable MIXED strategy rather than a trait that sweeps to fixation. It
+is the same public-good logic as the shared-heading principle (F70/F72) seen now at the population level --
+a shared directional signal benefits non-contributors too, so contribution need not become universal.
+Caveats: 2 seeds (noisy at the few-percent level), fixed predator, N=150, one fitness model.
+evolution/escape_freerider.py
+
 ## Open Questions / Next Directions
-*(updated through F88.)*
+*(updated through F89.)*
 
 All primary threads are CLOSED:
 - **Predator strategy (2D + 3D)**: F5-F16, F19-F35, F43-F45, F49, F53. 3D encirclement

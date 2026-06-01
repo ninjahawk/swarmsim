@@ -3380,6 +3380,33 @@ public-good character of the shared escape direction — the constructive mirror
 principle — keeps escape from fixing even as it comes to dominate. (Figure:
 `figures/escape_invasion_1.png`.)
 
+### 4.71 The Free-Rider Equilibrium Is Robust to Predation Pressure (Finding 89)
+
+The mixed equilibrium of Section 4.70 — escape dominating at roughly sixty percent rather than fixing —
+invites a quantitative question: what sets that fraction, and does intensifying predation drive it to
+fixation by catching the free-riders? This experiment answers it with a pure predation-pressure sweep in the
+same capture-and-removal model. Each run starts from an established escaper population (half seeded in the
+escape regime) and the capture hazard within the kill radius is swept across an eightfold range, with the
+steady escaper fraction read off as the mean over the final third of a long run.
+
+The free-rider equilibrium proves robust. The steady escaper fraction rises only weakly with predation, from
+about $0.56$ at the lowest hazard to about $0.66$ at the highest — an eightfold change in predation pressure
+moving the equilibrium by a tenth — and never approaches fixation: even under the most intense predation
+roughly a third of the flock rides the shared escape as protected free-riders, while the mean escape weight
+stays in the escape regime throughout. A convergence check from two different starting fractions settles into
+the same band, escape persisting as a substantial but unfixed majority from either side, with only mild
+residual start-dependence. The direction matches the intuition that intense predation erodes free-riding, but
+the magnitude is small: escape is a sticky mixed strategy that neither collapses nor sweeps to fixation.
+
+This bounds the evolutionary outcome of the chosen model and confirms the public-good reading of the previous
+result. Because the escape signal is shared and non-excludable, a protected free-rider fraction persists as
+long as the flock escapes at all, and raising the predation pressure only mildly raises the cost of riding
+rather than eliminating it. The same shared-direction logic that lets a tiny informed minority steer a whole
+flock, and a tiny escaper minority establish escape, here keeps escape from ever becoming universal — a
+shared directional signal benefits the non-contributors too, so contribution need not go to fixation. The
+result also carries the hysteresis signature of the two preceding findings, the steady fraction retaining a
+little memory of where the population started. (Figure: `figures/escape_freerider_1.png`.)
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3949,7 +3976,7 @@ comparably tiny dishonest one an effective spoiler.
 
 ## 7. Conclusions
 
-This study produced fifty-three main results (selecting the most general across 88 findings):
+This study produced fifty-four main results (selecting the most general across 89 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -4525,6 +4552,17 @@ This study produced fifty-three main results (selecting the most general across 
     rather than fixing, a free-rider effect of the shared escape signal: once enough agents
     flee, the predator is outrun and the rest ride along protected, the public-good face of the
     same shared-direction principle that governs leadership and collective escape.
+
+54. **The free-rider equilibrium is robust to predation pressure:** The mixed escaper
+    equilibrium of result 53 is sticky rather than a knife-edge. Sweeping the predation
+    hazard across an eightfold range moves the steady escaper fraction only from about 0.56
+    to about 0.66, and escape never approaches fixation — even under the heaviest predation
+    roughly a third of the flock rides the shared escape as protected free-riders, and runs
+    from different starting fractions settle into the same band. Intensifying predation
+    erodes free-riding only weakly, confirming that the shared escape direction is a
+    non-excludable public good: a protected non-contributing fraction persists as long as the
+    flock escapes at all, so escape stabilises as a durable mixed strategy rather than
+    sweeping to fixation.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

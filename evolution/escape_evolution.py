@@ -71,16 +71,18 @@ N_EVOLVE_LONG = 40000     # 400 tu
 LONG_W0       = [0.0, 0.5]
 
 
-def run_evolution(w0, seed, w_init=None, mut_sigma=None, esc_thresh=0.75):
+def run_evolution(w0, seed, w_init=None, mut_sigma=None, esc_thresh=0.75, capture_rate=None):
     """Evolve the population. w_init (N,) overrides the uniform w0 start (for seeded
-    minorities); mut_sigma overrides the module default (for jump-the-valley tests).
-    Backward compatible: with both None this is exactly the F87 run."""
+    minorities); mut_sigma overrides the module default (for jump-the-valley tests);
+    capture_rate overrides the module default (for predation-pressure sweeps).
+    Backward compatible: with all None this is exactly the F87 run."""
     rng = np.random.RandomState(seed)
     p = BASE
     N, dt = p['N'], p['dt']
     r0, eps, rf = p['r0'], p['eps'], p['rf']
     v0, mu, alpha, ramp = p['v0'], p['mu'], p['alpha'], p['ramp']
     ms = MUT_SIGMA if mut_sigma is None else float(mut_sigma)
+    cap_rate = CAPTURE_RATE if capture_rate is None else float(capture_rate)
 
     x = np.zeros(2 * N)
     x[:N] = rng.uniform(0., 1., N); x[N:] = rng.uniform(0., 1., N)
@@ -94,7 +96,7 @@ def run_evolution(w0, seed, w_init=None, mut_sigma=None, esc_thresh=0.75):
     cos_a, sin_a = np.cos(ang), np.sin(ang)
 
     rb = max(r0, rf)
-    p_capture = CAPTURE_RATE * dt
+    p_capture = cap_rate * dt
     n_total = N_WARMUP + N_EVOLVE
 
     t_rec, w_mean_rec, w_std_rec, phi_rec, cap_rec = [], [], [], [], []
