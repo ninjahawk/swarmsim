@@ -3894,36 +3894,72 @@ PAUSED; the next major direction is co-adaptation/evolution, which needs a fitne
 to make deliberately, not by default).
 
 ## Open Questions / Next Directions
-*(updated through F62; the F41-F46-era list that lived here was stale -- it predated
-F47-F62 and repeated the corrected F44 sign-bug artifact. Replaced with current state.)*
+*(updated through F86.)*
 
 All primary threads are CLOSED:
 - **Predator strategy (2D + 3D)**: F5-F16, F19-F35, F43-F45, F49, F53. 3D encirclement
   does NOT disrupt the flock at all (Phi~1.0) by any variant -- strictly 2D-specific
   (F43/F44/F45/F49 corrected after the predator-force sign bug). Prey fatigue does not
-  make damage irreversible (F53).
+  make damage irreversible (F53). 3D flocks are robust to ALL point-predator strategies,
+  not only sealing (F65) -- closes the 3D predator thread definitively.
+- **Predator-prey arms race (2D)**: F66-F71. Predictive encirclement (target CoM +
+  lead*v_mean) is the first predator adaptation to beat F14 (Phi 0.83->0.53), placement
+  dominating radius (F67), noise-tolerant but delay-sensitive (F68/F69). Prey collective
+  escape defeats it above w~alpha (F70) but only with a globally SHARED escape vector;
+  local per-prey sensing only partly counters (F71).
 - **Phase transition**: F2, F8, F12, F17, F38-F40, F50. No exponent of the base_r^n
   repulsion crystallizes; KTHNY needs a true inverse-power-law/hard-disc force.
-- **Contagion / vaccination / kinematic mixing**: F10-F37, F47-F48, F52, F54-F62.
+- **Contagion / vaccination / kinematic mixing**: F10-F37, F47-F48, F52, F54-F64.
   Degree-targeting fails STRUCTURALLY (no hubs, F48); spatial fails KINEMATICALLY
   (mixing erases coverage, F37). Slow-recoverer targeting (F56) is the first and only
   strategy to beat random -- valid in 2D (F56), 3D (F58), under continuous (F59) and
-  bimodal gamma, with noisy estimates (F60), for rare reservoirs (F61), and exactly as
-  long as the slow CLASS is durable on the epidemic timescale (F62).
-- **3D extension**: F41-F46, F49, F51, F52, F58. 3D mixes ~1.8x SLOWER than 2D (F52);
+  bimodal gamma, with noisy estimates (F60), for rare reservoirs (F61), exactly as long
+  as the slow CLASS is durable on the epidemic timescale (F62), robust under combined
+  beta_i+gamma_i heterogeneity (F63), and reversing the predator+contagion damage
+  asymmetry once the vaccination budget covers the reservoir (F64).
+- **3D extension**: F41-F46, F49, F51, F52, F58, F65. 3D mixes ~1.8x SLOWER than 2D (F52);
   the "mixing aid" theme was falsified.
+- **Leadership / collective decision-making (2D)**: F72-F86, a complete arc. An informed
+  minority steers the flock cohesion-free (F72); conflicting leaders compromise then
+  reach consensus (F73) by a count*conviction product law (F74) with critical slowing at
+  the bifurcation (F75); leadership is a signal not an identity (F76) and a low-pass
+  steering channel (F77); it counters encirclement (F78) but not panic (F79), and an
+  adversary can deny at parity but must dominate to capture (F80). The many-wrongs sub-arc
+  (F81-F86) establishes alignment as a directional averager: steering is set by the
+  informed fraction (F81), independent noisy estimates average as 1/sqrt(N) (F82), error
+  correlation imposes an N-independent accuracy floor (F83), a noisy minority is a distinct
+  mechanism (F84), uncoordinated misinformation averages away while coordinated falsehood
+  captures at parity (F85), and spatial averaging is independent of temporal bandwidth (F86).
+
+Resolved since the last revision of this list: combined beta_i+gamma_i heterogeneity
+(F63), predator + slow-targeted vaccination (F64), and a 3D-effective non-encirclement
+predator (F65 -- no point strategy works; a 3D-effective attack must target the alignment
+coupling per agent, which is exactly what contagion does).
 
 Remaining exploratory directions:
-1. **Combined beta_i + gamma_i heterogeneity with slow-targeting (F63, in progress):**
-   does the F55 flat-threshold compose with F56 slow-targeting? Do anti-correlated
-   super-spreaders (high beta, fast gamma) escape a gamma-based vaccine and leak the
-   epidemic?
-2. Predator + slow-targeted vaccination combined: F26 showed epidemic damage outlasts
-   kinematic damage; does slow-targeting reverse that asymmetry so contagion stops
-   being the worst combined stressor?
-3. A 3D-effective predator strategy that is NOT encirclement (attack alignment coupling
-   directly rather than relying on geometric perimeter sealing).
-4. Agent memory beyond fatigue: learned predator avoidance, heritable behavior.
-5. Phase transition / segregation already extended to 3D (F50-context, F51); a true
-   hard-disc potential would be the only way to revisit the KTHNY question.
+1. **Co-adaptation / evolution of escape weight (the proposed next major thread).** F70
+   found a "dangerous valley": a weak prey escape weight (w~0.25) is WORSE than none
+   before strong escape (w>=alpha) wins. Does selection drive a heritable escape weight
+   ACROSS that valley to the winning regime, or does the valley trap a population that
+   starts cautious? This needs: a vectorized predictive predator (F66) + collective escape
+   (F70), a per-agent heritable escape-weight trait, discrete generations, and a per-agent
+   fitness rule. **The fitness model is a real scientific decision the student must own
+   (professor's rule) -- to discuss before building, not to assume.** Candidate fitness
+   definitions, each with a different bias:
+   - *Proximity survival:* an agent's fitness decreases with time spent within some radius
+     of a predator (continuous, smooth selection gradient; no explicit "death").
+   - *Capture/removal:* agents inside a kill radius are removed and replaced by offspring of
+     survivors (sharp selection, but couples population size to the dynamics and needs a
+     replacement rule).
+   - *Energy budget:* escape force costs energy; fitness = survival minus a metabolic cost
+     proportional to w (directly builds in the cost that creates the valley, so it tests the
+     trade-off rather than assuming it).
+   Implementation note: model.py's Predator force sign is correct but its per-step Python
+   loop is too slow for many generations -- a vectorized predator is a prerequisite.
+2. **Agent memory beyond fatigue:** learned predator avoidance with internal state
+   (e.g. a per-agent threat estimate that decays), distinct from the static fatigue of F53.
+3. **Robust estimation against the F83 floor:** can agents detect and down-weight
+   correlated inputs to relax the correlation ceiling on collective accuracy?
+4. **A true hard-disc potential** would be the only way to revisit the KTHNY phase-transition
+   question that the base_r^n family closed negatively (F50).
 
