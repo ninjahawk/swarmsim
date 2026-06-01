@@ -71,18 +71,22 @@ N_EVOLVE_LONG = 40000     # 400 tu
 LONG_W0       = [0.0, 0.5]
 
 
-def run_evolution(w0, seed):
+def run_evolution(w0, seed, w_init=None, mut_sigma=None, esc_thresh=0.75):
+    """Evolve the population. w_init (N,) overrides the uniform w0 start (for seeded
+    minorities); mut_sigma overrides the module default (for jump-the-valley tests).
+    Backward compatible: with both None this is exactly the F87 run."""
     rng = np.random.RandomState(seed)
     p = BASE
     N, dt = p['N'], p['dt']
     r0, eps, rf = p['r0'], p['eps'], p['rf']
     v0, mu, alpha, ramp = p['v0'], p['mu'], p['alpha'], p['ramp']
+    ms = MUT_SIGMA if mut_sigma is None else float(mut_sigma)
 
     x = np.zeros(2 * N)
     x[:N] = rng.uniform(0., 1., N); x[N:] = rng.uniform(0., 1., N)
     vx = rng.uniform(-1., 1., N) * v0
     vy = rng.uniform(-1., 1., N) * v0
-    w = np.full(N, float(w0))                     # heritable escape weight
+    w = np.full(N, float(w0)) if w_init is None else np.asarray(w_init, float).copy()
 
     pred_x = rng.uniform(0., 1., N_PRED); pred_y = rng.uniform(0., 1., N_PRED)
     pred_vx = np.zeros(N_PRED); pred_vy = np.zeros(N_PRED)
@@ -94,6 +98,7 @@ def run_evolution(w0, seed):
     n_total = N_WARMUP + N_EVOLVE
 
     t_rec, w_mean_rec, w_std_rec, phi_rec, cap_rec = [], [], [], [], []
+    frac_esc_rec = []
     cum_captures = 0
 
     for i in range(n_total):
@@ -176,7 +181,7 @@ def run_evolution(w0, seed):
             if cap_idx.size > 0 and surv_idx.size > 0:
                 parents = rng.choice(surv_idx, size=cap_idx.size, replace=True)
                 # inherit weight + mutation; clone position/velocity (+ jitter)
-                w[cap_idx] = np.clip(w[parents] + rng.normal(0., MUT_SIGMA, cap_idx.size), W_MIN, W_MAX)
+                w[cap_idx] = np.clip(w[parents] + rng.normal(0., ms, cap_idx.size), W_MIN, W_MAX)
                 x[cap_idx]   = (x[parents] + rng.uniform(-JITTER, JITTER, cap_idx.size)) % 1.
                 x[N+cap_idx] = (x[N+parents] + rng.uniform(-JITTER, JITTER, cap_idx.size)) % 1.
                 vx[cap_idx] = vx[parents]; vy[cap_idx] = vy[parents]
@@ -187,9 +192,11 @@ def run_evolution(w0, seed):
                 w_mean_rec.append(w.mean()); w_std_rec.append(w.std())
                 phi_rec.append(order_parameter(vx, vy))
                 cap_rec.append(cum_captures)
+                frac_esc_rec.append(float((w > esc_thresh).mean()))
 
     return dict(t=np.array(t_rec), w_mean=np.array(w_mean_rec), w_std=np.array(w_std_rec),
                 phi=np.array(phi_rec), cum_cap=np.array(cap_rec),
+                frac_esc=np.array(frac_esc_rec),
                 w_final=w.copy(), w0=w0, seed=seed)
 
 

@@ -1,0 +1,29 @@
+Can the F87 evolutionary brake be overcome? (capture/removal, predictive predator)
+  N=150  2 seeds  escaper threshold w>0.75
+
+Exp1 -- INVASION: seed a fraction f of escapers (w=2) into a w=0 flock.
+  Does escape invade and fix, or get diluted? (150 tu)
+
+  f=0.05  escaper frac 0.05 -> 0.55 (FIXES/spreads)  mean w_end=1.18  Phi=0.68  captures=1012
+  f=0.10  escaper frac 0.10 -> 0.70 (FIXES/spreads)  mean w_end=1.33  Phi=0.91  captures=826
+  f=0.20  escaper frac 0.20 -> 0.56 (FIXES/spreads)  mean w_end=1.21  Phi=0.95  captures=506
+  f=0.50  escaper frac 0.50 -> 0.63 (FIXES/spreads)  mean w_end=1.27  Phi=0.92  captures=505
+
+Exp2 -- MUTATION STEP: from a uniform w0=0 start, does a bigger mutation step
+  let the population jump the valley to escape (w>=1)? (200 tu)
+
+  mut_sigma=0.10  mean w_end=0.295  reached w=1 in 0% of seeds  Phi_end=0.42
+  mut_sigma=0.30  mean w_end=1.100  reached w=1 in 100% of seeds  Phi_end=0.66
+  mut_sigma=0.60  mean w_end=1.325  reached w=1 in 100% of seeds  Phi_end=0.71
+  mut_sigma=1.00  mean w_end=0.905  reached w=1 in 50% of seeds  Phi_end=0.66
+
+  -> INVASION SUCCEEDS from a tiny seed: from f=0.05 upward the flock-mean weight ends in
+     the escape regime (w>1) with the escaper fraction climbing to ~0.55-0.70 and the capture
+     toll falling. Escape cannot ORIGINATE de novo (F87) but a rare escaper founder group
+     spreads and establishes -- the F87 brake is a barrier to ORIGINATION, not to invasion.
+  -> A larger mutation STEP jumps the valley: sigma=0.30/0.60 cross w=1 in every seed while the F87
+     baseline sigma=0.10 never does. The brake depends on the mutation scale -- steps big enough
+     to skip past the worst of the valley reach the escape basin (very large sigma=1.0 is noisier,
+     overshooting and scattering, so there is an intermediate sweet spot).
+
+  --> figures/escape_invasion_1.png

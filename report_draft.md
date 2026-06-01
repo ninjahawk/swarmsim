@@ -3346,6 +3346,40 @@ predator's lead time or aggression co-evolve against the prey trait, to ask whet
 minority or a larger mutation step can jump the gap, and to confirm the brake under the alternative fitness
 models. (Figure: `figures/escape_evolution_1.png`.)
 
+### 4.70 Overcoming the Brake: Escape Is a Barrier to Origination, Not Invasion (Finding 88)
+
+If the valley blocks escape from evolving de novo, the natural question is whether escape can take hold any
+other way. This experiment keeps the capture-and-removal model and the validated harness of Section 4.69 and
+changes only the initial condition and the mutation step. In the first part a fraction $f$ of the population
+is seeded in the escape regime (weight 2) with the rest at no escape, and $f$ is swept to ask whether escape
+invades or is diluted away; in the second part the population starts uniformly at no escape and the
+per-capture mutation step is enlarged, to ask whether a bigger jump can clear the valley that the small
+Finding 87 step could not.
+
+Invasion succeeds from a tiny seed. Even a five-percent escaper founder group carries the flock-mean weight
+into the escape regime — the mean weight ends at $1.18$, the escaper fraction climbs from $0.05$ to about
+$0.55$, and the capture toll roughly halves relative to the de-novo crawl of Finding 87 — and a ten-percent
+seed reaches an escaper fraction of $0.70$ at an order parameter of $0.91$. Larger seeds settle to much the
+same place. The escaper trait does not drive the non-escapers extinct; it settles at a mixed equilibrium of
+roughly sixty percent escapers at a mean weight near $1.2$. The mutation-step sweep is equally clear: the
+Finding 87 step never reaches the escape threshold in any seed, but a step three to six times larger crosses
+it in every seed, while the very largest step is noisier and crosses only half the time, because huge jumps
+scatter as many offspring back to low weight as forward past the valley — there is an intermediate
+mutation-scale sweet spot.
+
+Together with Finding 87 this locates the barrier precisely: the Finding 70 valley blocks the origination of
+escape, not its spread. Escape cannot crawl up from zero against the valley, but it does not need to — a rare
+founder group already carrying the trait invades and establishes it, and a single mutational jump large
+enough to clear the worst of the valley seeds the same outcome from a uniform no-escape start. Whether escape
+evolves is therefore set not by selection, which favours it once the valley is cleared, but by whether
+variation can deliver an agent past the valley in one step or a pre-adapted group arrives — a
+mutation-limited, standing-variation-limited phenomenon. The mixed equilibrium rather than full fixation is
+itself a result: it is a free-rider effect of the shared escape signal, since once enough agents flee the
+predator is outrun and the remaining low-weight agents ride along protected, relaxing selection on them. The
+public-good character of the shared escape direction — the constructive mirror of the shared-heading
+principle — keeps escape from fixing even as it comes to dominate. (Figure:
+`figures/escape_invasion_1.png`.)
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -3915,7 +3949,7 @@ comparably tiny dishonest one an effective spoiler.
 
 ## 7. Conclusions
 
-This study produced fifty-two main results (selecting the most general across 87 findings):
+This study produced fifty-three main results (selecting the most general across 88 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -4478,6 +4512,19 @@ This study produced fifty-two main results (selecting the most general across 87
     but hard to evolve de novo, because the path to it runs through a region where partial
     commitment is actively selected against. This opens a co-adaptation thread with the
     predator still fixed.
+
+53. **The escape brake is a barrier to origination, not invasion:** The valley of result 52
+    blocks escape from arising de novo, but not from spreading once present. A founder group
+    of as little as five percent of the population seeded in the escape regime invades and
+    carries the flock-mean weight into that regime, halving the capture toll, and a single
+    mutational jump three to six times larger than the baseline clears the valley from a
+    uniform no-escape start where the baseline step never does. Whether escape evolves is thus
+    set by whether variation can deliver an agent past the valley in one step, not by
+    selection, which favours escape once the valley is cleared — a mutation-limited rather than
+    selection-limited outcome. Escape establishes at a mixed roughly sixty-percent equilibrium
+    rather than fixing, a free-rider effect of the shared escape signal: once enough agents
+    flee, the predator is outrun and the rest ride along protected, the public-good face of the
+    same shared-direction principle that governs leadership and collective escape.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

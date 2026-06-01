@@ -3939,8 +3939,43 @@ mutation step or a seeded escape-carrying minority can jump the gap). Caveats: o
 (capture/removal), fixed predator, N=150, mutation sigma=0.10 -- the brake's steepness depends on these.
 evolution/escape_evolution.py
 
+## Finding 88: The F87 evolutionary brake is a barrier to ORIGINATION, not to invasion -- a rare escaper founder group (>=5%) establishes escape, and a single large-enough mutational jump (sigma~0.3-0.6) clears the valley
+
+**Setup.** Direct follow-up to F87, asking whether the brake can be overcome. Same capture/removal model,
+same validated harness; only the initial condition (Exp1) and the mutation step (Exp2) change -- no new
+fitness model or mechanism. Exp1 (INVASION): seed a fraction f of the population in the escape regime
+(w=2) with the rest at no escape (w=0); sweep f in {0.05, 0.10, 0.20, 0.50}, 2 seeds, 150 tu -- does escape
+invade and establish, or get diluted and lost? Exp2 (MUTATION STEP): from a uniform no-escape start
+(w0=0), sweep the per-capture mutation sigma in {0.10 (the F87 value), 0.30, 0.60, 1.00}, 2 seeds, 200 tu
+-- does a bigger step let the population JUMP the valley rather than crawl and stall?
+
+**Result.** Exp1 -- invasion succeeds from a tiny seed. Even f=0.05 carries the flock-mean weight into the
+escape regime (w_end=1.18), with the escaper fraction climbing 0.05 -> 0.55 and the capture toll roughly
+halving (1012 vs F87's ~1800 for the de-novo w0=0 crawl); f=0.10 -> escaper fraction 0.70, w=1.33, Phi=0.91;
+f=0.20 and 0.50 settle similarly (w~1.2-1.3, escapers ~0.55-0.63, captures down to ~500). The escaper trait
+does not drive the no-escapers extinct -- it settles at a MIXED equilibrium around 60% escapers, mean
+w~1.2 -- but it establishes the escape regime in every case. Exp2 -- the F87 step (sigma=0.10) never reaches
+w=1 (w_end=0.30, 0% of seeds, reproducing F87), but sigma=0.30 and 0.60 cross w=1 in 100% of seeds
+(w_end=1.10 and 1.33), while the largest step sigma=1.0 is noisier and crosses in only 50% (w_end=0.90) --
+very large jumps also scatter many offspring back to low w and overshoot, so there is an intermediate
+mutation-scale sweet spot.
+
+**Implication.** Together with F87 this pins down the first-mover problem precisely: the F70 valley is a
+barrier to the ORIGINATION of escape, not to its spread. Escape cannot crawl up from zero against the valley
+(F87) -- but it does not have to. A rare founder group already carrying the escape weight (a 5% minority
+suffices) invades and establishes the escape regime, and a single mutational jump large enough to clear the
+worst of the valley (sigma~0.3-0.6) seeds the same outcome from a uniform no-escape start. The brake is
+therefore mutation-limited / standing-variation-limited: whether escape evolves is set not by selection
+(which favours it once the valley is cleared) but by whether variation can deliver an agent past the valley
+in one step, or a pre-adapted founder group arrives. The MIXED ~60% escaper equilibrium (rather than full
+fixation) is itself informative: it is a free-rider / herd-protection effect of the SHARED escape signal --
+once enough agents flee, the predator is outrun and the residual low-w agents ride along protected, which
+relaxes selection on them. The public-good nature of the shared escape direction (the constructive mirror of
+the F70/F72 shared-signal rule) prevents escape from going to fixation even as it dominates. Caveats: still
+one fitness model (capture/removal), fixed predator, N=150. evolution/escape_invasion.py
+
 ## Open Questions / Next Directions
-*(updated through F86.)*
+*(updated through F88.)*
 
 All primary threads are CLOSED:
 - **Predator strategy (2D + 3D)**: F5-F16, F19-F35, F43-F45, F49, F53. 3D encirclement
@@ -3983,16 +4018,19 @@ predator (F65 -- no point strategy works; a 3D-effective attack must target the 
 coupling per agent, which is exactly what contagion does).
 
 Remaining exploratory directions:
-1. **Co-adaptation / evolution of escape weight -- OPENED (F87).** Fitness model chosen
-   (capture/removal); first result: the F70 "dangerous valley" is a strong evolutionary
-   BRAKE, not a barrier -- escape (w>=alpha) is stable and near-costless once present but
-   evolves only by a slow hysteretic crawl from the no-escape state, which stalls in the
-   valley (w~0.5 after 400 tu, never reaching w=1). Prerequisites built and validated:
-   vectorized_predator.py + vectorized_predator_prey.py. Natural follow-ups: (a) co-evolve
-   the PREDATOR side (lead_time / aggression) against the prey trait -- a true arms race;
-   (b) does a seeded escape-carrying minority, or a larger mutation step, let the population
-   jump the gap? (c) the other two fitness models (proximity-survival, energy-budget) as
-   robustness checks on the brake; (d) heritable alignment strength alpha under predation.
+1. **Co-adaptation / evolution of escape weight -- OPENED (F87, F88).** Fitness model chosen
+   (capture/removal). F87: the F70 "dangerous valley" is a strong evolutionary BRAKE, not a
+   barrier -- escape (w>=alpha) is stable + near-costless once present but evolves only by a
+   slow hysteretic crawl that stalls in the valley (w~0.5 after 400 tu, never reaching w=1).
+   F88: the brake is a barrier to ORIGINATION, not invasion -- a >=5% escaper founder group
+   establishes escape (mixed ~60% equilibrium, a shared-signal free-rider effect), and a
+   single mutational jump sigma~0.3-0.6 clears the valley; mutation-/variation-limited.
+   Prerequisites built + validated: vectorized_predator.py + vectorized_predator_prey.py.
+   Natural follow-ups: (a) CO-EVOLVE the PREDATOR (heritable lead_time / aggression selected
+   on capture success) -- a true two-sided arms race, the obvious next step; (b) the other
+   two fitness models (proximity-survival, energy-budget) as robustness checks on the brake;
+   (c) heritable alignment strength alpha under predation; (d) why does escape settle at a
+   ~60% mixed equilibrium rather than fixing -- map the free-rider equilibrium vs predator strength.
 2. **Agent memory beyond fatigue:** learned predator avoidance with internal state
    (e.g. a per-agent threat estimate that decays), distinct from the static fatigue of F53.
 3. **Robust estimation against the F83 floor:** can agents detect and down-weight
