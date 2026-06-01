@@ -4313,6 +4313,113 @@ This study produced forty-one main results (selecting the most general across 71
     collectively only on signals that are already global or shared -- the same
     shared-heading principle that makes flocking coherent.
 
+42. **A small informed minority steers the whole flock without any loss of coherence:**
+    Giving a fraction of the agents a single shared preferred direction, felt as an extra
+    force, lets as few as five percent of the group — about eighteen agents in a flock of
+    350 — steer the naive majority onto that heading, with the order parameter never
+    dropping below 0.995. Steering here is cohesion-free, the opposite of encirclement,
+    which steers only by fragmenting the flock. The mechanism is the shared-heading
+    principle of result 41 read constructively: because every leader carries one common
+    vector, the alignment force propagates it to the followers, so leadership, committed
+    escape, and the spontaneous emergence of a flock heading are one phenomenon. Power
+    comes from agreement, not numbers — eighteen aligned leaders outweigh a hundred and
+    seventy-five prey each sensing a different local escape direction. Opens the
+    collective-decision thread.
+
+43. **When two shared directions compete, the alignment force averages them when it can
+    and votes when it cannot:** Two informed subgroups pulling in different directions
+    produce a compromise heading at the vector midpoint while the conflict angle stays
+    below about 90 degrees, then switch abruptly to a symmetry-broken consensus past about
+    120 degrees, where the flock commits to one direction or the other at random rather
+    than averaging near-opposed goals. The group never splits — the order parameter stays
+    above 0.95 throughout and one direction is always chosen — and under direct opposition
+    the larger informed subgroup wins, a slight majority deciding the outcome. This is the
+    same domination-not-blending physics seen whenever two global drives compete in an
+    alignment-dominated flock (results 16, 19, 40).
+
+44. **The decision is set by the product of numbers and conviction, not by headcount:**
+    When two opposed subgroups differ in commitment as well as size, the winner is the one
+    with the larger summed directed force — count times per-agent strength. Ten strongly
+    committed agents outvote twenty-six weakly committed ones once their pull crosses
+    parity, with only a mild residual bonus for numbers. The flock therefore implements an
+    emergent weighted-majority rule in which each vote is scaled by its commitment, the
+    same force-versus-alignment threshold that governs collective escape (result 40).
+
+45. **Time-resolved, the consensus transition is a genuine bifurcation with critical
+    slowing:** Stronger leadership is both faster and more accurate — there is no
+    speed-accuracy tradeoff — and the time the flock takes to commit to a heading peaks
+    sharply at the 90-degree compromise-to-consensus boundary, falling away on both sides.
+    This is the dynamical signature of a bistable system dithering longest exactly where
+    one stable solution gives way to two, confirming that the compromise-to-consensus
+    switch of result 43 is a true bifurcation rather than a gradual crossover.
+
+46. **Leadership is a signal, not an identity, and so it benefits from turnover:**
+    Re-drawing which agents are informed every few time units never hurts accuracy, and the
+    faster the rotation the more it helps and the less it varies between runs, because fast
+    rotation smears the same total pull uniformly across the flock. This is the exact
+    opposite of the slow-recoverer label of result 32, which must persist per agent to be
+    useful: contagion targeting needs a durable identity, whereas leadership needs only a
+    durable shared direction. It also nuances the spatial-vaccination null (result 8) —
+    distributing a signal helps when injecting a directional force but is irrelevant when
+    removing nodes.
+
+47. **Steering is a low-pass control channel, and coherence and steerability are one
+    resource:** When the goal rotates, the flock tracks it only below a critical angular
+    speed set by the inverse of the alignment response time, which itself scales with the
+    informed fraction; above that speed the time-varying bias averages to nothing and is
+    ignored. Forcing too fast a turn fragments the flock — fixed-goal steering is
+    cohesion-free, but over-steering costs coherence — so the same alignment response time
+    that sets the steering bandwidth also bounds the coherence the flock can hold, the same
+    tension a predator exploits.
+
+48. **Leadership and the flock's three adversaries are unified as a contest over the
+    shared heading, and denial is always cheaper than capture:** An informed minority
+    restores both the heading and the coherence that encirclement destroys, steering the
+    flock through the ring while the leadership threshold rises four- to eightfold under
+    predator pressure but the antidote still holds. Panic severs the heading at its source
+    by silencing the very leaders that would repair it, so leadership cannot rescue a
+    panicked flock even though its coherence survives — which is why contagion is the most
+    durable stressor. And a saboteur injecting a false heading deadlocks the flock at pull
+    parity but must reach roughly twice the true leaders' pull to commandeer it to a false
+    goal. Across all three, disrupting a shared heading is structurally cheaper than
+    capturing it.
+
+49. **Steering accuracy is set by the informed fraction, and noisy private estimates
+    recover the wisdom of crowds (a self-test):** A direct test of the animal-navigation
+    claim that a fixed number of leaders suffices in any size group falsified it for this
+    model — at fixed leader number the accuracy falls as the group grows, because steering
+    is a per-capita pull set by the fraction, not the count. The same test predicted that
+    the literature's number-suffices scaling would need a many-wrongs rule, and supplying it
+    — every agent carrying its own independent noisy estimate of the goal — recovers exactly
+    that: the heading error falls as the inverse square root of the group size, accuracy
+    rising with N rather than falling. The directional average is thus per-capita for an
+    exact shared signal and sqrt(N)-amplifying for independent noise.
+
+50. **Correlation is the only currency the alignment force recognizes:** The fixed-number
+    and many-wrongs results are the two ends of a single axis, the correlation of the
+    agents' estimate errors. Any nonzero correlation imposes a floor on collective accuracy
+    that no group size can beat, equal to the per-agent error times the square root of the
+    correlation — so ten percent correlation collapses an arbitrarily good wisdom of crowds
+    to a hard ceiling — while a noisy minority never invokes the averaging at all and fails
+    as the group grows just as an exact one does. The practical face is a robustness law:
+    a navigating crowd averages away uncoordinated misinformation even when half its members
+    are lost, but is captured at parity by a coordinated falsehood of equal prevalence. The
+    error's correlation, not its amount, sets the damage, reproducing the same parity
+    threshold and product law that governed the adversarial heading-fights of result 48.
+
+51. **A noisy crowd tracks a moving goal at the same bandwidth as a sharp leader (a
+    self-test):** Spatial averaging — the wisdom of crowds — and temporal bandwidth — the
+    steering response time — are independent resources. With the goal rotating at a fixed
+    speed and each agent holding a fixed private offset, the tracking-versus-speed curves
+    for a sharp leader and a noisy crowd overlay, falsifying a pre-registered prediction
+    that crowd noise would reduce the bandwidth as exp(-sigma^2/2): the static offsets
+    rotate with the goal and add no lag, and the reduced bias magnitude stays above the
+    steering threshold. Noise is free below the wisdom-of-crowds ceiling and catastrophic
+    above it, binary rather than graded, showing the directional average is recomputed each
+    timestep rather than integrated. The fifth such self-test in the study, in which a
+    prediction was registered and then corrected rather than assumed; closes the
+    collective-navigation arc.
+
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains
 coherence under noise and naive predation; it transmits spatial clustering that amplifies
@@ -4325,6 +4432,23 @@ flock contact network never had the exploitable heterogeneity to begin with. The
 effective disruption strategies are those that operate at the flock's geometric scale
 (encirclement at R_enc/Rg ~ 0.5, in 2D only) or that exploit a timescale the alignment
 force cannot overcome (epidemic persistence after predator removal).
+
+The same alignment force organizes the study's second and third threads as well. Beyond
+driving the kinematic mixing of the predator and contagion results, it builds the one
+quantity a flock can act on collectively — a single direction held in common — and every
+leadership and collective-navigation result is a statement about that quantity. A globally
+shared heading is amplified into coherent motion, whether it originates in spontaneous
+flocking, a committed escape, or an informed minority, while locally heterogeneous
+directions are averaged away; competing shared headings are arbitrated by compromise below
+a critical conflict angle and by a product-law vote above it; and the flock's adversaries —
+encirclement, panic, and the saboteur — are unified as attacks on that heading, with denial
+at parity always cheaper than capture. How accurate the heading is, finally, is set by the
+correlation of the directions its members carry rather than by their number: independent
+error averages away as the inverse square root of the group size, while correlated error
+imposes a floor that no group size can beat. Correlation is therefore the only currency the
+alignment force recognizes — it amplifies what is shared and averages away what is
+independent — and that single statement ties the flock's coherence, its steerability, and
+its vulnerability to deception into one mechanism.
 
 ---
 
