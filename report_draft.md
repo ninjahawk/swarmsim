@@ -4092,7 +4092,7 @@ This study produced forty-one main results (selecting the most general across 71
     both modes. Coherence recovers even while substantial fatigue persists, because
     post-attack fatigue decays uniformly and a homogeneously fatigued flock still aligns.
     Fatigue deepens the disruption *during* the attack only when it impairs alignment, not
-    speed — the dynamical echo of results 16 and 19 on segregation (an alpha contrast
+    speed — the dynamical echo of result 24 on segregation (an alpha contrast
     segregates the flock, a v0 contrast does not). Contagion remains the only stressor
     studied that inflicts lasting damage, because it alone writes a heterogeneous internal
     label that uniform recovery cannot erase.
@@ -4106,7 +4106,7 @@ This study produced forty-one main results (selecting the most general across 71
     so the outbreak is carried by an internal-state reservoir rather than by topological
     hubs. The effect is a near-threshold phenomenon: at high beta all spreads converge to
     the same saturated endemic state. The result identifies a different kind of
-    vaccination target than the topological one ruled out by results 13 and 18: the
+    vaccination target than the topological one ruled out by results 13 and 21: the
     high-value agents to protect are the agents whose internal dynamics make them
     reservoirs, not the (absent) high-degree hubs. Read together with result 26, it
     completes the heterogeneity story — heterogeneity in an internal *state* that the
@@ -4137,7 +4137,7 @@ This study produced forty-one main results (selecting the most general across 71
     Degree-targeting in this heterogeneous regime shows a faint advantage (~20% at the
     edge of seed noise), plausibly chance overlap of high-degree and slow agents and
     not enough to upgrade the result-13 verdict on degree. The slow-targeting advantage
-    resolves the targeting puzzle posed by results 13, 18, 22, and 23: a third target
+    resolves the targeting puzzle posed by results 13, 21, 22, and 23: a third target
     class exists -- internal-state hubs, specifically the recovery-rate hubs -- and the
     dynamics that eliminate the other target classes (kinematic mixing, contact-graph
     rewiring) leave gamma_i invariant by construction. The agent who recovers slowly
@@ -4235,7 +4235,7 @@ This study produced forty-one main results (selecting the most general across 71
     levers could be combined.
 
 37. **The two predator-side adaptations do not compose: placement dominates radius:**
-    The natural follow-up to results 35 and 36 -- "predictive AND adaptive" predators
+    The natural follow-up to results 12 and 36 -- "predictive AND adaptive" predators
     that lead by v_mean AND scale R_enc with live Rg -- gives Phi = 0.535, statistically
     indistinguishable from predictive-fixed alone (0.530). The composition prediction is
     falsified. Under encirclement the compressed flock has Rg ~ 0.05-0.10, so adaptive
@@ -4293,7 +4293,7 @@ This study produced forty-one main results (selecting the most general across 71
     CoM and defining the escape direction -- symmetric encirclement provides no such
     signal. The predator's forward projection is thus self-defeating against committed
     escape-intelligent prey, and the arms race has a rock-paper-scissors structure rather
-    than a simple winner. The non-monotonicity echoes results 16 and 19: competing global
+    than a simple winner. The non-monotonicity echoes results 6 and 24: competing global
     drives in an alignment-dominated flock resolve by domination, not blending. Closes the
     predator-prey arms-race arc.
 
@@ -4335,7 +4335,7 @@ This study produced forty-one main results (selecting the most general across 71
     above 0.95 throughout and one direction is always chosen — and under direct opposition
     the larger informed subgroup wins, a slight majority deciding the outcome. This is the
     same domination-not-blending physics seen whenever two global drives compete in an
-    alignment-dominated flock (results 16, 19, 40).
+    alignment-dominated flock (results 6, 24, 40).
 
 44. **The decision is set by the product of numbers and conviction, not by headcount:**
     When two opposed subgroups differ in commitment as well as size, the winner is the one
@@ -4359,7 +4359,7 @@ This study produced forty-one main results (selecting the most general across 71
     rotation smears the same total pull uniformly across the flock. This is the exact
     opposite of the slow-recoverer label of result 32, which must persist per agent to be
     useful: contagion targeting needs a durable identity, whereas leadership needs only a
-    durable shared direction. It also nuances the spatial-vaccination null (result 8) —
+    durable shared direction. It also nuances the vaccination-targeting null (result 13) —
     distributing a signal helps when injecting a directional force but is irrelevant when
     removing nodes.
 
