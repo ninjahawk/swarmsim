@@ -20,6 +20,28 @@ A computational study of force-based flocking agents on a periodic 2D domain, ex
 
 ---
 
+## Project status — where we are
+
+**92 findings (F1–F92), all written up in [`findings.md`](findings.md) and the [report](report_draft.md).** Last updated 2026-06-02.
+
+**Threads, and whether they're closed:**
+
+| Thread | Findings | State |
+|--------|----------|-------|
+| Baseline & validation | F1–F4 | ✅ closed |
+| Phase transition (is the solid→fluid a true transition?) | F2, F8, F12, F17, F38–F40, F50 | ✅ closed — it's a crossover; no `base_r^n` potential crystallizes |
+| Predator strategy (2D + 3D) | F5–F35, F43–F45, F49, F53, F65 | ✅ closed — only encirclement disrupts, and only in 2D |
+| Predator–prey arms race (predictive encirclement vs collective escape) | F66–F71 | ✅ closed |
+| Contagion / vaccination / kinematic mixing | F10–F37, F47–F48, F52, F54–F64 | ✅ closed — slow-recoverer targeting is the one strategy that beats random |
+| Leadership / collective decision-making (incl. many-wrongs) | F72–F86 | ✅ closed (paused) |
+| **Co-adaptation / evolution** (heritable traits under selection) | **F87–F92** | ✅ complete arc (newest work) |
+
+**Most recent work — the co-adaptation thread (F87–F92):** prey evolve a heritable *escape weight* under capture/removal predation. The F70 "dangerous valley" is a strong evolutionary **brake** (F87): escape is stable once present but can't evolve from scratch — it's a barrier to *origination*, not invasion (F88), and the resulting escape equilibrium is a robust mixed strategy (F89). With a co-evolving predator the arms race is **asymmetric** (F90), a self-test corrected an over-reading of it (F91), and under an energy-budget fitness model the brake proves model-independent while escape's *persistence* does not (F92). All of it runs on a validated, fast harness (`vectorized_predator.py`, `vectorized_predator_prey.py`).
+
+**Where to pick up next:** see the end of [`findings.md`](findings.md) (*Open Questions / Next Directions*). The natural next experiments — a third fitness model (proximity-survival), a heritable **alignment strength** α under predation (a work-in-progress script exists at `evolution/evolve_alignment.py`, not yet run to completion or written up), or a two-trait predator — each rest on the same harness.
+
+---
+
 ## Model
 
 N agents move on a periodic unit square under four forces each timestep:
