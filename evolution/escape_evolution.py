@@ -71,11 +71,14 @@ N_EVOLVE_LONG = 40000     # 400 tu
 LONG_W0       = [0.0, 0.5]
 
 
-def run_evolution(w0, seed, w_init=None, mut_sigma=None, esc_thresh=0.75, capture_rate=None):
+def run_evolution(w0, seed, w_init=None, mut_sigma=None, esc_thresh=0.75, capture_rate=None,
+                  metab_cost=0.0):
     """Evolve the population. w_init (N,) overrides the uniform w0 start (for seeded
     minorities); mut_sigma overrides the module default (for jump-the-valley tests);
     capture_rate overrides the module default (for predation-pressure sweeps).
-    Backward compatible: with all None this is exactly the F87 run."""
+    metab_cost > 0 adds an ENERGY-BUDGET death hazard metab_cost * w per time unit
+    (escape costs energy even when safe), the F92 fitness model. Backward compatible:
+    with all defaults (metab_cost=0, others None) this is exactly the F87 run."""
     rng = np.random.RandomState(seed)
     p = BASE
     N, dt = p['N'], p['dt']
@@ -177,7 +180,9 @@ def run_evolution(w0, seed, w_init=None, mut_sigma=None, esc_thresh=0.75, captur
             ddyp = _periodic_disp(pred_y[:, None], x[N:][None, :])
             min_pred = np.sqrt(ddxp**2 + ddyp**2).min(axis=0)        # (N,)
             at_risk = min_pred < R_KILL
-            captured = at_risk & (rng.uniform(0., 1., N) < p_capture)
+            # death hazard = predator capture (near a predator) + metabolic cost of escape
+            death_hazard = np.where(at_risk, p_capture, 0.0) + metab_cost * np.maximum(w, 0.0) * dt
+            captured = rng.uniform(0., 1., N) < death_hazard
             cap_idx = np.where(captured)[0]
             surv_idx = np.where(~captured)[0]
             if cap_idx.size > 0 and surv_idx.size > 0:

@@ -4075,8 +4075,41 @@ read as optimal. A 6th self-test in the study's tradition (cf. F47/F48/F52/F81/F
 and testing it directly; the only one to correct a result from THIS session's own thread.
 evolution/escape_capture_curve.py
 
+## Finding 92: Robustness under an ENERGY-BUDGET fitness model -- the origination BRAKE survives (model-independent), but F87's "escape is free and stable once present" does NOT: any appreciable metabolic cost collapses even established escape (a sharp threshold, not an interior optimum)
+
+**Setup.** The student's chosen robustness test (energy-budget fitness, 2026-06): does the F87 brake
+depend on the capture/removal model? It replaces the implicit "escape is free" of F87-F91 with an explicit
+metabolic cost -- an always-on per-step death hazard metab_cost*w (escaping costs energy even when safe),
+added to the predator-capture hazard; dead agents (predator OR metabolic) are replaced by mutated clones of
+survivors, N fixed. Exp1: fixed cost c=0.5, sweep initial w0 {0, 0.5, 1, 2} -- does the brake still trap low
+starts, and is a high start pulled to an interior optimum? Exp2: seeded f=0.5 escapers, sweep cost c
+{0, 0.25, 0.5, 1, 2} -- the evolved steady weight (ESS) vs cost. 2 seeds, 150 tu.
+
+**Result.** Exp1: at c=0.5 EVERY start collapses to w~0.05 (escaper fraction 0, Phi~0.26). The brake traps
+low starts as before (w0=0 -> 0.05, escape cannot originate, confirming F87), and a w0=2 start seeded in the
+escape regime is driven ALL the way down to ~0.05 as well -- escape is abandoned entirely, with no interior
+optimum. Exp2: the ESS collapses SHARPLY with cost -- c=0 -> w=1.28 (escaper fraction 0.64, recovering the
+F88 mixed equilibrium), but c=0.25 -> 0.11, c=0.5 -> 0.06, c=1 -> 0.04, c=2 -> 0.03. The jump from no cost to
+the smallest cost tested takes escape from a stable majority to near-extinction: it is nearly all-or-nothing,
+not a graded interior optimum.
+
+**Implication.** Two robustness verdicts, splitting the F87-F91 results into a model-independent half and a
+model-dependent half. (1) The origination BRAKE is ROBUST: it survives the energy-budget model unchanged
+(escape still cannot evolve from no-escape), so the F70-valley origination barrier is a general feature, not
+an artifact of capture/removal. (2) But F87's complementary result -- that escape is near-free and STABLE
+once established -- does NOT survive: it relied on the capture/removal model in which escaping costs nothing.
+Under an energy budget even established escape collapses at any appreciable metabolic cost (a sharp threshold
+below c~0.25), because the cost is paid by every escaper continuously while predation threatens only the few
+agents near a predator at any instant, so a modest per-capita cost outweighs the diffuse, intermittent
+benefit of escaping. Collective escape is therefore even more evolutionarily fragile than F90/F91 implied:
+not only hard to originate and easy to lose to drift, but unsustainable under any non-trivial metabolic cost,
+viable only where escaping is essentially free. This sharpens the co-adaptation thesis -- the brake
+(origination) is the robust, model-independent result, while the persistence of escape is model-dependent
+and, under an explicit cost, precarious. Caveats: 2 seeds, one predator regime; the metabolic-cost scale is
+relative to the (diffuse, intermittent) predation hazard of this setup. evolution/escape_energy.py
+
 ## Open Questions / Next Directions
-*(updated through F91.)*
+*(updated through F92.)*
 
 All primary threads are CLOSED:
 - **Predator strategy (2D + 3D)**: F5-F16, F19-F35, F43-F45, F49, F53. 3D encirclement
@@ -4127,13 +4160,15 @@ Remaining exploratory directions:
    establishes escape (mixed ~60% equilibrium, a shared-signal free-rider effect), and a
    single mutational jump sigma~0.3-0.6 clears the valley; mutation-/variation-limited.
    Prerequisites built + validated: vectorized_predator.py + vectorized_predator_prey.py.
-   F90: two-sided co-evolution (predator lead_time heritable, selected on captures) -- (i) the
-   capture-optimal lead (~3) differs from the F66 most-disruptive lead (~2); (ii) the arms race
-   is ASYMMETRIC (predator optimises freely, prey counter origination-limited), escape wins only
-   when seeded, then collapses predator selection (drift). Remaining: (a) the other two fitness
-   models (proximity-survival, energy-budget) as robustness checks -- a student-owned model choice;
-   (b) heritable alignment strength alpha under predation; (c) co-evolve a 2-trait predator
-   (lead + aggression); (d) why the capture-optimal lead is ~3 not ~2 (capture vs scatter geometry).
+   F90: two-sided co-evolution (predator lead_time heritable) -- the arms race is ASYMMETRIC
+   (predator optimises freely, prey origination-limited), escape wins only when seeded, then
+   collapses predator selection (drift). F91 (self-test): the capture optimum (~2) = the disruption
+   optimum, correcting F90's evolved-lead-~3-overshoot (a small-pop selection artifact). F92
+   (energy-budget robustness): the origination BRAKE is model-independent, but F87's "escape free/
+   stable once present" is model-DEPENDENT -- any appreciable metabolic cost collapses even
+   established escape. Remaining: (a) proximity-survival fitness as a third robustness check
+   (student-owned model choice); (b) heritable alignment strength alpha under predation; (c)
+   co-evolve a 2-trait predator (lead + aggression). The evolution/ scripts + harness support all.
 2. **Agent memory beyond fatigue:** learned predator avoidance with internal state
    (e.g. a per-agent threat estimate that decays), distinct from the static fatigue of F53.
 3. **Robust estimation against the F83 floor:** can agents detect and down-weight

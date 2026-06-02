@@ -3469,6 +3469,36 @@ population need not sit at the trait's fitness optimum, and should be checked ag
 measurement before being read as optimal. This is the sixth self-test of the study, and the only one to
 correct a result generated within the same body of work. (Figure: `figures/escape_capture_curve_1.png`.)
 
+### 4.74 Robustness Under an Energy-Budget Fitness Model: The Brake Is Model-Independent, the Persistence of Escape Is Not (Finding 92)
+
+The whole co-adaptation thread so far used one fitness model, capture and removal, under which a high escape
+weight is nearly free once established. This experiment tests whether the central result, the origination
+brake, depends on that choice, by re-running the thread under an energy-budget model that bakes in the
+metabolic cost the escape valley implies: an always-on death hazard proportional to the escape weight is
+added to the predator-capture hazard, so escaping is expensive even when safe, and dead agents are replaced
+by mutated clones of survivors as before. The cost is held fixed while the initial weight is swept, and then
+swept while the population is seeded with escapers.
+
+The result splits the earlier findings cleanly into a model-independent half and a model-dependent half. The
+origination brake survives untouched: from no escape the weight stays near zero, so escape still cannot
+evolve de novo, confirming that the valley barrier is a general feature and not an artifact of capture and
+removal. But the complementary half of the first evolution result — that escape, once present, is nearly
+free and stable — does not survive. At a moderate metabolic cost every starting condition collapses to no
+escape, including a population seeded deep in the escape regime, which is driven all the way down rather than
+settling at an interior optimum. Sweeping the cost from a seeded escaper population, the evolved steady
+weight falls sharply: with no cost it sits at the mixed equilibrium near weight one and a quarter, but the
+smallest non-zero cost tested already collapses it to near zero, and larger costs only deepen the collapse.
+The transition is nearly all-or-nothing rather than a graded interior optimum.
+
+The mechanism is that the metabolic cost is paid by every escaper continuously, whereas predation threatens
+only the few agents near a predator at any instant, so even a modest per-capita cost outweighs the diffuse,
+intermittent benefit of escaping; collective escape is viable only where escaping is essentially free.
+Collective escape is therefore even more evolutionarily fragile than the co-evolution results implied — not
+only hard to originate and easy to lose to drift, but unsustainable under any non-trivial metabolic cost. The
+robust, model-independent conclusion of the thread is the origination brake; the persistence of escape, by
+contrast, is model-dependent and, once escaping carries an explicit cost, precarious. (Figure:
+`figures/escape_energy_1.png`.)
+
 ---
 
 ## 5. Synthesis: Alignment-Driven Kinematic Mixing as a Unifying Mechanism
@@ -4038,7 +4068,7 @@ comparably tiny dishonest one an effective spoiler.
 
 ## 7. Conclusions
 
-This study produced fifty-six main results (selecting the most general across 91 findings):
+This study produced fifty-seven main results (selecting the most general across 92 findings):
 
 1. **Equilibrium speed:** The cruise speed of an aligned flock is v_eq = v0 + alpha/mu,
    exactly. This is a direct consequence of the force equations and must be accounted
@@ -4650,7 +4680,20 @@ This study produced fifty-six main results (selecting the most general across 91
     from its true optimum. The lesson survives inverted, as a caution that a tightly converged
     evolved trait under noisy selection need not lie at its fitness optimum. The sixth
     self-test of the study, and the only one to correct a result from the same body of work.
-    This closes the co-adaptation thread.
+
+57. **The origination brake is model-independent; the persistence of escape is not:**
+    Re-running the evolution thread under an energy-budget fitness model — an explicit
+    metabolic cost proportional to the escape weight, paid even when safe — splits the
+    earlier results in two. The origination brake survives unchanged: escape still cannot
+    evolve from the no-escape state, so the valley barrier is general, not an artifact of
+    capture-and-removal. But the companion result that escape is free and stable once present
+    does not survive: at a moderate cost every population, including one seeded deep in the
+    escape regime, collapses to no escape, and the evolved weight falls almost all-or-nothing
+    as the cost rises from zero. The metabolic cost is paid by every escaper continuously
+    while predation threatens only the few near a predator at any instant, so a modest
+    per-capita cost outweighs the diffuse benefit and escape is viable only where it is nearly
+    free. Collective escape is thus even more evolutionarily fragile than the co-evolution
+    results implied. This closes the co-adaptation thread.
 
 The consistent thread across all results is that collective alignment is both the source
 of the flock's robustness and the mechanism by which stressors interact. It maintains

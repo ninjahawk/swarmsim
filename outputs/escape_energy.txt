@@ -1,0 +1,29 @@
+Energy-budget fitness model: does the F87 brake survive an explicit metabolic cost of escape?
+  N=150  2 seeds  150 tu  death hazard = predator-capture + metab_cost * w per tu
+
+Exp1 -- fixed metabolic cost c=0.50, sweep initial weight w0:
+  (does the brake still trap low starts; are high starts pulled DOWN to an interior optimum?)
+    w0=0.00 -> steady mean w=0.05 (escaper frac 0.00)  Phi=0.28
+    w0=0.50 -> steady mean w=0.06 (escaper frac 0.00)  Phi=0.26
+    w0=1.00 -> steady mean w=0.05 (escaper frac 0.00)  Phi=0.27
+    w0=2.00 -> steady mean w=0.06 (escaper frac 0.00)  Phi=0.25
+
+Exp2 -- seeded f=0.5 escapers, sweep metabolic cost c (the ESS vs cost):
+    cost c=0.00 -> ESS mean w=1.28 (escaper frac 0.64)  Phi=0.77
+    cost c=0.25 -> ESS mean w=0.11 (escaper frac 0.00)  Phi=0.20
+    cost c=0.50 -> ESS mean w=0.06 (escaper frac 0.00)  Phi=0.25
+    cost c=1.00 -> ESS mean w=0.04 (escaper frac 0.00)  Phi=0.30
+    cost c=2.00 -> ESS mean w=0.03 (escaper frac 0.00)  Phi=0.29
+
+  -> The brake SURVIVES the energy-budget model: from no escape the weight stays low (w~0.05),
+     so escape still cannot originate de novo -- the F87 brake is not an artifact of capture/removal.
+  -> The F87 "high w is free / stable once present" result does NOT survive: even a w0=2 start
+     COLLAPSES to w~0.06 -- escape is abandoned entirely, not balanced at an interior optimum.
+  -> ESS vs cost (seeded): c=0.00:w=1.28, c=0.25:w=0.11, c=0.50:w=0.06, c=1.00:w=0.04, c=2.00:w=0.03
+     SHARP threshold: escape persists only at near-zero cost (c=0 -> w=1.28) and collapses at the
+     first appreciable cost (c=0.25 -> w=0.11). Nearly all-or-nothing, NOT a graded interior optimum.
+     Mechanism: the metabolic cost is paid by every escaper continuously, while predation threatens
+     only the few agents near a predator at any instant, so a modest per-capita cost outweighs the
+     diffuse benefit. Under an energy budget, collective escape is viable only when essentially free.
+
+  --> figures/escape_energy_1.png
