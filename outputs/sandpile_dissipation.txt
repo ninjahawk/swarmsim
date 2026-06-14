@@ -1,0 +1,22 @@
+======================================================================
+IS CONSERVATION NECESSARY FOR SOC?  (1-D sandpile, bulk dissipation)
+======================================================================
+  dissip=0.00 : cutoff(E) by N [100, 200, 400, 800] = ['4.27e+03', '1.57e+04', '6.36e+04', '2.71e+05']
+  dissip=0.02 : cutoff(E) by N [100, 200, 400, 800] = ['2.42e+03', '4.89e+03', '7.64e+03', '1.22e+04']
+  dissip=0.05 : cutoff(E) by N [100, 200, 400, 800] = ['722', '1.41e+03', '2.41e+03', '5.32e+03']
+  dissip=0.10 : cutoff(E) by N [100, 200, 400, 800] = ['313', '609', '938', '1.2e+03']
+  dissip=0.20 : cutoff(E) by N [100, 200, 400, 800] = ['129', '210', '217', '416']
+
+[cutoff scaling exponent  d log(cutoff) / d log(N)]
+  (conservative SOC ~ 2.0; a value -> 0 means the cutoff saturates,
+   i.e. a characteristic avalanche size appears and criticality is lost)
+  dissip=0.00 : full-range slope 2.00, large-N slope 2.09
+  dissip=0.02 : full-range slope 0.77, large-N slope 0.68
+  dissip=0.05 : full-range slope 0.94, large-N slope 1.14
+  dissip=0.10 : full-range slope 0.65, large-N slope 0.36
+  dissip=0.20 : full-range slope 0.51, large-N slope 0.94
+
+saved figures\sandpile_dissipation.png
+
+Verdict: conservation IS necessary for true SOC if the d=0 cutoff
+  scales (~N^2) while every d>0 cutoff saturates to N-independence.

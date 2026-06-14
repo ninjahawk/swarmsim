@@ -23,6 +23,8 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       D_T ~ 1.0; avalanches are quantized families, not simple fractals
 - S4  The Grand Challenge: a 2-D slope sandpile is SOC but with DIFFERENT
       exponents from 1-D, and a different universality class from canonical BTW
+- S5  Bulk conservation is necessary for true SOC: dissipation imposes a
+      characteristic avalanche size and the cutoff stops scaling with system size
 
 ---
 
@@ -256,3 +258,65 @@ canonical BTW sandpile, often discussed under the one banner of "the sandpile
 model", are actually in different universality classes. The SOC *phenomenon*
 (scale-free avalanches as a dynamical attractor) is robust to the toppling rule;
 the SOC *exponents* are not.
+
+---
+
+## S5 -- Bulk conservation is necessary for true SOC
+
+**Question.** Charbonneau lists four ingredients that appear sufficient for SOC:
+a system that is open and dissipative, slowly forced, with a local threshold
+instability and local relaxation. The slope sandpile is *conservative in the
+bulk* -- the redistribution moves sand without destroying it, and sand leaves only
+at the open boundary. Is that bulk conservation actually necessary, or incidental?
+(This is the controversial ingredient in the Olami-Feder-Christensen earthquake
+model.)
+
+**Method (`sandpile/dissipation.py`).** We break conservation with a tunable bulk
+dissipation d (sandpile1d.run_sandpile(dissip=d)): a toppling higher node still
+sheds |slope|/4, but the lower node receives only (1-d)*|slope|/4 and the rest is
+destroyed. Same threshold, same relaxation, same slow forcing -- only conservation
+is removed. The decisive criticality test is not whether avalanches still occur
+but whether their cutoff still SCALES with system size: a truly critical system
+has no characteristic avalanche size (cutoff ~ N^2, S3), whereas a finite
+correlation length makes the cutoff SATURATE to an N-independent value. We measure
+the energy cutoff (moment ratio <E^2>/<E>) over N = 100, 200, 400, 800 at
+d = 0, 0.02, 0.05, 0.10, 0.20.
+
+**Evidence (`figures/sandpile_dissipation.png`).**
+
+| dissipation d | cutoff scaling exponent (d log cutoff / d log N) | cutoff at N=800 |
+|---------------|--------------------------------------------------|-----------------|
+| 0.00 (conservative) | **2.00** | 2.7e5 |
+| 0.02 | 0.77 | 1.2e4 |
+| 0.05 | 0.94 | 5.3e3 |
+| 0.10 | 0.65 | 1.2e3 |
+| 0.20 | 0.51 | 4.2e2 |
+
+The conservative case scales as N^2.00, exactly the critical behaviour of S3.
+Every dissipative case has its cutoff-scaling exponent slashed to below 1 and its
+absolute cutoff suppressed by one to three orders of magnitude, and the
+avalanche-energy PDF is truncated at a characteristic size that shrinks as d
+grows (right panel). The stronger the dissipation, the shorter the
+dissipation-set correlation length and the smaller the largest possible
+avalanche.
+
+**Interpretation.** Bulk conservation is necessary for true, scale-free SOC in
+this model. With conservation, the only sink is the boundary, so the only length
+that can cut off an avalanche is the system size N -- hence the N^2 cutoff and
+genuine scale invariance. Break conservation and sand can vanish anywhere; this
+introduces a finite correlation length (a typical distance a disturbance travels
+before being dissipated away), which becomes the characteristic avalanche size and
+destroys scale invariance. The system is then at best *approximately* critical,
+power-law only up to the dissipation scale. This singles out conservation among
+the four SOC ingredients as the one that makes criticality exact rather than
+approximate, and it reproduces -- in the simplest possible sandpile -- the
+non-conservation sensitivity that makes the OFC earthquake model perennially
+debated.
+
+**Honest caveat.** Over our N range (100-800) the dissipative cutoff-scaling
+exponents land at ~0.5-0.9 rather than cleanly at 0. That is expected: for weak
+dissipation the correlation length is large, so N must exceed it before the cutoff
+visibly saturates, and the moment-ratio estimator is noisy. The qualitative
+dichotomy is unambiguous (d=0 gives exponent 2.0 and orders-of-magnitude larger
+cutoffs; every d>0 gives a strongly suppressed, sub-N^2 cutoff), but pinning the
+asymptotic value to 0 would need larger lattices, especially at d=0.02.

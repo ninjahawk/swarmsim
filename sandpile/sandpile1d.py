@@ -47,7 +47,7 @@ DEFAULTS = dict(N=100, eps=0.1, Zc=5.0)
 
 
 def run_sandpile(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
-                 record_series=True, S0=None):
+                 record_series=True, S0=None, dissip=0.0):
     """Run the 1-D sandpile for n_iter temporal iterations.
 
     Parameters
@@ -85,12 +85,25 @@ def run_sandpile(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
         unstable = z >= Zc
 
         if unstable.any():
-            # eq 5.4-5.5 synchronous redistribution: move +d/4 to the lower
-            # node of each unstable pair, -d/4 from the higher.
-            contrib = np.where(unstable, d * 0.25, 0.0)   # length N-1
-            move = np.zeros(N)
-            move[:-1] += contrib          # node p gets +d/4
-            move[1:] -= contrib           # node p+1 gets -d/4
+            if dissip == 0.0:
+                # eq 5.4-5.5 conservative synchronous redistribution: move +d/4
+                # to the lower node of each unstable pair, -d/4 from the higher.
+                contrib = np.where(unstable, d * 0.25, 0.0)   # length N-1
+                move = np.zeros(N)
+                move[:-1] += contrib          # node p gets +d/4
+                move[1:] -= contrib           # node p+1 gets -d/4
+            else:
+                # NON-conservative variant: the higher node still sheds |d|/4, but
+                # the lower node receives only (1-dissip)*|d|/4; the rest is lost
+                # in the bulk (cf. the Olami-Feder-Christensen earthquake model).
+                ad = np.where(unstable, np.abs(d) * 0.25, 0.0)   # transfer magnitude
+                tl = (1.0 - dissip) * ad                         # to the lower node
+                pos = d > 0                                      # lower node is p
+                to_p = np.where(pos, tl, -ad)
+                to_pp1 = np.where(pos, -ad, tl)
+                move = np.zeros(N)
+                move[:-1] += to_p
+                move[1:] += to_pp1
             S += move
             dm = 0.25 * z[unstable].sum() # eq 5.7+5.10 displaced mass this iter
         else:
