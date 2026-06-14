@@ -42,6 +42,43 @@ A computational study of force-based flocking agents on a periodic 2D domain, ex
 
 ---
 
+## Second chapter — Sandpiles & Self-Organized Criticality
+
+A new topic (Charbonneau Ch. 5), distinct from the flocking work below. Code in
+[`sandpile/`](sandpile/), findings in [`findings_sandpile.md`](findings_sandpile.md)
+(S-series). The arc: validated 1-D core → rigorous critical exponents → the
+chapter's 2-D "Grand Challenge" → a universality comparison against the canonical
+abelian (Bak–Tang–Wiesenfeld) sandpile.
+
+**Headline result:** the *phenomenon* of self-organized criticality (scale-free
+avalanches as a dynamical attractor, no parameter tuning) is robust, but the
+critical *exponents* are not — they depend on both dimension and toppling rule:
+
+| model | avalanche exponent | same class? |
+|-------|--------------------|-------------|
+| 1-D slope sandpile | τ_E ≈ 1.03 (D_E ≈ 2.0) | — |
+| 2-D slope sandpile | τ_E ≈ 0.87 | ✗ differs from 1-D (purely dimensional; local rule identical) |
+| 2-D canonical BTW | τ_S ≈ 1.14 (lit. ~1.2) | ✗ differs from 2-D slope (τ_S ≈ 0.89) |
+
+Validated against the chapter: mass conservation to 3×10⁻¹¹, N-independent
+power-law avalanche PDFs, initial-condition independence (the SOC attractor), and
+a clarification of the angle-of-repose claim (the *mean* slope sits ~16% below Z_c
+independent of grain size; only the *peak* pre-avalanche slope approaches Z_c as
+grains shrink).
+
+```
+sandpile/
+  sandpile1d.py    1-D slope model (eqs 5.1–5.10), avalanche measurement
+  validate1d.py    conservation, SOC signatures, IC-independence, eps-sweep
+  fss1d.py         1-D finite-size scaling: τ_E, D_E, D_T + data collapse
+  repose_peak.py   angle-of-repose mean-vs-peak slope reconciliation
+  sandpile2d.py    2-D bond-slope generalization (Grand Challenge)
+  fss2d.py         2-D finite-size scaling + 1-D-vs-2-D comparison
+  btw_compare.py   canonical 2-D abelian BTW, same pipeline (universality)
+```
+
+---
+
 ## Model
 
 N agents move on a periodic unit square under four forces each timestep:
