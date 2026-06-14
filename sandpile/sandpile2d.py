@@ -69,6 +69,9 @@ def run_sandpile2d(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
 
     mass = np.zeros(n_iter) if record_series else None
     disp = np.zeros(n_iter) if record_series else None
+    # activity = number of bond topplings this iteration (the BTW-comparable
+    # "size" measure: avalanche size S = total topplings over the avalanche).
+    act = np.zeros(n_iter) if record_series else None
 
     for n in range(n_iter):
         dx = S[1:, :] - S[:-1, :]      # x-bonds, shape (L-1, L)
@@ -81,16 +84,19 @@ def run_sandpile2d(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
         if any_x or any_y:
             move = np.zeros((L, L))
             dm = 0.0
+            ntop = 0
             if any_x:
                 cx = np.where(ux, dx * 0.25, 0.0)
                 move[:-1, :] += cx          # lower site of each x-bond gains +d/4
                 move[1:, :] -= cx           # upper site loses
                 dm += np.abs(cx).sum()
+                ntop += int(ux.sum())
             if any_y:
                 cy = np.where(uy, dy * 0.25, 0.0)
                 move[:, :-1] += cy
                 move[:, 1:] -= cy
                 dm += np.abs(cy).sum()
+                ntop += int(uy.sum())
             S += move
         else:
             # slow forcing at a random interior site
@@ -98,16 +104,19 @@ def run_sandpile2d(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
             c = rng.integers(1, L - 1)
             S[r, c] += rng.uniform(0.0, eps)
             dm = 0.0
+            ntop = 0
 
         _apply_boundary(S)
         if record_series:
             mass[n] = S.sum()
             disp[n] = dm
+            act[n] = ntop
 
     out = dict(S=S, L=L, eps=eps, Zc=Zc, n_iter=n_iter, seed=seed)
     if record_series:
         out['mass'] = mass
         out['disp'] = disp
+        out['act'] = act
     return out
 
 

@@ -1,0 +1,26 @@
+======================================================================
+2-D SLOPE SANDPILE -- FINITE-SIZE SCALING / UNIVERSALITY
+======================================================================
+
+Running 2-D lattices...
+  L=  32 :   3495 avalanches  mean-slope=2.30  (E_max=165, S_max=120, T_max=29)
+  L=  48 :   3990 avalanches  mean-slope=2.40  (E_max=385, S_max=276, T_max=45)
+  L=  64 :   4380 avalanches  mean-slope=2.43  (E_max=695, S_max=496, T_max=61)
+  L=  96 :   5358 avalanches  mean-slope=2.50  (E_max=1.63e+03, S_max=1.13e+03, T_max=93)
+  L= 128 :   6405 avalanches  mean-slope=2.54  (E_max=2.95e+03, S_max=2.02e+03, T_max=125)
+
+[2-D exponents]
+  tau_E = 0.875    D_E = 2.201  (cutoff ~ L^D)
+  tau_S = 0.887    D_S = 2.168  (cutoff ~ L^D)
+  tau_T = 0.670    D_T = 1.139  (cutoff ~ L^D)
+
+[1-D vs 2-D comparison]   (1-D from S3: tau_E~1.03, D_E~2.0, D_T~1.0)
+  observable     tau(1-D)   tau(2-D)
+  energy E         1.03       0.87
+  duration T       0.60       0.67
+  -> if tau differs, 1-D and 2-D are NOT in the same universality class
+  size S (2-D only, for BTW comparison): tau_S = 0.89
+
+saved figures\sandpile_fss2d.png
+
+2-D FSS COMPLETE

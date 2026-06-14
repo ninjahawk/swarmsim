@@ -1,0 +1,21 @@
+======================================================================
+CANONICAL 2-D ABELIAN BTW SANDPILE -- exponents under our pipeline
+======================================================================
+
+Running BTW lattices...
+  L=  32 :  42578 avalanches  (S_max=2.54e+03, T_max=231, <S>=95.5)
+  L=  48 :  38843 avalanches  (S_max=6.84e+03, T_max=461, <S>=204.0)
+  L=  64 :  30546 avalanches  (S_max=1.86e+04, T_max=971, <S>=351.7)
+  L=  96 :  21894 avalanches  (S_max=4.28e+04, T_max=1399, <S>=770.2)
+  L= 128 :  14079 avalanches  (S_max=7.79e+04, T_max=2237, <S>=1055.4)
+
+[BTW size exponent]
+  tau_S(BTW) = 1.137   D_S(BTW) = 2.554   (literature tau_S ~ 1.2)
+
+  Compare with the 2-D SLOPE model (fss2d.py): tau_S(slope) printed there.
+  If tau_S(slope) != tau_S(BTW), the slope rule and BTW are in DIFFERENT
+  universality classes despite both being 2-D SOC sandpiles.
+
+saved figures\sandpile_btw.png
+
+BTW COMPARISON COMPLETE

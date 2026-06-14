@@ -21,6 +21,8 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       the PEAK (pre-avalanche) slope approaches Zc as eps -> 0
 - S3  1-D critical exponents by finite-size scaling: tau_E ~ 1.03, D_E ~ 2.0,
       D_T ~ 1.0; avalanches are quantized families, not simple fractals
+- S4  The Grand Challenge: a 2-D slope sandpile is SOC but with DIFFERENT
+      exponents from 1-D, and a different universality class from canonical BTW
 
 ---
 
@@ -175,3 +177,82 @@ x/N^{D_x} collapse (`figures/sandpile_fss.png`).
 - These exponents (tau_E ~ 1.0, D_E ~ 2.0) are the **1-D baseline** for the
   universality question: do the 2-D bond-slope sandpile's exponents differ, and
   how do they compare to the canonical abelian (BTW) sandpile?
+
+---
+
+## S4 -- The Grand Challenge: a 2-D slope sandpile, and the universality question
+
+**Question (Charbonneau Exercise 6).** Generalize the slope model to two
+dimensions, confirm it self-organizes to a critical state with power-law
+avalanches, and ask: are the exponents the same as in 1-D? And -- our own
+extension -- is this slope-based sandpile in the same universality class as the
+canonical abelian (Bak-Tang-Wiesenfeld) sandpile?
+
+**Model (owned design choice; `sandpile/sandpile2d.py`).** The 1-D model is a
+*bond* model: every adjacent pair carries a slope and an unstable bond halves it.
+The 2-D generalization keeps that exact rule but lets bonds run in both lattice
+directions -- each site links to its right and upper neighbours by an x-bond and
+a y-bond, every bond obeying the identical 1-D pair rule -- with open (draining)
+boundaries on all four edges. This is chosen over the book's hinted "2x2-block
+slope" precisely because it reduces to the 1-D model exactly when one dimension
+is collapsed: the *local dynamics are unchanged*, so a 1-D-vs-2-D exponent
+difference is a clean effect of dimensionality alone, not of also changing the
+rule. (A toppling-count "size" series S = number of bond topplings was added so
+we can compare to the BTW size exponent, which counts site topplings.)
+
+**Evidence -- the 2-D slope model is SOC (`sandpile/fss2d.py`,
+`figures/sandpile_fss2d.png`).** Run from a pyramid initial pile over L = 32, 48,
+64, 96, 128, it reaches a stationary state with a mean bond slope ~2.5 (about 50%
+below Zc=5 -- a much larger deficit than 1-D's 16%, because four neighbours give
+each site more relaxation channels). Avalanche PDFs of energy E and size S are
+power laws whose rescaled curves collapse:
+
+| observable | 1-D exponent | 2-D exponent |
+|------------|--------------|--------------|
+| energy tau_E   | 1.03 | **0.87** |
+| size  tau_S    | (n/a) | **0.89** |
+| duration tau_T | 0.60 | 0.67 |
+| energy cutoff D_E | 2.0 | ~2.2 |
+
+**Evidence -- canonical BTW under the same pipeline (`sandpile/btw_compare.py`,
+`figures/sandpile_btw.png`).** The standard 2-D abelian sandpile (integer
+heights, site topples at h>=4 shedding one grain to each neighbour, open edges)
+measured with the identical log-binned-PDF / FSS analysis over L = 32..128 gives
+a clean 5-decade power law and a tight data collapse with **tau_S(BTW) = 1.14**,
+D_S ~ 2.55 -- consistent with the literature value ~1.2 (our slightly lower
+number is the well-known finite-size/multifractal effect at these L).
+
+**Two conclusions.**
+
+1. **1-D and 2-D slope sandpiles are NOT in the same universality class.** The
+   energy exponent drops from tau_E = 1.03 (1-D) to 0.87 (2-D) under the
+   *identical* local toppling rule -- so the change is purely dimensional. (D_E
+   stays ~2 in both, set by the same geometry: the biggest avalanche spans the
+   lattice.)
+
+2. **The slope (gradient) rule is NOT in the BTW universality class.** At the
+   same dimension (2-D) and under the same measurement, the slope model's size
+   exponent tau_S = 0.89 differs clearly from BTW's 1.14. So *how* a site decides
+   to topple matters: toppling on a height *difference* exceeding a threshold
+   (slope/gradient model) yields a different critical behaviour than toppling on
+   absolute *height* (BTW). Both are SOC -- both produce scale-free avalanches
+   with no parameter tuning -- but they are distinct critical classes.
+
+**Honest caveats.** (a) Exponents come from log-binned power-law fits over a
+modest L range (32-128) with finite-size curvature; the digits carry ~+/-0.05-0.1
+uncertainty. The *differences* (1.03 vs 0.87 vs 1.14) are several times that, so
+the universality conclusions are robust even though the precise values are not
+nailed down. (b) The slope-model size counts *bond* topplings and BTW counts
+*site* topplings; these differ by an O(1) factor that cannot change a power-law
+exponent, so the comparison is valid, but a duration-based cross-check (tau_T,
+defined identically for both) is a clean future confirmation. (c) The slope-model
+collapses are noisier than BTW's because it produces ~5-10x fewer avalanches per
+run; longer runs would tighten them.
+
+**Why this is interesting.** It gives a direct, method-matched answer to the
+Grand Challenge -- the 2-D indices are *not* the same as 1-D -- and adds a result
+the chapter does not address: the textbook's slope sandpile and the historically
+canonical BTW sandpile, often discussed under the one banner of "the sandpile
+model", are actually in different universality classes. The SOC *phenomenon*
+(scale-free avalanches as a dynamical attractor) is robust to the toppling rule;
+the SOC *exponents* are not.
