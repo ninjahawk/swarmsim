@@ -1,0 +1,23 @@
+======================================================================
+1-D SANDPILE -- FINITE-SIZE SCALING / CRITICAL EXPONENTS
+======================================================================
+
+Running lattices...
+  N=   64 :   3721 avalanches  (E_max=2.85e+03, T_max=125)
+  N=  128 :   4057 avalanches  (E_max=1.15e+04, T_max=253)
+  N=  256 :   3754 avalanches  (E_max=4.6e+04, T_max=509)
+  N=  512 :   3688 avalanches  (E_max=1.85e+05, T_max=1021)
+  N= 1024 :   3819 avalanches  (E_max=7.44e+05, T_max=2045)
+
+[E] avalanche energy
+  tau_E = 1.031   (book PDF slope ~ -1.09)
+  D_E   = 1.939   (cutoff E_c ~ N^D_E; geometric expectation ~2)
+  scaling check D_E*(2 - tau_E) = 1.879   (conservation predicts ~1)
+
+[T] avalanche duration
+  tau_T = 0.600
+  D_T   = 0.900   (duration cutoff T_c ~ N^D_T; geometric expectation ~1)
+
+saved figures\sandpile_fss.png
+
+FSS COMPLETE

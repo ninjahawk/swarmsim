@@ -1,0 +1,19 @@
+======================================================================
+ANGLE OF REPOSE: MEAN vs PEAK SLOPE (S2 reconciliation)
+======================================================================
+
+  eps     mean-slope  mean-deficit%   max-slope  max-excess(Zc)
+  0.01    4.1306       17.4         4.6504     -0.3496
+  0.02    4.1299       17.4         4.6737     -0.3263
+  0.05    4.1842       16.3         4.7952     -0.2048
+  0.10    4.1992       16.0         4.9335     -0.0665
+  0.20    4.2017       16.0         5.1228     +0.1228
+  0.50    4.2053       15.9         5.4258     +0.4258
+  1.00    4.2301       15.4         5.5838     +0.5838
+
+saved figures\sandpile_repose_peak.png
+
+Verdict:
+  max-slope excess over Zc shrinks from +0.584 (eps=1.0) to -0.350 (eps=0.01)
+  -> peak slope approaches Zc as eps -> 0 (the book's statement),
+     while the MEAN slope stays a roughly eps-independent ~16% below Zc.
