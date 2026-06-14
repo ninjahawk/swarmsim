@@ -60,6 +60,12 @@ critical *exponents* are not — they depend on both dimension and toppling rule
 | 2-D slope sandpile | τ_E ≈ 0.87 | ✗ differs from 1-D (purely dimensional; local rule identical) |
 | 2-D canonical BTW | τ_S ≈ 1.14 (lit. ~1.2) | ✗ differs from 2-D slope (τ_S ≈ 0.89) |
 
+And the criticality is *exact* only because the bulk is conservative: breaking
+conservation (destroying a fraction of toppled sand) collapses the cutoff scaling
+from N² to sub-N¹ and truncates the avalanche distribution at a dissipation-set
+size — singling out conservation among the four SOC ingredients (the OFC
+earthquake-model sensitivity, in the simplest sandpile).
+
 Validated against the chapter: mass conservation to 3×10⁻¹¹, N-independent
 power-law avalanche PDFs, initial-condition independence (the SOC attractor), and
 a clarification of the angle-of-repose claim (the *mean* slope sits ~16% below Z_c
@@ -75,6 +81,7 @@ sandpile/
   sandpile2d.py    2-D bond-slope generalization (Grand Challenge)
   fss2d.py         2-D finite-size scaling + 1-D-vs-2-D comparison
   btw_compare.py   canonical 2-D abelian BTW, same pipeline (universality)
+  dissipation.py   break bulk conservation -> is conservation necessary for SOC?
 ```
 
 ---
