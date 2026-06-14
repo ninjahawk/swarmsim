@@ -1,0 +1,15 @@
+======================================================================
+FALLOFF (BOUNDARY) AVALANCHES vs BULK AVALANCHES  (Exercise 2, S8)
+======================================================================
+
+  N=300 : 2736 bulk avalanches, 1209 reach boundary (44%)
+    bulk-E PDF slope -1.02 ; falloff-E PDF slope -0.63
+    log-log corr(bulk E, falloff E) on boundary avalanches = 0.91
+    mean falloff/bulk energy ratio (reaching) = 0.023
+
+  N=1000 : 1750 bulk avalanches, 783 reach boundary (45%)
+    bulk-E PDF slope -1.01 ; falloff-E PDF slope -0.65
+    log-log corr(bulk E, falloff E) on boundary avalanches = 0.96
+    mean falloff/bulk energy ratio (reaching) = 0.005
+
+saved figures\sandpile_falloff.png

@@ -31,6 +31,9 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
 - S7  The conservation-necessity result (S5) transfers to 2-D: conservative
       cutoff scales as L^~2, dissipation suppresses it (qualitatively, over a
       limited size range)
+- S8  (Exercise 2) Boundary "falloff" avalanches are scale-invariant but with a
+      shallower exponent than bulk avalanches; only ~44% of avalanches reach the
+      edge and the drained fraction shrinks with system size
 
 ---
 
@@ -411,3 +414,52 @@ especially since the conservative slope itself (2.16) means the dynamic range of
 the cutoff is large. So the 2-D evidence is consistent with S5 and shows the same
 monotonic suppression, but a clean 2-D saturation (slope -> 0) would need larger
 lattices via the list-based / compiled speedup the chapter suggests in Exercise 5.
+
+---
+
+## S8 -- Boundary "falloff" avalanches vs bulk avalanches (Exercise 2)
+
+**Question (Exercise 2).** Track the mass that actually falls off the open edge
+as its own series, distinct from the toppled-mass (bulk) series. Are falloff
+avalanches scale-invariant? How does falloff energy correlate with bulk energy?
+
+**Method (`sandpile/falloff.py`).** The 1-D run now records, each avalanche
+iteration, the mass evacuated at node N-1 before it is zeroed (a 'falloff'
+series). A subtlety: applying the section-5.4 run-detector to the raw falloff
+series is not meaningful, because the boundary drains in many short bursts within
+a single bulk avalanche (~60 bursts per boundary-reaching avalanche), fragmenting
+it into thousands of one-iteration events. The meaningful unit is falloff PER
+BULK AVALANCHE: for each avalanche (run of disp>0), sum the mass that left the
+edge during it. Measured at N=300 and N=1000.
+
+**Evidence.**
+- **Only ~44% of avalanches reach the boundary** (44% at N=300, 45% at N=1000);
+  the majority are interior avalanches that rearrange sand downslope but evacuate
+  nothing. This is the S1/S3 wedge picture: most avalanches die before the edge.
+- **Falloff avalanches are scale-invariant** -- the per-avalanche falloff-energy
+  PDF is a power law with an N-independent slope (-0.63 at N=300, -0.65 at
+  N=1000). So the boundary-evacuation process is itself self-similar.
+- **But with a different exponent than the bulk:** the falloff slope (~ -0.64) is
+  clearly shallower than the bulk toppled-energy slope (~ -1.02 / -1.01). Falloff
+  and bulk avalanching are distinct self-similar processes, not the same
+  distribution rescaled.
+- **Falloff energy correlates strongly with bulk energy** on boundary-reaching
+  avalanches (log-log correlation 0.91 at N=300, 0.96 at N=1000): a bigger
+  avalanche evacuates more sand. The scatter (figure, right) shows a floor of
+  avalanches that just touch the edge and drain a single quantum, rising to the
+  lattice-spanning avalanches that drain the most.
+- **The evacuated fraction is tiny and shrinks with N:** mean falloff/bulk energy
+  ratio 0.023 at N=300, 0.005 at N=1000. Most toppling is internal rearrangement;
+  only a thin surface layer leaves -- exactly the chapter's remark that even a
+  large avalanche lowers the total mass by only ~0.2%, and that the fraction falls
+  as the pile grows.
+
+**Interpretation.** Boundary evacuation in a SOC sandpile is itself a scale-free
+process, but a softer one than bulk toppling (shallower exponent): large
+evacuations are relatively more common among falloff events than large topplings
+are among bulk events, because reaching the boundary already selects for big,
+spanning avalanches. The two are tightly coupled (high correlation) yet
+statistically distinct (different exponents), and the bulk does the overwhelming
+majority of the "work" (sand motion) while only a sliver actually exits -- the
+hallmark of a system whose interior is frozen at the angle of repose with all the
+action in a thin avalanching surface layer.

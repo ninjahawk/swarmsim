@@ -76,6 +76,10 @@ def run_sandpile(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
 
     mass = np.zeros(n_iter) if record_series else None
     disp = np.zeros(n_iter) if record_series else None
+    # falloff = mass evacuated at the open right boundary on avalanche iterations
+    # (Exercise 2: a "falloff" avalanche series distinct from the toppled-mass
+    # series disp). Quiet-step grains that happen to land on node N-1 are excluded.
+    falloff = np.zeros(n_iter) if record_series else None
 
     # Pre-draw forcing is not possible (we don't know how many quiet steps
     # there will be), so we draw per quiet iteration. Vectorized inner physics.
@@ -112,15 +116,18 @@ def run_sandpile(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
             S[r] += rng.uniform(0.0, eps)
             dm = 0.0
 
+        drained = S[N - 1] if dm > 0.0 else 0.0   # boundary evacuation this iter
         S[N - 1] = 0.0                    # eq 5.8 open right boundary
         if record_series:
             mass[n] = S.sum()             # eq 5.9
             disp[n] = dm
+            falloff[n] = drained
 
     out = dict(S=S, N=N, eps=eps, Zc=Zc, n_iter=n_iter, seed=seed)
     if record_series:
         out['mass'] = mass
         out['disp'] = disp
+        out['falloff'] = falloff
     return out
 
 

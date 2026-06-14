@@ -84,7 +84,12 @@ sandpile/
   dissipation.py   break bulk conservation -> is conservation necessary for SOC?
   dissipation2d.py 2-D version of the conservation test (transfers from 1-D)
   duration_compare.py  duration-exponent universality cross-check (self-test)
+  falloff.py       boundary-evacuation avalanches vs bulk avalanches (Exercise 2)
 ```
+
+Exercises addressed: 2 (falloff avalanches, S8), 3 (initial-condition
+independence, S1), 4 (eps-dependence of the angle of repose, S2), 6 (the 2-D
+Grand Challenge, S4) — plus the conservation study (S5/S7) and a self-test (S6).
 
 ---
 
