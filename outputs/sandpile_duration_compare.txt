@@ -1,0 +1,16 @@
+======================================================================
+UNIVERSALITY CROSS-CHECK: avalanche-DURATION exponent (slope vs BTW)
+======================================================================
+Duration = number of parallel relaxation sweeps; identical definition
+for both models, so this comparison is free of any counting convention.
+
+  slope L=64   :   4380 avalanches, tau_T = 1.433
+  slope L=128  :   6405 avalanches, tau_T = 0.796
+  BTW   L=64   :  30546 avalanches, tau_T = 1.145
+  BTW   L=128  :  14079 avalanches, tau_T = 1.225
+
+[verdict]
+  mean tau_T(slope) = 1.11   mean tau_T(BTW) = 1.19
+  duration exponents agree -- complicates the size-based conclusion (S4)
+
+saved figures\sandpile_duration_compare.png

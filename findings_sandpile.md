@@ -25,6 +25,9 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       exponents from 1-D, and a different universality class from canonical BTW
 - S5  Bulk conservation is necessary for true SOC: dissipation imposes a
       characteristic avalanche size and the cutoff stops scaling with system size
+- S6  (self-test) The duration-exponent cross-check of S4 is INCONCLUSIVE -- the
+      slope model's avalanches are too short-lived to pin tau_T; S4 stands on the
+      size exponent
 
 ---
 
@@ -247,9 +250,11 @@ the universality conclusions are robust even though the precise values are not
 nailed down. (b) The slope-model size counts *bond* topplings and BTW counts
 *site* topplings; these differ by an O(1) factor that cannot change a power-law
 exponent, so the comparison is valid, but a duration-based cross-check (tau_T,
-defined identically for both) is a clean future confirmation. (c) The slope-model
-collapses are noisier than BTW's because it produces ~5-10x fewer avalanches per
-run; longer runs would tighten them.
+defined identically for both) would remove the objection entirely -- attempted in
+S6, and found inconclusive (the slope model's duration range is too short to pin
+tau_T), so S4 rests on the size exponent. (c) The slope-model collapses are
+noisier than BTW's because it produces ~5-10x fewer avalanches per run; longer
+runs would tighten them.
 
 **Why this is interesting.** It gives a direct, method-matched answer to the
 Grand Challenge -- the 2-D indices are *not* the same as 1-D -- and adds a result
@@ -320,3 +325,46 @@ visibly saturates, and the moment-ratio estimator is noisy. The qualitative
 dichotomy is unambiguous (d=0 gives exponent 2.0 and orders-of-magnitude larger
 cutoffs; every d>0 gives a strongly suppressed, sub-N^2 cutoff), but pinning the
 asymptotic value to 0 would need larger lattices, especially at d=0.02.
+
+---
+
+## S6 -- (self-test) The duration-exponent cross-check of S4 is inconclusive
+
+**Motivation.** S4's universality verdict rests on the avalanche-SIZE exponent,
+where the slope model counts bond topplings and BTW counts site topplings (an
+O(1) definitional difference). To remove that objection, S4 flagged a cleaner
+discriminator: avalanche DURATION, the number of parallel relaxation sweeps,
+which is defined identically for both models. This is that test
+(`sandpile/duration_compare.py`).
+
+**Evidence (`figures/sandpile_duration_compare.png`).**
+
+| model | tau_T (L=64) | tau_T (L=128) |
+|-------|--------------|---------------|
+| 2-D slope | 1.43 | 0.80 |
+| 2-D BTW   | 1.15 | 1.23 |
+
+BTW's duration distribution is a clean power law over three-plus decades and its
+exponent is stable across size (tau_T ~ 1.2, consistent between L=64 and 128). The
+slope model's is not: its duration spans barely two decades (the longest
+avalanche lasts only ~125 sweeps even at L=128, because a 2-D slope avalanche
+propagates at most ~L sweeps and the model produces far fewer avalanches), and the
+fitted exponent swings from 1.43 to 0.80 between the two sizes (and was 0.67 in
+the S3-style fss2d run). A quantity that changes by a factor of two between
+adjacent lattice sizes is not a measured exponent.
+
+**Verdict.** The duration cross-check is **inconclusive**: not because the two
+duration exponents agree, but because the slope model's tau_T cannot be pinned
+down at accessible lattice sizes. So it can neither confirm nor refute S4. The
+size-based comparison (tau_S = 0.89 slope vs 1.14 BTW, each from distributions
+spanning 3-5 decades) remains the reliable evidence that the two models are in
+different universality classes. A decisive duration comparison would require 2-D
+slope lattices far larger than L=128 to extend the duration range, which is beyond
+what the pure-Python loop reaches here.
+
+**Why record a negative result.** Reporting this honestly -- a planned check that
+did not work, with the reason it did not -- is the same discipline as the flocking
+self-tests (F47, F48, F91): test your own caveat, and if the test is too weak to
+decide, say so rather than read a number off a bad fit. The auto-generated verdict
+in the script ("durations agree") is exactly the trap, and it is wrong, because it
+averages an unstable fit.
