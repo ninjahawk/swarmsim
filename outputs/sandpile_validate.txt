@@ -1,0 +1,48 @@
+======================================================================
+1-D SANDPILE VALIDATION  (Charbonneau Ch. 5)
+======================================================================
+
+[1] Global mass balance (eq 5.6 + 5.8)
+  grains added   = 2971.555399
+  boundary drain = 309.210433
+  final mass     = 2662.344966
+  residual (added - drained - final) = 3.274e-11
+  PASS: sand is conserved up to boundary drainage
+
+[2,3] Mass series, intermittency, angle of repose (N=100 from empty)
+  stationary slope (final snapshot)      = 4.1941  (Zc = 5.0)
+  stationary slope (time-avg of mass)    = 4.2096
+  fractional deficit (Zc - slope)/Zc     = 16.1% (snapshot) / 15.8% (time-avg)
+  NOTE: the book states ~7%% for eps=0.1, but its own fig-5.4A mass (~2.1e4)
+        back-calculates to slope ~4.24 (~15%%). Our deficit is ~15-16%%; the
+        eps-dependence below tests the mechanism (slope -> Zc as eps -> 0).
+  saved figures\sandpile_validate_mass.png
+
+[4b] Angle-of-repose vs forcing amplitude eps (Exercise 4), N=100
+  eps     slope    deficit%   PDF(E) slope
+  0.01    4.0890    18.2      -1.36
+  0.05    4.1764    16.5      -0.98
+  0.10    4.2072    15.9      -1.02
+  0.50    4.2317    15.4      -1.36
+  1.00    4.2566    14.9      -1.61
+  -> deficit should shrink monotonically toward 0 as eps -> 0
+
+[4] Avalanche E-T correlation wedge (N=1000)
+  avalanches measured = 1812
+  saved figures\sandpile_validate_ET.png
+
+[5] Avalanche-energy PDF across lattice size (N-independent slope)
+  N= 100 :   3485 avalanches, PDF(E) slope -0.99, PDF(P) slope -0.77
+  N= 300 :   2730 avalanches, PDF(E) slope -1.00, PDF(P) slope -0.55
+  N=1000 :   1725 avalanches, PDF(E) slope -1.01, PDF(P) slope -0.85
+  saved figures\sandpile_validate_pdf.png
+  PDF(E) slopes by N: {100: np.float64(-0.99), 300: np.float64(-1.0), 1000: np.float64(-1.01)}
+  -> slope is approximately N-independent if these agree
+
+[6] Initial-condition independence (Exercise 3), N=100
+  IC=empty            slope=4.213 (deficit 15.7%), PDF(E) slope=-0.98, n_av=3129
+  IC=triangle@repose  slope=4.209 (deficit 15.8%), PDF(E) slope=-1.00, n_av=3147
+  IC=uniform-load     slope=4.211 (deficit 15.8%), PDF(E) slope=-0.96, n_av=3050
+  -> time-avg stationary slope and PDF slope should agree across ICs
+
+VALIDATION COMPLETE
