@@ -28,6 +28,9 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
 - S6  (self-test) The duration-exponent cross-check of S4 is INCONCLUSIVE -- the
       slope model's avalanches are too short-lived to pin tau_T; S4 stands on the
       size exponent
+- S7  The conservation-necessity result (S5) transfers to 2-D: conservative
+      cutoff scales as L^~2, dissipation suppresses it (qualitatively, over a
+      limited size range)
 
 ---
 
@@ -368,3 +371,43 @@ self-tests (F47, F48, F91): test your own caveat, and if the test is too weak to
 decide, say so rather than read a number off a bad fit. The auto-generated verdict
 in the script ("durations agree") is exactly the trap, and it is wrong, because it
 averages an unstable fit.
+
+---
+
+## S7 -- Conservation-necessity (S5) transfers to two dimensions
+
+**Question.** S5 established in 1-D that bulk conservation is necessary for true
+SOC. A robust result should not be a 1-D accident. Does it transfer to the 2-D
+bond-slope sandpile? (Same robustness instinct as the flocking thread's
+cross-dimension checks.)
+
+**Method (`sandpile/dissipation2d.py`).** The 2-D model gained the same dissip
+parameter (lower node of each unstable bond receives only (1-dissip) of the shed
+sand; conservative path kept bit-identical via a branch on dissip==0). We measure
+the energy-cutoff scaling with L over L = 32, 48, 64, 96 at d = 0, 0.05, 0.20.
+
+**Evidence (`figures/sandpile_dissipation2d.png`).**
+
+| dissipation d | cutoff-scaling exponent (d log cutoff / d log L) |
+|---------------|--------------------------------------------------|
+| 0.00 (conservative) | **2.16** |
+| 0.05 | 1.46 |
+| 0.20 | 1.21 |
+
+The conservative 2-D cutoff scales as L^2.16, close to the geometric ~L^2 of a
+lattice-spanning avalanche -- genuine criticality, as in S4. Adding bulk
+dissipation monotonically suppresses the cutoff-scaling exponent (2.16 -> 1.46 ->
+1.21) and truncates the energy PDF at a smaller characteristic size as d grows.
+The direction is the same as 1-D (S5): conservation gives size-scaling
+criticality, dissipation removes it.
+
+**Interpretation and honest limitation.** The conservation-necessity result
+*transfers* to 2-D qualitatively. It is weaker quantitatively than the 1-D
+demonstration: the dissipative slopes drop to ~1.2-1.5 rather than toward 0,
+because the accessible 2-D lattice range is only about half a decade (L=32 to 96,
+limited by the O(L^2) cost of the pure-Python loop) whereas 1-D reached a full
+decade (N=100 to 800). Over so short a range the saturation cannot fully develop,
+especially since the conservative slope itself (2.16) means the dynamic range of
+the cutoff is large. So the 2-D evidence is consistent with S5 and shows the same
+monotonic suppression, but a clean 2-D saturation (slope -> 0) would need larger
+lattices via the list-based / compiled speedup the chapter suggests in Exercise 5.

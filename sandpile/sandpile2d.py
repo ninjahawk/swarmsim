@@ -56,7 +56,7 @@ def _apply_boundary(S):
 
 
 def run_sandpile2d(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
-                   record_series=True, S0=None):
+                   record_series=True, S0=None, dissip=0.0):
     """Run the 2-D bond-slope sandpile for n_iter temporal iterations.
 
     Returns a dict with 'mass', 'disp' series (if record_series), final 'S',
@@ -85,18 +85,39 @@ def run_sandpile2d(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
             move = np.zeros((L, L))
             dm = 0.0
             ntop = 0
-            if any_x:
-                cx = np.where(ux, dx * 0.25, 0.0)
-                move[:-1, :] += cx          # lower site of each x-bond gains +d/4
-                move[1:, :] -= cx           # upper site loses
-                dm += np.abs(cx).sum()
-                ntop += int(ux.sum())
-            if any_y:
-                cy = np.where(uy, dy * 0.25, 0.0)
-                move[:, :-1] += cy
-                move[:, 1:] -= cy
-                dm += np.abs(cy).sum()
-                ntop += int(uy.sum())
+            if dissip == 0.0:
+                # conservative redistribution (keeps S4 results bit-identical)
+                if any_x:
+                    cx = np.where(ux, dx * 0.25, 0.0)
+                    move[:-1, :] += cx        # lower site of each x-bond gains +d/4
+                    move[1:, :] -= cx         # upper site loses
+                    dm += np.abs(cx).sum()
+                    ntop += int(ux.sum())
+                if any_y:
+                    cy = np.where(uy, dy * 0.25, 0.0)
+                    move[:, :-1] += cy
+                    move[:, 1:] -= cy
+                    dm += np.abs(cy).sum()
+                    ntop += int(uy.sum())
+            else:
+                # NON-conservative: lower node of each unstable bond receives only
+                # (1-dissip) of the shed sand; the rest is destroyed in the bulk.
+                if any_x:
+                    adx = np.where(ux, np.abs(dx) * 0.25, 0.0)
+                    tlx = (1.0 - dissip) * adx
+                    posx = dx > 0
+                    move[:-1, :] += np.where(posx, tlx, -adx)
+                    move[1:, :] += np.where(posx, -adx, tlx)
+                    dm += adx.sum()
+                    ntop += int(ux.sum())
+                if any_y:
+                    ady = np.where(uy, np.abs(dy) * 0.25, 0.0)
+                    tly = (1.0 - dissip) * ady
+                    posy = dy > 0
+                    move[:, :-1] += np.where(posy, tly, -ady)
+                    move[:, 1:] += np.where(posy, -ady, tly)
+                    dm += ady.sum()
+                    ntop += int(uy.sum())
             S += move
         else:
             # slow forcing at a random interior site

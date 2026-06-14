@@ -1,0 +1,17 @@
+======================================================================
+DOES CONSERVATION-NECESSITY TRANSFER TO 2-D?  (S7)
+======================================================================
+  dissip=0.00 : cutoff(E) by L [32, 48, 64, 96] = ['76.8', '170', '314', '828']
+  dissip=0.05 : cutoff(E) by L [32, 48, 64, 96] = ['52.7', '95.4', '151', '259']
+  dissip=0.20 : cutoff(E) by L [32, 48, 64, 96] = ['14.4', '22.1', '31', '54.4']
+
+[cutoff scaling exponent  d log(cutoff)/d log(L)]
+  (2-D conservative SOC: energy cutoff ~ L^~2; -> ~0 means saturation)
+  dissip=0.00 : slope 2.16
+  dissip=0.05 : slope 1.46
+  dissip=0.20 : slope 1.21
+
+saved figures\sandpile_dissipation2d.png
+
+Verdict: if d=0 scales with L while d>0 flattens, the 1-D
+  conservation-necessity result (S5) transfers to 2-D.

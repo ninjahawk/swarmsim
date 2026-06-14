@@ -82,6 +82,8 @@ sandpile/
   fss2d.py         2-D finite-size scaling + 1-D-vs-2-D comparison
   btw_compare.py   canonical 2-D abelian BTW, same pipeline (universality)
   dissipation.py   break bulk conservation -> is conservation necessary for SOC?
+  dissipation2d.py 2-D version of the conservation test (transfers from 1-D)
+  duration_compare.py  duration-exponent universality cross-check (self-test)
 ```
 
 ---
