@@ -5,9 +5,17 @@ Charbonneau, *Natural Complexity* (2017), Chapter 5. A **new chapter**, distinct
 from the flocking work (F1-F92 in `findings.md`). To keep the two cleanly
 separated, sandpile findings use their own **S-series** (S1, S2, ...).
 
-The arc: validated 1-D core -> rigorous 1-D critical exponents (finite-size
-scaling) -> a 2-D slope sandpile -> the universality question (do 1-D and 2-D
-share exponents, and how do they compare to the canonical abelian/BTW sandpile?).
+The arc: validated 1-D core (S1-S2) -> rigorous 1-D critical exponents by
+finite-size scaling (S3) -> a 2-D slope sandpile and the universality question
+(S4: do 1-D and 2-D share exponents, and how do they compare to the canonical
+abelian/BTW sandpile?) -> which SOC ingredient is necessary (S5, S7: bulk
+conservation) -> a self-test of the universality result (S6) and the chapter's
+falloff exercise (S8). Status: S1-S8 complete and pushed.
+
+Headline: self-organized criticality as a *phenomenon* (scale-free avalanches
+with no parameter tuning) is robust, but the critical *exponents* are not -- they
+change with dimension and with the toppling rule, and the scale invariance is
+exact only while the bulk conserves sand.
 
 Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
 `outputs/sandpile_*.txt`.
