@@ -1,0 +1,29 @@
+========================================================================
+S10 -- 2-D avalanche-DURATION exponent by FSS (slope model vs BTW)
+========================================================================
+Duration = parallel relaxation sweeps (identical definition for both).
+Fit window [8, 0.3*T_max] applied to both models. Slope model uses the
+active-list engine (S9); BTW uses the same pipeline as S4/S6.
+
+Slope model (fast engine):
+  L=  64 :  220287 avalanches  T_max=  69  Tc=  28.2  tau_T=0.576  (1.7s)
+  L= 128 :  217341 avalanches  T_max= 143  Tc=  53.3  tau_T=0.546  (2.6s)
+  L= 256 :  201966 avalanches  T_max= 318  Tc= 108.2  tau_T=0.570  (5.8s)
+  L= 512 :  125579 avalanches  T_max=1714  Tc= 262.2  tau_T=0.537  (21.7s)
+  -> tau_T(slope) = 0.558 (mean over L)   D_T(slope) = 1.068  (Tc ~ L^D_T)
+
+Canonical BTW (same pipeline):
+  L=  48 :   51815 avalanches  T_max= 461  Tc=  90.3  tau_T=1.139  (39.9s)
+  L=  64 :   73940 avalanches  T_max= 971  Tc= 135.4  tau_T=1.269  (91.8s)
+  L= 128 :   40546 avalanches  T_max=2567  Tc= 367.5  tau_T=1.262  (205.3s)
+  -> tau_T(BTW)   = 1.223 (mean over L)   D_T(BTW)   = 1.433
+
+[verdict]
+  tau_T(slope) = 0.56   tau_T(BTW) = 1.22   gap = 0.67
+  The duration exponents DIFFER well beyond the per-fit scatter (~0.03).
+  This CONFIRMS the S4 universality split with a convention-free measure,
+  removing the bond-vs-site size-counting caveat. S6 is now resolved.
+
+saved figures\sandpile_duration_fss.png
+
+S10 COMPLETE

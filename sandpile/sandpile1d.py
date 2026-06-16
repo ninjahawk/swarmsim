@@ -47,7 +47,7 @@ DEFAULTS = dict(N=100, eps=0.1, Zc=5.0)
 
 
 def run_sandpile(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
-                 record_series=True, S0=None, dissip=0.0):
+                 record_series=True, S0=None, dissip=0.0, forcing=None):
     """Run the 1-D sandpile for n_iter temporal iterations.
 
     Parameters
@@ -60,6 +60,12 @@ def run_sandpile(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
     record_series : if True, return the full mass and displaced-mass series.
     S0       : optional initial state array (length N); default is all zeros
                (eq 5.1). Used by the initial-condition-independence exercise.
+    forcing  : optional (nodes, sizes) pair of arrays. If given, quiet-step grains
+               are consumed from these streams in order instead of being drawn from
+               the RNG; the i-th quiet step adds sizes[i] at node nodes[i]. Used
+               only to drive this engine and the fast active-list engine with an
+               identical forcing sequence for a bit-level equivalence test
+               (additive; default None reproduces the original RNG path exactly).
 
     Returns
     -------
@@ -70,6 +76,14 @@ def run_sandpile(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
       'N','eps','Zc','n_iter','seed' : echoed parameters
     """
     rng = np.random.default_rng(seed)
+
+    # Optional externally-supplied forcing stream (for the equivalence test).
+    f_nodes = f_sizes = None
+    fi = 0
+    if forcing is not None:
+        f_nodes, f_sizes = forcing
+        f_nodes = np.asarray(f_nodes)
+        f_sizes = np.asarray(f_sizes, dtype=float)
 
     S = np.zeros(N) if S0 is None else np.array(S0, dtype=float)
     S[N - 1] = 0.0  # enforce open boundary on the supplied IC too
@@ -112,8 +126,12 @@ def run_sandpile(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
             dm = 0.25 * z[unstable].sum() # eq 5.7+5.10 displaced mass this iter
         else:
             # eq 5.2 slow forcing: one grain at a random node.
-            r = rng.integers(0, N)
-            S[r] += rng.uniform(0.0, eps)
+            if f_nodes is None:
+                r = rng.integers(0, N)
+                S[r] += rng.uniform(0.0, eps)
+            else:
+                S[f_nodes[fi]] += f_sizes[fi]
+                fi += 1
             dm = 0.0
 
         drained = S[N - 1] if dm > 0.0 else 0.0   # boundary evacuation this iter

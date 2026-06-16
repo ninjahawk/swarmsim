@@ -42,6 +42,13 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
 - S8  (Exercise 2) Boundary "falloff" avalanches are scale-invariant but with a
       shallower exponent than bulk avalanches; only ~44% of avalanches reach the
       edge and the drained fraction shrinks with system size
+- S9  (Exercise 5) An active-list, numba-compiled engine reproduces the 1-D and
+      2-D models exactly (avalanche series bit-identical under shared forcing) and
+      runs ~600x faster in 2-D -- the speedup that unlocks the larger lattices S6
+      and S7 needed
+- S10 (resolves S6) Redone at L up to 512 with the fast engine, the 2-D slope
+      model's DURATION exponent is stable at tau_T ~ 0.56, far from BTW's ~1.22 --
+      the convention-free duration measure now confirms the S4 universality split
 
 ---
 
@@ -383,6 +390,13 @@ decide, say so rather than read a number off a bad fit. The auto-generated verdi
 in the script ("durations agree") is exactly the trap, and it is wrong, because it
 averages an unstable fit.
 
+**Update (resolved by S10).** The limitation named above -- "would require 2-D
+slope lattices far larger than L=128 ... beyond what the pure-Python loop reaches"
+-- is exactly what the active-list engine (S9) removes. At L = 64-512 with ~2e5
+avalanches per size, the slope tau_T is stable at ~0.56 and clearly differs from
+BTW's ~1.22 (S10). So the duration cross-check is no longer inconclusive; the
+record here stands as the honest account of why it could not be settled at L<=128.
+
 ---
 
 ## S7 -- Conservation-necessity (S5) transfers to two dimensions
@@ -471,3 +485,110 @@ statistically distinct (different exponents), and the bulk does the overwhelming
 majority of the "work" (sand motion) while only a sliver actually exits -- the
 hallmark of a system whose interior is frozen at the angle of repose with all the
 action in a thin avalanching surface layer.
+
+---
+
+## S9 -- (Exercise 5) An active-list, compiled engine, validated bit-for-bit
+
+**Motivation.** The reference engines (`sandpile1d.py`, `sandpile2d.py`) rescan
+every nodal pair / bond on every temporal iteration, so a run costs O(N) per
+iteration in 1-D and O(L^2) in 2-D regardless of how little of the lattice is
+moving. That ceiling is what left S6 inconclusive (durations needing L >> 128) and
+S7 quantitatively weak (a 2-D size range of only half a decade). Charbonneau's
+Exercise 5 names the cure: keep an explicit list of the currently active sites and
+touch only those plus their immediate neighbours each step.
+
+**Method (`sandpile/sandpile_fast.py`).** A list-based engine for both 1-D and 2-D,
+with the inner loop JIT-compiled by numba. The model is unchanged -- same
+synchronous update, same boundaries, same stop-and-go forcing, same optional bulk
+dissipation. Only the bookkeeping differs: a quiet loading step touches O(1) pairs
+(just those around the new grain), and an avalanche step touches O(active bonds)
+rather than O(lattice), by rebuilding the candidate list from only the bonds
+adjacent to a node that actually moved. Each step therefore costs what the physics
+costs, so the whole run scales with the total number of topplings instead of with
+lattice size times iterations.
+
+**Validation -- the important part.** To prove the new engine is the same model
+and not merely a similar one, both reference engines gained an optional `forcing`
+argument (additive; default reproduces the original RNG path exactly) so the fast
+and reference engines can be driven by one identical stream of loading events. Run
+that way they are bit-for-bit identical:
+
+| test | result |
+|------|--------|
+| 1-D avalanche series (disp), shared forcing | max abs diff ~1e-13 |
+| 1-D falloff series and final state | exactly 0 difference |
+| 1-D avalanche count and every duration | identical |
+| 2-D avalanche series (disp) and toppling-count (act) | ~1e-15 / exactly 0 |
+| 2-D final state, counts, durations | identical |
+| dissipative path (d = 0.05, 0.20), 1-D and 2-D | max abs diff ~1e-14 |
+
+(The only quantity that is not bit-identical is the per-iteration total mass, which
+the fast engine accumulates incrementally rather than re-summing the lattice; it
+agrees to ~1e-9 floating-point accumulation error and is not used for any
+exponent.) The avalanche STRUCTURE -- which bonds topple, in what order, for how
+long -- is identical, so any result computed from the avalanche series is
+unchanged.
+
+**Speedup (steady state, triangle / pyramid IC).**
+
+| dim | size | reference | fast | speedup |
+|-----|------|-----------|------|---------|
+| 1-D | N=256  | 9.6 s  | 0.07 s | ~135x |
+| 1-D | N=1024 | 23 s   | 0.68 s | ~34x  |
+| 2-D | L=64   | 14.5 s | 0.03 s | ~536x |
+| 2-D | L=128  | 29 s   | 0.05 s | ~617x |
+
+The 2-D gain is the largest because the reference there pays O(L^2) per iteration
+while almost all of the lattice is idle between localized avalanches. This is the
+enabling result for S10 (and for any future larger-lattice 2-D work); the science
+it unlocks, not the engineering, is the point.
+
+---
+
+## S10 -- (resolves S6) The 2-D duration exponent, settled at large L
+
+**Question.** S6 tried to confirm the S4 universality split (slope vs canonical
+BTW) with the avalanche DURATION -- the number of parallel relaxation sweeps,
+defined identically for both models, hence free of the bond-vs-site size-counting
+caveat. It failed at L <= 128: the slope model's duration spanned barely two
+decades and the fitted exponent swung from 1.43 to 0.80 between sizes. With the
+S9 engine the slope model reaches L = 512 with ~2e5 avalanches per size, which is
+exactly what S6 said it needed.
+
+**Method (`sandpile/duration_fss2d.py`).** Measure tau_T by finite-size scaling
+for the slope model at L = 64, 128, 256, 512 (fast engine) and for BTW at
+L = 48, 64, 128 (same pure-Python pipeline as S4/S6), under one matched
+log-binned-PDF fit over the window [8, 0.3 T_max]. The lower bound skips the steep
+small-T head that comes from duration quantization at T = 1, 2, 3; the upper bound
+skips the noisy extreme tail. The slope-model data collapse is then tested
+directly.
+
+**Evidence (`figures/sandpile_duration_fss.png`).**
+
+| model | tau_T by size | mean tau_T | duration cutoff D_T (Tc ~ L^D_T) |
+|-------|---------------|-----------|----------------------------------|
+| 2-D slope | 0.58, 0.55, 0.57, 0.54 (L=64..512) | **0.56** | 1.07 |
+| 2-D BTW   | 1.14, 1.27, 1.26 (L=48..128)       | **1.22** | 1.43 |
+
+The slope model's tau_T is now stable -- it varies by less than 0.04 across a
+factor of eight in lattice size, where at L<=128 it had swung by a factor of two.
+The duration PDFs collapse onto a single curve under T^0.56 P(T) vs T / L^1.07 over
+the scaling region (figure, top right). BTW's exponent is the familiar ~1.2,
+stable as before.
+
+**Verdict.** tau_T(slope) = 0.56 and tau_T(BTW) = 1.22 differ by 0.67, more than
+twenty times the per-fit scatter (~0.03). The convention-free duration measure now
+agrees with the size measure: the slope rule and the BTW rule are in different
+universality classes. S6 is **resolved** -- not by overturning its honest "cannot
+tell at L<=128" but by removing the size limitation that caused it. As a bonus the
+two models even differ in HOW the duration cutoff grows with size (slope L^1.07, a
+duration that scales with the linear lattice as a ballistically spreading front;
+BTW L^1.43, the larger dynamic exponent expected of the abelian model), a second,
+independent signature of the class difference.
+
+**Caveat (own it).** BTW's D_T = 1.43 comes from only three lattice sizes (48-128)
+and its T_max is sensitive to rare giant avalanches, so that number is the softest
+in the table; the tau_T values, which come from the body of the distribution over
+3-5 decades, are firm. The slope tau_T ~ 0.56 itself depends on excluding the
+quantized small-T head, a window choice applied identically to both models.

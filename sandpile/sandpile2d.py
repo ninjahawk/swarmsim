@@ -56,14 +56,26 @@ def _apply_boundary(S):
 
 
 def run_sandpile2d(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
-                   record_series=True, S0=None, dissip=0.0):
+                   record_series=True, S0=None, dissip=0.0, forcing=None):
     """Run the 2-D bond-slope sandpile for n_iter temporal iterations.
 
     Returns a dict with 'mass', 'disp' series (if record_series), final 'S',
     and echoed parameters. Avalanche extraction uses the same measure_avalanches
     as the 1-D model (import from sandpile1d).
+
+    forcing : optional (rows, cols, sizes) arrays; if given, quiet-step grains are
+        consumed from these in order instead of drawn from the RNG. Additive --
+        default None reproduces the original RNG path exactly. Used only to drive
+        this engine and the fast active-list engine with an identical forcing
+        stream for the equivalence test.
     """
     rng = np.random.default_rng(seed)
+    f_rows = f_cols = f_sizes = None
+    fi = 0
+    if forcing is not None:
+        f_rows = np.asarray(forcing[0])
+        f_cols = np.asarray(forcing[1])
+        f_sizes = np.asarray(forcing[2], dtype=float)
     S = np.zeros((L, L)) if S0 is None else np.array(S0, dtype=float)
     _apply_boundary(S)
 
@@ -121,9 +133,13 @@ def run_sandpile2d(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
             S += move
         else:
             # slow forcing at a random interior site
-            r = rng.integers(1, L - 1)
-            c = rng.integers(1, L - 1)
-            S[r, c] += rng.uniform(0.0, eps)
+            if f_rows is None:
+                r = rng.integers(1, L - 1)
+                c = rng.integers(1, L - 1)
+                S[r, c] += rng.uniform(0.0, eps)
+            else:
+                S[f_rows[fi], f_cols[fi]] += f_sizes[fi]
+                fi += 1
             dm = 0.0
             ntop = 0
 

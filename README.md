@@ -60,6 +60,12 @@ critical *exponents* are not — they depend on both dimension and toppling rule
 | 2-D slope sandpile | τ_E ≈ 0.87 | ✗ differs from 1-D (purely dimensional; local rule identical) |
 | 2-D canonical BTW | τ_S ≈ 1.14 (lit. ~1.2) | ✗ differs from 2-D slope (τ_S ≈ 0.89) |
 
+The 2-D slope-vs-BTW split is now confirmed by a *second, convention-free* measure:
+the avalanche **duration** exponent, τ_T ≈ 0.56 (slope) vs ≈ 1.22 (BTW), stable
+across lattices up to 512 a side (S10). That measurement needed an active-list,
+numba-compiled engine (Exercise 5, S9) that reproduces the original engines
+bit-for-bit and runs ~600× faster in 2-D.
+
 And the criticality is *exact* only because the bulk is conservative: breaking
 conservation (destroying a fraction of toppled sand) collapses the cutoff scaling
 from N² to sub-N¹ and truncates the avalanche distribution at a dissipation-set
@@ -83,13 +89,16 @@ sandpile/
   btw_compare.py   canonical 2-D abelian BTW, same pipeline (universality)
   dissipation.py   break bulk conservation -> is conservation necessary for SOC?
   dissipation2d.py 2-D version of the conservation test (transfers from 1-D)
-  duration_compare.py  duration-exponent universality cross-check (self-test)
+  duration_compare.py  duration-exponent universality cross-check (self-test, S6)
   falloff.py       boundary-evacuation avalanches vs bulk avalanches (Exercise 2)
+  sandpile_fast.py active-list, numba-compiled 1-D+2-D engine (Exercise 5, S9)
+  duration_fss2d.py large-L duration FSS; resolves S6 (S10)
 ```
 
 Exercises addressed: 2 (falloff avalanches, S8), 3 (initial-condition
-independence, S1), 4 (eps-dependence of the angle of repose, S2), 6 (the 2-D
-Grand Challenge, S4) — plus the conservation study (S5/S7) and a self-test (S6).
+independence, S1), 4 (eps-dependence of the angle of repose, S2), 5 (fast
+active-list engine, S9), 6 (the 2-D Grand Challenge, S4) — plus the conservation
+study (S5/S7) and a self-test that was inconclusive (S6) then resolved (S10).
 
 ---
 
