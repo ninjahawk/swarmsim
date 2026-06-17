@@ -1,0 +1,12 @@
+E1: OFC Gutenberg-Richter validation (Charbonneau fig. 8.7)
+  N=128  delta_f=1e-4  open boundaries  (book slopes in parentheses)
+
+  alpha=0.10 : 3000000 events, maxE=380, meanE=3.1, fitted slope=-3.52 (book -3.34)
+  alpha=0.20 : 300000 events, maxE=7594, meanE=14.5, fitted slope=-1.87 (book -1.92)
+  alpha=0.25 : 30000 events, maxE=406996, meanE=4614.6, fitted slope=-1.19 (book -1.19)
+
+  Reproduces fig. 8.7: conservative alpha=0.25 gives the clean
+  Gutenberg-Richter power law (PDF slope ~ -1.2, cumulative b ~ 1); lowering
+  alpha steepens the slope and shrinks the cutoff, as bulk dissipation forces
+  the stationary state onto more frequent, smaller avalanches.
+  --> figures/ofc_gr.png

@@ -1,0 +1,15 @@
+E7: Grand Challenge -- OFC earthquake prediction (Exercise 6)
+  N=128  alpha=0.15  delta_f=1e-4.  Forecast large events (>20% of train max).
+  Timing tolerance +/-100 iter (book), amplitude tolerance +/-25%.
+
+  recorded 400000 events over 1161098 iterations (290.3 cycles at the recurrence period)
+  training: max E=517, 277 large events, recurrence cycle P=10400 iter (autocorr; book raw ~10960)
+           forcing-corrected period=3921 iter (book ~4002 at alpha=0.15); large-event spacing=1618
+  test: 428 large events to forecast
+
+  forecaster predicts 56 large events (one per ~10400-iter cycle) over 428 test events
+  window +/-100 iter: predictions=56  hits=14  false_alarms=42 | precision=0.25 (chance 0.15, skill 1.7x) | amplitude-correct=7/14
+  window +/-300 iter: predictions=56  hits=38  false_alarms=18 | precision=0.68 (chance 0.44, skill 1.5x) | amplitude-correct=19/38
+  largest events (top 10% by size, n=43): 4 caught within +/-300 iter (recall 0.09)
+
+  --> figures/ofc_predict.png

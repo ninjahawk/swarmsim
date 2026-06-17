@@ -1,0 +1,14 @@
+E3: OFC recurrent (quasi-periodic) avalanching and synchronization
+  N=128  delta_f=1e-4  open BC.  Recurrence period vs alpha (book in parens).
+
+  alpha=0.10 : raw period=12800 iter, forcing-corrected=6025 iter (book 6435), avalanching frac=0.53
+  alpha=0.15 : raw period=10600 iter, forcing-corrected=3982 iter (book 4002), avalanching frac=0.62
+  alpha=0.20 : raw period=7000 iter, forcing-corrected=2145 iter (book 2165), avalanching frac=0.69
+  alpha=0.25 : raw period=none iter, forcing-corrected=none iter (book none), avalanching frac=0.98
+  --> figures/ofc_quasiperiodic.png
+
+  The nonconservative runs show a clear recurrence period that shrinks with
+  alpha and vanishes at the conservative value 0.25 -- driven by spatial
+  domains of locked nodal values (figure ofc_domains) that collapse and
+  rebuild near-periodically.  This temporal structure is absent in the
+  chapter-5 slope sandpile, whose avalanches are uncorrelated in time.

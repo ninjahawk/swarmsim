@@ -1,0 +1,10 @@
+E4: OFC avalanche size-duration relation E(T) (Exercise 5)
+  E = total topplings, T = relaxation sweeps; fit E ~ T^gamma.
+
+  alpha=0.15 : maxT=57  maxE=517  E ~ T^1.47
+  alpha=0.20 : maxT=317  maxE=7594  E ~ T^1.64
+  alpha=0.25 : maxT=1642  maxE=406996  E ~ T^1.89
+
+  A power-law E ~ T^gamma with gamma > 1 reflects a compact spreading front:
+  the toppled area accumulates faster than the avalanche's lifetime.
+  --> figures/ofc_et.png

@@ -1,0 +1,35 @@
+E2: OFC finite-size scaling and the conservation test (Exercise 2; cf. S5/S7)
+  cutoff proxy = <E^2>/<E>; does it grow with L (critical) or saturate (subcritical)?
+
+  alpha=0.10 L= 16 : <E>=     1.5  cutoff<E2>/<E>=      3.4  maxE=      52
+  alpha=0.10 L= 24 : <E>=     1.5  cutoff<E2>/<E>=      4.0  maxE=      64
+  alpha=0.10 L= 32 : <E>=     1.4  cutoff<E2>/<E>=      2.9  maxE=      68
+  alpha=0.10 L= 48 : <E>=     1.4  cutoff<E2>/<E>=      2.5  maxE=      50
+  alpha=0.10 L= 64 : <E>=     1.5  cutoff<E2>/<E>=      2.5  maxE=      49
+  alpha=0.10 L= 96 : <E>=     2.0  cutoff<E2>/<E>=      3.1  maxE=      41
+
+  alpha=0.20 L= 16 : <E>=     4.0  cutoff<E2>/<E>=     19.8  maxE=     129
+  alpha=0.20 L= 24 : <E>=     4.8  cutoff<E2>/<E>=     39.7  maxE=     319
+  alpha=0.20 L= 32 : <E>=     5.5  cutoff<E2>/<E>=     65.7  maxE=     480
+  alpha=0.20 L= 48 : <E>=     6.8  cutoff<E2>/<E>=    203.8  maxE=    1511
+  alpha=0.20 L= 64 : <E>=     8.0  cutoff<E2>/<E>=    210.6  maxE=    1617
+  alpha=0.20 L= 96 : <E>=    11.6  cutoff<E2>/<E>=    683.1  maxE=    5242
+
+  alpha=0.25 L= 16 : <E>=    23.5  cutoff<E2>/<E>=    102.2  maxE=     453
+  alpha=0.25 L= 24 : <E>=    65.2  cutoff<E2>/<E>=    442.2  maxE=    2050
+  alpha=0.25 L= 32 : <E>=   131.3  cutoff<E2>/<E>=   1181.0  maxE=    4358
+  alpha=0.25 L= 48 : <E>=   352.6  cutoff<E2>/<E>=   4176.0  maxE=   16623
+  alpha=0.25 L= 64 : <E>=   705.1  cutoff<E2>/<E>=  10038.3  maxE=   40516
+  alpha=0.25 L= 96 : <E>=  2017.0  cutoff<E2>/<E>=  31668.4  maxE=  124225
+
+  cutoff scaling exponent D (cutoff ~ L^D):
+    alpha=0.10 : D=-0.15  -> SATURATING (subcritical)
+    alpha=0.20 : D=1.95  -> CRITICAL-like (grows ~L^2)
+    alpha=0.25 : D=3.19  -> CRITICAL-like (grows ~L^2)
+
+  --> figures/ofc_fss.png
+
+  Interpretation: a cutoff that grows as ~L^2 means avalanches are limited only
+  by the system (true criticality); a saturating cutoff means a dissipation-set
+  characteristic size below L (subcritical), exactly the S5 signature transferred
+  to the canonical earthquake model.

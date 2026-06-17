@@ -1,0 +1,12 @@
+E6 (self-test): does stochastic alpha in [0.14,0.16] break OFC quasi-periodicity?
+  N=128  delta_f=1e-4.  Compare fixed alpha=0.15 to per-topple random alpha.
+  Prediction: synchronization needs exact equality, so jitter should suppress the peak.
+
+  fixed alpha=0.15     : recurrence peak at 10200 iter, autocorr strength=0.439, maxE=433
+  alpha~U[0.14,0.16]   : recurrence peak at 11000 iter, autocorr strength=0.193, maxE=252
+
+  -> CONFIRMED: the recurrence peak collapses under stochastic alpha
+     (strength %.3f -> %.3f, %.0f%% of the fixed-alpha peak). Synchronization
+     requires exact equality of neighbouring nodal values, which per-topple alpha
+     jitter destroys; the avalanching loses its periodic component.
+  --> figures/ofc_stochastic_alpha.png

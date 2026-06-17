@@ -102,6 +102,62 @@ study (S5/S7) and a self-test that was inconclusive (S6) then resolved (S10).
 
 ---
 
+## Third chapter — Earthquakes (the Olami–Feder–Christensen model)
+
+A new topic (Charbonneau Ch. 8), the direct continuation of the sandpile
+conservation thread. Code in [`earthquake/`](earthquake/), findings in
+[`findings_earthquake.md`](findings_earthquake.md) (E-series). The OFC model is a 2-D
+lattice of "force" values driven uniformly until a node hits threshold and topples,
+passing a fraction α to each neighbor (0 ≤ α ≤ 0.25). At **α = 0.25 redistribution is
+conservative**; for **α < 0.25 the bulk dissipates** (1−4α) per topple — so α is a
+continuous knob on the exact ingredient (bulk conservation) that finding S5 singled
+out for SOC.
+
+**Headline result:** OFC reproduces the Gutenberg–Richter law, and conservation tunes
+criticality. The avalanche-size cutoff **grows with system size when (near‑)conservative
+and saturates to a dissipation‑set scale when not** — the S5 result made quantitative on
+the canonical earthquake model. And unlike the sandpile, the nonconservative model is
+deterministic and develops **synchronized domains** that drive *quasi‑periodic* recurrent
+avalanching — temporal structure the sandpile entirely lacks.
+
+| α (conservation) | PDF slope (book) | cutoff vs L | regime |
+|---|---|---|---|
+| 0.25 (conservative) | −1.19 (−1.19) | grows steeply (D ≈ 3.2) | **critical** |
+| 0.20 | −1.87 (−1.92) | ≈ L² (D ≈ 1.95) | critical‑like |
+| 0.10 (60% dissipated) | −3.52 (−3.34) | flat (D ≈ −0.15) | **subcritical** |
+
+Validated against the chapter: the fig.-8.7 PDF slopes (all three match), the
+fig.-8.6 synchronization domains forming from a random start, the fig.-8.4 recurrent
+avalanching (raw period ~10,200 at α=0.15, matching the book's ~10,960; vanishing at
+the conservative α=0.25). The size–duration relation steepens with conservation
+(E ~ T^γ, γ = 1.47 → 1.89 as α: 0.15 → 0.25). A self-test (Exercise 4) confirms the
+quasi‑periodicity is fragile: a ±0.01 per‑topple jitter in α halves the recurrence
+peak, because synchronization needs the redistribution to preserve equality exactly.
+
+**Grand Challenge (earthquake prediction):** a forecaster that phase-locks to the
+recurrence rhythm beats chance only modestly (1.5–1.7×) and **misses the largest
+events** (top‑decile recall 0.09) — reproducing, in a fully-known noise-free model, the
+book's point that large events sit in an unpredictable tail.
+
+```
+earthquake/
+  ofc.py                core OFC model + 6 validation self-tests (open/periodic BC,
+                        per-topple stochastic α, Exercise-3 skip-forcing, bit-identical)
+  ofc_gr.py             E1: Gutenberg–Richter validation (fig. 8.7)
+  ofc_fss.py            E2: finite-size scaling / conservation test (cf. S5/S7)
+  ofc_quasiperiodic.py  E3: recurrence period + synchronization domains (figs. 8.4/8.6)
+  ofc_et.py             E4: avalanche size–duration relation (Exercise 5)
+  ofc_speedup.py        E5: forcing skip-ahead speedup (Exercise 3)
+  ofc_stochastic_alpha.py  E6: self-test — does stochastic α break periodicity? (Ex. 4)
+  ofc_predict.py        E7: Grand Challenge — earthquake prediction (Exercise 6)
+```
+
+Exercises addressed: 2 (finite-size scaling, E2), 3 (skip-forcing, E5), 4 (stochastic-α
+self-test, E6), 5 (size–duration relation, E4), 6 (the Grand Challenge prediction, E7) —
+plus the validation (E1) and the recurrence/synchronization study (E3).
+
+---
+
 ## Model
 
 N agents move on a periodic unit square under four forces each timestep:

@@ -1,0 +1,11 @@
+E5: OFC forcing skip-ahead speedup (Exercise 3)
+  N=48, alpha=0.20; skip-ahead vs naive one-step forcing, identical statistics.
+
+  delta_f     naive(s)   skip(s)   speedup   identical
+  1e-03        0.42      0.40       1.1x   True
+  1e-04        0.23      0.21       1.1x   True
+  1e-05        0.22      0.11       2.0x   True
+
+  The speedup grows as delta_f decreases, because the skip collapses the
+  (Fc - max F)/delta_f idle forcing iterations between avalanches into a single
+  array add.  Avalanche-size series are bit-identical, so no physics is changed.
