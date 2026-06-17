@@ -128,8 +128,8 @@ avalanching — temporal structure the sandpile entirely lacks.
 
 Validated against the chapter: the fig.-8.7 PDF slopes (all three match), the
 fig.-8.6 synchronization domains forming from a random start, the fig.-8.4 recurrent
-avalanching (raw period ~10,200 at α=0.15, matching the book's ~10,960; vanishing at
-the conservative α=0.25). The size–duration relation steepens with conservation
+avalanching (raw period ~10,600 at α=0.15, matching the book's ~10,960; forcing-corrected
+~3,982 vs the book's 4,002; vanishing at the conservative α=0.25). The size–duration relation steepens with conservation
 (E ~ T^γ, γ = 1.47 → 1.89 as α: 0.15 → 0.25). A self-test (Exercise 4) confirms the
 quasi‑periodicity is fragile: a ±0.01 per‑topple jitter in α halves the recurrence
 peak, because synchronization needs the redistribution to preserve equality exactly.
