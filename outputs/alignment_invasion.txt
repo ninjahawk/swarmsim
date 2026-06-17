@@ -1,0 +1,33 @@
+Can the F93 alignment brake be overcome? (capture/removal, predictive predator)
+  N=150  3 seeds  low alpha=0.20  high alpha=2.00  high-alignment threshold alpha>1.00
+
+Exp1 -- INVASION: seed a fraction f of high-alignment agents (alpha=2.0) into a low
+  (alpha=0.2) flock. Does tight flocking invade and spread, or get diluted? (150 tu)
+
+  f=0.05  high-alignment frac 0.05 -> 0.00 (DILUTED/lost)  mean alpha_end=0.20  Phi=0.40  captures=544
+  f=0.10  high-alignment frac 0.10 -> 0.00 (DILUTED/lost)  mean alpha_end=0.19  Phi=0.42  captures=632
+  f=0.20  high-alignment frac 0.20 -> 0.02 (DILUTED/lost)  mean alpha_end=0.26  Phi=0.44  captures=649
+  f=0.50  high-alignment frac 0.50 -> 0.45 (DILUTED/lost)  mean alpha_end=1.01  Phi=0.65  captures=610
+
+Exp2 -- MUTATION STEP: from a uniform alpha0=0.20 start, does a bigger mutation step
+  let the population jump to the high-alignment basin (alpha>1)? (200 tu)
+
+  mut_sigma=0.10  mean alpha_end=0.189  reached alpha=1 in 0% of seeds  Phi_end=0.40
+  mut_sigma=0.30  mean alpha_end=0.268  reached alpha=1 in 0% of seeds  Phi_end=0.36
+  mut_sigma=0.60  mean alpha_end=0.446  reached alpha=1 in 0% of seeds  Phi_end=0.41
+  mut_sigma=1.00  mean alpha_end=0.741  reached alpha=1 in 0% of seeds  Phi_end=0.44
+
+  -> INVASION FAILS, unlike the escape weight (F88). A seeded high-alignment minority does NOT
+     spread: at f=0.05-0.20 it is diluted back to the low basin (mean returns to ~0.2), and even
+     at f=0.50 it only just HOLDS (frac ~0.45, mean ~1.0 at the basin boundary, Phi~0.65) -- the
+     protective ESS (alpha=2, Phi=1.0, ~6 captures) never forms; captures stay ~550-650 throughout.
+     Mechanism: alignment is a MUTUAL coupling, not a shared public good like escape. A high-alpha
+     agent aligns hard to neighbours who do not reciprocate, so a minority cannot nucleate a
+     coherent core -- it is dragged by the indifferent majority. The protective benefit of tight
+     flocking is a COORDINATION/quorum trait that only appears near a majority, which a founder
+     group cannot reach. So the F93 alignment brake blocks BOTH origination and invasion -- it is
+     STRONGER than the F88 escape brake, precisely because alignment is not a free-rideable signal.
+  -> No tested mutation step reliably reached the high basin within 200 tu (the alignment basin
+     boundary near alpha~1.5 is steep; a single-agent mutation cannot drag the population mean).
+
+  --> figures/alignment_invasion_1.png

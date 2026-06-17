@@ -1,0 +1,13 @@
+Evolving the ALIGNMENT strength alpha under capture/removal predation (predictive predator)
+  N=150  n_pred=6  lead=2.0  200 tu  3 seeds  no escape force (w=0); alpha is the heritable trait
+  Question: does predation select for MORE alignment (tight flock) or LESS (scatter/dilution)?
+
+  alpha0=0.20 -> steady mean alpha=0.19 (+/-0.03)  Phi=0.40  captures=777
+  alpha0=0.50 -> steady mean alpha=0.39 (+/-0.03)  Phi=0.53  captures=957
+  alpha0=1.00 -> steady mean alpha=0.85 (+/-0.07)  Phi=0.55  captures=1391
+  alpha0=2.00 -> steady mean alpha=2.00 (+/-0.00)  Phi=1.00  captures=6
+
+  -> Outcome depends on the start (low->0.19, high->2.00): history-dependent, like the escape
+     weight (F87 hysteresis). See the trajectory figure.
+
+  --> figures/evolve_alignment_1.png

@@ -46,17 +46,30 @@ ALPHA0_VALUES = [0.2, 0.5, 1.0, 2.0]
 N_SEEDS = 3
 
 
-def run(alpha0, seed):
+def run(alpha0, seed, alpha_init=None, mut_sigma=None, hi_thresh=1.0):
+    """Evolve heritable alignment strength under capture/removal predation.
+
+    Additive options (defaults reproduce the original sweep exactly):
+      alpha_init -- seeded per-agent alpha array (overrides the uniform alpha0 start),
+                    used by the invasion experiment (cf F88).
+      mut_sigma  -- per-capture mutation step override (default MUT_SIGMA).
+      hi_thresh  -- an agent counts as 'high-alignment' if alpha > this; the returned
+                    frac_hi tracks that fraction (the alpha-analog of F88's escaper frac).
+    """
     rng = np.random.RandomState(seed)
     p = BASE
     N, dt = p['N'], p['dt']
     r0, eps, rf = p['r0'], p['eps'], p['rf']
     v0, mu, ramp = p['v0'], p['mu'], p['ramp']
+    ms = MUT_SIGMA if mut_sigma is None else mut_sigma
 
     x = np.zeros(2 * N)
     x[:N] = rng.uniform(0., 1., N); x[N:] = rng.uniform(0., 1., N)
     vx = rng.uniform(-1., 1., N) * v0; vy = rng.uniform(-1., 1., N) * v0
-    alpha = np.full(N, float(alpha0))              # heritable alignment strength
+    if alpha_init is not None:
+        alpha = np.asarray(alpha_init, dtype=float).copy()   # seeded minority start
+    else:
+        alpha = np.full(N, float(alpha0))          # heritable alignment strength
 
     pred_x = rng.uniform(0., 1., N_PRED); pred_y = rng.uniform(0., 1., N_PRED)
     pred_vx = np.zeros(N_PRED); pred_vy = np.zeros(N_PRED)
@@ -65,7 +78,7 @@ def run(alpha0, seed):
 
     rb = max(r0, rf); p_capture = CAPTURE_RATE * dt
     n_total = N_WARMUP + N_EVOLVE
-    t_rec, a_mean, a_std, phi_rec, cap_rec = [], [], [], [], []
+    t_rec, a_mean, a_std, phi_rec, cap_rec, fhi_rec = [], [], [], [], [], []
     cum = 0
 
     for i in range(n_total):
@@ -128,7 +141,7 @@ def run(alpha0, seed):
             cap_idx = np.where(captured)[0]; surv_idx = np.where(~captured)[0]
             if cap_idx.size > 0 and surv_idx.size > 0:
                 parents = rng.choice(surv_idx, size=cap_idx.size, replace=True)
-                alpha[cap_idx] = np.clip(alpha[parents] + rng.normal(0., MUT_SIGMA, cap_idx.size), A_MIN, A_MAX)
+                alpha[cap_idx] = np.clip(alpha[parents] + rng.normal(0., ms, cap_idx.size), A_MIN, A_MAX)
                 x[cap_idx]   = (x[parents] + rng.uniform(-JITTER, JITTER, cap_idx.size)) % 1.
                 x[N+cap_idx] = (x[N+parents] + rng.uniform(-JITTER, JITTER, cap_idx.size)) % 1.
                 vx[cap_idx] = vx[parents]; vy[cap_idx] = vy[parents]
@@ -138,9 +151,11 @@ def run(alpha0, seed):
                 t_rec.append((i - N_WARMUP) * dt)
                 a_mean.append(alpha.mean()); a_std.append(alpha.std())
                 phi_rec.append(order_parameter(vx, vy)); cap_rec.append(cum)
+                fhi_rec.append(float(np.mean(alpha > hi_thresh)))
 
     return dict(t=np.array(t_rec), a_mean=np.array(a_mean), a_std=np.array(a_std),
                 phi=np.array(phi_rec), cum_cap=np.array(cap_rec),
+                frac_hi=np.array(fhi_rec),
                 a_final=alpha.copy(), alpha0=alpha0, seed=seed)
 
 

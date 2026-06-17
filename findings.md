@@ -4108,8 +4108,76 @@ viable only where escaping is essentially free. This sharpens the co-adaptation 
 and, under an explicit cost, precarious. Caveats: 2 seeds, one predator regime; the metabolic-cost scale is
 relative to the (diffuse, intermittent) predation hazard of this setup. evolution/escape_energy.py
 
+## Finding 93: A DIFFERENT heritable trait -- the alignment strength alpha under capture/removal predation -- is BISTABLE, an origination brake mirroring F87: high alignment is a protective ESS but does not evolve from a low-alignment start
+
+**Setup.** The co-adaptation thread so far evolved the collective-escape WEIGHT (F87-F92). This evolves the
+flocking force itself: each prey carries a heritable alignment strength alpha_i (the weight on the
+velocity-alignment force), with NO escape force at all (w=0), under the SAME capture/removal model and the
+SAME validated per-step physics -- only the heritable trait changes. Six predictive predators (F66, lead 2,
+slow-prey regime); a prey within the kill radius is captured at a fixed hazard and replaced by a mutated
+clone of a random survivor; N=150 fixed. The two selection pressures are OPPOSED and it is not obvious a
+priori which wins: a tight flock (high alpha) moves coherently and can outrun the predictive trap, but
+presents many prey at once where the predator reaches it; a loose swarm (low alpha) dilutes each predator's
+local catch (the F7/F11 effect) but loses the coherence the alignment force provides. Initial alpha0 swept
+{0.2, 0.5, 1.0, 2.0}, 3 seeds, 200 tu. evolution/evolve_alignment.py.
+
+**Result.** The outcome is sharply BISTABLE / history-dependent, exactly like the F87 escape-weight brake. A
+high-alignment start is a strong protective ESS: alpha0=2.0 stays at 2.00 (+/-0.00) with Phi=1.00 and only 6
+captures over the whole run -- a tight, coherent flock evades the predictive encircler almost completely.
+But alignment does NOT climb from a low start: alpha0=0.2 -> 0.19 (Phi=0.40, 777 captures), alpha0=0.5 ->
+0.39 (Phi=0.53, 957 captures), and tellingly alpha0=1.0 drifts DOWN to 0.85 (Phi=0.55, 1391 captures) rather
+than up. The capture toll is ~100-230x heavier at the low starts than at the protective ESS. So selection
+plainly favours the high-alignment state (far fewer deaths there), yet the population cannot reach it from
+below -- the basin boundary sits somewhere near alpha~1.5, above which a flock is tight enough to evade and
+below which it is not, and from any sub-boundary start the mean erodes downward.
+
+**Implication.** High alignment is an evolutionary attractor that the population cannot reach de novo -- an
+origination brake directly parallel to F87's escape-weight valley, but for a completely different trait and
+force. It extends the central co-adaptation thesis: a collective defence that depends on the WHOLE group
+acting together (here, coherent flocking; there, committed escape) is evolutionarily hard to originate,
+because intermediate commitment is selected against or simply ineffective, so the protective state is stable
+once present but unreachable from the disordered start. The natural follow-up (F94) asks whether a seeded
+high-alignment minority can invade, exactly as F88 asked for escape. Caveats: 3 seeds, one predator regime,
+the basin boundary located only coarsely between alpha0=1.0 (drifts down) and 2.0 (stable).
+evolution/evolve_alignment.py
+
+## Finding 94: Unlike the escape weight (F88), a seeded high-alignment minority does NOT invade -- the F93 alignment brake blocks BOTH origination and invasion, because alignment is a mutual coupling (a coordination/quorum trait), not a free-rideable shared signal
+
+**Setup.** The F88 follow-up to F87, repeated for the alignment trait, with the SAME model and physics --
+only the initial condition and mutation step change. Exp1 (INVASION): seed a fraction f {0.05, 0.10, 0.20,
+0.50} of the population at high alignment (alpha=2) in an otherwise low-alignment flock (alpha=0.2); does
+tight flocking spread or get diluted? Exp2 (MUTATION STEP): from a uniform low start (alpha0=0.2), does a
+larger per-capture mutation step {0.10, 0.30, 0.60, 1.00} let the population jump to the high basin, rather
+than stalling as in F93? 3 seeds; Exp1 150 tu, Exp2 200 tu. evolution/alignment_invasion.py (reuses
+evolve_alignment.run with an additive alpha_init / mut_sigma override).
+
+**Result.** Invasion FAILS at every tested fraction -- the OPPOSITE of F88, where a 5% escaper seed spread
+and established. The seeded high-alignment minority is diluted away: f=0.05 and f=0.10 collapse to high-frac
+~0.00 (mean returns to ~0.19-0.20), f=0.20 to ~0.02. Even f=0.50 merely HOLDS, slowly eroding (high-frac
+0.50 -> 0.45) to a flock-mean alpha~1.01 right at the basin boundary with Phi only 0.65 -- the protective
+ESS (alpha=2, Phi=1.0, ~6 captures) never forms, and the capture toll stays high (~544-649) across all f,
+never falling toward the ~6 of the pure high-alignment flock. Exp2 confirms the brake from the other side:
+no mutation step reaches the high basin within 200 tu (sigma=0.10 -> mean 0.19, 0.30 -> 0.27, 0.60 -> 0.45,
+1.00 -> 0.74; reached alpha=1 in 0% of seeds at every sigma), unlike F88 where sigma=0.3-0.6 cleared the
+escape valley in 100% of seeds.
+
+**Implication.** The F93 alignment brake is STRONGER than the F88 escape brake: it blocks invasion and large
+mutational jumps, not only de-novo origination. The reason is a clean mechanistic CONTRAST that sharpens the
+shared-signal theme running through F70/F72/F88. Collective escape is a public good carried by a SHARED
+signal -- once enough agents flee the common predator centroid the whole flock outruns the trap, so a
+minority's contribution protects everyone and a free-rider equilibrium spreads it (F88). Alignment is
+instead a MUTUAL, reciprocal coupling: a high-alpha agent aligns hard to its neighbours, but if those
+neighbours are low-alpha they do not align back, so the minority cannot nucleate a coherent core -- it is
+dragged around by the indifferent majority rather than imposing order on it. The protective benefit of tight
+flocking is therefore a COORDINATION / quorum trait that only materialises near a majority (it begins to
+show only at f=0.5, mean~1.0, Phi 0.65), a threshold a founder group cannot reach, and below which the trait
+is selectively diluted. So whether a group-defence trait can invade depends on whether it is free-rideable:
+escape (a shared broadcast) invades from a tiny seed; alignment (a reciprocal coupling) cannot. Caveats: 3
+seeds, one predator regime; the f=0.5 "holds" is a slow erosion over 150 tu, possibly a longer-time decline.
+evolution/alignment_invasion.py
+
 ## Open Questions / Next Directions
-*(updated through F92.)*
+*(updated through F94.)*
 
 All primary threads are CLOSED:
 - **Predator strategy (2D + 3D)**: F5-F16, F19-F35, F43-F45, F49, F53. 3D encirclement
@@ -4166,9 +4234,13 @@ Remaining exploratory directions:
    optimum, correcting F90's evolved-lead-~3-overshoot (a small-pop selection artifact). F92
    (energy-budget robustness): the origination BRAKE is model-independent, but F87's "escape free/
    stable once present" is model-DEPENDENT -- any appreciable metabolic cost collapses even
-   established escape. Remaining: (a) proximity-survival fitness as a third robustness check
-   (student-owned model choice); (b) heritable alignment strength alpha under predation; (c)
-   co-evolve a 2-trait predator (lead + aggression). The evolution/ scripts + harness support all.
+   established escape. F93: a DIFFERENT heritable trait, the alignment strength alpha, is also
+   BISTABLE under predation -- high alignment is a protective ESS but does not evolve from low (an
+   origination brake mirroring F87). F94: but unlike escape (F88), a seeded high-alignment minority
+   does NOT invade -- alignment is a mutual coupling (a coordination/quorum trait), not a free-rideable
+   shared signal, so its brake blocks BOTH origination and invasion. Remaining: (a) proximity-survival
+   fitness as a third robustness check (student-owned model choice); (b) co-evolve a 2-trait predator
+   (lead + aggression). The evolution/ scripts + harness support both.
 2. **Agent memory beyond fatigue:** learned predator avoidance with internal state
    (e.g. a per-agent threat estimate that decays), distinct from the static fatigue of F53.
 3. **Robust estimation against the F83 floor:** can agents detect and down-weight
