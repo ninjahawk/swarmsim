@@ -229,7 +229,8 @@ def run_sandpile_fast(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
 @njit(cache=True)
 def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                 use_forcing, f_rows, f_cols, f_sizes,
-                record, mass_out, disp_out, act_out):
+                record, mass_out, disp_out, act_out,
+                track_area, area_out):
     """JIT inner loop for the 2-D bond-slope sandpile (active-list).
 
     Bonds are encoded as a single integer id over [0, 2*L*L):
@@ -239,6 +240,15 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
     re-examined after the node moves, so each step costs O(active bonds). The model
     (synchronous bond toppling, four open edges, interior forcing, optional bulk
     dissipation) is identical to sandpile2d.run_sandpile2d.
+
+    track_area (additive, default off via the wrapper): also record per iteration
+    the number of bonds toppling for the FIRST time in the current avalanche, so
+    that summing area_out over an avalanche's iterations gives its AREA = number
+    of DISTINCT toppled bonds. Size (sum of act) counts every toppling; a bond can
+    topple many times, so size >= area and their ratio is the mean topplings-per-
+    bond. Area is bounded by the lattice and, unlike size/energy here, is not
+    cutoff-dominated, so its moment scaling is the clean observable (cf. S11/S12).
+    The conservative and dissipative dynamics are untouched -- this only counts.
     """
     L = S.shape[0]
     LL = L * L
@@ -251,6 +261,13 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
     nxt = np.empty(2 * LL, np.int64)
     in_nxt = np.zeros(2 * LL, np.uint8)
     ncur = 0
+
+    # area bookkeeping: which bonds have toppled in the CURRENT avalanche, and a
+    # list of them so the flags can be cleared in O(area) when the avalanche ends.
+    na = 2 * LL if track_area else 1
+    seen = np.zeros(na, np.uint8)
+    seen_list = np.empty(na, np.int64)
+    n_seen = 0
 
     mass = S.sum()
     fi = 0
@@ -271,6 +288,12 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
             mass += g
             dm = 0.0
             ntop = 0
+            new_area = 0
+            # a quiet step ends any avalanche: clear the per-avalanche seen flags
+            if track_area and n_seen > 0:
+                for ii in range(n_seen):
+                    seen[seen_list[ii]] = 0
+                n_seen = 0
             # only the four bonds around (r, c) can have become unstable
             ncnt = 0
             for b in range(4):
@@ -308,6 +331,7 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
             nt = 0
             dm = 0.0
             ntop = 0
+            new_area = 0
             for ii in range(ncur):
                 bid = cur[ii]
                 if bid < LL:
@@ -326,6 +350,11 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                     continue
                 dm += 0.25 * z
                 ntop += 1
+                if track_area and seen[bid] == 0:
+                    seen[bid] = 1
+                    seen_list[n_seen] = bid
+                    n_seen += 1
+                    new_area += 1
                 if dissip == 0.0:
                     cc = d * 0.25
                     to_a, to_b = cc, -cc
@@ -405,15 +434,23 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
             mass_out[n] = mass
             disp_out[n] = dm
             act_out[n] = ntop
+            if track_area:
+                area_out[n] = new_area
 
     return mass
 
 
 def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
-                        record_series=True, S0=None, dissip=0.0, forcing=None):
+                        record_series=True, S0=None, dissip=0.0, forcing=None,
+                        track_area=False):
     """Active-list re-implementation of sandpile2d.run_sandpile2d (same signature,
     model, and return dict, including the 'act' bond-toppling-count series).
-    Faster for large L because each step costs O(active bonds) not O(L^2)."""
+    Faster for large L because each step costs O(active bonds) not O(L^2).
+
+    track_area (additive, default off so the result dict is unchanged for existing
+    callers): also return an 'area' per-iteration series of first-time bond
+    topplings; summed over an avalanche it gives the number of DISTINCT toppled
+    bonds (the avalanche footprint). Used by the area moment analysis (S13)."""
     S = np.zeros((L, L)) if S0 is None else np.array(S0, dtype=float)
     S[0, :] = S[-1, :] = S[:, 0] = S[:, -1] = 0.0
 
@@ -432,20 +469,25 @@ def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
         mass_out = np.zeros(n_iter)
         disp_out = np.zeros(n_iter)
         act_out = np.zeros(n_iter)
+        area_out = np.zeros(n_iter) if track_area else np.zeros(1)
     else:
         mass_out = np.zeros(1)
         disp_out = np.zeros(1)
         act_out = np.zeros(1)
+        area_out = np.zeros(1)
 
     _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                 use_forcing, f_rows, f_cols, f_sizes,
-                record_series, mass_out, disp_out, act_out)
+                record_series, mass_out, disp_out, act_out,
+                track_area, area_out)
 
     out = dict(S=S, L=L, eps=eps, Zc=Zc, n_iter=n_iter, seed=seed)
     if record_series:
         out['mass'] = mass_out
         out['disp'] = disp_out
         out['act'] = act_out
+        if track_area:
+            out['area'] = area_out
     return out
 
 
@@ -526,6 +568,103 @@ def _test_equivalence2d():
     print("  2-D equivalence OK")
 
 
+def _brute_area2d(L, eps, Zc, n_iter, forcing):
+    """Independent full-scan reference (mirrors sandpile2d.run_sandpile2d) that
+    additionally records, per avalanche, the set of DISTINCT bonds that toppled,
+    using the SAME bond encoding as the fast engine. Returns (disp, act, area)
+    per-iteration arrays, with area[n] = number of bonds toppling for the first
+    time this avalanche on iteration n (so summing over an avalanche = its area)."""
+    f_rows, f_cols, f_sizes = forcing
+    LL = L * L
+    S = pyramid_ic(L, 0.9 * Zc)
+    disp = np.zeros(n_iter); act = np.zeros(n_iter); area = np.zeros(n_iter)
+    seen = set()
+    fi = 0
+    for n in range(n_iter):
+        dx = S[1:, :] - S[:-1, :]
+        dy = S[:, 1:] - S[:, :-1]
+        ux = np.abs(dx) >= Zc
+        uy = np.abs(dy) >= Zc
+        if ux.any() or uy.any():
+            move = np.zeros((L, L))
+            cx = np.where(ux, dx * 0.25, 0.0)
+            move[:-1, :] += cx; move[1:, :] -= cx
+            cy = np.where(uy, dy * 0.25, 0.0)
+            move[:, :-1] += cy; move[:, 1:] -= cy
+            S += move
+            disp[n] = np.abs(cx).sum() + np.abs(cy).sum()
+            act[n] = int(ux.sum()) + int(uy.sum())
+            # distinct-bond bookkeeping with the fast engine's id convention
+            new = 0
+            xi, xj = np.nonzero(ux)              # x-bond row i (0..L-2), col j
+            for i, j in zip(xi, xj):
+                bid = i * L + j
+                if bid not in seen:
+                    seen.add(bid); new += 1
+            yi, yj = np.nonzero(uy)              # y-bond row i, col j (0..L-2)
+            for i, j in zip(yi, yj):
+                bid = LL + i * L + j
+                if bid not in seen:
+                    seen.add(bid); new += 1
+            area[n] = new
+        else:
+            seen.clear()                          # avalanche ended -> reset
+            S[f_rows[fi], f_cols[fi]] += f_sizes[fi]
+            fi += 1
+        S[0, :] = S[-1, :] = S[:, 0] = S[:, -1] = 0.0
+    return disp, act, area
+
+
+def _group_sum(disp, x):
+    """Sum the parallel series x over each avalanche (maximal run of disp>0)."""
+    active = disp > 0.0
+    if not active.any():
+        return np.array([])
+    a = active.astype(np.int8)
+    edges = np.diff(a)
+    starts = np.flatnonzero(edges == 1) + 1
+    ends = np.flatnonzero(edges == -1) + 1
+    if active[0]:
+        starts = np.r_[0, starts]
+    if active[-1]:
+        ends = np.r_[ends, active.size]
+    return np.array([x[s:e].sum() for s, e in zip(starts, ends)])
+
+
+def _test_area2d():
+    """Validate the 2-D area counter: (1) tracking area must not perturb the
+    dynamics (disp/act identical with track_area on vs off), and (2) the
+    per-avalanche area must match an independent full-scan distinct-bond recount."""
+    print("self-test: 2-D avalanche AREA (distinct toppled bonds)")
+    Zc, eps = 5.0, 0.1
+    for L, n_iter in ((16, 150_000), (32, 250_000)):
+        forcing = _make_forcing2d(L, n_iter, eps, seed=9)
+        S0 = pyramid_ic(L, 0.9 * Zc)
+        off = run_sandpile2d_fast(L=L, eps=eps, Zc=Zc, n_iter=n_iter, S0=S0.copy(),
+                                  forcing=forcing, track_area=False)
+        on = run_sandpile2d_fast(L=L, eps=eps, Zc=Zc, n_iter=n_iter, S0=S0.copy(),
+                                 forcing=forcing, track_area=True)
+        d_disp = np.abs(off['disp'] - on['disp']).max()
+        d_act = np.abs(off['act'] - on['act']).max()
+        bdisp, bact, barea = _brute_area2d(L, eps, Zc, n_iter, forcing)
+        # per-avalanche area: fast (sum of first-topple flags) vs brute (union size)
+        area_fast = _group_sum(on['disp'], on['area'])
+        area_brute = _group_sum(bdisp, barea)
+        size_av = _group_sum(on['disp'], on['act'])
+        d_area = (np.abs(area_fast - area_brute).max()
+                  if area_fast.size == area_brute.size else 9e9)
+        print("  L=%3d: track on/off  max|d disp|=%.2e max|d act|=%.0f | "
+              "#av=%d  max|area_fast-area_brute|=%.0f  area<=size:%s"
+              % (L, d_disp, d_act, area_fast.size, d_area,
+                 bool((area_fast <= size_av + 1e-9).all())))
+        assert d_disp < 1e-12 and d_act == 0, "area tracking perturbed the dynamics"
+        assert area_fast.size == area_brute.size, "avalanche count mismatch"
+        assert d_area == 0, "area series disagrees with brute-force recount"
+        assert (area_fast <= size_av + 1e-9).all(), "area exceeds size (impossible)"
+        assert (area_fast >= 1).all(), "an avalanche with zero distinct bonds"
+    print("  2-D area OK")
+
+
 def _test_dissipation_equivalence():
     """The non-conservative path (dissip>0) must also match the reference."""
     print("self-test: fast vs reference engine (dissipative, shared forcing)")
@@ -601,6 +740,7 @@ def _benchmark():
 if __name__ == "__main__":
     _test_equivalence()
     _test_equivalence2d()
+    _test_area2d()
     _test_dissipation_equivalence()
     _test_dissipation_equivalence2d()
     _benchmark()

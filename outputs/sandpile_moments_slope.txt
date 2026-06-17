@@ -1,0 +1,57 @@
+======================================================================
+S12 -- SLOPE-SANDPILE MOMENT SCALING (equilibrated; area = clean observable)
+======================================================================
+
+Running equilibrated 2-D slope lattices (warm unrecorded, then measure)...
+  L=  64 :  179857 avalanches (8 seeds)  mean-slope=2.43+-0.02  <A>=10.7 A_max=79  <S>=63.8  (3s)
+  L=  96 :  176203 avalanches (8 seeds)  mean-slope=2.50+-0.02  <A>=15.3 A_max=126  <S>=119.9  (4s)
+  L= 128 :  179181 avalanches (8 seeds)  mean-slope=2.57+-0.01  <A>=19.8 A_max=181  <S>=186.1  (5s)
+  L= 192 :  233643 avalanches (10 seeds)  mean-slope=2.62+-0.01  <A>=28.8 A_max=288  <S>=357.5  (13s)
+  L= 256 :  239668 avalanches (10 seeds)  mean-slope=2.64+-0.01  <A>=38.8 A_max=758  <S>=605.6  (23s)
+
+[scaling-quality: local log-log slope between consecutive L]
+  L_a->L_b     <A> slope    <S> slope
+   64-> 96      0.88         1.55
+   96->128      0.89         1.53
+  128->192      0.92         1.61
+  192->256      1.03         1.83
+  (area should be steady ~constant; size wanders -- cutoff-dominated, tau<1)
+
+  [area A (clean observable)]   sigma(q), local slope D(q)
+    q     sigma(q)   D(q)+-grp
+    1.0      0.923   1.005 +- 0.003
+    2.0      1.963   1.072 +- 0.008
+    3.0      3.072   1.151 +- 0.019
+    4.0      4.281   1.280 +- 0.057
+    5.0      5.658   1.459 +- 0.127
+    D(q) drift over q in [1,4] = 0.275  (seed-group noise ~0.012, D_mid ~1.11)
+
+  [toppling number S (cutoff-dominated)]   sigma(q), local slope D(q)
+    q     sigma(q)   D(q)+-grp
+    1.0      1.612   1.893 +- 0.006
+    2.0      3.557   1.970 +- 0.005
+    3.0      5.540   1.991 +- 0.005
+    4.0      7.535   1.999 +- 0.006
+    5.0      9.536   2.002 +- 0.006
+    D(q) drift over q in [1,4] = 0.105  (seed-group noise ~0.005, D_mid ~1.98)
+
+  [energy E (cutoff-dominated)]   sigma(q), local slope D(q)
+    q     sigma(q)   D(q)+-grp
+    1.0      1.624   1.904 +- 0.007
+    2.0      3.581   1.982 +- 0.005
+    3.0      5.575   2.003 +- 0.005
+    4.0      7.582   2.011 +- 0.006
+    5.0      9.596   2.015 +- 0.006
+    D(q) drift over q in [1,4] = 0.107  (seed-group noise ~0.005, D_mid ~1.99)
+
+[verdict on the clean observable -- avalanche AREA]
+  slope-model area : D(q) drift = 0.275   D_area(mid) = 1.11
+  BTW area  (S11)  : D(q) drift = 0.034   D_area ~ 2.05  (near-FSS)
+  BTW topplings    : D(q) drift = 0.302   (multifractal)
+  -> multifractal -- the area shows a resolved D(q) drift of 0.275
+  Geometry: D_area ~ 1.11 (slope) vs ~2.0 (BTW) -- the slope model's
+  avalanche footprints are FILAMENTARY, not compact like BTW's.
+
+saved figures\sandpile_moments_slope.png
+
+S12 COMPLETE

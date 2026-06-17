@@ -49,16 +49,28 @@ def log(msg):
     LOG.append(msg)
 
 
-def btw_run(L, n_events, warm, seed=0):
-    """Canonical 2-D abelian BTW. Returns (S, T) arrays of avalanche size and
-    duration for events past warmup that produced at least one toppling."""
+def btw_run(L, n_events, warm, seed=0, track_area=False):
+    """Canonical 2-D abelian BTW. Returns (S, T) arrays of avalanche size
+    (total topplings) and duration for events past warmup that produced at least
+    one toppling.
+
+    track_area (additive, default off so existing callers are unchanged): also
+    return A, the avalanche AREA = number of DISTINCT sites that toppled at least
+    once. Size S counts every toppling (a site can topple many times in one
+    avalanche), so S >= A; the gap between them is what drives BTW's toppling-
+    number multifractality (multiple topplings per site), and the moment thread
+    (S11) tests whether area is the simpler, FSS-obeying observable.
+    """
     rng = np.random.default_rng(seed)
     h = np.zeros((L, L), dtype=np.int64)
-    Sz, Tz = [], []
+    Sz, Tz, Az = [], [], []
+    ever = np.zeros((L, L), dtype=bool) if track_area else None
     for ev in range(n_events):
         h[rng.integers(0, L), rng.integers(0, L)] += 1
         size = 0
         dur = 0
+        if track_area:
+            ever[:] = False
         while True:
             unstable = h >= 4
             n_un = int(unstable.sum())
@@ -66,6 +78,8 @@ def btw_run(L, n_events, warm, seed=0):
                 break
             size += n_un
             dur += 1
+            if track_area:
+                ever |= unstable
             h -= 4 * unstable
             # ship one grain to each neighbour; off-grid grains are lost (open BC)
             h[1:, :] += unstable[:-1, :]
@@ -75,6 +89,11 @@ def btw_run(L, n_events, warm, seed=0):
         if ev >= warm and size > 0:
             Sz.append(size)
             Tz.append(dur)
+            if track_area:
+                Az.append(int(ever.sum()))
+    if track_area:
+        return (np.array(Sz, dtype=float), np.array(Tz, dtype=float),
+                np.array(Az, dtype=float))
     return np.array(Sz, dtype=float), np.array(Tz, dtype=float)
 
 

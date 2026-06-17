@@ -1,0 +1,40 @@
+======================================================================
+S11 -- MOMENT-SCALING METHOD VALIDATED ON CANONICAL BTW
+======================================================================
+
+Running BTW lattices (size S = topplings, area A = distinct sites)...
+  L=  32 :  68165 avalanches  <S>=95.2 S_max=2.54e+03  <A>=77.5 A_max=892  (20.9s)
+  L=  48 :  69076 avalanches  <S>=203.4 S_max=7.44e+03  <A>=151.7 A_max=2.02e+03  (45.8s)
+  L=  64 :  48084 avalanches  <S>=350.6 S_max=2.13e+04  <A>=246.7 A_max=3.63e+03  (61.3s)
+  L=  96 :  39412 avalanches  <S>=772.3 S_max=4.28e+04  <A>=487.2 A_max=8.22e+03  (118.8s)
+  L= 128 :  30417 avalanches  <S>=1272.4 S_max=8.94e+04  <A>=742.3 A_max=1.44e+04  (160.7s)
+
+  [toppling number S]  sigma(q) and local slope D(q)=d sigma/dq
+    q     sigma(q)   D(q)+-boot
+    1.0      1.882   2.417 +- 0.017
+    2.0      4.430   2.639 +- 0.028
+    3.0      7.121   2.715 +- 0.034
+    4.0      9.842   2.712 +- 0.036
+    5.0     12.544   2.687 +- 0.037
+    D(q) drift over q in [1,4] = 0.302   (bootstrap noise ~ 0.032)
+    -> MULTIFRACTAL (D(q) drifts strongly with q)
+
+  [area A]  sigma(q) and local slope D(q)=d sigma/dq
+    q     sigma(q)   D(q)+-boot
+    1.0      1.641   2.021 +- 0.008
+    2.0      3.686   2.049 +- 0.007
+    3.0      5.737   2.052 +- 0.007
+    4.0      7.791   2.054 +- 0.007
+    5.0      9.847   2.056 +- 0.007
+    D(q) drift over q in [1,4] = 0.034   (bootstrap noise ~ 0.007)
+    -> near-FSS (a weak, finite-size-like D(q) creep; D ~ 2.05)
+
+[expected, from the literature]
+  toppling number S : multifractal, D(q) drifts upward with q
+  area A            : closer to simple FSS, D(q) much flatter
+  measured drift  S=0.302  A=0.034   (S should clearly exceed A)
+
+saved figures\sandpile_moments_btw.png
+cached BTW D(q) curves to outputs/sandpile_moments_btw.npz
+
+S11 COMPLETE

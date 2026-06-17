@@ -10,7 +10,12 @@ finite-size scaling (S3) -> a 2-D slope sandpile and the universality question
 (S4: do 1-D and 2-D share exponents, and how do they compare to the canonical
 abelian/BTW sandpile?) -> which SOC ingredient is necessary (S5, S7: bulk
 conservation) -> a self-test of the universality result (S6) and the chapter's
-falloff exercise (S8). Status: S1-S8 complete and pushed.
+falloff exercise (S8) -> a fast active-list engine (S9) that resolves S6 (S10) ->
+and then the deepest cut at the universality question: not single exponents but
+the whole MOMENT SPECTRUM, the field's decisive simple-FSS-vs-multifractal
+discriminator (S11 validates the method on BTW; S12 applies it to the slope model
+and finds its avalanches are filamentary and anomalously scaling, distinct from
+both BTW and the Manna class). Status: S1-S12 complete.
 
 Headline: self-organized criticality as a *phenomenon* (scale-free avalanches
 with no parameter tuning) is robust, but the critical *exponents* are not -- they
@@ -49,6 +54,19 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
 - S10 (resolves S6) Redone at L up to 512 with the fast engine, the 2-D slope
       model's DURATION exponent is stable at tau_T ~ 0.56, far from BTW's ~1.22 --
       the convention-free duration measure now confirms the S4 universality split
+- S11 (method validation) Moment-scaling analysis reproduces the known result that
+      canonical BTW is MULTIFRACTAL in toppling number (local slope D(q) drifts
+      2.42 -> 2.72) but near-FSS in AREA (D_area ~ 2.05, flat) -- De Menech /
+      Tebaldi. The machinery is trusted before being turned on the slope model.
+- S12 (the moment-spectrum cut at universality) Properly equilibrated, the 2-D
+      slope model's total activity (size/energy) is space-filling (D(q) -> 2.0)
+      while its avalanche AREA (footprint) is FILAMENTARY (D_area ~ 1.0-1.1, area
+      ~ L) with a resolved D(q) drift -- anomalous scaling, NOT the Manna single-
+      fractal FSS class, and geometrically DISTINCT from BTW's compact avalanches.
+      Sharpens S4 from "an exponent differs" to "the geometry and full moment
+      structure differ." Needed two things: avalanche AREA added to the engine
+      (the clean, non-cutoff-dominated observable) and slow over-steep
+      equilibration (the slope pile reaches repose only from above).
 
 ---
 
@@ -592,3 +610,146 @@ and its T_max is sensitive to rare giant avalanches, so that number is the softe
 in the table; the tau_T values, which come from the body of the distribution over
 3-5 decades, are firm. The slope tau_T ~ 0.56 itself depends on excluding the
 quantized small-T head, a window choice applied identically to both models.
+
+---
+
+## S11 -- The moment-scaling method, validated on canonical BTW
+
+**Motivation.** S4 separated the slope model from BTW on a single avalanche-size
+exponent (tau_S = 0.89 vs 1.14). Single tau exponents are a blunt and, when a
+distribution is multifractal, ill-defined instrument -- which is exactly why S4
+needed caveats. The field's decisive discriminator is the MOMENT SPECTRUM: how the
+whole family of moments <x^q> scales with system size L. For a distribution obeying
+simple finite-size scaling (FSS), P(x) = x^{-tau} G(x/x_c) with x_c ~ L^D, the
+moment exponent sigma(q) defined by <x^q> ~ L^{sigma(q)} is LINEAR in q, so its
+local slope D(q) = d sigma/dq is CONSTANT. A DRIFTING D(q) means multifractal /
+anomalous scaling. The established result (De Menech, Stella, Tebaldi, PRE 58,
+R2677 (1998); Tebaldi, De Menech, Stella, PRL 83, 3952 (1999)) is that BTW is
+multifractal in toppling number but near-FSS in area. Before turning this on the
+slope model, reproduce that -- the same "check a known result" discipline as S1,
+applied to the analysis.
+
+**Method (`sandpile/moments.py`, `sandpile/moment_fss.py`).** `moments.py`
+computes <x^q> over a grid of q, fits sigma(q) by regressing log<x^q> on log L, and
+takes D(q) = d sigma/dq; errors come from a bootstrap (S11) or seed-group
+jackknife (S12). It carries its own self-test: synthetic avalanches from an EXACT
+simple-FSS source (power law with a hard cutoff x_c = A L^D) must read out as a
+FLAT D(q) and recover the analytic sigma(q). (Subtlety worth recording: for tau<1
+-- the slope model's regime -- the cutoff carries the normalization, so the FSS
+line is sigma(q)=D q, not D(q+1-tau); D(q) is flat = D in both regimes, which is
+the signature that matters.) The self-test passes: a true FSS source gives D(q)
+flat to <0.01, so the method does not manufacture multifractality. `moment_fss.py`
+then runs BTW at L = 32-128 (track_area added to `btw_compare.btw_run`, additive)
+and measures D(q) for toppling number S and area A.
+
+**Evidence.**
+
+| BTW observable | D(q=1) | D(q=3) | D(q) drift, q in [1,4] | read |
+|----------------|--------|--------|------------------------|------|
+| toppling number S | 2.42 | 2.72 | **0.302** | multifractal |
+| area A (distinct sites) | 2.02 | 2.05 | **0.034** | near-FSS, D_area ~ 2.05 |
+
+The toppling-number D(q) climbs from 2.42 toward ~2.72 (consistent with the
+literature avalanche dimension ~2.75) -- a clear, ~10x-the-noise drift. The area
+D(q) is flat at ~2.05 (an order of magnitude less drift), i.e. BTW avalanches have
+compact, essentially 2-D footprints, and the multifractality lives in the multiple
+topplings per site, not in the footprint. Both match De Menech / Tebaldi.
+
+**Interpretation.** The machinery is trustworthy: it flags BTW's toppling number as
+multifractal and BTW's area as near-FSS, exactly as known, and it reads a
+synthetic FSS source as flat. The area-vs-toppling split is itself the key lesson
+carried into S12 -- area is the clean, well-behaved observable.
+
+**Honest note.** A naive "drift > 4 x noise" auto-verdict tags BTW area as
+"multifractal" because the area bootstrap noise is tiny (~0.007); the honest read
+is "near-FSS, a hair of finite-size creep" (the S6 lesson about auto-verdicts).
+The reported verdict is a 3-tier rule requiring the drift to be both several times
+the noise AND a sizable fraction of D itself.
+
+---
+
+## S12 -- The moment spectrum of the slope model: filamentary, anomalous, and distinct from BTW
+
+**Question.** Is the 2-D continuous slope sandpile simple-FSS (flat D(q), like the
+stochastic Manna class) or multifractal (drifting D(q), like deterministic
+BTW/Zhang)? And does the moment spectrum give a caveat-free resolution of the S4
+"different class from BTW" claim?
+
+**Two obstacles, both genuine, both solved.**
+
+1. *Size and energy are cutoff-dominated.* The slope model has tau_E, tau_S < 1
+   (S3/S4), so every positive moment is set by the few largest, system-spanning
+   avalanches (<S> ~ 0.1 S_max). Their moment scaling is noisy and correction-laden.
+   The cure, learned from S11, is avalanche AREA = number of DISTINCT toppled bonds
+   (the footprint), bounded by the lattice and not cutoff-dominated. Area was added
+   to the fast engine (`sandpile_fast.py`, `run_sandpile2d_fast(track_area=True)`):
+   it records, per iteration, the bonds toppling for the first time in the current
+   avalanche. Validated bit-for-bit against an independent full-scan distinct-bond
+   recount (max difference 0 over both lattice sizes tested) and confirmed not to
+   perturb the dynamics (disp/act identical with tracking on vs off).
+2. *The slope pile equilibrates slowly and only from above.* Started over-steep
+   (uniform slope 0.9 Zc = 4.5) the pile begins active -- bonds near Zc -- and
+   slowly relaxes its mean down to the repose ~2.5; started near repose at large L
+   it stays dormant and bleeds out (dilute single-site forcing loses to boundary
+   drainage). So each lattice needs a long, L-scaled warmup, and -- crucially --
+   the stationarity gauge must be the MEAN SLOPE, not the cutoff-dominated <S>
+   (which is too noisy to judge convergence; an early version mistook its sampling
+   noise for non-stationarity). `moment_slope.py` therefore runs two-phase: a long
+   warmup with the series UNRECORDED (no memory cost), confirm the mean slope has
+   settled, then measure a recorded window from the equilibrated state.
+
+**Method (`sandpile/moment_slope.py`).** Equilibrated runs at L = 64, 96, 128, 192,
+256 (warmups 5M-30M scaled with L; 8-10 seeds each; ~1.8-2.4e5 avalanches per
+size). Mean slope confirmed stable per L (2.43, 2.50, 2.57, 2.62, 2.64 -- the
+equilibration check). D(q) for area A, toppling number S, and energy E, with
+seed-group jackknife errors. BTW D(q) overlaid from S11.
+
+**Evidence.**
+
+| observable | D(q=1) | D(q=2) | D(q=3) | high-q | drift [1,4] | character |
+|------------|--------|--------|--------|--------|-------------|-----------|
+| area A | 1.01 | 1.07 | 1.15 | ~1.3-1.5 | 0.275 | **filamentary, D_area ~ 1.0-1.1** |
+| toppling S | 1.89 | 1.97 | 1.99 | -> 2.00 | 0.105 | space-filling activity, D -> 2 |
+| energy E | 1.90 | 1.98 | 2.00 | -> 2.01 | 0.107 | space-filling activity, D -> 2 |
+
+- **The footprint is filamentary.** Area grows only ~linearly with L (local log-log
+  slope of <A> = 0.88, 0.89, 0.92, 1.03 across the L range), so D_area ~ 1.0-1.1 --
+  the distinct-bond footprint of even the largest avalanches is a thin, near-1-D
+  front, not a compact blob. Contrast BTW's compact D_area ~ 2.05 (S11).
+- **The activity is space-filling.** Size and energy D(q) climb smoothly to 2.0:
+  the largest avalanches' TOTAL toppling work scales as L^2 (the lattice area).
+- **Therefore each footprint bond topples ~L times.** size/area ~ L^2 / L^1 = L: a
+  big avalanche is a thin front that sweeps the same bonds O(L) times. This is the
+  slope/gradient analog of BTW's multiple-toppling, but concentrated on a 1-D
+  footprint instead of a 2-D one.
+- **Anomalous, not Manna-class.** No observable has a flat D(q). The area D(q) drift
+  is resolved at low-to-mid q (D rises 1.01 -> 1.07 -> 1.15 over q = 1-3, a rise of
+  0.15 against a seed-group noise of 0.003-0.02), so it is a real anomaly, not
+  high-q noise. The slope model is not in the stochastic Manna single-fractal FSS
+  class; it sits with the deterministic BTW/Zhang anomalous-scaling family.
+
+**Interpretation.** This is the caveat-free upgrade of S4. S4 said "tau_S differs
+from BTW (0.89 vs 1.14)" with a bond-vs-site hedge. S12 says the slope and BTW
+sandpiles differ in their avalanche GEOMETRY and full moment structure: BTW
+avalanches are compact (area ~ L^2) with multifractal toppling number; slope-model
+avalanches are filamentary (area ~ L^1) with space-filling total activity, the
+intense multiple-toppling running along a thin front. Both are deterministic SOC
+with anomalous (non-Manna) scaling, but they are distinct anomalous classes -- a
+stronger and more physical statement than a single-exponent gap. It also explains
+S4's caveats: a single tau is ill-defined precisely because these distributions are
+not simple-FSS.
+
+**Honest caveats (own them).** (a) L is capped at 256: above that the over-steep
+pile does not fully equilibrate within a verifiable warmup (the mean slope is still
+creeping up, 2.64 at L=256), so L=512 is left to future work -- the equilibration
+barrier, not compute (runs are seconds), is the limit. (b) The high-q area moments
+become cutoff-sensitive too (q=5 error +-0.13), so the area D(q) drift is quoted
+from the resolved low-mid-q range, not the noisy tail. (c) Size/energy D(q) -> 2.0
+with a mild low-q correction (drift ~0.1) is consistent with corrections-to-scaling
+around a space-filling D=2; I do NOT claim size/energy multifractality, only that
+the activity is space-filling. The robust, resolved result is the geometric one:
+filamentary footprint (D_area ~ 1) vs BTW's compact (D_area ~ 2). (d) The mean
+repose slope drifts slightly upward with L (2.43 -> 2.64); whether that is a weak
+finite-size dependence of the repose or residual under-equilibration is not settled
+here, but it does not affect the avalanche-geometry conclusion, which rests on the
+area scaling.
