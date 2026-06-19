@@ -1,0 +1,54 @@
+======================================================================
+S13 -- CONDITIONAL AVALANCHE SCALING (ballistic-filamentary-front theory)
+======================================================================
+Predictions (single ballistic filamentary front, swept ~ell times):
+  <A|T>~T^1  <S|T>~T^2  <E|T>~T^2  <S|A>~A^2  <E|A>~A^2  <E|S>~S^1
+
+Running equilibrated 2-D slope lattices (warm unrecorded, then measure)...
+  L=  96 :  158684 avalanches (6 seeds)  mean-slope=2.50+-0.02  T_max=103 A_max=126 S_max=1338  (3s)
+  L= 128 :  178604 avalanches (6 seeds)  mean-slope=2.55+-0.02  T_max=145 A_max=202 S_max=2601  (4s)
+  L= 192 :  171182 avalanches (6 seeds)  mean-slope=2.63+-0.02  T_max=191 A_max=361 S_max=4657  (7s)
+  L= 256 :  160724 avalanches (6 seeds)  mean-slope=2.65+-0.01  T_max=253 A_max=555 S_max=8128  (12s)
+
+[L-independence of the conditional exponents]
+  L       <A|T> <S|T> <E|T> <S|A> <E|A> <E|S>
+  96      0.92  1.67  1.68  1.89  1.90  1.00
+  128     0.93  1.70  1.71  1.90  1.91  1.00
+  192     0.95  1.71  1.72  1.93  1.94  1.00
+  256     0.98  1.72  1.73  1.94  1.95  1.00
+  (a conditional LAW is intrinsic if these rows agree across L)
+
+  [pooled L=192+256]  conditional exponents gamma(x|y):  <x|y> ~ y^gamma
+    relation   gamma +- se     predicted   windows
+    <A|T>      0.967 +- 0.010     1.0         [6, 76]
+    <S|T>      1.732 +- 0.021     2.0         [6, 76]
+    <E|T>      1.740 +- 0.021     2.0         [6, 76]
+    <S|A>      1.930 +- 0.015     2.0         [5, 122]
+    <E|A>      1.940 +- 0.015     2.0         [5, 122]
+    <E|S>      1.002 +- 0.000     1.0         [20, 2438]
+
+  [pooled L=192+256]  over-determination / self-consistency (single-scale identities)
+    identity                         composite    direct
+    gamma(S|A) = gamma(S|T)/gamma(A|T)   1.790       1.930
+    gamma(E|A) = gamma(E|T)/gamma(A|T)   1.799       1.940
+    gamma(E|S) = gamma(E|T)/gamma(S|T)   1.005       1.002
+
+[verdict -- spatial sector vs duration sector]
+  SPATIAL sector (clean): <E|S>=1.00 (energy ~ size), <S|A>=1.93, <E|A>=1.94 (~2)
+    -> a thin footprint of A bonds carries ~A^2 topplings: each footprint bond
+       topples ~A times. The S12 'filamentary front swept ~ell times' picture,
+       now from a cutoff-free conditional measure (E,S locked; S,E ~ A^2).
+  DURATION sector (soft): <A|T>=0.97 (~T, ballistic) but <S|T>=1.73, <E|T>=1.74 (< 2)
+  OVER-DETERMINATION: gamma(S|A) direct=1.93 vs via-duration 1.79  (gap 0.14, ~7x SE);
+    gamma(E|S) closes exactly (1.00 vs 1.01). Single-scale holds among the SPATIAL
+    observables (A,S,E) but FAILS through duration: T is a loose proxy for spatial
+    extent (long avalanches partly LINGER, not only reach farther) -- the 2-D
+    residue of the 1-D quantized line/wedge families (S3), and it vindicates S12's
+    choice of AREA, not duration, as the clean scaling variable.
+  FINITE-SIZE TREND: every exponent drifts toward its single-scale value as L grows
+    (<A|T> 0.92->0.98, <S|A> 1.89->1.94, <S|T> 1.67->1.72); whether the gap fully
+    heals or leaves a residual duration anomaly is the sharp question for S14.
+
+saved figures\sandpile_conditional.png
+
+S13 COMPLETE

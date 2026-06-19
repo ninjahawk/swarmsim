@@ -15,7 +15,10 @@ and then the deepest cut at the universality question: not single exponents but
 the whole MOMENT SPECTRUM, the field's decisive simple-FSS-vs-multifractal
 discriminator (S11 validates the method on BTW; S12 applies it to the slope model
 and finds its avalanches are filamentary and anomalously scaling, distinct from
-both BTW and the Manna class). Status: S1-S12 complete.
+both BTW and the Manna class) -> and then a MECHANISM (S13): a conditional-exponent
+test shows the 2-D avalanche is a ballistic filamentary front whose spatial
+observables obey single-scale scaling (E ~ S, and S, E ~ area^2) while duration is
+a loose proxy -- the 2-D residue of the 1-D family breakdown. Status: S1-S13 complete.
 
 Headline: self-organized criticality as a *phenomenon* (scale-free avalanches
 with no parameter tuning) is robust, but the critical *exponents* are not -- they
@@ -67,6 +70,16 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       structure differ." Needed two things: avalanche AREA added to the engine
       (the clean, non-cutoff-dominated observable) and slow over-steep
       equilibration (the slope pile reaches repose only from above).
+- S13 (the mechanism) Conditional-exponent analysis (the De Menech-Tebaldi
+      conditional method validated in S11, here on the slope model) confirms a
+      ballistic filamentary front: <E|S> ~ S (energy = size), <S|A> ~ A^1.93 and
+      <E|A> ~ A^1.94 (a footprint of A bonds swept ~A times), <A|T> ~ T^0.97
+      (ballistic). But the OVER-DETERMINATION test fails through DURATION
+      (gamma(S|A) direct 1.93 vs routed-through-T 1.79, ~7x the fit error) while
+      closing exactly in the spatial sector (E ~ S): single-scale scaling holds
+      among area/size/energy but breaks through duration -- T is a loose proxy for
+      spatial extent (long avalanches partly LINGER), the 2-D residue of S3's
+      quantized line/wedge families. Cutoff-free, so caveat-free where it is clean.
 
 ---
 
@@ -753,3 +766,114 @@ repose slope drifts slightly upward with L (2.43 -> 2.64); whether that is a wea
 finite-size dependence of the repose or residual under-equilibration is not settled
 here, but it does not affect the avalanche-geometry conclusion, which rests on the
 area scaling.
+
+---
+
+## S13 -- Conditional avalanche scaling: the 2-D slope avalanche is a ballistic filamentary front
+
+**Question.** S12 established WHAT the 2-D slope avalanche looks like (filamentary
+footprint, area ~ L; space-filling activity, ~ L^2) but through moment spectra,
+which for this model are cutoff-dominated (tau < 1) and so carried hard-won
+caveats. Can the same physics be read off a CLEAN, caveat-free observable, and does
+it cohere into a single mechanism? The natural tool is the CONDITIONAL exponent
+gamma(x|y) defined by <x | y> ~ y^{gamma(x|y)}, measured at FIXED y -- so it never
+sees the system-size cutoff. (This is the De Menech-Tebaldi "conditional
+distribution at a given area" method, PRL 83, 3952 -- the same papers validated in
+S11 -- here turned on the slope model.)
+
+**The mechanism and its predictions.** Three earlier results combine into one
+picture. A 2-D avalanche is a thin front of linear extent ell that (i) propagates
+one node per iteration (the book's ballistic front, p.122; confirmed by S10's
+duration cutoff ~ L^1.07), so duration T ~ ell; (ii) leaves a filamentary footprint
+(S12's D_area ~ 1), so area A ~ ell; and (iii) sweeps each footprint bond ~ell times
+(S12's size/area ~ L), so size and energy S, E ~ ell^2. If a SINGLE scale ell
+governs the avalanche, the conditional exponents are fixed:
+
+    <A|T> ~ T^1   <S|T> ~ T^2   <E|T> ~ T^2
+    <S|A> ~ A^2   <E|A> ~ A^2   <E|S> ~ S^1
+
+The <S|T> ~ T^2 is the book's "wedge" law E ~ T^2 (p.122), which in 1-D only BOUNDS
+the avalanche family from above; the prediction is that in 2-D it becomes the
+TYPICAL behaviour, because a 2-D front almost always spreads transversely and the
+pure "line" avalanches (slope +1) of 1-D disappear. Crucially the six exponents are
+OVER-DETERMINED: single-scale scaling forces gamma(S|A) = gamma(S|T)/gamma(A|T) and
+gamma(E|S) = gamma(E|T)/gamma(S|T), so the picture can FAIL a self-consistency test
+-- it is not six free fits.
+
+**Method (`sandpile/conditional.py`).** Equilibrated 2-D slope lattices at
+L = 96, 128, 192, 256 (warm over-steep, gauge by mean slope, as S12; 6 seeds each,
+~1.6-1.8e5 avalanches per size; mean slope 2.50 / 2.55 / 2.63 / 2.65). Per-avalanche
+(E, S, T, A) all segmented on the displaced-mass series (the grouping validated in
+sandpile_fast._test_area2d). Conditional means by log-binning on the conditioning
+variable, log-log slope over a clean window (skip the quantized small-T head and the
+sparse tail). A self-test draws a synthetic single-scale source (one hidden ell per
+avalanche, A = ell, T = ell, S = E = ell^2 with multiplicative noise) and recovers
+1, 2, 2, 2, 2, 1 to < 0.01 -- the binning/fit does not bias the slopes.
+
+**Evidence (pooled L = 192 + 256; per-L trend in the last column).**
+
+| relation | gamma (measured) | predicted | per-L trend (96 -> 256) |
+|----------|------------------|-----------|--------------------------|
+| <E\|S>   | 1.00 +- 0.00     | 1 | 1.00 flat |
+| <S\|A>   | 1.93 +- 0.02     | 2 | 1.89 -> 1.94 |
+| <E\|A>   | 1.94 +- 0.02     | 2 | 1.90 -> 1.95 |
+| <A\|T>   | 0.97 +- 0.01     | 1 | 0.92 -> 0.98 |
+| <S\|T>   | 1.73 +- 0.02     | 2 | 1.67 -> 1.72 |
+| <E\|T>   | 1.74 +- 0.02     | 2 | 1.68 -> 1.73 |
+
+Over-determination (single-scale identities, composite vs directly measured):
+
+| identity | composite | direct |
+|----------|-----------|--------|
+| gamma(S\|A) = gamma(S\|T)/gamma(A\|T) | 1.79 | 1.93 |
+| gamma(E\|S) = gamma(E\|T)/gamma(S\|T) | 1.01 | 1.00 |
+
+**Two conclusions, one clean and one subtle.**
+
+1. **The filamentary-multiply-swept mechanism is confirmed, cutoff-free.** Energy
+   and size are locked (E ~ S^1.00 -- each toppling sheds ~Zc/4 of mass, so E is S
+   times a constant), and a footprint of A bonds carries ~A^1.93 topplings, i.e.
+   each footprint bond topples ~A times. This is exactly S12's "thin front swept
+   ~ell times", now from a conditional measure the cutoff cannot contaminate and
+   with no bond-vs-site or tau-definition caveat. The 2-D E-T plane (figure, lower
+   left -- the 2-D analogue of the book's Fig 5.6) confirms the geometric
+   prediction: the avalanche density hugs the slope-+2 "wedge" line, and the
+   slope-+1 "line" branch that fills the lower 1-D wedge is essentially gone. The
+   book's upper wedge bound has become the generic 2-D law.
+
+2. **But single-scale scaling fails THROUGH DURATION.** The over-determination test
+   does not close: the spatial size-area exponent measured directly
+   (gamma(S|A) = 1.93) disagrees with the value routed through duration
+   (gamma(S|T)/gamma(A|T) = 1.79) by 0.14, about seven times the per-fit error,
+   whereas the purely spatial identity gamma(E|S) closes exactly (1.00 vs 1.01).
+   Read literally: the spatial observables (area, size, energy) form a tight
+   single-scale family (S, E ~ A^2, E ~ S), but duration is a LOOSE proxy for
+   spatial extent -- <S|T> = 1.73 sits well below the 1.87 the spatial chain
+   predicts, because some long-duration avalanches are long not because they reach
+   farther but because they LINGER (re-topple in place / propagate intermittently).
+   At fixed duration the avalanche keeps a shape/family degree of freedom. This is
+   the two-dimensional residue of S3, where the 1-D avalanches split into discrete
+   line/wedge families and the duration-based scaling relation likewise failed; and
+   it vindicates S12's choice of AREA, not duration, as the clean scaling variable.
+
+**Honest caveats (own them).** (a) Every exponent drifts toward its single-scale
+value as L grows (<A|T> 0.92 -> 0.98, <S|A> 1.89 -> 1.94, <S|T> 1.67 -> 1.72 across
+L = 96 -> 256), so part of the 0.14 gap is a finite-size correction; whether it
+heals to exact single-scale or leaves a residual duration anomaly is the sharp
+question for S14 and needs the L > 256 that the over-steep equilibration ceiling
+(S12) currently blocks. (b) The runs sit at mean slopes 2.50-2.65, still mildly
+under the asymptotic repose (same S12 equilibration limit); the L-trend, not any
+single L, carries the conclusion. (c) <S|T> and <E|T> are the same exponent within
+error (1.73 vs 1.74), as they must be once E ~ S -- a consistency check, not two
+independent facts.
+
+**Why this is interesting.** It converts S12's geometric snapshot into a mechanism
+with falsifiable, over-determined predictions, and the test does something a single
+exponent cannot: it isolates WHERE the slope model departs from simple finite-size
+scaling (the duration sector, not the spatial one) and ties that departure
+quantitatively to the 1-D family structure of S3. It also extends the chapter's
+central avalanche figure (the 1-D E-T wedge, Fig 5.6) into 2-D and reads off the
+prediction that the 2-D avalanche is generically a "wedge", the 1-D "line" branch
+having closed. The clean piece (E ~ S, S ~ A^~2) is the caveat-free statement S4
+and S12 were reaching for; the subtle piece (duration is a loose scaling variable)
+is a new, concrete entry point for S14.
