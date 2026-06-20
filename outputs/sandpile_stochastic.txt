@@ -1,0 +1,55 @@
+========================================================================
+S15 -- STOCHASTIC SPLIT: does turning on Manna-style randomness destroy the
+       filament? Mass-radius D and area moment drift vs the split knob psto.
+       (FULL run)
+========================================================================
+psto = 0 is the deterministic gradient rule (S1-S14, filament D~1).
+Diverting a fraction psto of each downhill flux to a random transverse
+neighbour injects the Manna ingredient (stochastic, non-directed redistribution).
+Prediction: D climbs 1->2 and the anomalous area drift flattens as psto rises.
+
+[1] Mass-radius dimension D (A ~ Rg^D) vs psto  (two L = the crossover is
+    intrinsic, not finite-size)
+
+  L=128 (4 seeds):
+    psto    D +- se      mean-slope     #footprints   1-bond-wide  <w_trans>
+    0.00    1.005 +- 0.002   2.53 +- 0.00      50949       0.99         0.04   (3s)
+    0.05    1.270 +- 0.020   2.64 +- 0.02      82667       0.23         0.85   (5s)
+    0.10    1.538 +- 0.029   2.66 +- 0.01      96555       0.01         1.24   (5s)
+    0.20    1.728 +- 0.024   2.56 +- 0.01     124247       0.00         1.82   (6s)
+    0.35    1.785 +- 0.009   2.48 +- 0.01     163080       0.00         2.38   (7s)
+    0.50    1.869 +- 0.005   2.48 +- 0.01     145066       0.00         2.94   (6s)
+
+  L=192 (3 seeds):
+    psto    D +- se      mean-slope     #footprints   1-bond-wide  <w_trans>
+    0.00    1.015 +- 0.002   2.62 +- 0.01      44682       0.98         0.09   (4s)
+    0.05    1.284 +- 0.024   2.74 +- 0.01      80498       0.14         0.96   (8s)
+    0.10    1.562 +- 0.033   2.74 +- 0.03      95260       0.00         1.38   (8s)
+    0.20    1.755 +- 0.008   2.62 +- 0.01     132781       0.00         2.04   (9s)
+    0.35    1.793 +- 0.009   2.53 +- 0.01     181790       0.00         2.68   (10s)
+    0.50    1.862 +- 0.006   2.54 +- 0.01     156926       0.00         3.34   (10s)
+
+    [L=192] D(psto=0.00)=1.015 -> D(psto=0.50)=1.862   (delta D = +0.847)
+
+[2] Area moment drift D(q) over q in [1,4] vs psto   (FSS across L=96+128+192, 6 seeds)
+    psto    drift     D_mid    (seed-group noise)   read
+    0.00    0.230     1.10     (0.025)              anomalous   (16s)
+    0.50    0.384     1.19     (0.022)              anomalous   (33s)
+
+[verdict -- is the filament specific to the deterministic rule?]
+  mass-radius dimension D (L=192) rose from 1.02 (psto=0, deterministic) to 1.86 (psto=0.50).
+  area moment drift went from 0.230 (psto=0) to 0.384 (psto=0.50).
+  GEOMETRY (clean): mass-radius D rose 1.02 -> 1.86, the two lattice sizes
+    128+192 overlapping (intrinsic, not finite-size), passing the directed 3/2
+    near psto~0.1. The filament is a SPECIFIC consequence of the DETERMINISTIC
+    gradient rule -- the causal upgrade of S12/S14's correlational placement.
+  MOMENTS (the nuance): the area drift did NOT flatten (0.23 -> 0.38) and
+    D_mid stays ~1.2, not ->2. So the split compactifies the footprint
+    SHAPE without collapsing onto the Manna simple-FSS class: the avalanches
+    become compact but LOCALIZED (area ~ L^1.2, not spanning ~ L^2). S12's
+    'outside Manna' is reinforced -- even injecting stochastic redistribution
+    leaves the scaling anomalous.
+
+saved figures\sandpile_stochastic.png
+
+S15 FULL COMPLETE

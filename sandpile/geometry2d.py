@@ -201,19 +201,24 @@ def rg_window(Rg, lo_floor=2.5, hi_frac=0.55, hi_quant=0.99):
 # ---------------------------------------------------------------------------
 # Slope-model footprints from the validated dump (S12 equilibration protocol).
 # ---------------------------------------------------------------------------
-def slope_footprints(L, warm, window, n_seeds, area_cut, fp_cap, max_dump):
+def slope_footprints(L, warm, window, n_seeds, area_cut, fp_cap, max_dump, psto=0.0):
     """Equilibrate over-steep (gauge by mean slope, S12), then dump every avalanche
     footprint with area >= area_cut over a recorded window. Returns a list of
-    (seed_rc, bond_ids, rel_first_topple_times) and the mean bond slope."""
+    (seed_rc, bond_ids, rel_first_topple_times) and the mean bond slope.
+
+    psto (additive, default 0.0 = deterministic gradient rule) is the S15 stochastic-
+    split knob; both the warmup and the measurement window run at the same psto so the
+    pile equilibrates under the stochastic dynamics it is measured in."""
     foots = []
     slopes = []
     for sd in range(n_seeds):
         warmed = run_sandpile2d_fast(L=L, eps=0.1, Zc=5.0, n_iter=warm, seed=7 + sd,
-                                     record_series=False, S0=pyramid_ic(L, 4.5))
+                                     record_series=False, S0=pyramid_ic(L, 4.5),
+                                     psto=psto)
         res = run_sandpile2d_fast(L=L, eps=0.1, Zc=5.0, n_iter=window, seed=7 + sd + 53,
                                   record_series=True, S0=warmed['S'],
                                   dump_fp=True, area_cut=area_cut,
-                                  fp_cap=fp_cap, max_dump=max_dump)
+                                  fp_cap=fp_cap, max_dump=max_dump, psto=psto)
         off, bid, it, seed = res['fp_off'], res['fp_bid'], res['fp_iter'], res['fp_seed']
         nd = off.size - 1
         for k in range(nd):

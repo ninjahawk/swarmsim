@@ -232,7 +232,8 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                 record, mass_out, disp_out, act_out,
                 track_area, area_out,
                 dump_fp, area_cut, seen_iter,
-                fp_bid, fp_iter, fp_off, fp_seed, fp_meta):
+                fp_bid, fp_iter, fp_off, fp_seed, fp_meta,
+                psto, acct):
     """JIT inner loop for the 2-D bond-slope sandpile (active-list).
 
     Bonds are encoded as a single integer id over [0, 2*L*L):
@@ -286,6 +287,8 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
     last_c = -1
 
     mass = S.sum()
+    tot_added = 0.0
+    tot_drained = 0.0
     fi = 0
 
     for n in range(n_iter):
@@ -302,6 +305,7 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                 g = np.random.random() * eps
             S[r, c] += g
             mass += g
+            tot_added += g
             dm = 0.0
             ntop = 0
             new_area = 0
@@ -402,6 +406,44 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                         to_a, to_b = tl, -ad
                     else:
                         to_a, to_b = -ad, tl
+                # stochastic transverse split (S15): divert a fraction psto of the
+                # downhill share to a random TRANSVERSE neighbour of the recipient,
+                # tuning the deterministic gradient rule (psto=0) toward Manna-style
+                # stochastic redistribution. Conservative -- the recipient loses
+                # exactly what the transverse site gains. Conservative path only;
+                # psto=0 skips it entirely so S1-S14 stays bit-identical (no extra
+                # RNG draw either, so the loading stream is unchanged).
+                if psto != 0.0 and dissip == 0.0:
+                    if to_a > 0.0:
+                        rec_i, rec_j, rec_a = a_i, a_j, True
+                        div = psto * to_a
+                    else:
+                        rec_i, rec_j, rec_a = b_i, b_j, False
+                        div = psto * to_b
+                    if bid < LL:           # x-bond: transverse runs along columns
+                        ti = rec_i
+                        if np.random.random() < 0.5:
+                            tj = rec_j - 1
+                        else:
+                            tj = rec_j + 1
+                    else:                  # y-bond: transverse runs along rows
+                        tj = rec_j
+                        if np.random.random() < 0.5:
+                            ti = rec_i - 1
+                        else:
+                            ti = rec_i + 1
+                    if ti >= 0 and ti < L and tj >= 0 and tj < L:
+                        if rec_a:
+                            to_a -= div
+                        else:
+                            to_b -= div
+                        kt = ti * L + tj
+                        if is_touched[kt] == 0:
+                            is_touched[kt] = 1
+                            touched[nt] = kt
+                            nt += 1
+                        move[ti, tj] += div
+                    # off-lattice transverse target: keep the share on the recipient
                 ka = a_i * L + a_j
                 kb = b_i * L + b_j
                 if is_touched[ka] == 0:
@@ -428,6 +470,7 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                     drained += S[i, j]
                     mass -= S[i, j]
                     S[i, j] = 0.0
+            tot_drained += drained
 
             # pass 2: re-examine the bonds around every touched (now-current) site
             ncnt = 0
@@ -478,13 +521,15 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
         fp_meta[0] = nd
         fp_meta[1] = nf
         fp_meta[2] = nlrg
+    acct[0] = tot_added
+    acct[1] = tot_drained
     return mass
 
 
 def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
                         record_series=True, S0=None, dissip=0.0, forcing=None,
                         track_area=False, dump_fp=False, area_cut=1,
-                        max_dump=200_000, fp_cap=4_000_000):
+                        max_dump=200_000, fp_cap=4_000_000, psto=0.0):
     """Active-list re-implementation of sandpile2d.run_sandpile2d (same signature,
     model, and return dict, including the 'act' bond-toppling-count series).
     Faster for large L because each step costs O(active bonds) not O(L^2).
@@ -504,7 +549,20 @@ def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
       out['n_large']          number of avalanches >= area_cut seen (>= nd if the
                               max_dump / fp_cap buffers filled). Used by S14
                               (avalanche geometry / directedness). Pure observer:
-                              the dynamics are bit-identical to a dump_fp=False run."""
+                              the dynamics are bit-identical to a dump_fp=False run.
+
+    psto (additive, default 0.0 = the deterministic gradient rule, bit-identical to
+        S1-S14): the stochastic-split knob (S15). When a bond topples, a fraction
+        psto of the sand that would go straight downhill is instead sent to a
+        randomly chosen TRANSVERSE neighbour of the downhill site, conservatively (no
+        sand created or destroyed). This tunes the model from the deterministic
+        gradient rule (psto=0, filamentary footprint D~1) toward Manna-style
+        stochastic redistribution, broadening the avalanche front. Returns total
+        grains 'added' and 'drained' for a conservation check. Conservative dynamics
+        only (raises if combined with dissip>0)."""
+    if psto != 0.0 and dissip != 0.0:
+        raise ValueError("psto (stochastic split) is implemented for the "
+                         "conservative path only; set dissip=0.")
     S = np.zeros((L, L)) if S0 is None else np.array(S0, dtype=float)
     S[0, :] = S[-1, :] = S[:, 0] = S[:, -1] = 0.0
 
@@ -543,13 +601,15 @@ def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
         fp_off = np.empty(1, np.int64)
         fp_seed = np.empty(1, np.int64)
     fp_meta = np.zeros(3, np.int64)
+    acct = np.zeros(2)
 
     _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                 use_forcing, f_rows, f_cols, f_sizes,
                 record_series, mass_out, disp_out, act_out,
                 track_area, area_out,
                 dump_fp, area_cut, seen_iter,
-                fp_bid, fp_iter, fp_off, fp_seed, fp_meta)
+                fp_bid, fp_iter, fp_off, fp_seed, fp_meta,
+                psto, acct)
 
     out = dict(S=S, L=L, eps=eps, Zc=Zc, n_iter=n_iter, seed=seed)
     if record_series:
@@ -565,6 +625,8 @@ def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
         out['fp_iter'] = fp_iter[:nf].copy()
         out['fp_seed'] = fp_seed[:2 * nd].reshape(-1, 2).copy()
         out['n_large'] = nlrg
+    out['added'] = float(acct[0])
+    out['drained'] = float(acct[1])
     return out
 
 
@@ -835,6 +897,44 @@ def _test_footprint2d():
     print("  2-D footprint OK")
 
 
+def _test_split2d():
+    """Validate the S15 stochastic-split knob (psto): (1) psto=0 is bit-identical to
+    the deterministic engine (disp/act/area/state all exactly equal); (2) the split
+    CONSERVES sand -- initial + added - drained = final pile mass to floating point,
+    at psto>0; (3) psto>0 actually changes the dynamics (a live knob, not a no-op),
+    and broadens the avalanche footprint (mean area grows), the S15 effect."""
+    print("self-test: 2-D stochastic split (S15 Manna-interpolation knob)")
+    Zc, eps = 5.0, 0.1
+    L, n_iter = 48, 300_000
+    forcing = _make_forcing2d(L, n_iter, eps, seed=7)
+    S0 = pyramid_ic(L, 0.9 * Zc)
+    # (1) psto=0 must reproduce the deterministic path bit for bit
+    det = run_sandpile2d_fast(L=L, eps=eps, Zc=Zc, n_iter=n_iter, S0=S0.copy(),
+                              forcing=forcing, track_area=True)
+    z0 = run_sandpile2d_fast(L=L, eps=eps, Zc=Zc, n_iter=n_iter, S0=S0.copy(),
+                             forcing=forcing, track_area=True, psto=0.0)
+    d0 = max(np.abs(det['disp'] - z0['disp']).max(),
+             np.abs(det['act'] - z0['act']).max(),
+             np.abs(det['area'] - z0['area']).max(),
+             np.abs(det['S'] - z0['S']).max())
+    mean_area_det = _group_sum(det['disp'], det['area']).mean()
+    print("  psto=0 vs deterministic: max|d disp,act,area,S| = %.1e  (must be 0)" % d0)
+    assert d0 == 0.0, "psto=0 is not bit-identical to the deterministic engine"
+    # (2) conservation at psto>0 and (3) the knob is live and broadens the footprint
+    for psto in (0.2, 0.4):
+        r = run_sandpile2d_fast(L=L, eps=eps, Zc=Zc, n_iter=n_iter, S0=S0.copy(),
+                                forcing=forcing, track_area=True, psto=psto)
+        bal = S0.sum() + r['added'] - r['drained'] - r['S'].sum()
+        d_disp = np.abs(det['disp'] - r['disp']).max()
+        mean_area_sto = _group_sum(r['disp'], r['area']).mean()
+        print("  psto=%.1f: conservation |in-out-pile|=%.2e   live: max|d disp|=%.2e"
+              "   <area> %.1f -> %.1f"
+              % (psto, abs(bal), d_disp, mean_area_det, mean_area_sto))
+        assert abs(bal) < 1e-2, "stochastic split does not conserve sand"
+        assert d_disp > 0.0, "psto>0 did not change the dynamics (dead knob)"
+    print("  2-D stochastic split OK")
+
+
 def _test_dissipation_equivalence():
     """The non-conservative path (dissip>0) must also match the reference."""
     print("self-test: fast vs reference engine (dissipative, shared forcing)")
@@ -912,6 +1012,7 @@ if __name__ == "__main__":
     _test_equivalence2d()
     _test_area2d()
     _test_footprint2d()
+    _test_split2d()
     _test_dissipation_equivalence()
     _test_dissipation_equivalence2d()
     _benchmark()

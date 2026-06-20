@@ -22,7 +22,12 @@ a loose proxy -- the 2-D residue of the 1-D family breakdown -> and then the GEO
 (S14): the footprint, dumped per-avalanche and measured directly, is a constant-width
 thin filament (mass-radius dimension D ~ 1, one bond wide), thinner than the
 exactly-solvable directed sandpile (3/2) and far from compact BTW (2), and a ballistic
-front whose topple time tracks radial distance from the seed. Status: S1-S14 complete.
+front whose topple time tracks radial distance from the seed -> and then a CAUSAL test
+(S15): a tunable stochastic split in the redistribution interpolates toward the Manna
+class, and as it turns on the filament's mass-radius dimension climbs 1 -> 1.87
+(L-independent), proving the thinness is a specific consequence of the deterministic
+rule, while the moment spectrum stays anomalous, so the model compactifies in shape
+without becoming Manna. Status: S1-S15 complete.
 
 Headline: self-organized criticality as a *phenomenon* (scale-free avalanches
 with no parameter tuning) is robust, but the critical *exponents* are not -- they
@@ -91,6 +96,16 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       pipeline); and a ballistic front, first-topple time ~ radial distance from the
       launch site (slope 0.998, correlation 0.990). The geometric mechanism behind
       S12's D_area ~ 1, read off real footprints via a validated engine footprint dump.
+- S15 (the decisive edge case) A tunable stochastic split (psto) diverts a fraction of
+      each downhill flux to a random transverse neighbour, interpolating the
+      deterministic gradient rule toward the Manna class. As psto rises the footprint's
+      mass-radius dimension climbs 1.0 -> 1.87 (L = 128 and 192 overlapping, so
+      intrinsic), passing the directed sandpile's 3/2 near psto ~ 0.1: the filament is a
+      SPECIFIC consequence of the deterministic rule, not incidental (the causal upgrade
+      of S12/S14). But the area moment drift does NOT flatten toward simple FSS
+      (0.23 -> 0.38) -- the avalanches become compact but localized (area ~ L^1.2), so
+      the model compactifies in shape without collapsing onto the Manna class; "outside
+      Manna" reinforced.
 
 ---
 
@@ -1000,3 +1015,112 @@ against the two sandpiles it is most naturally compared with -- thinner than the
 exactly-solvable directed sandpile, far from compact BTW -- which is exactly the "where
 does it sit in the SOC landscape" question the universality thread (S4, S11, S12, S13)
 has been building toward. figures/sandpile_geometry.png.
+
+---
+
+## S15 -- The decisive edge case: the filament is CAUSED by the deterministic rule
+
+**Question.** S12 (moment area) and S14 (footprint geometry) established that the 2-D
+slope avalanche is a constant-width filament (mass-radius D ~ 1) and asserted the model
+is NOT in the stochastic Manna universality class. But that placement was
+CORRELATIONAL: we characterised the deterministic model and noted it differs from Manna.
+We never showed the determinism is the CAUSE of the filament -- a skeptic could ask
+whether the thinness is incidental, or whether the model is really just Manna in
+disguise. S15 makes it causal with a tunable knob: add stochasticity to the
+redistribution, interpolate toward the Manna class, and watch whether the filament
+survives.
+
+**Method (the knob; `sandpile_fast.run_sandpile2d_fast(psto=...)`).** The deterministic
+rule sheds z/4 of sand straight downhill across each unstable bond. The new `psto`
+parameter diverts a fraction psto of that downhill share to a randomly chosen TRANSVERSE
+neighbour of the recipient (sign drawn per topple), conservatively -- the recipient
+loses exactly what the transverse site gains, no sand created or destroyed. This injects
+the defining Manna ingredient (stochastic, non-directed redistribution) into the bond
+rule while keeping everything else (slope threshold, halving magnitude, open edges, slow
+forcing) fixed. psto = 0 is the deterministic gradient rule. The engine self-test
+`_test_split2d` confirms psto = 0 is BIT-IDENTICAL to the S1-S14 dynamics (max|d
+disp,act,area,S| = 0, no extra RNG draw), the split conserves sand (initial + added -
+drained - final = 1e-10), and psto > 0 genuinely changes the dynamics. Two observables
+are swept, both reusing the validated S12/S14 machinery unchanged: S14's mass-radius
+dimension D (A ~ Rg^D, from the footprint dump; L = 128 with 4 seeds AND L = 192 with 3
+seeds, so an intrinsic crossover shows as the two lattice sizes overlapping) and S12's
+area moment drift D(q) (FSS across L = 96, 128, 192, 6 seeds, at the endpoints psto = 0
+and 0.5). `sandpile/stochastic_split.py`.
+
+**Evidence -- mass-radius dimension D vs psto (the geometry; the two L overlap, so this
+is intrinsic, not finite-size):**
+
+| psto | D (L=128) | D (L=192) | one-bond-wide (L=128) | <w_trans> (L=128) |
+|------|-----------|-----------|------------------------|-------------------|
+| 0.00 | 1.005     | 1.015     | 0.99                   | 0.04              |
+| 0.05 | 1.270     | 1.284     | 0.23                   | 0.85              |
+| 0.10 | 1.538     | 1.562     | 0.01                   | 1.24              |
+| 0.20 | 1.728     | 1.755     | 0.00                   | 1.82              |
+| 0.35 | 1.785     | 1.793     | 0.00                   | 2.38              |
+| 0.50 | 1.869     | 1.862     | 0.00                   | 2.94              |
+
+**Evidence -- area moment drift D(q) over q in [1,4] (the universality signature):**
+
+| psto | D(q) drift | D_mid | read |
+|------|------------|-------|------|
+| 0.00 | 0.230      | 1.10  | anomalous, filamentary (reproduces S12) |
+| 0.50 | 0.384      | 1.19  | anomalous, did NOT flatten toward simple FSS |
+
+Mean bond slope stays 2.48-2.74 across the whole sweep, so the pile reaches a sensible
+SOC repose at every psto and the comparison is not confounded by a different state.
+
+**Two conclusions, one clean and one a genuine nuance.**
+
+1. **The filament is a SPECIFIC consequence of the deterministic gradient rule (clean,
+   causal).** Turning on stochasticity drives the footprint from a one-bond-wide filament
+   (D ~ 1.0) toward a compact blob (D ~ 1.87), monotonically and -- the key control -- with
+   the L = 128 and L = 192 curves lying on top of each other, so the crossover is intrinsic,
+   not a finite-size effect. The footprint stops being one bond wide almost immediately
+   (the one-bond-wide fraction collapses 0.99 -> 0.01 by psto = 0.1, transverse width 0.04 ->
+   2.94). Strikingly, near psto ~ 0.1 the model passes THROUGH the exactly-solvable directed
+   sandpile's value D = 3/2 (1.54 / 1.56): a small transverse leak reproduces the directed-
+   sandpile geometry, and more leak overshoots it toward compact. This is the causal upgrade
+   of S12/S14: their "filamentary" is not incidental but a direct consequence of the
+   deterministic halving rule funnelling each avalanche into a single steepest-descent
+   thread. Remove the determinism and the thread fattens into a blob.
+
+2. **But the model does NOT collapse onto the Manna simple-FSS class (the nuance).** The
+   naive expectation was that injecting stochastic redistribution would flatten the
+   anomalous moment spectrum toward Manna's simple FSS (constant D(q) ~ 2). It does the
+   opposite: the area D(q) drift GROWS (0.23 -> 0.38) and D_mid stays ~ 1.1-1.2, nowhere
+   near 2. Reconciling this with the compact footprints (mass-radius D ~ 1.87): the
+   avalanches become compact in SHAPE but LOCALIZED -- their area scales as ~ L^1.2 with
+   system size, not the ~ L^2 of compact spanning avalanches. The transverse leak breaks
+   the coherent ballistic front (S14) into compact but sub-spanning splats; it changes the
+   local geometry without converting the global scaling to simple FSS. So S12's "outside
+   Manna" is not just reaffirmed but REINFORCED: the deterministic gradient rule is not a
+   hair's breadth from Manna that a little noise tips over -- its anomalous scaling is
+   robust, and deliberately injecting stochastic redistribution compactifies the shape
+   while keeping the scaling anomalous.
+
+**Honest caveats (own them).** (a) `psto` is a transverse-LEAK on the existing bond rule,
+not literally the Manna model (height threshold + fully random two-grain redistribution).
+It is the minimal CONSERVATIVE deformation that injects non-directed stochastic
+redistribution, so it interpolates TOWARD Manna-like behaviour without BEING Manna --
+which is exactly why it can compactify the footprint yet not reach simple FSS. A literal
+Manna comparison would be a separate model, not a knob. (b) D saturates at ~ 1.87 at
+psto = 0.5, just short of compact 2, consistent with the residual deterministic backbone
+(only a fraction psto of each flux leaks; the rest still flows straight downhill). (c) the
+localized-compact reading (area ~ L^1.2) comes from a 3-point FSS (L = 96, 128, 192) with
+6 seeds; the direction is firm (drift did not flatten, D_mid far from 2) but the precise
+1.2 is soft. Pushing psto higher or to a fully random redistribution to probe the true
+Manna limit is left to future work. (d) the mean slope wanders mildly with psto (2.48 ->
+2.74 -> 2.54) but the SOC state persists at every psto, so the geometry comparison is
+clean.
+
+**Why this is interesting.** It converts the universality thread's central claim from a
+correlation ("the deterministic slope model is filamentary and unlike Manna") into a
+CAUSAL one ("the determinism is what makes it filamentary"), using the same tunable-knob
+falsification design the chapter has leaned on throughout (the S6/S11 self-test
+discipline, now turned on the model's own defining ingredient). And the result is richer
+than the clean crossover it was built to find: the model does not sit a small perturbation
+away from Manna, it sits robustly in its own anomalous place, and stochasticity
+compactifies its avalanches into localized splats rather than carrying it into the Manna
+class. The directed-sandpile dimension 3/2 appearing as a way-point near psto ~ 0.1 also
+ties the three reference sandpiles (filament 1, directed 3/2, compact 2) onto one
+continuous knob. figures/sandpile_stochastic.png.

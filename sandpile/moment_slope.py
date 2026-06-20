@@ -59,15 +59,19 @@ def log(msg):
     LOG.append(msg)
 
 
-def equilibrated_run(L, warm, window, seed):
+def equilibrated_run(L, warm, window, seed, psto=0.0):
     """Two-phase run: warm up to the SOC attractor with the series unrecorded (so
     a long, L-scaled warmup costs no memory), then measure a recorded window from
     the equilibrated state. Returns per-avalanche (E, S, A) and the final mean bond
-    slope (the stationarity gauge). Area needs track_area on the measurement leg."""
+    slope (the stationarity gauge). Area needs track_area on the measurement leg.
+
+    psto (additive, default 0.0) is the S15 stochastic-split knob; warmup and window
+    share it so the pile equilibrates under the same dynamics it is measured in."""
     warmed = run_sandpile2d_fast(L=L, eps=0.1, Zc=5.0, n_iter=warm, seed=seed,
-                                 record_series=False, S0=pyramid_ic(L, 4.5))
+                                 record_series=False, S0=pyramid_ic(L, 4.5), psto=psto)
     res = run_sandpile2d_fast(L=L, eps=0.1, Zc=5.0, n_iter=window, seed=seed + 101,
-                              record_series=True, S0=warmed['S'], track_area=True)
+                              record_series=True, S0=warmed['S'], track_area=True,
+                              psto=psto)
     E, S, T = measure_multi(res['disp'], res['act'])
     # area per avalanche: group the first-topple series the same way
     A, _, _ = measure_multi(res['area'], res['act'])
