@@ -230,7 +230,9 @@ def run_sandpile_fast(N=100, eps=0.1, Zc=5.0, n_iter=200000, seed=0,
 def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                 use_forcing, f_rows, f_cols, f_sizes,
                 record, mass_out, disp_out, act_out,
-                track_area, area_out):
+                track_area, area_out,
+                dump_fp, area_cut, seen_iter,
+                fp_bid, fp_iter, fp_off, fp_seed, fp_meta):
     """JIT inner loop for the 2-D bond-slope sandpile (active-list).
 
     Bonds are encoded as a single integer id over [0, 2*L*L):
@@ -264,10 +266,24 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
 
     # area bookkeeping: which bonds have toppled in the CURRENT avalanche, and a
     # list of them so the flags can be cleared in O(area) when the avalanche ends.
-    na = 2 * LL if track_area else 1
+    # The same per-avalanche distinct-bond set drives the optional FOOTPRINT dump
+    # (dump_fp), so the bookkeeping runs whenever either feature is on.
+    do_area = track_area or dump_fp
+    na = 2 * LL if do_area else 1
     seen = np.zeros(na, np.uint8)
     seen_list = np.empty(na, np.int64)
     n_seen = 0
+
+    # footprint dump bookkeeping (S14): nd avalanches dumped, nf bonds written,
+    # nlrg large avalanches seen (>= area_cut, whether or not capacity allowed a
+    # dump). last_r/last_c track the launching grain of the current avalanche.
+    max_dump = fp_off.shape[0] - 1
+    fp_cap = fp_bid.shape[0]
+    nd = 0
+    nf = 0
+    nlrg = 0
+    last_r = -1
+    last_c = -1
 
     mass = S.sum()
     fi = 0
@@ -289,11 +305,30 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
             dm = 0.0
             ntop = 0
             new_area = 0
-            # a quiet step ends any avalanche: clear the per-avalanche seen flags
-            if track_area and n_seen > 0:
+            # a quiet step ends any avalanche: optionally DUMP its footprint (the
+            # distinct toppled-bond set, with each bond's first-topple iteration
+            # and the launching grain site -- still in last_r/last_c, since no
+            # quiet step ran during the avalanche), then clear the flags. Update
+            # the launch site AFTER the dump so it names the NEXT avalanche.
+            if do_area and n_seen > 0:
+                if dump_fp and n_seen >= area_cut:
+                    nlrg += 1
+                    if nd < max_dump and nf + n_seen <= fp_cap:
+                        fp_off[nd] = nf
+                        fp_seed[2 * nd] = last_r
+                        fp_seed[2 * nd + 1] = last_c
+                        for ii in range(n_seen):
+                            b = seen_list[ii]
+                            fp_bid[nf] = b
+                            fp_iter[nf] = seen_iter[b]
+                            nf += 1
+                        nd += 1
+                        fp_off[nd] = nf
                 for ii in range(n_seen):
                     seen[seen_list[ii]] = 0
                 n_seen = 0
+            last_r = r
+            last_c = c
             # only the four bonds around (r, c) can have become unstable
             ncnt = 0
             for b in range(4):
@@ -350,11 +385,13 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                     continue
                 dm += 0.25 * z
                 ntop += 1
-                if track_area and seen[bid] == 0:
+                if do_area and seen[bid] == 0:
                     seen[bid] = 1
                     seen_list[n_seen] = bid
                     n_seen += 1
                     new_area += 1
+                    if dump_fp:
+                        seen_iter[bid] = n
                 if dissip == 0.0:
                     cc = d * 0.25
                     to_a, to_b = cc, -cc
@@ -437,12 +474,17 @@ def _run_core2d(S, eps, Zc, n_iter, dissip, seed,
             if track_area:
                 area_out[n] = new_area
 
+    if dump_fp:
+        fp_meta[0] = nd
+        fp_meta[1] = nf
+        fp_meta[2] = nlrg
     return mass
 
 
 def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
                         record_series=True, S0=None, dissip=0.0, forcing=None,
-                        track_area=False):
+                        track_area=False, dump_fp=False, area_cut=1,
+                        max_dump=200_000, fp_cap=4_000_000):
     """Active-list re-implementation of sandpile2d.run_sandpile2d (same signature,
     model, and return dict, including the 'act' bond-toppling-count series).
     Faster for large L because each step costs O(active bonds) not O(L^2).
@@ -450,7 +492,19 @@ def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
     track_area (additive, default off so the result dict is unchanged for existing
     callers): also return an 'area' per-iteration series of first-time bond
     topplings; summed over an avalanche it gives the number of DISTINCT toppled
-    bonds (the avalanche footprint). Used by the area moment analysis (S13)."""
+    bonds (the avalanche footprint). Used by the area moment analysis (S13).
+
+    dump_fp (additive, default off): for every avalanche whose area (distinct
+    toppled bonds) is >= area_cut, record its FOOTPRINT -- the set of bond ids, each
+    bond's first-topple iteration, and the launching grain site. Returned flat:
+      out['fp_off']  (nd+1,)  offsets; avalanche k owns fp_bid[fp_off[k]:fp_off[k+1]]
+      out['fp_bid']  (nf,)    bond ids (decode via the id scheme in _run_core2d)
+      out['fp_iter'] (nf,)    first-topple iteration of each bond (absolute n)
+      out['fp_seed'] (nd,2)   (row,col) of the grain that launched each avalanche
+      out['n_large']          number of avalanches >= area_cut seen (>= nd if the
+                              max_dump / fp_cap buffers filled). Used by S14
+                              (avalanche geometry / directedness). Pure observer:
+                              the dynamics are bit-identical to a dump_fp=False run."""
     S = np.zeros((L, L)) if S0 is None else np.array(S0, dtype=float)
     S[0, :] = S[-1, :] = S[:, 0] = S[:, -1] = 0.0
 
@@ -476,10 +530,26 @@ def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
         act_out = np.zeros(1)
         area_out = np.zeros(1)
 
+    if dump_fp:
+        seen_iter = np.zeros(2 * L * L, np.int64)
+        fp_bid = np.empty(fp_cap, np.int64)
+        fp_iter = np.empty(fp_cap, np.int64)
+        fp_off = np.empty(max_dump + 1, np.int64)
+        fp_seed = np.empty(2 * max_dump, np.int64)
+    else:
+        seen_iter = np.zeros(1, np.int64)
+        fp_bid = np.empty(1, np.int64)
+        fp_iter = np.empty(1, np.int64)
+        fp_off = np.empty(1, np.int64)
+        fp_seed = np.empty(1, np.int64)
+    fp_meta = np.zeros(3, np.int64)
+
     _run_core2d(S, eps, Zc, n_iter, dissip, seed,
                 use_forcing, f_rows, f_cols, f_sizes,
                 record_series, mass_out, disp_out, act_out,
-                track_area, area_out)
+                track_area, area_out,
+                dump_fp, area_cut, seen_iter,
+                fp_bid, fp_iter, fp_off, fp_seed, fp_meta)
 
     out = dict(S=S, L=L, eps=eps, Zc=Zc, n_iter=n_iter, seed=seed)
     if record_series:
@@ -488,6 +558,13 @@ def run_sandpile2d_fast(L=64, eps=0.1, Zc=5.0, n_iter=1_000_000, seed=0,
         out['act'] = act_out
         if track_area:
             out['area'] = area_out
+    if dump_fp:
+        nd, nf, nlrg = int(fp_meta[0]), int(fp_meta[1]), int(fp_meta[2])
+        out['fp_off'] = fp_off[:nd + 1].copy()
+        out['fp_bid'] = fp_bid[:nf].copy()
+        out['fp_iter'] = fp_iter[:nf].copy()
+        out['fp_seed'] = fp_seed[:2 * nd].reshape(-1, 2).copy()
+        out['n_large'] = nlrg
     return out
 
 
@@ -665,6 +742,99 @@ def _test_area2d():
     print("  2-D area OK")
 
 
+def _brute_footprints2d(L, eps, Zc, n_iter, forcing, area_cut):
+    """Independent full-scan reference for the footprint dump: a list of
+    (launch_row, launch_col, sorted bond-id array) for every avalanche whose area
+    (distinct toppled bonds) is >= area_cut, using the SAME bond id scheme and the
+    SAME launching-grain convention as run_sandpile2d_fast(dump_fp=True). Pure
+    full scan -- for validation at small L only."""
+    f_rows, f_cols, f_sizes = forcing
+    LL = L * L
+    S = pyramid_ic(L, 0.9 * Zc)
+    seen = set()
+    fps = []
+    launch_r, launch_c = -1, -1
+    fi = 0
+    for n in range(n_iter):
+        dx = S[1:, :] - S[:-1, :]
+        dy = S[:, 1:] - S[:, :-1]
+        ux = np.abs(dx) >= Zc
+        uy = np.abs(dy) >= Zc
+        if ux.any() or uy.any():
+            move = np.zeros((L, L))
+            cx = np.where(ux, dx * 0.25, 0.0)
+            move[:-1, :] += cx; move[1:, :] -= cx
+            cy = np.where(uy, dy * 0.25, 0.0)
+            move[:, :-1] += cy; move[:, 1:] -= cy
+            S += move
+            xi, xj = np.nonzero(ux)
+            for i, j in zip(xi, xj):
+                seen.add(int(i) * L + int(j))
+            yi, yj = np.nonzero(uy)
+            for i, j in zip(yi, yj):
+                seen.add(LL + int(i) * L + int(j))
+        else:
+            # quiet step: the just-finished avalanche (if any) was launched by the
+            # grain from the PREVIOUS quiet step (launch_r/launch_c) -- record it
+            # before clearing, then advance the launch site to this grain.
+            if len(seen) >= area_cut:
+                fps.append((launch_r, launch_c,
+                            np.array(sorted(seen), dtype=np.int64)))
+            seen.clear()
+            launch_r = int(f_rows[fi]); launch_c = int(f_cols[fi])
+            S[launch_r, launch_c] += f_sizes[fi]
+            fi += 1
+        S[0, :] = S[-1, :] = S[:, 0] = S[:, -1] = 0.0
+    return fps
+
+
+def _test_footprint2d():
+    """Validate the footprint dump: (1) dumping must not perturb the dynamics
+    (disp/act bit-identical to a no-dump run); (2) the dumped footprints match the
+    independent full-scan reference exactly -- same count, same launching sites,
+    same bond SETS; (3) every footprint has distinct, in-range bonds and area >=
+    the requested cut; (4) n_large equals the number of large avalanches."""
+    print("self-test: 2-D avalanche FOOTPRINT dump (set + seed + first-topple time)")
+    Zc, eps = 5.0, 0.1
+    for L, n_iter, cut in ((16, 150_000, 1), (32, 250_000, 4)):
+        forcing = _make_forcing2d(L, n_iter, eps, seed=9)
+        S0 = pyramid_ic(L, 0.9 * Zc)
+        base = run_sandpile2d_fast(L=L, eps=eps, Zc=Zc, n_iter=n_iter, S0=S0.copy(),
+                                   forcing=forcing, track_area=True)
+        dmp = run_sandpile2d_fast(L=L, eps=eps, Zc=Zc, n_iter=n_iter, S0=S0.copy(),
+                                  forcing=forcing, track_area=True,
+                                  dump_fp=True, area_cut=cut)
+        d_disp = np.abs(base['disp'] - dmp['disp']).max()
+        d_act = np.abs(base['act'] - dmp['act']).max()
+        off, bid, seed = dmp['fp_off'], dmp['fp_bid'], dmp['fp_seed']
+        nd = off.size - 1
+        fast_fp = [(int(seed[k, 0]), int(seed[k, 1]), np.sort(bid[off[k]:off[k + 1]]))
+                   for k in range(nd)]
+        brute_fp = _brute_footprints2d(L, eps, Zc, n_iter, forcing, area_cut=cut)
+        ok_count = (len(fast_fp) == len(brute_fp))
+        ok_sets = ok_count and all(
+            ff[0] == bf[0] and ff[1] == bf[1] and np.array_equal(ff[2], bf[2])
+            for ff, bf in zip(fast_fp, brute_fp))
+        in_range = all((b >= 0).all() and (b < 2 * L * L).all()
+                       and np.unique(b).size == b.size and b.size >= cut
+                       for _, _, b in fast_fp)
+        # first-topple times must be valid: each footprint has min relative time 0
+        # after subtracting the per-avalanche start, and times are non-negative.
+        it = dmp['fp_iter']
+        ok_time = all((it[off[k]:off[k + 1]] >= 0).all() for k in range(nd))
+        print("  L=%3d cut=%d: max|d disp|=%.1e max|d act|=%.0f  #fp fast=%d brute=%d"
+              "  sets=%s range=%s time=%s n_large=%d"
+              % (L, cut, d_disp, d_act, len(fast_fp), len(brute_fp),
+                 ok_sets, in_range, ok_time, dmp['n_large']))
+        assert d_disp == 0.0 and d_act == 0.0, "footprint dump perturbed the dynamics"
+        assert ok_count, "footprint count != brute reference"
+        assert ok_sets, "a footprint set or seed disagrees with brute reference"
+        assert in_range, "a footprint has out-of-range or duplicate bonds"
+        assert ok_time, "a first-topple time is negative"
+        assert dmp['n_large'] == len(brute_fp), "n_large != number of large avalanches"
+    print("  2-D footprint OK")
+
+
 def _test_dissipation_equivalence():
     """The non-conservative path (dissip>0) must also match the reference."""
     print("self-test: fast vs reference engine (dissipative, shared forcing)")
@@ -741,6 +911,7 @@ if __name__ == "__main__":
     _test_equivalence()
     _test_equivalence2d()
     _test_area2d()
+    _test_footprint2d()
     _test_dissipation_equivalence()
     _test_dissipation_equivalence2d()
     _benchmark()

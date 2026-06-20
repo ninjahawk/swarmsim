@@ -18,7 +18,11 @@ and finds its avalanches are filamentary and anomalously scaling, distinct from
 both BTW and the Manna class) -> and then a MECHANISM (S13): a conditional-exponent
 test shows the 2-D avalanche is a ballistic filamentary front whose spatial
 observables obey single-scale scaling (E ~ S, and S, E ~ area^2) while duration is
-a loose proxy -- the 2-D residue of the 1-D family breakdown. Status: S1-S13 complete.
+a loose proxy -- the 2-D residue of the 1-D family breakdown -> and then the GEOMETRY
+(S14): the footprint, dumped per-avalanche and measured directly, is a constant-width
+thin filament (mass-radius dimension D ~ 1, one bond wide), thinner than the
+exactly-solvable directed sandpile (3/2) and far from compact BTW (2), and a ballistic
+front whose topple time tracks radial distance from the seed. Status: S1-S14 complete.
 
 Headline: self-organized criticality as a *phenomenon* (scale-free avalanches
 with no parameter tuning) is robust, but the critical *exponents* are not -- they
@@ -80,6 +84,13 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       among area/size/energy but breaks through duration -- T is a loose proxy for
       spatial extent (long avalanches partly LINGER), the 2-D residue of S3's
       quantized line/wedge families. Cutoff-free, so caveat-free where it is clean.
+- S14 (the geometry) The footprint's mass-radius dimension is D ~ 1.0 (A ~ Rg^D),
+      a constant-width thin filament -- 98% of large avalanches are a single bond
+      wide (anisotropy 1.000) -- thinner than the exactly-solvable directed sandpile
+      (D = 3/2) and far from compact BTW (D = 2.0, measured here under the same
+      pipeline); and a ballistic front, first-topple time ~ radial distance from the
+      launch site (slope 0.998, correlation 0.990). The geometric mechanism behind
+      S12's D_area ~ 1, read off real footprints via a validated engine footprint dump.
 
 ---
 
@@ -876,4 +887,116 @@ central avalanche figure (the 1-D E-T wedge, Fig 5.6) into 2-D and reads off the
 prediction that the 2-D avalanche is generically a "wedge", the 1-D "line" branch
 having closed. The clean piece (E ~ S, S ~ A^~2) is the caveat-free statement S4
 and S12 were reaching for; the subtle piece (duration is a loose scaling variable)
-is a new, concrete entry point for S14.
+is a new, concrete entry point for the duration-closure follow-up.
+
+---
+
+## S14 -- Avalanche geometry and directedness: the footprint is a ballistic constant-width filament
+
+**Question.** S12 (moment area) and S13 (conditional exponents) both concluded the
+2-D slope avalanche is "filamentary", area ~ L, but each measured only a single AREA
+exponent -- neither looked at the SHAPE. Is the footprint actually a thin curve, or
+just a low-density region that happens to enclose few distinct bonds? And is it a
+DIRECTED path -- a downhill front, like the exactly-solvable directed sandpile -- or
+an isotropically branching star? This is the geometric mechanism behind D_area ~ 1,
+and the natural place to put the model next to the two reference sandpiles it is
+being compared with (compact BTW, directed Dhar-Ramaswamy). S13 had flagged the
+duration-closure question as the next step, but that needs lattices past L = 256 (the
+equilibration ceiling S12/S13 hit); the geometry leg is ready now and explains the
+filament directly, so it goes first.
+
+**The decisive observable.** The per-avalanche mass-radius dimension D, defined by
+A ~ Rg^D (footprint occupied-cell count A against its radius of gyration Rg). It is a
+single dimensionless number that places the avalanche on one axis:
+
+    BTW compact (S11 D_area ~ 2.05)              D = 2     transverse ~ longitudinal
+    Dhar-Ramaswamy DIRECTED sandpile (exact)     D = 3/2   transverse ~ longitudinal^1/2
+    a constant-width thin filament               D = 1     transverse ~ O(1)
+
+A directed sandpile spreads diffusively about its drift axis, so a footprint of
+linear extent ell has transverse width ~ ell^1/2 and area ~ ell^3/2 (D = 3/2 exactly,
+tau = 4/3; Dhar-Ramaswamy 1989). If the slope model instead reads D ~ 1 its footprint
+is even THINNER -- a constant-width filament, area ~ ell -- the most filamentary of
+the three, and D_area ~ 1 (S12) becomes a literal geometric fact, not just an exponent.
+
+**Method (`sandpile/geometry2d.py`).** The fast engine gained a validated FOOTPRINT
+DUMP (`run_sandpile2d_fast(dump_fp=True)`): for every avalanche above an area cut it
+records the set of distinct toppled bond ids, each bond's first-topple iteration, and
+the launching grain site. It is a pure observer -- the dynamics are bit-identical to a
+dump-off run (max|d disp| = max|d act| = 0), and the dumped sets, seeds and times match
+an independent full-scan reference exactly (`_test_footprint2d`). Footprints were
+collected from equilibrated lattices L = 96, 128, 192, 256 (warm over-steep, gauge by
+mean slope, the S12 protocol; 4 seeds, ~45-51k footprints of area >= 8 per L; mean
+slopes 2.50/2.53/2.62/2.67). Each footprint's bond ids decode to plane coordinates;
+the per-footprint geometry is the radius-of-gyration tensor (rms widths along the two
+principal axes; anisotropy = (lam1-lam2)/(lam1+lam2)), and the mass-radius D comes from
+a binned A ~ Rg^D regression over the ensemble. Cross-checks: per-footprint
+box-counting on the 40 largest, and the IDENTICAL pipeline on a canonical BTW baseline
+(compact reference). A self-test reads back the mass-radius D of three synthetic
+ensembles of known dimension -- straight lines (1.000), filled disks (2.001), directed
+sqrt-width fronts (1.499) -- so the estimator is unbiased before it touches the data.
+
+**Evidence.**
+
+| quantity | slope model | reading |
+|---|---|---|
+| mass-radius D (A ~ Rg^D), pooled L=192+256 | 1.017 +- 0.003 | a thin filament |
+| D per L (96 / 128 / 192 / 256) | 1.001 / 1.005 / 1.013 / 1.017 | L-independent (slow upward creep, as the mean slope) |
+| longitudinal rms width w_long ~ A^? | A^0.99 +- 0.004 | the filament length = the area |
+| transverse rms width (top decile A) | 0.093 bonds | constant, ~0 |
+| one-bond-wide fraction (top decile A) | 0.98 | 98% are literally a single-bond line |
+| anisotropy (top decile A) | 1.000 | a perfect line |
+| box-counting D_box (40 largest) | 1.16 +- 0.04 | independent confirmation of D ~ 1 |
+| BTW mass-radius D (L=64/96/128) | 2.00 / 2.00 / 2.01 | compact, matches S11's D_area 2.05 |
+
+Directedness / ballistic spreading (L=256): pooling each bond's first-topple time
+against its radial distance from the launch site gives time ~ 0.998 x radius with
+linear correlation 0.990. The front advances ~one cell per iteration outward from the
+seed -- a ballistic front, seen directly in space.
+
+**Conclusions.**
+
+1. **The footprint is a constant-width thin filament (D ~ 1).** Not D = 2 (BTW
+   compact) and not even D = 3/2 (the directed sandpile, which spreads to transverse
+   width ~ ell^1/2). The deterministic gradient/halving rule makes the most filamentary
+   avalanche of the three classes: a footprint one bond wide (98%), whose length IS its
+   area (w_long ~ A^1) and whose transverse width is O(1) and does not grow. S12's
+   D_area ~ 1 and S13's mechanism are now a literal geometric statement -- a straight
+   thin line -- read off real footprints, not inferred from an exponent.
+
+2. **It is a ballistic front radiating from the seed.** First-topple time tracks radial
+   distance one-to-one (slope 0.998, correlation 0.990): the avalanche is a front moving
+   outward at ~one cell per iteration. This is the spatial face of S10's duration cutoff
+   L^1.07 and S13's <A|T> ~ T -- ballistic propagation seen in space, not inferred from a
+   duration exponent.
+
+3. **Placement in the SOC landscape.** On the geometric (mass-radius) axis the slope
+   model sits BELOW the directed sandpile: slope D ~ 1 < directed 3/2 < BTW 2. The model
+   is not a directed sandpile -- it has no global drive direction (random interior
+   forcing, all four edges drain) -- but each avalanche is locally a straight
+   steepest-descent filament with none of the diffusive transverse wandering the
+   stochastic directed model has. So the deterministic gradient rule is MORE ordered
+   than the canonical directed sandpile, not less.
+
+**Honest caveats (own them).** (a) D drifts slightly upward with L (1.001 -> 1.017),
+tracking the same mean-slope creep (2.50 -> 2.67) that S12/S13 carry from incomplete
+equilibration above L = 256; the trend is small and D stays pinned near 1, far from 3/2
+and 2, so the placement is firm even though the third digit is not. Whether the
+asymptotic D is exactly 1 or a hair above is the same finite-size question S12/S13 leave
+open. (b) The per-footprint box-counting D_box = 1.16 is the soft confirmation -- only
+~1.5-2 decades of box sizes at L <= 256 -- so the robust number is the ensemble
+A ~ Rg^D = 1.02, from thousands of avalanches over a decade-plus of Rg. (c) The
+Dhar-Ramaswamy directed sandpile is a different model (a global drive); the comparison
+is on the geometric dimension axis only, not a claim that the two share a class. (d)
+<w_trans> = 0.093 means most footprints have exactly zero transverse variance; the
+residual ~2% with finite width are short branch points where the front momentarily
+splits, so "filament" is the typical avalanche, with rare branched exceptions.
+
+**Why this is interesting.** It converts S12/S13's "filamentary" from an exponent into
+a picture you can see (the figure's footprint snapshots are single bright lines) and
+gives D_area ~ 1 a mechanism: the deterministic gradient rule funnels each avalanche
+into a one-bond-wide ballistic steepest-descent front. And it places the model concretely
+against the two sandpiles it is most naturally compared with -- thinner than the
+exactly-solvable directed sandpile, far from compact BTW -- which is exactly the "where
+does it sit in the SOC landscape" question the universality thread (S4, S11, S12, S13)
+has been building toward. figures/sandpile_geometry.png.

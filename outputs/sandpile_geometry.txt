@@ -1,0 +1,58 @@
+======================================================================
+S14 -- AVALANCHE GEOMETRY AND DIRECTEDNESS (slope model vs BTW vs directed)
+======================================================================
+Mass-radius dimension D in A ~ Rg^D places the avalanche footprint:
+  BTW compact D=2 | Dhar-Ramaswamy directed D=3/2 | filament D=1
+
+Running equilibrated 2-D slope lattices (warm unrecorded, then dump footprints)...
+  L=  96 :  44635 footprints (>=8 bonds, 4 seeds)  mean-slope=2.50+-0.02
+           mass-radius D = 1.001 +- 0.002   A_max=130 Rg_max=15.1  (4s)
+  L= 128 :  50949 footprints (>=8 bonds, 4 seeds)  mean-slope=2.53+-0.00
+           mass-radius D = 1.005 +- 0.002   A_max=177 Rg_max=21.9  (3s)
+  L= 192 :  50582 footprints (>=8 bonds, 4 seeds)  mean-slope=2.62+-0.01
+           mass-radius D = 1.013 +- 0.002   A_max=331 Rg_max=34.0  (5s)
+  L= 256 :  48939 footprints (>=8 bonds, 4 seeds)  mean-slope=2.67+-0.02
+           mass-radius D = 1.017 +- 0.003   A_max=447 Rg_max=47.4  (8s)
+
+[L-independence of the mass-radius dimension D (A ~ Rg^D)]
+  L       D +- se
+  96      1.001 +- 0.002
+  128     1.005 +- 0.002
+  192     1.013 +- 0.002
+  256     1.017 +- 0.003
+  (a geometric LAW is intrinsic if D is L-independent; D->1 = thin filament)
+
+[slope-model footprint geometry, pooled L=192+256]
+  mass-radius dimension   D(A~Rg^D)   = 1.017 +- 0.003   (BTW 2, directed 3/2, filament 1)
+  longitudinal rms width  w_long ~ A^ 0.988 +- 0.004   (the filament length, tracks area)
+  transverse  rms width   <w_trans> (top decile A) = 0.093 bonds  (constant ~0, not scaling)
+  elongation              one-bond-wide fraction (top decile A) = 0.98 ; anisotropy = 1.000 (1=line)
+  -> transverse width is O(1), so the aspect ratio grows as w_long ~ A^0.99
+  per-footprint box-counting D_box (40 largest) = 1.16 +- 0.04  (independent of A~Rg^D)
+
+[directedness / ballistic spreading, L=256]
+  first-topple time vs radial distance from launch site:
+    time ~ 0.998 * radius   (linear corr = 0.990) -> ballistic front (time ~ distance)
+
+Running BTW baseline (compact reference, same geometry pipeline)...
+  BTW L=  64 :  26432 footprints   mass-radius D = 2.001 +- 0.005
+  BTW L=  96 :  17987 footprints   mass-radius D = 2.004 +- 0.003
+  BTW L= 128 :  11687 footprints   mass-radius D = 2.011 +- 0.005
+
+[verdict -- placement on the compact/directed/filament axis]
+  mass-radius dimension D (A ~ Rg^D):
+    slope model   D = 1.02 +- 0.00
+    BTW (here)    D = 2.01 +- 0.00   (expect ~2, compact; S11 D_area 2.05)
+    directed (DR) D = 1.50           (exact: transverse ~ longitudinal^1/2)
+    filament      D = 1.00           (constant-width thin front)
+  -> D ~ 1: the slope avalanche is a CONSTANT-WIDTH thin filament -- THINNER
+    than even the directed sandpile (3/2). The deterministic gradient rule
+    makes the most filamentary avalanche of the three; D_area ~ 1 (S12) is
+    geometric, not just an exponent.
+  shape: w_long ~ A^0.99 (length = area); transverse width O(1) (98% one bond wide,
+    anisotropy 1.000) -> aspect ratio grows ~A^0.99. A thin, essentially straight filament.
+  drive: time ~ radius (corr 0.99) -- a ballistic front radiating from the seed.
+
+saved figures\sandpile_geometry.png
+
+S14 COMPLETE
