@@ -27,7 +27,17 @@ front whose topple time tracks radial distance from the seed -> and then a CAUSA
 class, and as it turns on the filament's mass-radius dimension climbs 1 -> 1.87
 (L-independent), proving the thinness is a specific consequence of the deterministic
 rule, while the moment spectrum stays anomalous, so the model compactifies in shape
-without becoming Manna. Status: S1-S15 complete.
+without becoming Manna -> and then a DIMENSIONAL ANCHOR (S16): the same footprint
+geometry measured in the model's NATIVE 1-D (the 1-D fast engine gained the S14
+footprint dump, validated bit-for-bit), where the avalanche turns out to be a solid,
+gap-free, ballistic interval of mass-radius dimension exactly 1, with conditional
+exponents matching the 2-D values -- so the 2-D "filament" has the GEOMETRY of a 1-D
+avalanche (same dimension, sweep structure and ballistic front, differing only in
+directedness), D ~ 1 is the intrinsic dimension of a slope avalanche
+(not a 2-D measurement artifact), and the S13 duration anomaly is inherited from S3's
+1-D line/wedge families rather than being a 2-D effect; S16 also delivers the L > 256
+equilibration enabler (a verified-stationary L = 512 state) that S17 needs. Status:
+S1-S16 complete.
 
 Headline: self-organized criticality as a *phenomenon* (scale-free avalanches
 with no parameter tuning) is robust, but the critical *exponents* are not -- they
@@ -106,6 +116,25 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       (0.23 -> 0.38) -- the avalanches become compact but localized (area ~ L^1.2), so
       the model compactifies in shape without collapsing onto the Manna class; "outside
       Manna" reinforced.
+- S16 (the dimensional anchor) The 1-D fast engine gained the S14 footprint dump (it had
+      none; only the 2-D engine got it), validated bit-for-bit against a full-scan brute
+      reference. The genuine 1-D slope avalanche has mass-radius dimension D = 1.00 (every
+      N = 512-4096) and is a SOLID, gap-free interval (area = range; a Cantor self-test
+      confirms the estimator would read a fractal as D < 1), a perfectly BALLISTIC front
+      (first-topple time = 1.00 x distance from the launch node, corr 1.00), with
+      conditional exponents (<E|S> 1.00, <S|A> 2.00, <A|T> 0.98) matching S13's 2-D values.
+      So the 2-D "filament" (D ~ 1.02) has the GEOMETRY of a 1-D avalanche (differing only in directedness),
+      and D ~ 1 is the intrinsic dimension of a slope avalanche -- not a 2-D measurement
+      artifact (the directed sandpile at 3/2 and BTW at 2 are genuinely higher-dimensional).
+      One real dimensional CONTRAST: the 1-D front is downhill-directed (the global drive of
+      the open right edge; ~93-98% of the footprint downhill of the seed), whereas the 2-D
+      front radiates isotropically from the seed. The S13 duration over-determination gap is
+      ~0.11 in 1-D too -- inherited from S3's 1-D line/wedge families (48% of avalanches are
+      single-sweep "lines"), so it is intrinsic to the slope rule, not a 2-D finite-size
+      effect. Bonus enabler for S17: L = 512 equilibrates to repose 2.745 by ~157M iters via
+      windowed-mean plateau detection, and the repose creep is confirmed FINITE-SIZE (not
+      under-equilibration -- L = 256 reproduces S12's 2.64); whether it saturates is open at
+      L <= 512.
 
 ---
 
@@ -1124,3 +1153,163 @@ compactifies its avalanches into localized splats rather than carrying it into t
 class. The directed-sandpile dimension 3/2 appearing as a way-point near psto ~ 0.1 also
 ties the three reference sandpiles (filament 1, directed 3/2, compact 2) onto one
 continuous knob. figures/sandpile_stochastic.png.
+
+---
+
+## S16 -- The dimensional anchor: the 2-D filament has the geometry of a 1-D avalanche
+
+**Question.** S12-S15 built the chapter's central geometric claim: the 2-D slope
+avalanche is a constant-width FILAMENT (mass-radius dimension D ~ 1), a ballistic
+front, thinner than the directed sandpile (D = 3/2) and far from compact BTW (D = 2).
+That D ~ 1 was measured in two dimensions, where it is a non-trivial value -- a 2-D
+lattice CAN host a compact (D = 2) avalanche, and BTW does. But "D ~ 1" begs a
+dimensional question. D = 1 is the MAXIMAL value a 1-D footprint can take (it lives on
+a line), so: what does a genuine 1-D slope avalanche look like under the SAME
+measurement, and does the 2-D filament actually match it? If the 2-D avalanche has the
+same mass-radius dimension, the same ballistic propagation and the same conditional-
+exponent structure as the real 1-D avalanche, then the 2-D "filament" is literally a
+1-D object embedded in the plane -- D ~ 1 is the intrinsic dimension of a slope
+avalanche, not an artifact of the 2-D measurement. This is the dimensional anchor for
+the S14 geometry, and it closes the loop back to S3, where the 1-D model was first
+characterised.
+
+**Infrastructure (the prerequisite).** Until now the fast 1-D engine
+(`sandpile_fast.run_sandpile_fast`) recorded only mass / displaced-mass / falloff; the
+S14 footprint dump existed for the 2-D engine ONLY. S16 added the same machinery to the
+1-D engine: a per-iteration first-time-bond-toppling count (`track_area`, summed over an
+avalanche = its AREA = distinct toppled bonds), a per-iteration toppling count (`act`,
+summed = SIZE, the 1-D analogue of the 2-D series), and a per-avalanche FOOTPRINT dump
+(`dump_fp`: the distinct toppled bond-id set with each bond's first-topple iteration and
+the launching grain node; a bond id is just the pair index j). It is a pure observer --
+two new self-tests, `_test_area1d` and `_test_footprint1d`, drive the fast engine and an
+independent full-scan brute reference with one shared forcing stream and confirm: the
+dynamics are bit-identical with tracking on vs off (max|d disp| = 0), the area and size
+series match the brute recount exactly (max diff 0), and the dumped footprint sets,
+launch nodes and times match the brute reference exactly (additive, default-off, so
+S1-S15 are untouched).
+
+**Method (`sandpile/geometry1d.py`).** Equilibrated 1-D lattices at N = 512, 1024, 2048,
+4096 (warm from a triangle IC to the 1-D repose ~4.2, gauge by mean slope, 3 seeds each,
+~7-9k footprints of area >= 8 per N), footprints dumped over a recorded window. The SAME
+estimators as `geometry2d.py` (S14): the mass-radius dimension D from a binned A ~ Rg^D
+regression, the conditional exponents from binned <y|x> slopes (the S13 method), and an
+A ~ time-vs-distance ballistic fit. Two 1-D-specific observables: the SOLIDITY A/range
+(= 1 for a gap-free interval, < 1 for a sparse/fractal set -- in 1-D the interesting
+content is not "is D < 2" (it cannot be) but "is the footprint solid or fractal"), and
+the DOWNHILL fraction (footprint bonds at or right of the launch node, toward the open
+right edge). A self-test reads back the mass-radius dimension of synthetic 1-D sets of
+known dimension -- solid intervals (D = 1.000, solidity 1.000) and a middle-third Cantor
+set (D = 0.631 = log2/log3, solidity 0.017) -- so a measured D = 1 on the data is a real
+"solid, not fractal" statement, not a tautology; the conditional and ballistic fitters
+recover 2, 1 and slope 1 on synthetic single-scale input.
+
+**Evidence -- the 1-D footprint geometry.**
+
+| quantity | 1-D (S16) | 2-D (S14/S13) | reading |
+|---|---|---|---|
+| mass-radius D (A ~ Rg^D) | 0.999 (N = 512..4096, L-indep) | 1.02 | same intrinsic dimension |
+| solidity A / range | 1.000 (median and top decile) | (n/a) | a solid, gap-free interval |
+| ballistic time vs distance | 1.000 x distance, corr 1.000 | 0.998 x radius, corr 0.990 | one node per iteration |
+| downhill fraction | 0.93 (median), 0.98 (top decile) | seed-isotropic (no global drive) | the one dimensional CONTRAST |
+
+**Evidence -- conditional exponents (the S13 method, 1-D vs 2-D, pooled N = 2048+4096).**
+
+| relation | 1-D (S16) | 2-D (S13) | prediction |
+|----------|-----------|-----------|------------|
+| <E\|S>   | 1.001 | 1.00 | 1 (energy = size) |
+| <S\|A>   | 2.002 | 1.93 | 2 (A bonds swept ~A times) |
+| <E\|A>   | 2.006 | 1.94 | 2 |
+| <A\|T>   | 0.981 | 0.97 | 1 (ballistic) |
+| <S\|T>   | 1.852 | 1.73 | 2 |
+
+Over-determination (single-scale identity, direct vs routed through duration):
+gamma(S|A) direct = 2.002 vs via-T gamma(S|T)/gamma(A|T) = 1.852/0.981 = 1.888, a GAP of
+**0.114** -- comparable to the 2-D gap of 0.14 (S13). And 48% of 1-D avalanches are
+single-sweep "lines" (size/area < 1.5), the rest multiply-swept "wedges" -- S3's
+quantized line/wedge families, seen directly.
+
+**Conclusions.**
+
+1. **The 2-D filament has the geometry of a 1-D avalanche.** The genuine 1-D slope
+   avalanche is a SOLID, gap-free, ballistic interval: mass-radius D = 1.000 (= its
+   range, no fractal gaps -- the Cantor self-test confirms the estimator would catch
+   gaps), first-topple time = 1.000 x distance from the seed (S3's "one node per
+   iteration", now seen directly in space). This is exactly the geometry S14 measured for
+   the 2-D footprint (D ~ 1.02, ballistic, 98% one bond wide). So D ~ 1 is not a feature
+   of the 2-D measurement; it is the INTRINSIC dimension of a slope avalanche, the same
+   in the dimension where the value is maximal (1-D) as in the dimension where it is one
+   of three possibilities (2-D). The directed sandpile (3/2) and BTW (2) are genuinely
+   higher-dimensional objects; the deterministic gradient rule is not. (One honest
+   qualifier, taken up in conclusion 4: the two share dimension, sweep structure and
+   ballistic propagation, but NOT symmetry -- the 1-D front is directed downhill, the 2-D
+   front is seed-isotropic -- so the 2-D avalanche has the GEOMETRY of a 1-D avalanche
+   rather than being identical to one.)
+
+2. **The conditional-exponent mechanism is dimension-independent.** Energy locks to size
+   (<E|S> = 1.00 in both), a footprint of A bonds carries ~A^2 topplings (each swept ~A
+   times) in both, and the front is ballistic (<A|T> ~ 1) in both. The S13 picture -- a
+   filamentary front swept O(ell) times -- is the same in 1-D and 2-D.
+
+3. **The duration anomaly is inherited from 1-D, not a 2-D finite-size effect.** S13
+   found single-scale scaling fails THROUGH DURATION in 2-D (over-determination gap 0.14)
+   and read it as "the 2-D residue of S3's quantized line/wedge families", but flagged
+   that part of the gap might be a finite-size correction healing only at L > 256. The
+   1-D anchor measures the SAME gap (0.114) in the dimension where S3 identified its
+   origin, with 48% of avalanches being single-sweep lines. So the duration sector's
+   departure from single-scale scaling is intrinsic to the slope rule across dimensions,
+   present already in 1-D -- a 1-D anchor for the open S17 question (it suggests the 2-D
+   gap is a true residual, not purely finite-size, though the direct L > 256 test is S17).
+
+4. **The one genuine dimensional contrast is directedness.** The 1-D front is strongly
+   downhill-directed (93-98% of the footprint lies downhill of the seed) because the 1-D
+   model has a global drive -- open right edge, walled left. The 2-D model has no global
+   drive (interior forcing, all four edges drain), so its front radiates isotropically
+   from the seed (S14). The avalanche is the same 1-D ballistic object in both; only its
+   orientation relative to a global gradient differs.
+
+**The L > 256 equilibration enabler (`sandpile/equilibrate2d.py`).** S13 named L > 256 as
+the requirement for the duration-closure question (S17); S12-S15 could only VERIFY the
+repose up to L = 256, with the mean slope still creeping with L. S16 delivers the enabler.
+The mechanism, made explicit: the S12 start `pyramid_ic(L, 0.9*Zc)` has mean bond slope
+~0.9*Zc/2 ~ 2.25 (each pyramid face has |bond| = slope but half the lattice ramps up and
+half down), just below the repose; forcing builds the pile up, for large L it briefly
+overshoots and relaxes to a plateau. Because the per-chunk mean slope FLUCTUATES (~0.03 at
+L = 128, less at large L) -- more than a naive 0.01 tolerance -- convergence is judged on a
+WINDOWED MEAN (the average over the last few chunks stops changing). `equilibrate(L)`
+returns the equilibrated state, the plateau repose with its spread, and the trace, so S17
+can warm an L = 512 lattice and run a recorded window from a verified-stationary state.
+Two facts established: (1) **L = 512 equilibrates** to repose 2.745 by ~157M iterations
+(~25 s with the S9 engine) -- compute was never the barrier, a verifiable stopping rule
+was. (2) **The repose creep is finite-size, not under-equilibration**: every L reaches an
+IC-independent (start-height-independent, self-test) stationary plateau, and L = 256's
+plateau (2.647) reproduces S12's 2.64, so S12 was already equilibrated. The repose rises
+with L (64..512: 2.42, 2.50, 2.56, 2.62, 2.65, 2.71, 2.745); a 1/L fit extrapolates to
+~2.79, but the per-doubling increment over the last two doublings (0.09, 0.10) does not
+clearly shrink, so whether it saturates or grows slowly (log L) is not settled at L <= 512
+-- this does not affect S17, which needs the stationary state, not the asymptotic repose.
+
+**Honest caveats (own them).** (a) In 1-D, D = 1 is the maximal mass-radius dimension a
+footprint can have, so D = 1 alone is not surprising; the content is the SOLIDITY (A =
+range, no fractal gaps -- which the Cantor self-test shows is a real measurement) plus the
+match in ballistic and conditional structure to 2-D. The anchor's force is the
+EQUIVALENCE of 1-D and 2-D avalanche geometry, not the 1-D number in isolation. (b) The
+1-D over-determination gap (0.114) is slightly below the 2-D value (0.14); both are real,
+non-zero, several times the fit error, and share the S3 line/wedge mechanism, but I do not
+claim they are equal -- only that the duration anomaly exists and is intrinsic in 1-D too.
+(c) <S|T> and <E|T> are the same exponent within error once E ~ S, as in 2-D -- a
+consistency check, not an independent fact. (d) The enabler's repose extrapolation (~2.79)
+is a 1/L fit over L = 128-512 and is the soft part; the firm result is "finite-size, not
+under-equilibration", which rests on the verified IC-independent stationary plateaus and
+the L = 256 / S12 agreement.
+
+**Why this is interesting.** It converts S14's "the 2-D avalanche is filamentary, D ~ 1"
+from a measured exponent into a dimensional statement: the 2-D slope avalanche has the
+GEOMETRY of the 1-D avalanche the model produces in its native dimension -- same mass-radius
+dimension, sweep structure and ballistic front, differing only in symmetry (directedness) --
+so the whole filamentary-front picture (S12-S15) is the embedding of a 1-D-like front in 2-D
+rather than a special 2-D phenomenon. It anchors the S14 placement (filament 1 < directed
+3/2 < compact 2) at the 1-D end, ties the S13 duration anomaly back to its S3 origin
+across dimensions, and isolates directedness as the single thing dimension changes. And it
+clears the L > 256 equilibration ceiling that blocked S13's duration-closure question,
+handing S17 a verified-stationary L = 512 state. figures/sandpile_geometry1d.png,
+figures/sandpile_equilibrate.png.

@@ -1,0 +1,49 @@
+======================================================================
+S16 -- L>256 EQUILIBRATION ENABLER (verified repose by plateau detection)
+======================================================================
+Run the S12 pyramid IC forward in chunks, stop at a windowed-mean plateau.
+Gives S17 a VERIFIED-stationary state at L=512 (the L>256 enabler).
+
+Equilibrating each lattice to a windowed-mean plateau (tol=0.008, window=3)...
+  L=  64 : repose=2.4204 +- 0.026  (  60M iters, 6 chunks, converged=True, 1s)
+  L=  96 : repose=2.4976 +- 0.006  (  90M iters, 9 chunks, converged=True, 3s)
+  L= 128 : repose=2.5579 +- 0.012  (  60M iters, 6 chunks, converged=True, 2s)
+  L= 192 : repose=2.6177 +- 0.006  (  90M iters, 9 chunks, converged=True, 4s)
+  L= 256 : repose=2.6466 +- 0.021  (  90M iters, 9 chunks, converged=True, 4s)
+  L= 384 : repose=2.7050 +- 0.011  ( 150M iters, 15 chunks, converged=True, 12s)
+  L= 512 : repose=2.7448 +- 0.006  ( 157M iters, 10 chunks, converged=True, 21s)
+
+[converged repose vs L]
+  L      repose +- spread
+  64     2.4204 +- 0.026
+  96     2.4976 +- 0.006
+  128    2.5579 +- 0.012
+  192    2.6177 +- 0.006
+  256    2.6466 +- 0.021
+  384    2.7050 +- 0.011
+  512    2.7448 +- 0.006
+  per-DOUBLING increment:
+    64->128 : +0.137
+    128->256 : +0.089
+    256->512 : +0.098
+
+[what is resolved, and what is not]
+  RESOLVED -- the creep is NOT under-equilibration: every L reached an IC-
+  independent, stationary plateau (self-test), and L=256's converged repose
+  2.647 matches S12's 2.64 (fixed 30M budget), so S12 was already equilibrated.
+  So the repose's rise with L is a real property of the model, not a warmup
+  artifact -- the S12/S14 'is the creep finite-size or under-equilibration?'
+  caveat is answered: finite-size (real).
+  OPEN -- whether it SATURATES: a 1/L fit extrapolates to repose_inf ~ 2.79,
+  but the per-doubling increment over the last two doublings (0.09, 0.10) does
+  not clearly shrink, so saturation vs slow (log-L) growth is not settled at
+  L<=512. This does not affect S17 (which needs the stationary STATE, not the
+  asymptotic repose); flagged for any future even-larger-L run.
+
+[headline] L=512 equilibrates to repose 2.745 by 157M iters (~25s) -- S17 can
+  warm an L=512 lattice from a verified-stationary state via equilibrate().
+  Compute was never the limit; a verifiable stopping rule was.
+
+saved figures\sandpile_equilibrate.png
+
+S16 (enabler) COMPLETE

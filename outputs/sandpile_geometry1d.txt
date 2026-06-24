@@ -1,0 +1,63 @@
+======================================================================
+S16 -- THE 1-D DIMENSIONAL ANCHOR (footprint geometry of the slope avalanche)
+======================================================================
+Does the genuine 1-D slope avalanche have the SAME geometry the 2-D
+'filament' was measured to have (S14: mass-radius D ~ 1, ballistic)?
+If so, the 2-D avalanche is a 1-D object embedded in the plane.
+
+Running equilibrated 1-D lattices (warm unrecorded, then dump footprints)...
+  N=  512 :  33078 footprints (>=8 bonds, 3 seeds)  mean-slope=4.21+-0.01
+            mass-radius D = 0.999 +- 0.000   solidity A/range = 1.000   A_max=511  (5s)
+  N= 1024 :  30830 footprints (>=8 bonds, 3 seeds)  mean-slope=4.22+-0.00
+            mass-radius D = 0.999 +- 0.000   solidity A/range = 1.000   A_max=1023  (11s)
+  N= 2048 :  26442 footprints (>=8 bonds, 3 seeds)  mean-slope=4.23+-0.00
+            mass-radius D = 0.999 +- 0.000   solidity A/range = 1.000   A_max=2047  (32s)
+  N= 4096 :  17591 footprints (>=8 bonds, 3 seeds)  mean-slope=4.23+-0.00
+            mass-radius D = 0.999 +- 0.000   solidity A/range = 1.000   A_max=4095  (123s)
+
+[L-independence of the 1-D mass-radius dimension D (A ~ Rg^D)]
+  N        D +- se      solidity(med)
+  512      0.999 +- 0.000   1.000
+  1024     0.999 +- 0.000   1.000
+  2048     0.999 +- 0.000   1.000
+  4096     0.999 +- 0.000   1.000
+  (D = 1 AND solidity = 1 => a SOLID, gap-free interval, not a fractal)
+
+[1-D footprint geometry, pooled N=2048+4096]
+  mass-radius dimension D (A ~ Rg^D) = 0.999 +- 0.000   (2-D filament 1.02; BTW 2)
+  solidity A/range = 1.000 (median), 1.000 (top decile A)  (1 = a solid interval)
+  downhill fraction = 0.929 (median), 0.977 (top decile A)  (0.5 = symmetric, 1 = all downhill)
+  -> the 1-D avalanche is a SOLID interval (D = 1, no gaps), DOWNHILL-biased
+     (global drive: open right edge) -- contrast the 2-D seed-isotropic front.
+
+[ballistic spreading, N=4096]
+  first-topple time ~ 1.000 * distance from launch  (corr = 1.000)
+  -> one node per iteration, S3's claim seen directly in space (2-D: 0.998, 0.990)
+
+[conditional exponents (S13 method), 1-D vs 2-D]
+  relation     1-D       2-D (S13)
+  <E|S>        1.001     1.00      (energy = size)
+  <S|A>        2.002     1.93      (footprint of A bonds swept ~A times)
+  <E|A>        2.006     1.94
+  <A|T>        0.981     0.97      (ballistic, area = duration)
+  <S|T>        1.852     1.73
+  over-determination: gamma(S|A) direct = 2.002 vs via-T = 1.888  -> GAP 0.114  (2-D gap 0.14)
+  single-sweep 'line' family fraction (S/A < 1.5) = 0.476  (S3's line/wedge split)
+
+[verdict -- the dimensional anchor]
+  The 1-D avalanche footprint is a SOLID ballistic interval: mass-radius
+  D = 1.00 (= range, no gaps), time = 1.00 * distance. This is exactly the
+  geometry S14 measured for the 2-D 'filament' (D ~ 1.02, ballistic).
+  => The 2-D slope avalanche is geometrically a 1-D object embedded in the
+     plane; D ~ 1 is the intrinsic dimension of a slope avalanche, not a
+     2-D measurement artifact. The directed sandpile (3/2) and BTW (2) are
+     genuinely higher-dimensional; the deterministic gradient rule is not.
+  One genuine dimensional CONTRAST: the 1-D front is downhill-directed
+  (global drive), the 2-D front radiates isotropically from the seed.
+  The duration-sector anomaly (over-determination gap 0.11) matches the 2-D
+  gap (0.14): it is intrinsic to the slope rule (S3's 1-D line/wedge families),
+  not a 2-D finite-size artifact -- a 1-D anchor for the open S13/S17 question.
+
+saved figures\sandpile_geometry1d.png
+
+S16 COMPLETE
