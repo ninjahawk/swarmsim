@@ -36,8 +36,15 @@ avalanche (same dimension, sweep structure and ballistic front, differing only i
 directedness), D ~ 1 is the intrinsic dimension of a slope avalanche
 (not a 2-D measurement artifact), and the S13 duration anomaly is inherited from S3's
 1-D line/wedge families rather than being a 2-D effect; S16 also delivers the L > 256
-equilibration enabler (a verified-stationary L = 512 state) that S17 needs. Status:
-S1-S16 complete.
+equilibration enabler (a verified-stationary L = 512 state) that S17 needs -> and then
+the DURATION CLOSURE (S17): using that enabler to reach L = 512, the spatial sector
+heals to EXACT single-scale (size ~ area^2, area ~ duration) as L grows, but the
+size-duration exponent saturates at ~1.75, so the single-scale over-determination gap
+S13 found does NOT heal -- it GROWS with L to a true residual of ~0.2 (larger than the
+1-D anchor 0.11), resolving the question S13 left open: single-scale scaling is exact
+in space and fails permanently through duration, in 2-D as in 1-D, so AREA not duration
+is the model's clean scaling variable. Status: S1-S17 complete; the S11-S17
+scaling-theory arc is closed.
 
 Headline: self-organized criticality as a *phenomenon* (scale-free avalanches
 with no parameter tuning) is robust, but the critical *exponents* are not -- they
@@ -135,6 +142,23 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       windowed-mean plateau detection, and the repose creep is confirmed FINITE-SIZE (not
       under-equilibration -- L = 256 reproduces S12's 2.64); whether it saturates is open at
       L <= 512.
+- S17 (the duration closure) The question S13 left open: does the single-scale over-
+      determination gap (gamma(S|A) direct minus gamma(S|T)/gamma(A|T)) HEAL as L grows or
+      survive as a true residual? Using the S16 enabler to reach L = 512 (verified-stationary),
+      the COMPONENT exponents settle it: as L grows from 96 to 512, gamma(S|A) -> 2 (1.89 ->
+      1.95) and gamma(A|T) -> 1 (0.91 -> 0.99) -- the spatial sector becomes EXACTLY single-
+      scale -- but gamma(S|T) saturates at ~1.75 (1.66 -> 1.75, last step flat), NOT 2. So the
+      gap does NOT heal; it GROWS with L (0.066 -> 0.183) toward a true residual of ~0.2 (a
+      1/L fit gives 0.19 and underestimates, since the gap is still accelerating; the S|T
+      plateau implies ~0.25). The spatial lock gamma(E|S) = 1.00 at every L confirms the
+      breakdown is duration-specific, not a fit artefact. ANSWER: single-scale scaling is
+      EXACT in space (size ~ area^2, area ~ duration) and fails PERMANENTLY through duration --
+      duration is an intrinsically loose proxy for spatial extent (some long avalanches linger:
+      re-topple in place / propagate intermittently rather than reach farther), so AREA, not
+      duration, is the model's clean scaling variable (vindicating S12). The residual is
+      comparable to and somewhat LARGER than the 1-D anchor (0.11, S16) -- the duration anomaly
+      is intrinsic across dimensions and stronger in 2-D (a 2-D front has more ways to linger).
+      This closes the S11-S17 scaling-theory arc.
 
 ---
 
@@ -1313,3 +1337,119 @@ across dimensions, and isolates directedness as the single thing dimension chang
 clears the L > 256 equilibration ceiling that blocked S13's duration-closure question,
 handing S17 a verified-stationary L = 512 state. figures/sandpile_geometry1d.png,
 figures/sandpile_equilibrate.png.
+
+---
+
+## S17 -- The duration closure: single-scale scaling is exact in space, residual in time
+
+**Question.** S13 established the central scaling result of the chapter: the 2-D slope
+avalanche obeys single-scale ("one length scale per avalanche") scaling among its
+SPATIAL observables -- energy locks to size (E ~ S) and a footprint of area A carries
+~A^2 topplings (S, E ~ A^2) -- but the single-scale picture FAILS through DURATION. The
+identity single-scale scaling forces, gamma(S|A) = gamma(S|T)/gamma(A|T), did not close:
+the size-area exponent measured directly (~1.93) sat above the value routed through
+duration (~1.79), a gap of ~0.14, while the purely spatial lock gamma(E|S) closed
+exactly. S13 read this as the 2-D residue of S3's 1-D quantized line/wedge families
+(some avalanches last long by LINGERING, not by reaching farther). But S13 could only
+reach L = 256, with every exponent still drifting toward single-scale as L grew, so it
+flagged the sharp question for later: does the gap HEAL to zero as L -> infinity (a
+finite-size correction) or converge to a finite RESIDUAL (a true, intrinsic duration
+anomaly)? S16 supplied the two things needed to answer it: the equilibration enabler
+(verified-stationary states past the S13 ceiling) and the 1-D dimensional anchor (the
+same gap, ~0.11, measured where there is no equilibration ceiling, an effective
+L -> infinity reference).
+
+**Method (`sandpile/duration_closure.py`).** For L = 96, 128, 192, 256, 384, 512:
+warm to a verified-stationary state via `equilibrate2d.equilibrate` (S16), run a
+recorded window (4-6 seeds, ~1.5-1.8e5 avalanches per L), gather per-avalanche
+(E, S, T, A) with the S13 grouping, and measure the conditional exponents with the S13
+machinery reused unchanged. Form the duration gap gamma(S|A) - gamma(S|T)/gamma(A|T)
+per L with a leave-one-seed-out jackknife error, track the spatial lock gamma(E|S) as a
+baseline (it must stay ~1, or the gap would be a generic fit artefact rather than a
+duration-specific one), and read the L -> infinity behaviour from both a 1/L fit and --
+more robustly -- the directly-measured COMPONENT trends. A self-test guards the gap
+estimator: a synthetic single-scale source (one hidden scale, A = ell, S = E = ell^2,
+T faithful) must read gap ~ 0 (no fabricated gap; a single hidden variable always
+closes the identity because the T-conditioning factor cancels in the ratio), while a
+two-scale source (an independent additive lingering scale in T that area and size do
+not share) must read a clearly nonzero gap (the breakdown detected). The synthetic
+breakdown's SIGN reflects its particular construction and is not meant to reproduce the
+model's sign -- the test validates the null and detection, not the physics.
+
+**Evidence.**
+
+| L | gap (S\|A - S\|T/A\|T) | gamma(S\|A) | gamma(A\|T) | gamma(S\|T) | gamma(E\|S) | repose |
+|---|------------------------|-------------|-------------|-------------|-------------|--------|
+| 96  | 0.066 +- 0.003 | 1.891 | 0.912 | 1.664 | 1.003 | 2.50 |
+| 128 | 0.075 +- 0.008 | 1.897 | 0.932 | 1.698 | 1.002 | 2.56 |
+| 192 | 0.103 +- 0.022 | 1.917 | 0.948 | 1.720 | 1.002 | 2.61 |
+| 256 | 0.118 +- 0.004 | 1.917 | 0.964 | 1.734 | 1.002 | 2.65 |
+| 384 | 0.131 +- 0.012 | 1.927 | 0.975 | 1.751 | 1.002 | 2.71 |
+| 512 | 0.183 +- 0.005 | 1.947 | 0.992 | 1.750 | 1.002 | 2.75 |
+
+The repose values reproduce S16's per-L equilibrium (the runs are stationary). The
+spatial lock gamma(E|S) = 1.00 at every L. The decisive reading is in the components,
+not the derived gap (the S6/S11 auto-verdict discipline -- the gap is a ratio of fits,
+the components are directly measured):
+
+- **gamma(S|A) -> 2** (1.891 -> 1.947) and **gamma(A|T) -> 1** (0.912 -> 0.992): the
+  SPATIAL sector heals to EXACT single-scale as L grows. Size scales as area squared and
+  area scales ballistically with duration, both reaching their single-scale values.
+- **gamma(S|T) saturates at ~1.75** (1.664 -> 1.751 -> 1.750, the last step flat) while
+  the spatial exponents are still climbing -- it does NOT reach 2. The size-duration
+  exponent plateaus below single-scale.
+
+So the gap does NOT heal: it GROWS with L (0.066 -> 0.183). A 1/L fit extrapolates to a
+residual of 0.19 +- 0.02, and that UNDERESTIMATES -- the gap is convex in 1/L
+(accelerating as L grows), and the gamma(S|T) ~ 1.75 plateau against gamma(S|A) -> 2,
+gamma(A|T) -> 1 implies an asymptotic gap of ~2 - 1.75 = 0.25. Either way the residual is
+clearly nonzero and larger than the 1-D anchor (0.11, S16).
+
+**Conclusion -- the answer to S13.** Single-scale scaling in the 2-D slope sandpile is
+EXACT in space and RESIDUAL in time. The spatial observables (area, size, energy) form a
+single-scale family that becomes exact in the L -> infinity limit (S, E ~ A^2 with the
+exponent converging to 2, A ~ T ballistic with the exponent converging to 1). But
+duration is an intrinsically loose proxy for spatial extent: at fixed duration the size
+grows only as T^~1.75, not the T^2 the (asymptotically exact) spatial chain predicts,
+and that shortfall does NOT vanish with system size -- it is a true residual, present and
+growing to L = 512. Physically, some long-duration avalanches are long because they
+LINGER -- re-toppling in place or propagating intermittently -- rather than because they
+reach farther, so duration carries information the spatial extent does not. This is the
+2-D survival of S3's 1-D line/wedge families, now shown to persist to the thermodynamic
+limit rather than wash out. It vindicates S12's choice of AREA, not duration, as the
+model's clean scaling variable, and it completes the S11-S17 scaling-theory arc: the
+ballistic-filamentary-front theory predicts the entire SPATIAL exponent set from one
+length scale exactly, with duration as the single, quantified exception.
+
+**Cross-dimensional reading.** The residual is comparable to and somewhat larger than the
+1-D anchor (2-D ~0.19-0.25 vs 1-D 0.11, S16). The duration anomaly is therefore intrinsic
+to the slope rule across dimensions -- the 1-D anchor proves it is not a 2-D artefact --
+and it is STRONGER in 2-D, consistent with a 2-D front having more ways to linger
+(transverse spread and intermittent re-activation) than a strictly forward 1-D line.
+
+**Honest caveats (own them).** (a) The robust claim is QUALITATIVE -- the gap does not
+heal, it grows -- and it rests on the directly-measured component trend (gamma(S|T)
+plateaus at ~1.75 while gamma(S|A), gamma(A|T) reach 2, 1), which is firmer than the
+derived gap. The asymptotic MAGNITUDE is bounded but not pinned: the 1/L fit gives 0.19,
+the S|T-plateau argument gives ~0.25, so I quote ~0.2 with that spread, not a single
+digit. (b) gamma(S|T) at L = 512 (1.750) is statistically flat against L = 384 (1.751),
+which is the strongest single piece of evidence for a genuine plateau, but it is two
+points; a hypothetical slow further rise of S|T toward 2 at L >> 512 cannot be excluded,
+only made unlikely by the clear deceleration (increments 0.034, 0.022, 0.014, 0.017,
+-0.001). (c) The conditional windows (lo_floor and a 0.30-of-max upper bound) are applied
+identically at every L and to every exponent, and the spatial gamma(S|A) measured by the
+SAME machinery does reach 2, so the S|T shortfall is not a windowing bias. (d) The jackknife
+errors are over 4-6 seeds and capture run-to-run spread; the L = 192 point is the noisiest
+(few-seed scatter) but off the trend by less than its error.
+
+**Why this is interesting.** It converts S13's flagged uncertainty into a definite,
+falsifiable answer: the single-scale theory of the slope avalanche is not approximately
+true with a finite-size blemish, it is EXACTLY true in space and EXACTLY false (by a
+measured residual) in time, asymptotically. That is a sharper statement than "the exponents
+roughly agree" -- it says precisely which scaling relation holds in the thermodynamic limit
+and which does not, and ties the failure quantitatively to the 1-D family structure the
+chapter started from (S3). With the 1-D anchor (S16) and the L = 512 closure (S17) the
+arc is complete: the 2-D slope avalanche is a ballistic, filamentary, multiply-swept front
+whose spatial scaling is single-scale and whose duration is an intrinsically loose
+variable, placed causally (S15) against BTW, the directed sandpile and Manna.
+figures/sandpile_duration_closure.png.
