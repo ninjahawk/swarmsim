@@ -1453,3 +1453,124 @@ arc is complete: the 2-D slope avalanche is a ballistic, filamentary, multiply-s
 whose spatial scaling is single-scale and whose duration is an intrinsically loose
 variable, placed causally (S15) against BTW, the directed sandpile and Manna.
 figures/sandpile_duration_closure.png.
+
+---
+
+## S18 -- The area-multifractality closure: the anomaly is asymptotic, not a finite-size corona
+
+**Question.** S12 measured the avalanche-AREA moment spectrum of the 2-D slope sandpile
+and found the local slope D(q) = d sigma(q)/dq (where <A^q> ~ L^sigma(q)) DRIFTS with q --
+a rise of about 0.27 over q in [1, 4] -- and read it as genuine multifractality, placing
+the model in the deterministic (BTW/Zhang) anomalous-scaling family rather than the
+stochastic Manna single-fractal FSS class. But S12 could only equilibrate to L = 256, and
+quoted that as its leading caveat ("L = 512 is left to future work"); its drift was a
+single moment regression pooled over the whole finite-size range L = 64-256 -- exactly
+where a finite-size corona would live. So the question left open at the close of the
+S11-S17 arc: is the area multifractality a TRUE asymptotic property, or a finite-size
+corona that heals to simple FSS as L grows? S17 sharpened the stakes. It proved the
+conditional MEAN <S|A> reaches its exact single-scale value gamma(S|A) -> 2 as
+L -> infinity, with the activity space-filling (S, E ~ L^2). Read naively -- as if the
+conditional mean were the whole distribution -- that predicts A ~ L^1 with no scatter,
+a mono-fractal area with a flat D(q): on that reading the multifractality SHOULD heal. S18
+tests the prediction with an independent observable: the UNCONDITIONAL area moments,
+against S17's conditional exponents.
+
+**Method (`sandpile/area_multifractality.py`).** Warm verified-stationary states at
+L = 64, 96, 128, 192, 256, 384, 512 via `equilibrate2d.equilibrate` (the S16 enabler),
+run a recorded window from each (5-6 seeds, ~1.5-2.7e5 avalanches per L), and gather the
+per-avalanche AREA (distinct toppled bonds, S12's clean non-cutoff-dominated observable).
+The multifractal signature is LOCALIZED in L by a SLIDING WINDOW: for each set of three
+consecutive lattice sizes regress log<A^q> on log L to get sigma(q) and D(q) = d sigma/dq
+from that window alone, and read the drift of D(q) over q in [1, 4] (a quadratic fit of
+sigma over the window, robust to the noisy central-difference endpoints; the raw max-min
+range is reported alongside). As the window slides to larger L, a finite-size corona makes
+the drift SHRINK toward zero; a true asymptotic multifractal keeps it nonzero. Drift vs
+1/L_window is extrapolated to L -> infinity (the S17 protocol). A self-test guards the
+estimator: an exact simple-FSS source (one power law, one cutoff) must read drift ~ 0 at
+EVERY window (no fabricated multifractality, no spurious L-trend -- the null that makes a
+nonzero intercept on the real data meaningful), and a bifractal mixture must read a clearly
+nonzero |drift| (a real sigma(q) curvature is detected; the sign of the synthetic drift is
+construction-specific, as with the S17 synthetic, so only the magnitude is asserted).
+
+**Evidence.**
+
+| L-window | center L | area D(q) drift over [1,4] | D(q~1) -> D(q~4) |
+|----------|----------|----------------------------|------------------|
+| 64-96-128   | 92  | 0.219 +- 0.040 | 0.96 -> 1.18 |
+| 96-128-192  | 133 | 0.272 +- 0.023 | 0.97 -> 1.25 |
+| 128-192-256 | 185 | 0.243 +- 0.042 | 0.99 -> 1.23 |
+| 192-256-384 | 266 | 0.145 +- 0.062 | 1.06 -> 1.20 |
+| 256-384-512 | 369 | 0.194 +- 0.031 | 1.14 -> 1.34 |
+
+The repose per L (2.43, 2.50, 2.56, 2.61, 2.65, 2.71, 2.75) reproduces S16/S17, so the
+states are stationary. Two readings, the robust one first (the S6/S11/S17 discipline: read
+the directly-measured components, not one derived auto-verdict):
+
+- **The drift does NOT heal.** Across a 4x range in window-center L it stays at
+  about 0.2 (0.219 at L ~ 92, 0.194 at L ~ 369), with a noisy dip at L ~ 266; it shows no
+  decay toward the simple-FSS value of zero. A 1/L_window fit extrapolates to a residual of
+  **0.169 +- 0.048** at L -> infinity, clearly nonzero (about 3.5 sigma). A finite-size
+  corona would have fallen by ~4x over this L range; it does not fall at all. So the S12
+  area multifractality is a TRUE asymptotic property, not a corona.
+- **If anything the area dimension RISES with L** (a tentative second reading). The mid-q
+  footprint dimension climbs from ~1.07 at the small-L windows to ~1.23 at the largest, and
+  the per-step <A> growth slope steepens from ~0.90 over L = 64-256 (the S12 filament,
+  A ~ L^0.9) to 1.00 (256->384) and 1.22 (384->512). The largest avalanches at the largest
+  lattices appear to be FATTER than the one-bond filament S14/S16 found for typical
+  avalanches. This rests on the noisiest, fewest-avalanche points and is flagged as
+  suggestive, not firm (see caveats).
+
+**Conclusion -- the answer to S12's open question, and the reconciliation with S17.** The
+naive prediction from S17's conditional result -- that the area should be mono-fractal
+because <S|A> ~ A^2 and S ~ L^2 -- is FALSIFIED: the area multifractality survives to the
+thermodynamic limit. The two results are nonetheless consistent, and seeing why is the
+content of S18. S17's gamma(S|A) -> 2 is a statement about a conditional MEAN -- the
+first moment of S at fixed A. Single-scale scaling of that mean does NOT imply the area
+DISTRIBUTION is single-fractal: the higher moments, which weight the rare largest
+avalanches and the fluctuations about the mean, can scale with their own, larger exponents,
+and that is exactly what multifractality is. The conditional method (S13/S17) measures the
+typical relationship over a windowed mid-range and so reads the single-scale "core"; the
+moment method (S12/S18) weights the tail and so reads the multifractal fluctuations. The
+slope sandpile therefore has BOTH: a conditional mean that becomes exactly single-scale in
+space (S17) AND an area distribution whose higher moments stay multifractal asymptotically
+(S18). The q-resolved data show the mechanism directly -- within the largest-L window D(q)
+rises from 1.14 at q ~ 1 (mean-weighted, near the typical filament) to 1.34 at q ~ 4
+(tail-weighted): higher moments see a higher dimension because the largest avalanches are
+the ones that depart from the one-bond filament. The single-scale-in-space picture is a
+property of the typical avalanche; the multifractality is a property of the spread.
+
+**Cross-checks (own the discipline).** (a) The null self-test reads drift < 0.01 at every
+window on exact simple-FSS data, so the method neither manufactures a drift nor a spurious
+L-trend -- a measured nonzero intercept is real. (b) The drift is flat in L while staying
+inside the resolved q in [1, 4] range, so it is not the S12 high-q cutoff sensitivity
+leaking in (that would inflate at large L, not stay level). (c) The repose values match the
+independent S16/S17 equilibration, so the large-L states are genuinely stationary, not
+under-warmed.
+
+**Honest caveats (own them).** (a) The robust claim is "does not heal" -- the drift stays
+nonzero across a 4x lever arm in L and extrapolates ~3.5 sigma from zero. The asymptotic
+MAGNITUDE (0.17) is from a noisy, non-monotonic 1/L fit and should be read as "a clearly
+nonzero residual of order 0.2," not a pinned digit. A much SLOWER (logarithmic) corona
+cannot be strictly excluded by a 4x range, only strongly disfavored against a flat residual.
+(b) The second reading -- that the area dimension is actively RISING at the largest L
+(D_mid 1.07 -> 1.23, <A> slope 0.90 -> 1.22) -- is the most interesting hint here but the
+least certain: L = 384 and 512 carry the fewest avalanches (~1.5e5) and the longest tails,
+and A_max nearly doubled in the 384 -> 512 step (587 -> 1088), so a handful of rare large
+avalanches could be inflating <A> and the high-q moments. Firming up whether the filament
+genuinely fattens at large L (a real crossover) versus tail-undersampling needs more seeds
+at L = 512 (left as the natural follow-up). (c) This is multifractality of the area
+DISTRIBUTION; it does not touch the S14/S16 geometric result that the TYPICAL footprint is
+one-bond-wide (98% at L <= 256). It says the largest avalanches' areas scale anomalously,
+which is a tail statement, fully compatible with a thin typical avalanche.
+
+**Why this is interesting.** It closes the last genuinely open question of the scaling-theory
+arc with a result that is sharper than a confirmation: S12's anomalous area scaling is not a
+finite-size artifact, it is asymptotic. And it resolves what looked like a contradiction
+between the chapter's two main tools -- the conditional exponents say "single-scale in
+space," the moment spectrum says "multifractal" -- by locating each precisely: single-scale
+is a property of the conditional mean (the typical avalanche), multifractal is a property of
+the distribution's higher moments (the largest avalanches and the fluctuations). The slope
+sandpile is single-scale in its means and multifractal in its tails, simultaneously and
+asymptotically -- a more complete statement of where it sits relative to BTW (multifractal),
+Manna (single-fractal FSS), and the directed sandpile (exactly single-scale) than either
+tool gives alone. figures/sandpile_area_multifractal.png.

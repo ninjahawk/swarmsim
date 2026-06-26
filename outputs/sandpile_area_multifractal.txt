@@ -1,0 +1,51 @@
+======================================================================
+S18 -- AREA MULTIFRACTALITY: does the S12 area D(q) drift heal as L grows?
+======================================================================
+Clean observable = avalanche AREA (S12). Drift of D(q) over q in [1,4]
+localized by a sliding 3-size L-window; extrapolated vs 1/L. S12 pooled-
+drift (L<=256) ~ 0.27. S17 predicts area -> mono-fractal D=1 (heal) since
+S ~ A^2 exactly and S ~ L^2, hence A ~ L^1.
+
+Warming verified-stationary states (S16 enabler) and gathering area per L...
+  L=  64 :  270792 avalanches (6 seeds)  repose=2.43+-0.01  <A>=10.7 A_max=95  (13s)
+  L=  96 :  265124 avalanches (6 seeds)  repose=2.50+-0.00  <A>=15.3 A_max=142  (15s)
+  L= 128 :  223806 avalanches (6 seeds)  repose=2.56+-0.01  <A>=19.8 A_max=191  (15s)
+  L= 192 :  176894 avalanches (5 seeds)  repose=2.61+-0.01  <A>=28.6 A_max=323  (19s)
+  L= 256 :  174330 avalanches (5 seeds)  repose=2.65+-0.01  <A>=37.1 A_max=442  (23s)
+  L= 384 :  152252 avalanches (5 seeds)  repose=2.71+-0.00  <A>=55.5 A_max=587  (55s)
+  L= 512 :  148407 avalanches (5 seeds)  repose=2.75+-0.01  <A>=78.8 A_max=1088  (124s)
+
+[footprint scaling: local log-log slope of <A> between consecutive L]
+  L_a->L_b    <A> slope   (1.0 = filament A~L; 2.0 = compact A~L^2)
+   64-> 96     0.88
+   96->128     0.89
+  128->192     0.91
+  192->256     0.90
+  256->384     1.00
+  384->512     1.22
+
+[windowed area-D(q) drift over q in [1,4] -- the localized signature]
+  L-window        center   drift(smooth)+-jk   range   D(q~1)->D(q~4)
+  64-96-128           92   +0.219 +- 0.040    0.238   0.96 -> 1.18
+  96-128-192         133   +0.272 +- 0.023    0.287   0.97 -> 1.25
+  128-192-256        185   +0.243 +- 0.042    0.251   0.99 -> 1.23
+  192-256-384        266   +0.145 +- 0.062    0.142   1.06 -> 1.20
+  256-384-512        369   +0.194 +- 0.031    0.187   1.14 -> 1.34
+
+[extrapolation: windowed drift vs 1/L_window]
+  L -> infinity intercept (1/L fit) = +0.169 +- 0.048
+  S12 pooled drift over L<=256 (all-L regression, for reference) ~ 0.27
+
+[verdict -- heal (finite-size corona) or true asymptotic multifractal?]
+  drift trend small-L -> large-L window: +0.219 -> +0.194  (change -0.025)
+  D(mid-q) trend (the footprint dimension): 1.07 -> 1.23  (-> 1 = mono-fractal
+    filament, the S17 prediction A ~ L^1)
+  -> PERSISTS. The windowed drift extrapolates to a nonzero residual +0.169:
+     the area multifractality is a TRUE asymptotic property, not a corona.
+     This is in TENSION with S17's conditional gamma(S|A) -> 2 and demands
+     reconciling unconditional moments with conditional exponents (the
+     moments weight the rare largest avalanches the conditional fit does not).
+
+saved figures\sandpile_area_multifractal.png
+
+S18 COMPLETE

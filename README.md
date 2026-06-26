@@ -93,12 +93,43 @@ sandpile/
   falloff.py       boundary-evacuation avalanches vs bulk avalanches (Exercise 2)
   sandpile_fast.py active-list, numba-compiled 1-D+2-D engine (Exercise 5, S9)
   duration_fss2d.py large-L duration FSS; resolves S6 (S10)
+  moments.py       moment-scaling machinery + FSS self-test (S11)
+  moment_slope.py  slope-model moment spectrum: filamentary area (S12)
+  conditional.py   conditional avalanche exponents; ballistic front (S13)
+  geometry2d.py    per-avalanche footprint geometry: the filament (S14)
+  stochastic_split.py  tunable split toward Manna; the causal test (S15)
+  geometry1d.py    1-D footprint geometry = the dimensional anchor (S16)
+  equilibrate2d.py reusable warmup to a verified-stationary L>256 (S16)
+  duration_closure.py  single-scale exact in space, residual in time (S17)
+  area_multifractality.py  area multifractality is asymptotic, not a corona (S18)
 ```
 
 Exercises addressed: 2 (falloff avalanches, S8), 3 (initial-condition
 independence, S1), 4 (eps-dependence of the angle of repose, S2), 5 (fast
 active-list engine, S9), 6 (the 2-D Grand Challenge, S4) — plus the conservation
 study (S5/S7) and a self-test that was inconclusive (S6) then resolved (S10).
+
+**The scaling-theory arc (S11–S18).** Beyond the exercises, the chapter builds one
+extended argument about *what a 2-D slope avalanche actually is*. Moment-spectrum
+analysis (S11–S12) finds the avalanche **footprint is filamentary** — its area grows only
+linearly with system size (D_area ≈ 1), against the compact D ≈ 2 of canonical BTW through
+the same pipeline — while the total toppling activity is space-filling (≈ L²): a thin front
+that sweeps its own bonds ≈ L times. Conditional exponents (S13) and a direct footprint
+recording (S14) confirm it geometrically — a constant-width, one-bond-wide, **ballistic**
+filament (topple time ≈ distance from the seed), thinner than the exactly-solvable directed
+sandpile (D = 3/2). A tunable stochastic split toward the Manna class (S15) shows the
+filament is *caused* by the deterministic rule (its dimension climbs 1 → 1.87 as randomness
+is switched on), yet the model never collapses onto simple Manna scaling. A 1-D dimensional
+anchor (S16) proves D ≈ 1 is intrinsic to a slope avalanche, not a 2-D artifact, and ships
+an equilibration tool that reaches a verified-stationary L = 512. With it, the last two
+findings pin down *how* single-scale the model is: the **spatial** relations become
+*exactly* single-scale as L → ∞ (size ∝ area², area ∝ duration), but **duration** stays a
+permanently loose proxy for spatial extent (S17), and the avalanche **area distribution**
+stays **multifractal** asymptotically rather than healing to simple scaling (S18) — the
+model is single-scale in its *means* (the typical avalanche) and multifractal in its *tails*
+(the largest avalanches). It sits in its own place in the SOC landscape: more filamentary
+than the directed sandpile, outside the stochastic Manna class, a distinct anomalous class
+from BTW. Full detail (S-series) in [`findings_sandpile.md`](findings_sandpile.md).
 
 ---
 
