@@ -129,7 +129,9 @@ stays **multifractal** asymptotically rather than healing to simple scaling (S18
 model is single-scale in its *means* (the typical avalanche) and multifractal in its *tails*
 (the largest avalanches). It sits in its own place in the SOC landscape: more filamentary
 than the directed sandpile, outside the stochastic Manna class, a distinct anomalous class
-from BTW. Full detail (S-series) in [`findings_sandpile.md`](findings_sandpile.md).
+from BTW. The whole arc is drawn together in a standalone write-up,
+[`report_sandpile.md`](report_sandpile.md); full per-finding detail (S-series) is in
+[`findings_sandpile.md`](findings_sandpile.md).
 
 ---
 
