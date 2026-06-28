@@ -43,8 +43,24 @@ size-duration exponent saturates at ~1.75, so the single-scale over-determinatio
 S13 found does NOT heal -- it GROWS with L to a true residual of ~0.2 (larger than the
 1-D anchor 0.11), resolving the question S13 left open: single-scale scaling is exact
 in space and fails permanently through duration, in 2-D as in 1-D, so AREA not duration
-is the model's clean scaling variable. Status: S1-S17 complete; the S11-S17
-scaling-theory arc is closed.
+is the model's clean scaling variable -> the AREA-MULTIFRACTALITY CLOSURE (S18): is
+S12's area D(q) drift asymptotic or a finite-size corona? Reaching L = 512 with a
+sliding-window moment spectrum, the drift does NOT heal (~0.2 to L = 512, intercept
+0.169 +- 0.048), so the area multifractality is a TRUE asymptotic property -- which
+reconciles with S17 because gamma(S|A) -> 2 is a conditional MEAN while the area
+DISTRIBUTION's higher moments stay multifractal: single-scale in the means (typical
+avalanche), multifractal in the tails (largest avalanches) -> and the FILAMENT-FATTENING
+TEST (S19): S18 left one tentative reading unsettled, that the footprint may FATTEN at
+large L (the <A> growth slope steepened to 1.22 and D_mid to 1.23 at the largest, fewest-
+seed points). Re-measured at L = 192-512 with 10-12 seeds (double S18) and SPLIT into the
+typical avalanche vs the tail, it is the TAIL: the typical footprint is L-stable at the
+filament values (median area ~ L^0.90, typical mass-radius D = 1.00 -> 1.01, ~one bond
+wide to L = 512) while only the rare largest avalanches grow, and the mean-area slope that
+read 1.22 at 5 seeds averages down to 0.99 +- 0.03 at 10. So the filament does NOT fatten;
+S18's hint was tail-undersampling, S14/S16's one-bond filament stands, and the tentative
+reading is downgraded to a pure tail statement -- consistent with (not contradicting) S18's
+multifractal tail. Status: S1-S19 complete; the S11-S18 scaling-theory arc is closed, with
+S19 a confirming self-test of its one open hint.
 
 Headline: self-organized criticality as a *phenomenon* (scale-free avalanches
 with no parameter tuning) is robust, but the critical *exponents* are not -- they
@@ -159,6 +175,35 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       comparable to and somewhat LARGER than the 1-D anchor (0.11, S16) -- the duration anomaly
       is intrinsic across dimensions and stronger in 2-D (a 2-D front has more ways to linger).
       This closes the S11-S17 scaling-theory arc.
+- S18 (the area-multifractality closure) The one question S11-S17 left: is S12's avalanche-
+      AREA multifractality (D(q) drift ~0.27 at L <= 256) a TRUE asymptotic property or a
+      finite-size corona that heals? Reaching L = 512 (S16 enabler) with a SLIDING 3-L-window
+      of the area moment spectrum, the drift does NOT heal -- it stays ~0.2 across a 4x L range
+      and extrapolates to a nonzero 0.169 +- 0.048 (~3.5 sigma; a corona would have fallen ~4x).
+      So the area multifractality is ASYMPTOTIC. This FALSIFIES the naive read of S17
+      (gamma(S|A) -> 2 with S ~ L^2 => A ~ L^1 mono-fractal) but RECONCILES with it: gamma(S|A)
+      -> 2 is a conditional MEAN, while the area DISTRIBUTION's higher moments (tail-weighted)
+      stay multifractal -- single-scale in the MEANS (typical avalanche, S17), multifractal in
+      the TAILS (largest avalanches, S18), simultaneously and asymptotically. q-resolved: D(q~1)
+      = 1.14 (typical filament) -> D(q~4) = 1.34 (tail). A tentative second reading was FLAGGED,
+      not claimed: the area dimension may actively RISE at large L (D_mid 1.07 -> 1.23, <A> slope
+      0.90 -> 1.22), but it rests on the fewest-avalanche points -> S19.
+- S19 (the filament-fattening test, a self-test of S18's open hint) Does the footprint genuinely
+      FATTEN at large L (a real crossover toward compactness) or was S18's apparent fattening
+      tail-undersampling? Re-measured the footprint geometry at L = 192, 256, 384, 512 with 10-12
+      seeds (double S18's 5) and SPLIT each lattice's avalanches into the TYPICAL bulk vs the
+      area TAIL. Verdict: TAIL. The typical avalanche is L-stable at the S14/S16 filament values
+      -- median area ~ L^0.90, typical mass-radius D(A ~ Rg^D) = 1.00 -> 1.01 across L = 192-512,
+      and the top-decile footprints stay ~one bond wide (one-bond fraction 0.99 -> 0.95) -- while
+      only the rare largest avalanches grow (A_max 323 -> 1090, mean area grows faster than the
+      median). Decisively, the mean-area growth slope that read 1.22 at S18's 5 seeds averages
+      DOWN to 0.99 +- 0.03 at 10 seeds, and it EXCEEDS the typical median-area slope 0.90 +- 0.04,
+      so the extra growth is tail-weighted, not a thickening of the typical footprint. So the
+      filament does NOT fatten: S18's tentative second reading was tail-undersampling at fewest
+      seeds, S14/S16's one-bond filament stands to L = 512, and the result is consistent with
+      (a sharper statement of) S18's main reading -- single-scale-thin in the typical avalanche,
+      multifractal-fat only in the tail. A self-test in the F47/F48/F52/S6 tradition: a flagged
+      hint tested and downgraded rather than left to harden into a claim.
 
 ---
 
@@ -1574,3 +1619,100 @@ sandpile is single-scale in its means and multifractal in its tails, simultaneou
 asymptotically -- a more complete statement of where it sits relative to BTW (multifractal),
 Manna (single-fractal FSS), and the directed sandpile (exactly single-scale) than either
 tool gives alone. figures/sandpile_area_multifractal.png.
+
+---
+
+## S19 -- The filament-fattening test: a self-test of S18's one open hint
+
+**Question.** S18 closed the area-multifractality question but ended on a deliberately
+TENTATIVE second reading it could not settle: that the avalanche footprint may be actively
+FATTENING at the largest lattices. The signs were a per-step <A> growth slope that steepened
+from ~0.90 over L = 64-256 (the S12/S14 one-bond filament, A ~ L^0.9) to 1.00 (256->384) and
+1.22 (384->512), a mid-q footprint dimension D_mid that climbed 1.07 -> 1.23, and a largest
+avalanche A_max that nearly doubled in the 384->512 step (587 -> 1088). S18 flagged these as
+the noisiest, fewest-avalanche points (only 5 seeds at L = 384, 512) and named the follow-up
+explicitly: more seeds at L = 512 to decide a real crossover from tail-undersampling. The two
+readings are physically opposite and the whole geometric spine of the arc (S12/S14/S16: the
+TYPICAL avalanche is a constant-width one-bond filament of mass-radius dimension D ~ 1) rests
+on which is true: either the typical footprint genuinely thickens at large L (D ~ 1 is only a
+small-L description and the deterministic model drifts toward compactness on its own), or the
+typical footprint stays a one-bond D ~ 1 filament and only the rare largest avalanches grow
+(the "fattening" is the S18 multifractal TAIL, and S14/S16/S18's picture stands unchanged).
+
+**Method (`sandpile/filament_fattening.py`).** Re-measure the footprint geometry at
+L = 192, 256, 384, 512 with 10-12 seeds (double S18's 5, to average down the rare tail and
+put an honest error on the growth slopes), each lattice warmed to a verified-stationary
+repose via the S16 enabler and its avalanches dumped through the validated S14 footprint dump.
+Split each lattice's avalanches into the TYPICAL bulk (bottom 90% by area) and the area TAIL
+(top decile), and measure both:
+  - mean(A) growth slope vs L -- the S18 (tail-weighted) quantity that read 1.22;
+  - median(A) growth slope vs L -- the TYPICAL avalanche;
+  - one-bond-wide fraction of the top-decile footprints vs L -- S14's 98% at L <= 256;
+  - mass-radius dimension D (A ~ Rg^D) over the FULL ensemble vs the TYPICAL ensemble.
+Errors are a seed-level bootstrap (300 resamples), the honest run-to-run spread as in S18's
+jackknife. A self-test guards the typical/tail separator: on a synthetic mixture of many thin
+LINES (D = 1) plus a rare population of large filled DISKS (D = 2), the low-area split must
+read the thin filament (D ~ 1) and the high-area split the fat population (D ~ 2), so a split
+read on the real data is meaningful (the geometry estimators themselves are guarded by
+geometry2d's D = 1/2/3-2 self-test, reused here).
+
+**Evidence (`figures/sandpile_filament_fattening.png`).** 234k/229k/183k/173k footprints at
+L = 192/256/384/512 (12/12/10/10 seeds), repose 2.61/2.66/2.71/2.75 (reproducing S16/S17, so
+the states are stationary).
+
+| L | <A> | median A | A_max | one-bond%% (tail) | D_full | D_typ |
+|---|-----|----------|-------|-------------------|--------|-------|
+| 192 | 37.6 | 32 | 323  | 0.99 | 1.01 | 1.00 |
+| 256 | 47.3 | 38 | 442  | 0.98 | 1.02 | 1.00 |
+| 384 | 68.6 | 53 | 670  | 0.97 | 1.02 | 1.01 |
+| 512 | 93.9 | 71 | 1090 | 0.95 | 1.02 | 1.01 |
+
+Growth slopes over L = 256-384-512 (1.0 = filament A ~ L; 2.0 = compact A ~ L^2):
+**mean(A) ~ L^0.99 +- 0.03** (the S18 quantity that read 1.22 at 5 seeds) and
+**median(A) ~ L^0.90 +- 0.04** (the typical avalanche).
+
+The decisive reading (the directly-measured components, the S6/S11/S17/S18 discipline):
+- **The typical avalanche is L-stable at the filament values.** Its mass-radius dimension
+  D_typ is flat at 1.00 -> 1.01 across L = 192-512, its median area grows as L^0.90 (the S12
+  filament, A ~ L), and the top-decile footprints stay essentially one bond wide (one-bond
+  fraction 0.99 -> 0.95). None of S14/S16's filament geometry moves with L.
+- **Only the tail grows, and the mean-slope hint evaporates with more seeds.** The mean area
+  grows faster than the median (mean-slope 0.99 EXCEEDS median-slope 0.90 by more than their
+  combined error), so the extra growth is concentrated in the rare largest avalanches. And the
+  per-step mean-area slope that read 1.22 at S18's 5 seeds comes down to ~1.09 (384->512) and
+  the 256-384-512 regression to 0.99 +- 0.03 at 10-12 seeds -- the 1.22 was sampling noise in
+  the tail of the mean, not a real exponent. (A_max 323 -> 1090 reproduces S18's 1088, so the
+  single largest avalanche is real and reproducible; it is just rare.)
+
+**Conclusion -- the answer to S18's open hint.** The filament does NOT fatten. The apparent
+large-L fattening in S18 was tail-undersampling at the fewest-seed points: with the tail
+properly sampled, the mean-area slope is 0.99 not 1.22, and the TYPICAL avalanche (median
+area, mass-radius D, one-bond width) is unchanged from its small-L filament geometry all the
+way to L = 512. So S14/S16's constant-width one-bond filament is the asymptotic geometry of the
+typical slope avalanche, not a small-L description. This does not overturn S18 -- it SHARPENS
+it. S18 said the area multifractality is asymptotic and lives in the tail (single-scale in the
+means, multifractal in the tails); S19 confirms that the means/typical avalanche stay exactly
+the one-bond filament while the multifractality is confined to the tail, exactly as S18's
+reconciliation with S17 requires. The two S18 readings are now cleanly separated: the robust
+one (asymptotic tail multifractality) stands, the tentative one (typical fattening) falls.
+
+**Honest caveats (own them).** (a) The one-bond-wide fraction of the TAIL does drift down a
+little, 0.99 -> 0.95, so the very widest tail members are marginally fatter at L = 512 than at
+L = 192 -- a faint real effect, fully consistent with "the tail is multifractal" (S18) and not
+with "the typical footprint thickens" (D_typ and the median are flat). (b) The median-area
+slope 0.90 sits just below 1; it is the S12 filament value (area ~ L^0.9, the small mismatch
+from exactly 1 is the known finite-Rg curvature of the binned mass-radius fit, applied
+identically at every L), and what matters is that it does NOT climb with L. (c) L = 384 and 512
+still carry the fewest avalanches (~180k/173k), but at double S18's seed count the mean-slope
+already collapsed from 1.22 to ~1.0, which is the direct demonstration that the original number
+was undersampling. (d) This settles the geometry of the TYPICAL avalanche; it says nothing new
+about the tail beyond S18, by design -- the tail multifractality is S18's result and is not
+re-litigated here.
+
+**Why this is interesting.** It is a self-test in the project's tradition (F47, F48, F52, S6):
+a flagged hint tested before it could harden into a claim, and downgraded honestly. The
+scientific payoff is that the arc's central geometric statement -- the slope avalanche is a
+constant-width one-bond filament -- is now confirmed asymptotic (to L = 512) for the typical
+avalanche, with the only L-growth cleanly assigned to the multifractal tail S18 already
+characterized. The picture is exactly as complete as S18 claimed, with its one loose thread
+tied off rather than left dangling. figures/sandpile_filament_fattening.png.

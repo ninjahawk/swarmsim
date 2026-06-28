@@ -484,10 +484,15 @@ show it directly — within the largest window D(q) rises from 1.14 at q ~ 1 (me
 near the typical filament) to 1.34 at q ~ 4 (tail-weighted, the avalanches that depart from
 the one-bond filament). The slope sandpile has both: a conditional mean that becomes exactly
 single-scale in space, and an area distribution whose higher moments stay multifractal
-asymptotically. (A tentative second reading — that the typical area dimension is actively
-*rising* at the largest L, D_mid 1.07 -> 1.23 — rests on the fewest-avalanche points and is
-flagged as suggestive, not firm; whether the filament genuinely fattens at large L versus
-tail-undersampling is the natural follow-up.)
+asymptotically. (S18 also flagged a tentative second reading — that the typical area
+dimension is actively *rising* at the largest L, D_mid 1.07 -> 1.23 — but rested it on the
+fewest-avalanche points. A follow-up self-test (S19, `filament_fattening.py`) settled it: at
+double the seeds the typical avalanche is L-stable at the filament values (median area ~ L^0.90,
+typical mass-radius D = 1.00 -> 1.01, ~one bond wide to L = 512) and the mean-area growth slope
+that read 1.22 at five seeds averages down to 0.99 ± 0.03 at ten. The footprint does *not*
+fatten; the apparent fattening was tail-undersampling. S14/S16's one-bond filament is the
+asymptotic geometry of the typical avalanche, and the L-growth that S18 saw belongs entirely to
+the multifractal tail — sharpening S18 rather than overturning it.)
 
 ---
 

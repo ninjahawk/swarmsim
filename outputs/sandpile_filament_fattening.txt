@@ -1,0 +1,41 @@
+======================================================================
+S19 -- DOES THE FILAMENT FATTEN AT LARGE L, OR IS IT A MULTIFRACTAL TAIL?
+======================================================================
+S18 found the area multifractality asymptotic, and FLAGGED a tentative second
+reading: <A>-slope 0.90->1.22 and D_mid 1.07->1.23 at the largest L (5 seeds).
+Separating the TYPICAL avalanche (median A, one-bond fraction, D_typ) from the
+TAIL (mean A, A_max, D_tail) with more seeds decides: real crossover or tail.
+
+Warming verified-stationary states (S16 enabler) and dumping footprints...
+  L= 192 :  234569 footprints (12 seeds)  repose=2.61+-0.01  <A>=37.6 medA=32 A_max=323  (46s)
+  L= 256 :  229453 footprints (12 seeds)  repose=2.66+-0.01  <A>=47.3 medA=38 A_max=442  (52s)
+  L= 384 :  182966 footprints (10 seeds)  repose=2.71+-0.01  <A>=68.6 medA=53 A_max=670  (107s)
+  L= 512 :  173195 footprints (10 seeds)  repose=2.75+-0.01  <A>=93.9 medA=71 A_max=1090  (254s)
+
+Bootstrapping over seeds (300 resamples)...
+
+[per-L typical/tail geometry  (bootstrap mean +- se over seeds)]
+  L     <A>          median A     one-bond%%(tail)   D_full        D_typ
+  192    37.6+- 0.0     32+-  0  0.99+-0.00       1.01+-0.00   1.00+-0.00
+  256    47.3+- 0.1     38+-  0  0.98+-0.00       1.02+-0.00   1.00+-0.00
+  384    68.7+- 0.5     53+-  1  0.97+-0.00       1.02+-0.00   1.01+-0.00
+  512    94.1+- 2.1     71+-  2  0.95+-0.00       1.02+-0.00   1.01+-0.00
+
+[growth slopes over L in 256-384-512  (1.0 = filament A~L; 2.0 = compact A~L^2)]
+  mean(A)   ~ L^ 0.99 +- 0.03   (tail-weighted; the S18 quantity that read 1.22)
+  median(A) ~ L^ 0.90 +- 0.04   (the TYPICAL avalanche)
+
+[verdict -- real crossover (filament fattens) or multifractal tail?]
+  mean-A slope 0.99 vs median-A slope 0.90 : mean EXCEEDS median
+  one-bond-wide fraction (tail) at L=512: 0.95  (S14: 0.98 at L<=256)
+  typical mass-radius D: 1.00 (L=192) -> 1.01 (L=512)
+  -> MULTIFRACTAL TAIL. The typical avalanche stays a one-bond D~1 filament
+     (median A ~ L, D_typ ~ 1, still ~one bond wide); only the rare largest
+     avalanches grow (mean-A slope and A_max steepen). S18's apparent
+     'fattening' is the multifractal TAIL, not a thickening of the typical
+     footprint -- S14/S16's filament picture stands, now with the second
+     S18 reading downgraded to a pure tail statement.
+
+saved figures\sandpile_filament_fattening.png
+
+S19 COMPLETE
