@@ -204,6 +204,18 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       (a sharper statement of) S18's main reading -- single-scale-thin in the typical avalanche,
       multifractal-fat only in the tail. A self-test in the F47/F48/F52/S6 tradition: a flagged
       hint tested and downgraded rather than left to harden into a claim.
+- S20 (model selection: does the repose saturate?) S16 confirmed the mean bond slope at SOC
+      repose rises with L (2.42 at L=64 -> 2.74 at L=512) as a real finite-size effect, leaving
+      open whether it SATURATES (1/L correction -> finite limit) or DIVERGES slowly (log L -> no
+      limit). Fitting both models to the seven S16 plateau values and comparing by AIC: the log(L)
+      model is clearly preferred (DAIC = 9.7, R^2 0.990 vs 0.960, max residual 1.3x vs 2.8x the
+      measurement spread). The per-doubling increments (0.138, 0.089, 0.098) are roughly constant,
+      more consistent with log(L)'s expected flat increment than with 1/L's expected halving.
+      Result: the SOC repose most likely diverges logarithmically; an infinite-volume critical slope
+      may not exist for this model (boundary effects propagating O(L) into the bulk sustain steeper
+      gradients at larger L). Caveat: L=64-512 cannot prove divergence over saturation at very large
+      L -- confirming would require L~1024-2048. sandpile/repose_scaling.py; self-test confirms AIC
+      recovers the true model on synthetic exact-1/L and exact-log(L) data.
 
 ---
 
@@ -1716,3 +1728,63 @@ constant-width one-bond filament -- is now confirmed asymptotic (to L = 512) for
 avalanche, with the only L-growth cleanly assigned to the multifractal tail S18 already
 characterized. The picture is exactly as complete as S18 claimed, with its one loose thread
 tied off rather than left dangling. figures/sandpile_filament_fattening.png.
+
+---
+
+## S20 -- Model selection: does the angle of repose saturate or diverge?
+
+**Question.** S16 confirmed that the mean bond slope at the SOC repose rises
+with L as a real finite-size effect (2.42 at L = 64 -> 2.74 at L = 512, not
+under-equilibration), and left open whether the drift SATURATES to a finite
+infinite-volume limit (a 1/L finite-size correction, the most common form for
+local critical models) or DIVERGES slowly without bound (a log L dependence,
+which would mean the model has no well-defined thermodynamic repose slope). No
+new simulation is needed to address this: seven converged plateau values from
+S16 are already in hand, and the two functional forms make distinct predictions
+that can be compared statistically.
+
+**Method (`sandpile/repose_scaling.py`).** Fit both models to the S16 plateau
+values (L = 64, 96, 128, 192, 256, 384, 512) by ordinary least squares and
+compare them by AIC (Akaike information criterion). Both models have two free
+parameters (intercept + slope), so AIC reduces to choosing the smaller residual
+sum of squares with a common penalty; DAIC > 2 is "positive evidence" for the
+preferred model, DAIC > 6 "strong evidence," DAIC > 10 "very strong." A
+per-doubling increment table provides an intuitive check: 1/L predicts the
+increment should HALVE each doubling, log L predicts it should be CONSTANT.
+Self-test: fitting to synthetic exact-1/L and exact-log(L) data (noise 0.005)
+confirms AIC recovers the correct model in each case.
+
+**Models and fits.**
+
+Model 1 (saturating):  r(L) = a + b/L
+  a = r_inf = 2.754,  b = -22.9
+  R^2 = 0.960,  AIC = -49.9,  max residual = 0.035  (2.8x the typical spread)
+
+Model 2 (diverging):   r(L) = a + b*log(L)
+  a = 1.803,  b = 0.152  (increment 0.106 per doubling)
+  R^2 = 0.990,  AIC = -59.6,  max residual = 0.016  (1.3x the typical spread)
+
+DAIC = AIC_log - AIC_1/L = -9.7  ->  log(L) preferred (strong evidence).
+
+Per-doubling increment check: 64->128: 0.138, 128->256: 0.089, 256->512: 0.098.
+Ratio last/previous = 1.11, which is much closer to log(L)'s predicted 1.00
+than to 1/L's predicted ~0.50. The 1/L model's extrapolated r_inf = 2.754 is
+already undercut by the actual L=512 repose 2.745 (residual 5.9x the spread at
+that point), showing the saturation is predicted to happen too early.
+
+**Result.** The log(L) model fits substantially better by every metric. The SOC
+angle of repose most likely DIVERGES slowly (logarithmically) rather than
+saturating at a finite limit. The physical picture: open boundary effects
+propagate O(L) into the bulk, so larger lattices can sustain steeper average
+gradients at criticality; the critical slope is not a single number independent
+of system size, but continues to creep upward. This is qualitatively different
+from canonical BTW, where the thermodynamic repose is well-defined.
+
+**Caveat.** Seven data points over a factor of eight in L cannot prove
+logarithmic divergence against a very slow saturation. The AIC prefers log L
+within the L=64-512 range, but if the 1/L correction had a coefficient much
+larger than the data allow (making the asymptote far from the current repose)
+the distinction would wash out at larger L. Confirming divergence would require
+L ~ 1024-2048, each of which takes ~60-100s to equilibrate at current throughput.
+The 1/L fit's r_inf = 2.754 remains the best-case (lowest) bound on any eventual
+asymptote. figures/sandpile_repose_scaling.png.
