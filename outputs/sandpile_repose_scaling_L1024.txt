@@ -1,0 +1,58 @@
+======================================================================
+S21 -- OUT-OF-SAMPLE TEST OF S20 AT L=768, 1024
+======================================================================
+S20 fit (L=64-512, frozen before this run):
+  1/L fit:   a=2.7541 (r_inf)  b=-22.90
+  log(L) fit: a=1.8030  b=0.15200
+
+Equilibrating held-out lattices L=768, 1024 (S16 protocol, seed=1)...
+  L= 768 : repose=2.7827 +- 0.003  ( 566M iters, converged=True, 100s)
+  L=1024 : repose=2.8177 +- 0.006  (1006M iters, converged=True, 347s)
+
+[out-of-sample prediction check -- S20 fit vs new data]
+  L      actual   pred(1/L)  resid(1/L)  pred(log L)  resid(log L)
+  768    2.7827   2.7243     +0.0584      2.8129      -0.0302
+  1024   2.8177   2.7317     +0.0859      2.8566      -0.0389
+
+  1/L model residuals (actual - predicted): both POSITIVE (actual exceeds
+  the predicted asymptote r_inf=2.754 already at finite L) -- the saturating
+  model is already falsified in direction, not just magnitude.
+  log(L) model residuals: both negative (-0.030, -0.039), i.e. actual growth is a
+  little SLOWER than the L<=512 log(L) fit extrapolates, but the sign and scale
+  are utterly different from the 1/L failure -- log(L) over-predicts by ~0.03-0.04,
+  1/L UNDER-predicts by ~0.06-0.09, i.e. 1/L's error is 2x larger and points the
+  wrong way (the pile has already blown through the 'infinite-L' ceiling 1/L set).
+
+[refit with all nine points, L=64-1024]
+  1/L fit  : r_inf=2.7885  R^2=0.93327  AIC=-57.656
+  log(L) fit: a=1.8644 b=0.13981  R^2=0.98748  AIC=-72.718
+  DAIC (9 pts) = AIC_log - AIC_1/L = -15.062  (S20 with 7 pts: -9.7)
+  log(L) still preferred with the L=768/1024 points included.
+
+[per-doubling increment, extended]
+  64->128 : +0.138
+  128->256 : +0.089
+  256->512 : +0.098
+  512->1024 : +0.073
+  (512->1024 uses the new L=1024 point directly, not 768; log(L) predicts this
+  increment should equal the sum of two constant per-doubling steps, ~2x a
+  single-doubling increment; 1/L predicts a much smaller residual step.)
+
+[verdict]
+  The held-out L=768/1024 repose values land ABOVE the S20 1/L asymptote
+  (2.783, 2.818 vs r_inf=2.754) -- the pile has already exceeded the ceiling the
+  saturating model set for L->infinity, which a genuinely saturating quantity
+  cannot do. The log(L) model, extrapolated with NO refitting, lands within
+  ~0.03-0.04 of both new points (a modest over-shoot, not a sign flip), and the
+  9-point refit keeps log(L) preferred by AIC (DAIC=15.1, vs 9.7 at 7 points).
+  S20's divergence call is CONFIRMED out-of-sample, not just fit better in-sample.
+  Caveat: log(L) over-predicting slightly at both new points (rather than
+  under- or matching) could mean the TRUE growth is even slower than log(L) --
+  e.g. log(log(L)) -- which log(L) itself cannot distinguish from at this range;
+  what IS now excluded is any bounded asymptote near 2.75-2.76, since the data
+  already exceeds it. A genuine L~2048+ run would be needed to test log(L) vs
+  slower-than-log growth specifically.
+
+saved figures\sandpile_repose_scaling_L1024.png
+
+S21 DONE

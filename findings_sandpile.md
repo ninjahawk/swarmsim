@@ -216,6 +216,19 @@ Code lives in `sandpile/`. Figures in `figures/sandpile_*.png`, run logs in
       gradients at larger L). Caveat: L=64-512 cannot prove divergence over saturation at very large
       L -- confirming would require L~1024-2048. sandpile/repose_scaling.py; self-test confirms AIC
       recovers the true model on synthetic exact-1/L and exact-log(L) data.
+- S21 (out-of-sample test of S20 at L=768, 1024) S20 flagged its own weak point -- seven points over
+      one decade can't rule out a saturation whose asymptote lies outside the fitted range -- and named
+      L~1024-2048 as the confirming test. Froze the S20 fit BEFORE equilibrating two new lattices
+      (L=768: repose=2.7827+-0.003; L=1024: repose=2.8177+-0.006, S16 protocol). Both new points land
+      ABOVE the 1/L model's predicted asymptote (r_inf=2.754) -- a saturating quantity cannot exceed its
+      own infinite-L limit at finite L, so 1/L is falsified in DIRECTION. The frozen log(L) prediction
+      lands within 0.03-0.04 of both new points (a modest over-shoot, not a sign flip); 1/L's error is
+      ~2x larger and the wrong sign. The 9-point refit strengthens the log(L) preference (DAIC=-15.1 vs
+      -9.7 at 7 points). Result: S20's divergence call is CONFIRMED out-of-sample via a genuine advance
+      prediction, not a post-hoc refit. Caveat: log(L) over-predicting both new points by the same sign
+      hints the true growth may be even slower than log(L) (e.g. log(log(L))) -- this test rules out
+      saturation but does not pin down the exact functional form; L~2048+ (a real compute commitment,
+      347s for L=1024 alone) would be needed for that. sandpile/repose_scaling_L1024.py.
 
 ---
 
@@ -1788,3 +1801,56 @@ the distinction would wash out at larger L. Confirming divergence would require
 L ~ 1024-2048, each of which takes ~60-100s to equilibrate at current throughput.
 The 1/L fit's r_inf = 2.754 remains the best-case (lowest) bound on any eventual
 asymptote. figures/sandpile_repose_scaling.png.
+
+## S21 -- Out-of-sample test of S20 at L = 768, 1024
+
+**Question.** S20 named its own weak point: seven points over one decade in L
+cannot rule out a slow saturation whose asymptote lies outside the fitted
+range, and flagged L ~ 1024-2048 as the confirming test. This is that test,
+run as a genuine held-out prediction rather than a refit: freeze the S20 fit
+(from L <= 512 only) before looking at any new data, equilibrate two new
+lattices, and check whether the frozen 1/L and log(L) predictions land near
+the new points.
+
+**Method (`sandpile/repose_scaling_L1024.py`).** Equilibrate L = 768 and 1024
+with the S16 `equilibrate()` enabler (identical protocol, seed=1). Compute
+both frozen S20 predictions at each new L, compare residuals, then refit both
+models to all nine points (L = 64-1024) and recompute AIC. Self-test: on
+synthetic log(L) data, the correct model's held-out prediction error is
+~20x smaller than the wrong model's.
+
+**New data.** L = 768: repose = 2.7827 +- 0.003 (566M iters, 100s). L = 1024:
+repose = 2.8177 +- 0.006 (1006M iters, 347s). Both converged by the same
+windowed-mean plateau detector as S16-S20.
+
+**Result.** Both new points land ABOVE the S20 1/L model's predicted
+asymptote (r_inf = 2.754) -- a genuinely saturating quantity cannot exceed
+its own infinite-L limit at finite L, so the saturating model is already
+falsified in DIRECTION, not just fit quality. Residuals: 1/L under-predicts
+by +0.058 (L=768) and +0.086 (L=1024), roughly 2x the log(L) model's
+over-prediction of -0.030 and -0.039. The 9-point refit keeps log(L)
+preferred by AIC, and more strongly than S20's 7-point result (DAIC =
+-15.06, vs -9.7 with L <= 512 only; R^2 0.987 vs 0.933). The per-doubling
+increment sequence extends to 0.138, 0.089, 0.098, 0.073 (64->128 through
+512->1024) -- still far from 1/L's predicted halving each step, but the
+last increment is smaller than a clean constant-increment log(L) would
+predict too.
+
+**Interpretation.** S20's divergence call is CONFIRMED out-of-sample: this
+was a genuine advance prediction (the S20 fit was frozen before the L=768/1024
+runs), not a post-hoc refit, and it discriminated correctly. Any bounded
+repose asymptote near 2.75-2.76 is now excluded, since the measured repose
+already exceeds it at finite L. The residual pattern (log(L) slightly
+over-predicting both new points, same sign both times) hints the true growth
+may be even slower than log(L) -- e.g. log(log(L)) -- which this test cannot
+distinguish from clean log(L) at this range; what it settles is saturation
+vs some form of slow unbounded growth, not the precise functional form.
+
+**Caveat.** Still only 9 points, and the log(L) model's systematic
+over-prediction at both new L (rather than random-sign residuals) is itself
+mild evidence the true form isn't exactly a+b*log(L) either -- flagged, not
+resolved. A genuine L ~ 2048+ run (S20's own suggested target) would be
+needed to test log(L) against slower alternatives specifically; not run here
+(the L=1024 equilibration alone took 347s at current throughput, so L=2048
+is a real compute commitment, not a quick follow-up).
+figures/sandpile_repose_scaling_L1024.png.
