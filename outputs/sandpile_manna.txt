@@ -1,0 +1,72 @@
+======================================================================
+S22 -- LITERAL 2-D MANNA UNDER THE S11 MOMENT + S14 GEOMETRY PIPELINE
+======================================================================
+
+[self-test] L=24 Manna: exact grain bookkeeping + stationary density
+  bookkeeping residual (added - lost - on_lattice) = 0  (must be 0)
+  stationary density = 0.686  (literature rho_c ~ 0.68)
+  16944 avalanches, invariants S>=A, S>=T held on all (asserted in-run)
+  PASS
+
+Running Manna lattices (S = topplings, A = distinct sites)...
+  L=  32 :  89289 avalanches  <S>=117.7 S_max=6.09e+03  <A>=48.9 A_max=906  rho=0.685  (80.7s)
+  L=  48 :  76571 avalanches  <S>=251.2 S_max=1.7e+04  <A>=85.3 A_max=2.02e+03  rho=0.701  (114.5s)
+  L=  64 :  62863 avalanches  <S>=437.0 S_max=2.68e+04  <A>=127.4 A_max=3.53e+03  rho=0.693  (127.4s)
+  L=  96 :  51502 avalanches  <S>=947.2 S_max=8.29e+04  <A>=222.1 A_max=7.68e+03  rho=0.706  (184.4s)
+  L= 128 :  33354 avalanches  <S>=1659.7 S_max=1.83e+05  <A>=324.5 A_max=1.41e+04  rho=0.705  (201.9s)
+
+  [toppling number S]  sigma(q) and local slope D(q)=d sigma/dq
+    q     sigma(q)   D(q)+-boot
+    1.0      1.909   2.641 +- 0.025
+    2.0      4.601   2.695 +- 0.027
+    3.0      7.286   2.673 +- 0.031
+    4.0      9.946   2.641 +- 0.036
+    5.0     12.572   2.608 +- 0.045
+    D(q) drift over q in [1,4] = 0.057   (bootstrap noise ~ 0.029)
+    D(q) drift over q in [2,5] = 0.087   (high-q window, clear of the
+      sigma(q) kink rounding near q ~ tau-1)
+    -> auto-verdict ([1,4] window, S11 tiering): FLAT D(q) -> simple FSS (D ~ 2.68)
+
+  [area A]  sigma(q) and local slope D(q)=d sigma/dq
+    q     sigma(q)   D(q)+-boot
+    1.0      1.368   1.950 +- 0.016
+    2.0      3.407   2.059 +- 0.014
+    3.0      5.464   2.057 +- 0.013
+    4.0      7.518   2.053 +- 0.012
+    5.0      9.570   2.050 +- 0.012
+    D(q) drift over q in [1,4] = 0.110   (bootstrap noise ~ 0.014)
+    D(q) drift over q in [2,5] = 0.009   (high-q window, clear of the
+      sigma(q) kink rounding near q ~ tau-1)
+    -> auto-verdict ([1,4] window, S11 tiering): MULTIFRACTAL (D(q) drifts strongly with q)
+
+[area simple-FSS consistency]
+  high-q plateau D = 2.055; implied tau_a (from sigma(2)) = 1.342
+  predicted sigma(1) = 1.352   measured sigma(1) = 1.368   (diff 0.016)
+  -> the area spectrum is a single FSS line; the [1,4] drift is the
+     kink-rounding edge at low q, opposite in q-location to the slope
+     model's TAIL-side (high-q) drift (S18: D rises 1.14 -> 1.34).
+
+[headline cross-check]  tau_S(L=128) = 1.262   (literature ~ 1.27)
+
+[mass-radius dimension, A ~ Rg^D  (S14 estimator; its synthetic
+ line/disk/directed self-test lives in geometry2d.py)]
+  L=  96 : D = 2.062 +- 0.009   (window Rg in [2.5, 20.0], 18 bins)
+  L= 128 : D = 2.071 +- 0.008   (window Rg in [2.5, 26.9], 18 bins)
+
+[SAME-PIPELINE PLACEMENT -- all three anchors now measured, not quoted]
+                     area D(q) drift [1,4] / [2,5]    mass-radius D
+  Manna (here)     : 0.110 / 0.009                     2.07 +- 0.01
+  BTW   (S11/S14)  : 0.034                             2.0  (compact)
+  slope (S12/S18,  : ~0.2 asymptotic, tail-side         1.00 (one-bond
+         S14/S19)                                       filament, S14)
+  directed (exact) : 0 (single-scale)                   1.5
+
+  VERDICT: the pipeline reads literal Manna as simple-FSS (a single
+  sigma(q) line, tail D(q) flat) and COMPACT (D ~ 2) -- so the slope
+  model's tail-side area drift ~0.2 and mass-radius D ~ 1 are now
+  measured DIFFERENCES from Manna under one pipeline, not literature
+  comparisons. 'Outside Manna' is closed.
+saved figures\sandpile_manna.png
+cached Manna D(q) curves to outputs/sandpile_moments_manna.npz
+
+S22 COMPLETE

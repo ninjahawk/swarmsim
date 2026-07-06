@@ -1854,3 +1854,76 @@ needed to test log(L) against slower alternatives specifically; not run here
 (the L=1024 equilibration alone took 347s at current throughput, so L=2048
 is a real compute commitment, not a quick follow-up).
 figures/sandpile_repose_scaling_L1024.png.
+
+## S22 -- The true Manna limit: literal Manna measured under the same pipeline
+
+**Question.** The scaling-theory arc places the 2-D slope model outside the
+Manna universality class on two counts: its avalanche-area moments are
+multifractal (S12, asymptotic per S18) where Manna is the textbook simple-FSS
+class, and its footprint is a one-bond filament (mass-radius D ~ 1, S14) where
+Manna avalanches are compact (D ~ 2). But both Manna anchors were QUOTED from
+the literature, never measured: S11 built a same-pipeline BTW baseline, and
+S15's psto knob only leaks toward Manna without being Manna (its own stated
+caveat). The PICK UP HERE list carried this as the "true Manna LIMIT" open
+direction. This finding closes it -- the S11 "check a known result" discipline
+applied to the second anchor of the placement triangle.
+
+**Model (`sandpile/manna.py`).** Canonical 2-D Manna (Manna 1991): integer
+grains, threshold 2; an unstable site sheds 2 grains, EACH independently to a
+random neighbour (the stochastic redistribution that defines the class --
+contrast BTW's deterministic one-to-each); open boundaries; parallel sweeps;
+S = topplings, T = sweeps, A = distinct toppled sites, all matched to
+btw_compare's conventions. Relaxation scans only a growing bounding box around
+the active region, so small avalanches cost O(1) not O(L^2) per sweep.
+Self-test: exact integer grain bookkeeping (added - lost - on_lattice = 0,
+asserted), invariants S >= A and S >= T per avalanche, and the stationary
+density must land at the known Manna value (measured 0.685-0.706 across all L;
+literature ~0.68).
+
+**Method.** L = 32-128 (S11's grid), 33k-89k avalanches per size. The S11
+moment machinery verbatim (avalanche_moments / sigma_of_q / bootstrap_sigma,
+q in [0.5, 5]) on S and A; the S14 mass-radius estimator (gyration +
+binned_slope + rg_window, whose synthetic line/disk/directed self-test lives
+in geometry2d.py) on per-avalanche footprints at the two largest L; tau_S at
+L = 128 from the standard log-binned PDF.
+
+**Result.** The pipeline reads literal Manna exactly as the literature says it
+should. (1) Toppling number: D(q) FLAT at ~2.68 (drift 0.057 over q in [1,4],
+~2x bootstrap noise; literature D_S ~ 2.76), the class-defining simple-FSS
+signature -- where the same pipeline on BTW found a strong drift (~0.3, S11).
+(2) Area: a SINGLE FSS line, D = 2.055 with implied tau_a = 1.342; the
+predicted sigma(1) = 1.352 matches the measured 1.368 to 0.016. (3) Footprints
+COMPACT: mass-radius D = 2.06-2.07 +- 0.01, stable across L = 96 -> 128.
+(4) tau_S = 1.262 (literature ~1.27).
+
+**A method subtlety worth recording (found by the first run's auto-verdict).**
+The S11 [1,4]-window drift tier read the Manna AREA as "multifractal" (drift
+0.110, ~8x noise). Component reading shows why that is wrong: with tau_a ~ 1.3
+the sigma(q) kink at q = tau_a - 1 is finite-size-rounded up to q ~ 2, which
+puts a dip in D(q) at the LOW-q edge of the window (D(1) = 1.95 vs a dead-flat
+2.05-2.06 plateau over q in [2,5], spread 0.009). Genuine avalanche
+multifractality lives in the TAIL -- it grows toward HIGH q, which is exactly
+the slope model's signature (S18: D rises 1.14 -> 1.34 across the window). So
+the script now also measures the drift on [2,5] (Manna: S 0.087, A 0.009) and
+runs the FSS-line consistency check above; the final placement verdict is
+gated on the tail window. Same lesson as S6/S11/S17: read components, never
+the auto-verdict. (This also retro-sharpens S12/S18: the slope model's area
+drift is tail-side and grows with q, so it is not this kink artifact.)
+
+**Interpretation.** All three anchors of the placement triangle are now
+measured under one pipeline rather than quoted: Manna is single-FSS-line flat
+(tail drift 0.009) and compact (D = 2.07); BTW is toppling-multifractal and
+compact (S11/S14); the slope model is tail-multifractal in area (~0.2,
+asymptotic, S18) and filamentary (D = 1.00, S14/S19). The slope model differs
+from Manna in BOTH its scaling form and its geometry by margins 20-100x the
+measurement noise, under identical estimators. "Outside Manna" is closed as a
+measured statement; combined with S15 (the psto interpolation compactifies the
+shape without flattening the moments), the model does not reach the Manna
+class from either direction.
+
+**Caveat.** L <= 128 here vs L <= 512 for the slope model's own numbers -- but
+Manna's D(q) flatness and compactness are already L-stable across 32-128 and
+match the literature exponents, so larger L would sharpen constants, not flip
+the verdict. Duration moments were not analysed (Manna's T is not needed for
+the placement; the slope model's duration anomaly was closed internally by
+S17's 1-D anchor). figures/sandpile_manna.png.
