@@ -1,0 +1,40 @@
+capstone site-figure render report -- FINAL, session B (2026-07-11)
+Budget: 900 s of compute per attempt (the plan's locked fallback rule).
+First pass ran 3 workers in parallel; timeouts got one clean uncontended retry.
+
+#   site figure                        outcome
+1   filament geometry (S14)           RENDERED   295s
+2   stochastic split (S15)            RENDERED   162s
+3   1-D anchor (S16)                  RENDERED   246s
+4   duration closure (S17)            RENDERED   353s
+5   area multifractality (S18)        RENDERED   351s   (plan expected fallback)
+6   filament fattening (S19)          RENDERED   477s   (plan expected fallback)
+7   Manna placement (S22)             RENDERED   859s
+8   repose out-of-sample (S21)        RENDERED   568s
+9   many-wrongs (F82)                 FALLBACK   900s x2 -- exceeds the budget even
+                                      uncontended; committed archive PNG kept per rule
+10  misinformation (F85)              RENDERED   752s   (retry; 1st pass timed out under contention)
+11  collective escape (F70)           RENDERED   696s   (retry; 1st pass timed out under contention)
+12  escape invasion (F88)             RENDERED   160s
+13  alignment non-invasion (F94)      RENDERED   224s
+14  OFC conservation FSS (E2)         RENDERED   256s
+15  OFC domains (E3)                  RENDERED   815s   (script ships MAKE_DOMAINS=False to skip
+                                      the 8M-iter regen; flag flipped externally for one budgeted
+                                      try -- research script untouched; periods reproduced:
+                                      6025/3982/2145 vs book 6435/4002/2165)
+16  OFC prediction (E7)               RENDERED    98s
+T   teaser composite                  BUILT (capstone/make_teaser.py) -- all 3 panels recomputed
+                                      from the research code; E7 panel reproduces the published
+                                      numbers exactly (precision 0.68 vs chance 0.44, top-decile
+                                      recall 4/43)
+
+15/16 re-rendered under budget + teaser; 1 fallback (many_wrongs_1.png keeps the committed
+version, harmonized by display treatment on the page).
+
+Integrity notes:
+- repo figures/ archive untouched (figstyle savefig hook redirects all writes to docs/figures/)
+- outputs/ run logs rewritten by the re-runs were restored from git afterward
+- docs/figures/ holds 18 PNGs: the 16 manifest figures + teaser.png + ofc_quasiperiodic.png
+  (E3's companion panel, re-rendered by the same run)
+- misinformation/collective_escape were re-rendered a second time after adding their hardcoded
+  CSS color names (teal/crimson/seagreen/steelblue/darkorange) to the figstyle palette remap
