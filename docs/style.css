@@ -1,0 +1,304 @@
+/* Where the Law Runs Out — capstone site stylesheet
+   Design tokens per CAPSTONE_PLAN.md §5 (locked 2026-07-09). */
+
+:root {
+  --paper: #fcfcfa;
+  --ink: #1a1a1e;
+  --muted: #5f6368;
+  --accent: #2b4c7e;
+  --rule-flock: #2b4c7e;
+  --rule-sandpile: #a07840;
+  --rule-earthquake: #8c3b34;
+  --hairline: #d8d8d4;
+  --serif: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --body-w: 680px;
+  --wide-w: 900px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+article {
+  max-width: var(--body-w);
+  margin: 0 auto;
+  padding: 0 20px 96px;
+}
+
+p { margin: 0 0 1.1em; }
+
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(43, 76, 126, 0.35);
+}
+a:hover { text-decoration-color: var(--accent); }
+
+strong { font-weight: 600; }
+
+/* ---------- header ---------- */
+
+header.masthead {
+  padding-top: 72px;
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-family: var(--sans);
+  font-size: 34px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 12px;
+}
+
+.dek {
+  font-size: 21px;
+  line-height: 1.45;
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+
+.byline {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+.byline .name { color: var(--ink); font-weight: 600; }
+
+.links-row {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0 0 36px;
+}
+.links-row a { white-space: nowrap; }
+.links-row .sep { margin: 0 7px; color: var(--hairline); }
+
+/* ---------- sections ---------- */
+
+section { margin-top: 72px; }
+
+h2 {
+  font-family: var(--sans);
+  font-size: 27px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 18px;
+  padding-top: 18px;
+  border-top: 3px solid var(--accent);
+}
+section.ch-flock h2 { border-top-color: var(--rule-flock); }
+section.ch-sandpile h2 { border-top-color: var(--rule-sandpile); }
+section.ch-earthquake h2 { border-top-color: var(--rule-earthquake); }
+
+h3 {
+  font-family: var(--sans);
+  font-size: 21px;
+  line-height: 1.3;
+  font-weight: 600;
+  margin: 2em 0 0.6em;
+}
+
+hr {
+  border: none;
+  width: 48px;
+  border-top: 2px solid var(--accent);
+  margin: 48px auto;
+}
+
+/* ---------- stat strip ---------- */
+
+.stat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 40px 0 8px;
+  font-family: var(--sans);
+}
+.stat-strip .stat {
+  flex: 1 1 auto;
+  padding: 2px 18px;
+  border-left: 1px solid var(--hairline);
+}
+.stat-strip .stat:first-child { border-left: none; padding-left: 0; }
+.stat-strip .num {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+.stat-strip .label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- figures ---------- */
+
+figure {
+  margin: 40px 0;
+}
+figure.wide {
+  width: min(var(--wide-w), calc(100vw - 40px));
+  margin-left: calc((100% - min(var(--wide-w), calc(100vw - 40px))) / 2);
+}
+figure img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+figure img + img { margin-top: 14px; }
+figure.archive img {
+  width: 100%;
+  max-width: var(--body-w);
+  margin-left: auto;
+  margin-right: auto;
+}
+figcaption {
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin-top: 12px;
+  max-width: var(--body-w);
+  margin-left: auto;
+  margin-right: auto;
+}
+figcaption .figno { color: var(--ink); font-weight: 600; }
+figcaption strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- corrections table ---------- */
+
+.table-wrap { overflow-x: auto; margin: 32px 0; }
+
+table.corrections {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+table.corrections th {
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 8px 14px 8px 0;
+  border-bottom: 1px solid var(--ink);
+}
+table.corrections td {
+  vertical-align: top;
+  padding: 9px 14px 9px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+table.corrections td:last-child, table.corrections th:last-child { padding-right: 0; }
+table.corrections .fid { white-space: nowrap; color: var(--muted); }
+
+/* ---------- colophon ---------- */
+
+.colophon {
+  font-size: 15px;
+  color: var(--muted);
+}
+.colophon p { margin-bottom: 0.9em; }
+.refs {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  padding-left: 1.2em;
+  margin: 0.5em 0 0;
+}
+.refs li { margin-bottom: 0.35em; }
+
+/* ---------- TOC ---------- */
+
+nav.toc { display: none; }
+
+@media (min-width: 1200px) {
+  nav.toc {
+    display: block;
+    position: fixed;
+    top: 96px;
+    left: calc((100vw - var(--body-w)) / 2 - 236px);
+    width: 200px;
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  nav.toc .toc-title {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  nav.toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav.toc li { margin: 0 0 7px; }
+  nav.toc a {
+    color: var(--muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    display: block;
+  }
+  nav.toc a:hover { color: var(--ink); }
+  nav.toc a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    font-weight: 600;
+  }
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 480px) {
+  body { font-size: 16px; }
+  h1 { font-size: 28px; }
+  .dek { font-size: 18px; }
+  h2 { font-size: 23px; }
+  h3 { font-size: 19px; }
+  header.masthead { padding-top: 44px; }
+  .stat-strip .stat { padding: 2px 12px; }
+  .stat-strip .num { font-size: 21px; }
+}
+
+/* ---------- print ---------- */
+
+@media print {
+  nav.toc { display: none !important; }
+  body { background: #fff; color: #000; font-size: 11pt; }
+  article { max-width: 100%; padding: 0; }
+  figure.wide { width: 100%; margin-left: 0; }
+  figure, .table-wrap { break-inside: avoid; }
+  h2 { break-after: avoid; }
+  a { color: #000; text-decoration: none; }
+  .links-row a { text-decoration: underline; }
+}

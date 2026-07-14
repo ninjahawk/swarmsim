@@ -14,6 +14,9 @@
 
 A computational study of force-based flocking agents on a periodic 2D domain, extended with predator-prey dynamics. Based on Charbonneau (2017), Ch. 10.
 
+### [**Where the Law Runs Out** — the summer's results site](https://ninjahawk.github.io/swarmsim/)
+*Three complex systems, one measured claim: typical behavior obeys sharp laws, and the events that matter escape them.*
+
 [**▶ Open Interactive Demo**](https://htmlpreview.github.io/?https://github.com/ninjahawk/swarmsim/blob/main/sim_demo.html) &nbsp;·&nbsp; [**📋 Research Log**](https://htmlpreview.github.io/?https://github.com/ninjahawk/swarmsim/blob/main/logs.html)
 
 </div>
