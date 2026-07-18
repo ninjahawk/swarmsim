@@ -8,13 +8,13 @@
 [![NumPy](https://img.shields.io/badge/NumPy-scientific_computing-013243?logo=numpy&logoColor=white)](https://numpy.org)
 [![Matplotlib](https://img.shields.io/badge/Matplotlib-visualization-11557c)](https://matplotlib.org)
 [![Course](https://img.shields.io/badge/PHY_351-UNCG-gold)](https://uncg.edu)
-[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/ninjahawk/swarmsim)
+[![Status](https://img.shields.io/badge/status-complete-blue)](https://github.com/ninjahawk/swarmsim)
 
 **PHY 351 — Independent Summer Research &nbsp;|&nbsp; UNCG**
 
 A computational study of force-based flocking agents on a periodic 2D domain, extended with predator-prey dynamics. Based on Charbonneau (2017), Ch. 10.
 
-### [**Where the Law Runs Out** — the summer's results site](https://ninjahawk.github.io/swarmsim/)
+### [**Where the Law Runs Out** — the summer's results site](https://nathanlangley.dev/swarmsim/)
 *Three complex systems, one measured claim: typical behavior obeys sharp laws, and the events that matter escape them.*
 
 [**▶ Open Interactive Demo**](https://htmlpreview.github.io/?https://github.com/ninjahawk/swarmsim/blob/main/sim_demo.html) &nbsp;·&nbsp; [**📋 Research Log**](https://htmlpreview.github.io/?https://github.com/ninjahawk/swarmsim/blob/main/logs.html)
@@ -25,9 +25,9 @@ A computational study of force-based flocking agents on a periodic 2D domain, ex
 
 ## Project status — where we are
 
-**94 findings (F1–F94), all written up in [`findings.md`](findings.md) and the [report](report_draft.md).** Last updated 2026-06-16.
+**Summer complete (2026-07-18): 123 findings across three chapters** — flocking F1–F94 ([`findings.md`](findings.md)), sandpiles S1–S22 ([`findings_sandpile.md`](findings_sandpile.md)), earthquakes E1–E7 ([`findings_earthquake.md`](findings_earthquake.md)). The argument the summer adds up to, with its central figures, is on the results site: [**Where the Law Runs Out**](https://nathanlangley.dev/swarmsim/).
 
-**Threads, and whether they're closed:**
+**Flocking threads (first chapter), and whether they're closed:**
 
 | Thread | Findings | State |
 |--------|----------|-------|
@@ -105,6 +105,10 @@ sandpile/
   equilibrate2d.py reusable warmup to a verified-stationary L>256 (S16)
   duration_closure.py  single-scale exact in space, residual in time (S17)
   area_multifractality.py  area multifractality is asymptotic, not a corona (S18)
+  filament_fattening.py  typical-vs-tail footprint split: the filament does not fatten (S19)
+  repose_scaling.py     repose model selection — log(L) beats 1/L by AIC (S20)
+  repose_scaling_L1024.py  out-of-sample confirmation at held-out L = 768/1024 (S21)
+  manna.py              literal 2-D Manna under the same pipeline — the measured anchor (S22)
 ```
 
 Exercises addressed: 2 (falloff avalanches, S8), 3 (initial-condition
@@ -130,7 +134,13 @@ findings pin down *how* single-scale the model is: the **spatial** relations bec
 permanently loose proxy for spatial extent (S17), and the avalanche **area distribution**
 stays **multifractal** asymptotically rather than healing to simple scaling (S18) — the
 model is single-scale in its *means* (the typical avalanche) and multifractal in its *tails*
-(the largest avalanches). It sits in its own place in the SOC landscape: more filamentary
+(the largest avalanches). Four closing findings tie the chapter off: the typical filament does
+**not** fatten with system size — the apparent fattening at five seeds was tail undersampling
+(S19); the angle of repose most likely **diverges logarithmically** with system size rather than
+saturating, chosen by model selection (S20) and then confirmed **out of sample** by frozen-fit
+predictions at held-out L = 768/1024, which land above the saturating model's own ceiling (S21);
+and the Manna comparison point was **measured** under the identical pipeline rather than quoted
+(S22) — closing the placement triangle. It sits in its own place in the SOC landscape: more filamentary
 than the directed sandpile, outside the stochastic Manna class, a distinct anomalous class
 from BTW. The whole arc is drawn together in a standalone write-up,
 [`report_sandpile.md`](report_sandpile.md); full per-finding detail (S-series) is in
@@ -340,7 +350,7 @@ This Φ = 0.77 does not represent dissolution. `fragmentation.py` shows that enc
 
 ## Key Findings
 
-92 findings documented — full evidence and figures: [`findings.md`](findings.md)
+94 findings documented — full evidence and figures: [`findings.md`](findings.md)
 
 **Selected highlights:**
 
@@ -452,7 +462,7 @@ A complete file-by-file index lives in the per-finding evidence sections of [`fi
 | `build_report.py` | Generates `report_draft.pdf` from `report_draft.md` using reportlab |
 | `sim_demo.html` | Interactive browser simulation (open locally or via htmlpreview link above) |
 | `logs.html` | Time log and research log — open in browser |
-| `findings.md` | Running notes on all 92 findings with figures |
+| `findings.md` | Running notes on all 94 findings with figures |
 | `report_draft.md` | Full research report in Markdown |
 
 ---

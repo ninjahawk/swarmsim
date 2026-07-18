@@ -18,7 +18,13 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* figure.wide sizes against 100vw, which includes the scrollbar gutter on
+     Windows desktop; clip the few px of bleed instead of showing an h-scrollbar */
+  overflow-x: hidden;
+  overflow-x: clip;
+}
 
 body {
   margin: 0;
