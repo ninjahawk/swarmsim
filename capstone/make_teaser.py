@@ -37,6 +37,17 @@ figstyle.apply()
 
 import matplotlib.pyplot as plt  # noqa: E402
 
+# The teaser is displayed at ~1060 px from a ~2400 px render, so type must be
+# larger than the site's default figure style or it lands below 10 screen px.
+plt.rcParams.update({
+    "font.size": 12.5,
+    "axes.titlesize": 13.5,
+    "axes.labelsize": 12.5,
+    "xtick.labelsize": 11.0,
+    "ytick.labelsize": 11.0,
+    "legend.fontsize": 10.0,
+})
+
 sys.path.insert(0, ROOT)                              # earthquake package
 sys.path.insert(0, os.path.join(ROOT, "sandpile"))    # sandpile modules
 from geometry2d import (slope_footprints, btw_footprints, decode_points,
@@ -130,29 +141,32 @@ def panel_a_data():
     for nm, rg in (("slope", rg_s), ("BTW", rg_b), ("Manna", rg_m)):
         print("    picked %s footprint at Rg = %.1f (target %.0f)" % (nm, rg, RG_TARGET))
         assert abs(rg - RG_TARGET) < 4.0, "no footprint near the target radius"
-    return [(slope_pts, figstyle.ACCENT, "slope model", "mass-radius D = 1.00 (S14)"),
+    return [(slope_pts, figstyle.ACCENT, "slope model", "D = 1.00 (S14)"),
             (btw_pts, figstyle.MUTED, "BTW", "D = 2.0 (S14)"),
             (manna_pts, figstyle.SAND, "Manna", "D = 2.07 (S22)")]
 
 
 def draw_panel_a(ax, trio):
-    ext = 27.0
-    gap = 62.0
+    ext = 24.0
+    gap = 57.0
     for k, (pts, color, name, dtxt) in enumerate(trio):
         p = pts - pts.mean(axis=0)
         x0 = k * gap
-        ax.scatter(p[:, 1] + x0, p[:, 0], s=4.0, color=color, linewidths=0)
-        ax.text(x0, ext + 6.0, name, ha="center", va="top", fontsize=10.5,
+        # the filament is one bond wide; without a bigger marker it renders as
+        # a hairline next to the compact blobs
+        ms = 12.0 if k == 0 else 6.5
+        ax.scatter(p[:, 1] + x0, p[:, 0], s=ms, color=color, linewidths=0)
+        ax.text(x0, ext + 5.0, name, ha="center", va="top", fontsize=12,
                 fontweight="bold", color=color)
-        ax.text(x0, ext + 13.5, "%s\nA = %d sites" % (dtxt, pts.shape[0]),
-                ha="center", va="top", fontsize=8.5, color=figstyle.MUTED)
+        ax.text(x0, ext + 13.0, "%s\nA = %d sites" % (dtxt, pts.shape[0]),
+                ha="center", va="top", fontsize=10, color=figstyle.MUTED)
     # shared scale bar
     ax.plot([-ext, -ext + 20], [-ext - 4, -ext - 4], "-",
-            color=figstyle.INK, lw=1.8, solid_capstyle="butt")
-    ax.text(-ext + 10, -ext - 7.5, "20 lattice units", ha="center", va="bottom",
-            fontsize=8, color=figstyle.MUTED)
-    ax.set_xlim(-ext - 6, 2 * gap + ext + 6)
-    ax.set_ylim(ext + 26.0, -ext - 12.0)
+            color=figstyle.INK, lw=2.2, solid_capstyle="butt")
+    ax.text(-ext + 10, -ext - 7.0, "20 lattice units", ha="center", va="bottom",
+            fontsize=10, color=figstyle.MUTED)
+    ax.set_xlim(-ext - 5, 2 * gap + ext + 5)
+    ax.set_ylim(ext + 24.0, -ext - 11.0)
     # datalim: pad the data window instead of shrinking the axes box, so the
     # title and panel label stay aligned with the other panels
     ax.set_aspect("equal", adjustable="datalim")
@@ -191,23 +205,23 @@ def draw_panel_b(ax, q_grid, DqA, DqA_sd, manna, btw):
     m = q_grid >= 0.75
     ax.fill_between(q_grid[m], (DqA - DqA_sd)[m], (DqA + DqA_sd)[m],
                     color=figstyle.ACCENT, alpha=0.18, lw=0)
-    ax.plot(q_grid[m], DqA[m], "o-", color=figstyle.ACCENT, ms=4,
+    ax.plot(q_grid[m], DqA[m], "o-", color=figstyle.ACCENT, ms=5, lw=2.0,
             label="slope model (re-run, L$\\leq$192)")
     qm = np.asarray(manna["q_grid"]); mm = qm >= 0.75
     ax.plot(qm[mm], np.asarray(manna["DqA"])[mm], "s-", color=figstyle.SAND,
-            ms=3.5, lw=1.3, label="Manna, measured (S22)")
+            ms=4.5, lw=1.6, label="Manna, measured (S22)")
     if "DqA" in getattr(btw, "files", []):
         qb = np.asarray(btw["q_grid"]); mb = qb >= 0.75
         ax.plot(qb[mb], np.asarray(btw["DqA"])[mb], "^--", color=figstyle.MUTED,
-                ms=3.5, lw=1.2, label="BTW, measured (S11)")
-    ax.annotate("means\n(q $\\approx$ 1)", xy=(0.95, 1.13), ha="center", va="bottom",
-                fontsize=8.5, color=figstyle.MUTED)
+                ms=4.5, lw=1.4, label="BTW, measured (S11)")
+    ax.annotate("means\n(q $\\approx$ 1)", xy=(1.2, 1.16), ha="center", va="bottom",
+                fontsize=10.5, color=figstyle.MUTED)
     ax.annotate("tails\n(large avalanches)", xy=(4.5, 0.02), xycoords=("data", "axes fraction"),
-                ha="center", va="bottom", fontsize=8.5, color=figstyle.MUTED)
+                ha="center", va="bottom", fontsize=10.5, color=figstyle.MUTED)
     ax.set_xlabel("moment order q")
     ax.set_ylabel("area moment dimension D(q)")
     ax.set_ylim(0.85, 2.45)
-    ax.legend(loc="center right", fontsize=8.5)
+    ax.legend(loc="center right")
     ax.set_title("Means are lawful, tails escape:\narea D(q) rises for the slope model only")
 
 
@@ -281,39 +295,39 @@ def panel_c_data(n_events=400_000, warm_events=400_000, seed=0):
 
 
 def draw_panel_c(ax, d):
-    span = 80_000
+    span = 50_000
     t0 = d["it_te"][0]
     m = d["it_te"] - t0 < span
-    ax.plot(d["it_te"][m] - t0, d["sz_te"][m], lw=0.5, color=figstyle.MUTED,
-            alpha=0.65, zorder=1)
+    ax.plot(d["it_te"][m] - t0, d["sz_te"][m], lw=0.45, color=figstyle.MUTED,
+            alpha=0.45, zorder=1)
     pm = (d["pred_t"] - t0 >= 0) & (d["pred_t"] - t0 < span)
     for x in d["pred_t"][pm] - t0:
-        ax.axvline(x, color=figstyle.SLATE, lw=1.1, ls=(0, (4, 3)), alpha=0.85, zorder=0)
-    ax.plot([], [], color=figstyle.SLATE, lw=1.1, ls=(0, (4, 3)),
+        ax.axvline(x, color=figstyle.SLATE, lw=1.0, ls=(0, (4, 3)), alpha=0.55, zorder=0)
+    ax.plot([], [], color=figstyle.SLATE, lw=1.0, ls=(0, (4, 3)),
             label="forecasts, one per cycle:\nprecision %.2f (chance %.2f)"
             % (d["precision"], d["chance"]))
     om = d["obs_t"] - t0 < span
     hit = om & d["caught"]
     miss = om & ~d["caught"]
     ax.plot(d["obs_t"][hit & ~d["top"]] - t0, d["obs_e"][hit & ~d["top"]], "o",
-            color=figstyle.ACCENT, ms=6, label="caught by forecast", zorder=3)
+            color=figstyle.ACCENT, ms=7, label="caught by forecast", zorder=3)
     ax.plot(d["obs_t"][hit & d["top"]] - t0, d["obs_e"][hit & d["top"]], "o",
-            color=figstyle.ACCENT, ms=9, mec=figstyle.INK, mew=0.7, zorder=3)
+            color=figstyle.ACCENT, ms=10, mec=figstyle.INK, mew=0.8, zorder=3)
     ax.plot(d["obs_t"][miss & d["top"]] - t0, d["obs_e"][miss & d["top"]], "o",
-            mfc="none", mec=figstyle.RUST, mew=2.0, ms=10,
+            mfc="none", mec=figstyle.RUST, mew=2.4, ms=11,
             label="largest decile: %d of %d caught" % (d["n_top_caught"], d["n_top"]),
             zorder=4)
     # typical large events not matched to a forecast: quiet dots (the forecaster
     # only aims at one event per cycle, so these are not failures)
     ax.plot(d["obs_t"][miss & ~d["top"]] - t0, d["obs_e"][miss & ~d["top"]], "o",
-            color=figstyle.MUTED, ms=2.6, alpha=0.7, lw=0,
+            color=figstyle.MUTED, ms=3.4, alpha=0.7, lw=0,
             label="other large events", zorder=2)
     ax.set_xlim(0, span)
     ymax = max(d["obs_e"][om].max(), d["sz_te"][m].max())
-    ax.set_ylim(0, 1.14 * ymax)
+    ax.set_ylim(0, 1.30 * ymax)
     ax.set_xlabel("iteration into the unseen half")
     ax.set_ylabel("avalanche size")
-    ax.legend(loc="upper left", fontsize=8, ncol=1)
+    ax.legend(loc="upper left", fontsize=9.5, ncol=1)
     ax.set_title("Full knowledge of the mechanism:\nthe rhythm forecasts all but the largest")
 
 
@@ -323,14 +337,14 @@ def main():
     q_grid, DqA, DqA_sd, manna, btw = panel_b_data()
     ofc = panel_c_data()
 
-    fig, axes = plt.subplots(1, 3, figsize=(13.6, 4.4),
-                             gridspec_kw=dict(width_ratios=[1.18, 0.95, 1.15]))
+    fig, axes = plt.subplots(1, 3, figsize=(12.0, 4.6),
+                             gridspec_kw=dict(width_ratios=[1.12, 0.96, 1.12]))
     draw_panel_a(axes[0], trio)
     draw_panel_b(axes[1], q_grid, DqA, DqA_sd, manna, btw)
     draw_panel_c(axes[2], ofc)
     for ax, letter in zip(axes, "abc"):
-        figstyle.panel_label(ax, letter, dx=0.0, dy=1.06)
-    fig.tight_layout(w_pad=2.2)
+        figstyle.panel_label(ax, letter, dx=-0.085, dy=1.08)
+    fig.tight_layout(w_pad=1.9)
     p = os.path.join(SITE, "teaser.png")
     fig.savefig(p)
     plt.close(fig)
