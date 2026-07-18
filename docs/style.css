@@ -244,12 +244,14 @@ table.corrections .fid { white-space: nowrap; color: var(--muted); }
 
 nav.toc { display: none; }
 
-@media (min-width: 1200px) {
+@media (min-width: 1360px) {
   nav.toc {
     display: block;
     position: fixed;
     top: 96px;
-    left: calc((100vw - var(--body-w)) / 2 - 236px);
+    /* right edge sits 24px outside the wide-figure edge, so scrolling
+       figures never slide under the TOC text */
+    left: max(24px, calc((100vw - var(--wide-w)) / 2 - 224px));
     width: 200px;
     font-family: var(--sans);
     font-size: 13px;
@@ -294,6 +296,19 @@ nav.toc { display: none; }
   header.masthead { padding-top: 44px; }
   .stat-strip .stat { padding: 2px 12px; }
   .stat-strip .num { font-size: 21px; }
+}
+
+/* ---------- large screens ---------- */
+
+@media (min-width: 1600px) {
+  :root { --body-w: 720px; --wide-w: 1060px; }
+  body { font-size: 18px; }
+  h1 { font-size: 40px; }
+  .dek { font-size: 22px; }
+  h2 { font-size: 29px; }
+  h3 { font-size: 22px; }
+  .stat-strip .num { font-size: 28px; }
+  figcaption { font-size: 14.5px; }
 }
 
 /* ---------- print ---------- */
