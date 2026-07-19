@@ -62,7 +62,7 @@
   <div class="stat-strip" aria-label="Project statistics">
     <div class="stat"><span class="num">3</span><span class="label">systems</span></div>
     <div class="stat"><span class="num">123</span><span class="label">findings</span></div>
-    <div class="stat"><span class="num">154.5</span><span class="label">hours</span></div>
+    <div class="stat"><span class="num">155.25</span><span class="label">hours</span></div>
     <div class="stat"><span class="num">133</span><span class="label">scripts</span></div>
     <div class="stat"><span class="num">9</span><span class="label">self-tests</span></div>
     <div class="stat"><span class="num">10</span><span class="label">corrections</span></div>
@@ -83,7 +83,7 @@
   <p>The model comes from Silverberg and colleagues' 2013 study of mosh pits: N self-propelled agents on a periodic plane with short-range repulsion, alignment, and noise. That is the whole model. The first weeks went to validation, which produced two results of its own. The first is an exact law: the equilibrium cruise speed is v<sub>0</sub> + &alpha;/&mu;, not the nominal v<sub>0</sub>. The second is a clean negative that took five findings to nail down: the solid-to-fluid change in this model is a smooth crossover, not a phase transition, at every compactness and repulsion hardness I could reach. After that the chapter asked one question in different forms: what moves a flock, and what does not.</p>
   <p>Give every agent a private, noisy estimate of a goal direction and the flock's heading error shrinks as one over the square root of N; the fitted slope across group sizes is &minus;0.52 against a predicted &minus;0.5. In practice a flock of hundreds navigates accurately on per-agent information that would leave any individual lost.</p>
 
-  <figure class="archive">
+  <figure class="wide">
     <img src="figures/many_wrongs_1.png" alt="Three panels. Left: cross-seed RMS heading error versus flock size N on log-log axes, falling along a one-over-square-root-of-N reference line with fitted slope minus 0.52. Middle: accuracy toward the true goal improving toward 1.0 as N grows. Right: heading error versus per-agent noise at N = 250, flat until roughly 60 degrees of per-agent error, then rising sharply.">
     <figcaption><span class="figno">Figure 1.</span> <strong>Accuracy rises with group size.</strong> Heading error falls as 1/&radic;N (fitted slope &minus;0.52 against the predicted &minus;0.5, left), so accuracy improves as the flock grows (middle); the averaging holds until per-agent noise reaches a ceiling near &sigma; &asymp; 1.3 rad (right). Shown in its archive rendering: regenerating this figure's data exceeds the site's per-figure compute budget, so the committed original is kept.</figcaption>
   </figure>
@@ -282,7 +282,7 @@
 
 <section id="colophon" class="colophon">
   <h2>Colophon</h2>
-  <p>123 documented findings (94 flocking, 22 sandpile, 7 earthquake) &middot; 154.5 logged hours over 39 research days &middot; 179 commits &middot; 150 figures &middot; 133 Python scripts. Built with NumPy, numba, and matplotlib. The performance engines (a 600&times; active-list sandpile engine, a 251&times; vectorized predator force) are validated bit-for-bit against their reference implementations, and every engine ships self-tests. Every figure on this page regenerates from a named script in the <a href="https://github.com/ninjahawk/swarmsim">repository</a>. Textbook: Paul Charbonneau, <em>Natural Complexity</em> (Princeton, 2017); flocking model from Silverberg et al., PRL 110, 228701 (2013). Findings, full-detail reports, and the day-by-day research log are in the repository. AI tools (Anthropic's Claude) were used as a coding and analysis assistant throughout, documented per session in the research log; the scientific decisions and interpretations are my own.</p>
+  <p>123 documented findings (94 flocking, 22 sandpile, 7 earthquake) &middot; 155.25 logged hours over 40 research days &middot; 180 commits &middot; 150 figures &middot; 133 Python scripts. Built with NumPy, numba, and matplotlib. The performance engines (a 600&times; active-list sandpile engine, a 251&times; vectorized predator force) are validated bit-for-bit against their reference implementations, and every engine ships self-tests. Every figure on this page regenerates from a named script in the <a href="https://github.com/ninjahawk/swarmsim">repository</a>. Textbook: Paul Charbonneau, <em>Natural Complexity</em> (Princeton, 2017); flocking model from Silverberg et al., PRL 110, 228701 (2013). Findings, full-detail reports, and the day-by-day research log are in the repository. AI tools (Anthropic's Claude) were used as a coding and analysis assistant throughout, documented per session in the research log; the scientific decisions and interpretations are my own.</p>
   <p>References:</p>
   <ol class="refs">
     <li>P. Charbonneau, <em>Natural Complexity: A Modeling Handbook</em>, Princeton University Press (2017).</li>

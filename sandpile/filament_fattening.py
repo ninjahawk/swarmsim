@@ -374,9 +374,9 @@ def _make_figure(data, Ls, Ls_big, bs, meanA_g, medA_g, repose):
     thr = np.quantile(A, TAIL_Q)
     typ = A < thr; tail = A >= thr
     ax[0].loglog(Rg[typ], A[typ], ".", ms=2, color="C0", alpha=0.25,
-                 label="typical (bottom 90%% area)")
+                 label="typical (bottom 90% area)")
     ax[0].loglog(Rg[tail], A[tail], ".", ms=3, color="C3", alpha=0.5,
-                 label="tail (top 10%% area)")
+                 label="tail (top 10% area)")
     if Rg.size:
         xr = np.array([max(Rg.min(), 1.0), Rg.max()])
         a0 = np.median(A[typ]) / np.median(Rg[typ]) ** 1.0

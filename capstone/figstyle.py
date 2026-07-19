@@ -34,6 +34,14 @@ SITE_FIGDIR = os.path.join(ROOT, "docs", "figures")
 
 DPI = 200          # forced on every savefig (originals ask 120-140)
 
+# Optional font scale for figures whose native width lands the base 11pt below
+# ~12 screen px at the page's display width. Set FIGSTYLE_FONT_SCALE in the
+# caller's environment; unset (1.0) reproduces the session-B style exactly.
+FONT_SCALE = float(os.environ.get("FIGSTYLE_FONT_SCALE", "1.0"))
+# Titles can be scaled separately: long multi-panel titles collide before the
+# small text does. Defaults to FONT_SCALE when unset.
+TITLE_SCALE = float(os.environ.get("FIGSTYLE_TITLE_SCALE", "0") or 0) or FONT_SCALE
+
 # ---- design tokens (plan section 5) ----
 PAPER = "#ffffff"   # figures ship on white; the page paper is #fcfcfa
 INK = "#1a1a1e"
@@ -102,14 +110,14 @@ def apply():
         # type
         "font.family": "sans-serif",
         "font.sans-serif": [family, "DejaVu Sans"],
-        "font.size": 11.0,
-        "axes.titlesize": 12.0,
+        "font.size": 11.0 * FONT_SCALE,
+        "axes.titlesize": 12.0 * TITLE_SCALE,
         "axes.titleweight": "bold",
-        "axes.labelsize": 11.0,
-        "xtick.labelsize": 9.5,
-        "ytick.labelsize": 9.5,
-        "legend.fontsize": 9.5,
-        "figure.titlesize": 13.0,
+        "axes.labelsize": 11.0 * FONT_SCALE,
+        "xtick.labelsize": 9.5 * FONT_SCALE,
+        "ytick.labelsize": 9.5 * FONT_SCALE,
+        "legend.fontsize": 9.5 * FONT_SCALE,
+        "figure.titlesize": 13.0 * TITLE_SCALE,
         "mathtext.fontset": "dejavusans",
         # geometry of the frame
         "axes.spines.top": False,
@@ -177,7 +185,7 @@ def _install_savefig_hook():
 
 def panel_label(ax, letter, dx=-0.02, dy=1.02):
     """Uniform panel label ('a', 'b', ...) top-left, outside the axes."""
-    ax.text(dx, dy, letter, transform=ax.transAxes, fontsize=13,
+    ax.text(dx, dy, letter, transform=ax.transAxes, fontsize=13 * FONT_SCALE,
             fontweight="bold", va="bottom", ha="right", color=INK)
 
 
