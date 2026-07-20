@@ -185,7 +185,7 @@ ax.set_ylim(0, 1.05); ax.grid(alpha=0.3); ax.legend(fontsize=9)
 ax = axes[2]
 rms2 = [res2[sg][0] for sg in SIGMA_VALS]
 ax.plot([np.degrees(s) for s in SIGMA_VALS], rms2, 'o-', lw=2, color='darkorange')
-ax.set_xlabel('per-agent preferred-direction error sigma_pref (deg)')
+ax.set_xlabel('per-agent direction error sigma_pref (deg)')
 ax.set_ylabel('cross-seed RMS heading error (deg)')
 ax.set_title('Exp2: error vs sigma_pref at N=%d' % N_FIX)
 ax.grid(alpha=0.3)

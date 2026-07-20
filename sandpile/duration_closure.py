@@ -306,9 +306,9 @@ def _make_figure(Ls, gaps, ses, comps, eslock, intercept, slope_fit, icpt_se):
         ax[0].annotate("L=%d" % L, (x, y), fontsize=7,
                        textcoords="offset points", xytext=(4, 5))
     ax[0].set_xlabel("1 / L")
-    ax[0].set_ylabel("over-determination gap  gamma(S|A) - gamma(S|T)/gamma(A|T)")
+    ax[0].set_ylabel("over-determination gap")
     ax[0].set_title("Does the single-scale gap heal as L grows?")
-    ax[0].legend(fontsize=8, loc="upper left")
+    ax[0].legend(loc="lower left")
 
     # ---- (1) the components + spatial lock, to show WHY the gap persists ----
     sa = np.array([comps[L]['SA'] for L in Ls])
@@ -322,7 +322,7 @@ def _make_figure(Ls, gaps, ses, comps, eslock, intercept, slope_fit, icpt_se):
     ax[1].set_xlabel("1 / L")
     ax[1].set_ylabel("conditional exponent")
     ax[1].set_title("Direct (spatial) stays above duration-routed: the gap is real")
-    ax[1].legend(fontsize=8, loc="center left")
+    ax[1].legend(loc="center left")
 
     fig.tight_layout()
     p = os.path.join(FIGDIR, "sandpile_duration_closure.png")
