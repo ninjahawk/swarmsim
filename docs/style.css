@@ -159,6 +159,45 @@ hr {
   color: var(--muted);
 }
 
+/* ---------- at a glance ---------- */
+
+#glance .stat-strip { margin: 26px 0 34px; }
+
+.glance-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.glance-list li {
+  margin: 22px 0;
+  padding: 2px 0 2px 16px;
+  border-left: 3px solid var(--accent);
+}
+.glance-list li.g-flock { border-left-color: var(--rule-flock); }
+.glance-list li.g-sandpile { border-left-color: var(--rule-sandpile); }
+.glance-list li.g-earthquake { border-left-color: var(--rule-earthquake); }
+.glance-list .g-head {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 4px;
+}
+.glance-list .g-head a { color: var(--ink); text-decoration: none; }
+.glance-list .g-head a:hover { color: var(--accent); }
+.glance-list .g-tag {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.glance-list li p:last-child { margin: 0; font-size: 16px; line-height: 1.6; }
+
 /* ---------- figures ---------- */
 
 figure {
@@ -309,6 +348,7 @@ nav.toc { display: none; }
   h3 { font-size: 22px; }
   .stat-strip .num { font-size: 28px; }
   figcaption { font-size: 14.5px; }
+  .glance-list li p:last-child { font-size: 17px; }
 }
 
 /* ---------- print ---------- */
