@@ -42,15 +42,14 @@
   <p class="byline"><span class="name">Nathan Langley</span> &middot; PHY 351 Independent Summer Research &middot; Summer 2026</p>
   <p class="links-row">
     <a href="https://github.com/ninjahawk/swarmsim">GitHub</a><span class="sep">&middot;</span>
-    <a href="https://github.com/ninjahawk/swarmsim/blob/main/report_sandpile.md">Sandpile report</a><span class="sep">&middot;</span>
-    <a href="https://github.com/ninjahawk/swarmsim/blob/main/report_draft.md">Flocking report</a><span class="sep">&middot;</span>
+    <a href="reports/sandpile-report.pdf">Sandpile report (PDF)</a><span class="sep">&middot;</span>
+    <a href="reports/flocking-report.pdf">Flocking report (PDF)</a><span class="sep">&middot;</span>
     Findings: <a href="https://github.com/ninjahawk/swarmsim/blob/main/findings.md">flock</a>
     <a href="https://github.com/ninjahawk/swarmsim/blob/main/findings_sandpile.md">sandpile</a>
-    <a href="https://github.com/ninjahawk/swarmsim/blob/main/findings_earthquake.md">earthquake</a><span class="sep">&middot;</span>
-    <a href="https://htmlpreview.github.io/?https://github.com/ninjahawk/swarmsim/blob/main/logs.html">Research log</a>
+    <a href="https://github.com/ninjahawk/swarmsim/blob/main/findings_earthquake.md">earthquake</a>
   </p>
 
-  <figure class="wide" style="margin-top:0;">
+  <figure class="teaser" style="margin-top:0;">
     <img src="figures/teaser.png" alt="Three-panel composite. Panel a: one avalanche footprint from each sandpile model at the same radius of gyration — the slope model's is a thin line (D = 1.00), BTW's and Manna's are compact blobs (D near 2). Panel b: area moment dimension D(q) versus moment order — flat near 2.05 for Manna and BTW, rising from about 1.0 to 1.3 for the slope model. Panel c: an avalanche-size time series with forecast times marked — forecasts catch many large events but only 4 of the 43 largest-decile events.">
     <figcaption><strong>The law and its edge, once per chapter.</strong> (a) One avalanche from each sandpile model at the same radius: the slope model's typical avalanche is a one-bond filament where BTW's and Manna's are compact. (b) The slope model's area moment dimension rises from means to tails while the comparison classes stay flat: the mean is lawful, the tail is not. (c) The earthquake model's rhythm-based forecast beats chance on typical events (precision 0.68 vs 0.44) and catches 4 of the 43 largest.</figcaption>
   </figure>
@@ -58,15 +57,6 @@
 
 <section id="glance">
   <h2>At a glance</h2>
-
-  <div class="stat-strip" aria-label="Project statistics">
-    <div class="stat"><span class="num">3</span><span class="label">systems</span></div>
-    <div class="stat"><span class="num">123</span><span class="label">findings</span></div>
-    <div class="stat"><span class="num">157.0</span><span class="label">hours</span></div>
-    <div class="stat"><span class="num">133</span><span class="label">scripts</span></div>
-    <div class="stat"><span class="num">9</span><span class="label">self-tests</span></div>
-    <div class="stat"><span class="num">10</span><span class="label">corrections</span></div>
-  </div>
 
   <ul class="glance-list">
     <li class="g-flock">
@@ -90,7 +80,7 @@
 
 <section id="abstract">
   <h2>Abstract</h2>
-  <p>Over one summer I built and measured three canonical models of collective behavior: a flock of aligning agents, a sandpile that organizes itself to a critical state, and the Olami&ndash;Feder&ndash;Christensen earthquake model. Each started as a textbook exercise and ended somewhere the textbook does not go. The reason this page exists is that the same pattern kept turning up in all three. Typical behavior obeys laws sharp enough to fit to two decimal places: an averaging law in the flock, an exact spatial scaling law in the sandpile, a recurrence rhythm in the earthquake model. And in each case the events that matter most slip out from under the law by a route you can measure. Correlated signals defeat the flock's averaging. The sandpile's largest avalanches stay multifractal while its typical ones turn exact. The earthquake model's biggest events fall off its clock even though the mechanism is fully known. This page is the argument; the 123 documented findings and 133 scripts behind it are in the repository.</p>
+  <p>Over one summer I built and measured three canonical models of collective behavior: a flock of aligning agents, a sandpile that organizes itself to a critical state, and the Olami&ndash;Feder&ndash;Christensen earthquake model. Each started as a textbook exercise and ended somewhere the textbook does not go. The same pattern kept turning up in all three. Typical behavior obeys laws sharp enough to fit to two decimal places: an averaging law in the flock, an exact spatial scaling law in the sandpile, a recurrence rhythm in the earthquake model. And in each case the events that matter most slip out from under the law by a route you can measure. Correlated signals defeat the flock's averaging. The sandpile's largest avalanches stay multifractal while its typical ones turn exact. The earthquake model's biggest events fall off its clock even though the mechanism is fully known.</p>
 
 </section>
 

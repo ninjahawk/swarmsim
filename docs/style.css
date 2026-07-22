@@ -214,6 +214,8 @@ figure img {
   height: auto;
 }
 figure img + img { margin-top: 14px; }
+/* teaser hero: sit flush with the text column, not outset like chapter figures */
+figure.teaser { width: 100%; margin-left: auto; margin-right: auto; }
 figure.archive img {
   width: 100%;
   max-width: var(--body-w);
