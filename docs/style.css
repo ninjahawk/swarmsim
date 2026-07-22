@@ -203,9 +203,11 @@ hr {
 figure {
   margin: 40px 0;
 }
+/* all figures sit flush with the text column (no outset) */
 figure.wide {
-  width: min(var(--wide-w), calc(100vw - 40px));
-  margin-left: calc((100% - min(var(--wide-w), calc(100vw - 40px))) / 2);
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 figure img {
   display: block;
@@ -290,9 +292,8 @@ nav.toc { display: none; }
     display: block;
     position: fixed;
     top: 96px;
-    /* right edge sits 24px outside the wide-figure edge, so scrolling
-       figures never slide under the TOC text */
-    left: max(24px, calc((100vw - var(--wide-w)) / 2 - 224px));
+    /* right edge sits ~24px to the left of the text column */
+    left: max(24px, calc((100vw - var(--body-w)) / 2 - 224px));
     width: 200px;
     font-family: var(--sans);
     font-size: 13px;
