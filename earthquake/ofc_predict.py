@@ -77,6 +77,32 @@ def evaluate(pred_times, pred_sizes, obs_times, obs_sizes, win, amp_tol):
     return hits, misses, false_alarms, amp_ok
 
 
+def wilson(k, n, z=1.96):
+    """95% Wilson score interval for a binomial proportion k/n.
+
+    Used to show how little the top-decile recall is actually pinned down: with
+    n = 43 the interval is wide enough to contain the all-events rate, which is the
+    whole point of the E8 correction.
+    """
+    if n == 0:
+        return float('nan'), float('nan')
+    p = k / n
+    d = 1.0 + z * z / n
+    centre = (p + z * z / (2.0 * n)) / d
+    half = z * np.sqrt(p * (1.0 - p) / n + z * z / (4.0 * n * n)) / d
+    return centre - half, centre + half
+
+
+def recall_of(pred_times, obs_times, win):
+    """Fraction of observed events falling within +/-win of ANY forecast time."""
+    obs_times = np.asarray(obs_times, dtype=float)
+    if obs_times.size == 0:
+        return 0, 0, 0.0
+    caught = int(sum(1 for t in obs_times
+                     if np.any(np.abs(pred_times - t) <= win)))
+    return caught, obs_times.size, caught / obs_times.size
+
+
 def main():
     lines = []
     def out(s=''):
@@ -170,6 +196,35 @@ def main():
             caught += 1
     out("  largest events (top 10%% by size, n=%d): %d caught within +/-%d iter (recall %.2f)"
         % (top_t.size, caught, WIN_LOOSE, caught / max(1, top_t.size)))
+
+    # ------------------------------------------------------- E8: like-for-like scoring
+    # The three lines above mix metrics: the per-window numbers are PRECISION
+    # (hits / predictions) while the top-decile number is a RECALL (caught / n_top).
+    # Different denominators, so the apparent "the forecast misses the biggest events"
+    # contrast was an artifact of comparing the two.  Score both populations the same
+    # way -- fraction of observed events landing within +/-win of any forecast time --
+    # against the chance rate, which for a recall is the forecast's time coverage.
+    out("")
+    out("  E8 (correction to E7): recall scored identically for all large events and for")
+    out("  the top decile, against chance = fraction of the test span the forecast covers.")
+    for win in (WIN_TIGHT, WIN_LOOSE):
+        coverage = min(1.0, pred_t.size * 2.0 * win / test_span)
+        ca, na, ra = recall_of(pred_t, big_te_t, win)
+        ct, nt, rt = recall_of(pred_t, top_t, win)
+        la, ha = wilson(ca, na)
+        lt, ht = wilson(ct, nt)
+        out("  window +/-%3d iter: chance recall (coverage) = %.3f" % (win, coverage))
+        out("      all large events : %4d/%4d = %.3f  [95%% CI %.3f-%.3f]  skill %.2fx"
+            % (ca, na, ra, la, ha, ra / coverage if coverage > 0 else np.nan))
+        out("      top decile       : %4d/%4d = %.3f  [95%% CI %.3f-%.3f]  skill %.2fx"
+            % (ct, nt, rt, lt, ht, rt / coverage if coverage > 0 else np.nan))
+        overlap = (lt <= ra <= ht)
+        out("      top-decile CI %s the all-events rate -> tail %s distinguishable from bulk"
+            % ("CONTAINS" if overlap else "EXCLUDES", "NOT" if overlap else "IS"))
+    out("")
+    out("  Reading: skill is uniformly weak and does NOT concentrate in the tail.  The")
+    out("  top-decile sample (n=%d) is too small to separate from the bulk either way," % top_t.size)
+    out("  which is itself the lesson about tail claims under constrained statistics.")
 
     # ---------------------------------------------------------------- figure
     fig, ax = plt.subplots(figsize=(11, 4.5))

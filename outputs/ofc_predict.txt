@@ -12,4 +12,19 @@ E7: Grand Challenge -- OFC earthquake prediction (Exercise 6)
   window +/-300 iter: predictions=56  hits=38  false_alarms=18 | precision=0.68 (chance 0.44, skill 1.5x) | amplitude-correct=19/38
   largest events (top 10% by size, n=43): 4 caught within +/-300 iter (recall 0.09)
 
+  E8 (correction to E7): recall scored identically for all large events and for
+  the top decile, against chance = fraction of the test span the forecast covers.
+  window +/-100 iter: chance recall (coverage) = 0.019
+      all large events :   14/ 428 = 0.033  [95% CI 0.020-0.054]  skill 1.70x
+      top decile       :    2/  43 = 0.047  [95% CI 0.013-0.155]  skill 2.41x
+      top-decile CI CONTAINS the all-events rate -> tail NOT distinguishable from bulk
+  window +/-300 iter: chance recall (coverage) = 0.058
+      all large events :   50/ 428 = 0.117  [95% CI 0.090-0.151]  skill 2.02x
+      top decile       :    4/  43 = 0.093  [95% CI 0.037-0.216]  skill 1.61x
+      top-decile CI CONTAINS the all-events rate -> tail NOT distinguishable from bulk
+
+  Reading: skill is uniformly weak and does NOT concentrate in the tail.  The
+  top-decile sample (n=43) is too small to separate from the bulk either way,
+  which is itself the lesson about tail claims under constrained statistics.
+
   --> figures/ofc_predict.png
