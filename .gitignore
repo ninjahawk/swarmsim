@@ -9,6 +9,24 @@ Natural Complexity Book/
 # Personal emails
 Emails From Professor.txt
 
+# Instructor's private review of the capstone page -- candid assessment written for the
+# student. The repo is public and the professor has cloned it. NEVER commit this.
+_INSTRUCTOR_FEEDBACK.md
+
+# Capstone working documents (planning/drafting, untracked by design; README must not link them)
+SYNTHESIS.md
+capstone/CAPSTONE_PLAN.md
+capstone/FEEDBACK_RESPONSE_PLAN.md
+capstone/FEEDBACK_EXECUTION.md
+capstone/TAIL_AUDIT.md
+capstone/TERM_INVENTORY.md
+capstone/site_prose.md
+capstone/render_logs/
+capstone/fonts/
+
+# LaTeX paper (local, untracked by design)
+paper/
+
 # Claude Code context file (internal AI instructions, not part of the public repo)
 CLAUDE.md
 
